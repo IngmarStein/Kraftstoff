@@ -1,0 +1,17 @@
+// Kraftstoff
+
+#import <Availability.h>
+
+#ifdef __OBJC__
+# import <UIKit/UIKit.h>
+# import <Foundation/Foundation.h>
+# import <CoreData/CoreData.h>
+# import <CoreText/CoreText.h>
+# import <QuartzCore/QuartzCore.h>
+#endif
+
+// Internationalization
+#define _I18N(string) NSLocalizedStringFromTable(string, nil, nil)
+
+// Cocoa Extension
+#import "NSDecimalNumber_extension.h"
