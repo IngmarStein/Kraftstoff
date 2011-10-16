@@ -79,6 +79,7 @@ static AppDelegate *sharedDelegateObject = nil;
             [NSDecimalNumber zero],         @"recentPrice",
             [NSDecimalNumber zero],         @"recentFuelVolume",
             [NSNumber numberWithBool: YES], @"recentFilledUp",
+            [NSNumber numberWithInt: 0],    @"editHelpCounter",
             nil]];
 
     // Assign managed object context to rootview controllers
@@ -1442,6 +1443,22 @@ static AppDelegate *sharedDelegateObject = nil;
         return _I18N (@"Kilometers");
     else
         return _I18N (@"Miles");
+}
+
+
+
+#pragma mark -
+#pragma mark Mixed Pickles
+
+
+
+// Miminum supported iOS is iOS 4.3 hence everything else is iOS 5 or newer
++ (BOOL)runningOS5
+{
+    if ([[[UIDevice currentDevice] systemVersion] hasPrefix: @"4"])
+        return NO;
+    else
+        return YES;
 }
 
 

@@ -11,6 +11,8 @@
 #import "TextEditTableCell.h"
 
 
+static NSInteger maxEditHelpCounter = 2;
+
 
 @interface CarViewController (private)
 
@@ -64,6 +66,8 @@
                                     initWithTarget: self
                                             action: @selector (handleLongPress:)]
                                     autorelease];
+
+    self.longPressRecognizer.minimumPressDuration = 0.6;
 
     // Observe locale changes
     [[NSNotificationCenter defaultCenter]
@@ -134,21 +138,50 @@
 
 - (void)updateHelp: (BOOL)animated
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];    
+
+    // Number of cars determins the help badge
+    NSString *helpImageName = nil;
+    CGRect helpViewFrame;
+
+    NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];    
+    
+    if (carCount == 0)
+    {
+        helpImageName = @"Start";
+        helpViewFrame = CGRectMake (0, 0, 320, 70);
+
+        [defaults setObject: [NSNumber numberWithInteger: 0] forKey: @"editHelpCounter"];
+    }
+    else if (carCount <= 3)
+    {
+        NSInteger editCounter = [[defaults objectForKey: @"editHelpCounter"] integerValue];
+        
+        if (editCounter < maxEditHelpCounter)
+        {
+            [defaults setObject: [NSNumber numberWithInteger: ++editCounter] forKey: @"editHelpCounter"];            
+
+            helpImageName = @"Edit";
+            helpViewFrame = CGRectMake (0, carCount * 92.0 - 16, 320, 92);
+        }
+    }    
+
+    // Update the help view state
     UIImageView *helpView = (UIImageView*)[self.view viewWithTag: 100];
 
-    if ([[[self fetchedResultsController] fetchedObjects] count] == 0)
+    if (helpImageName)        
     {
         if (helpView == nil)
         {
-            UIImageView *helpView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: @"Start"]];
-
+            helpView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: helpImageName]];
+            
             helpView.tag   = 100;
-            helpView.frame = CGRectMake (0, 0, 320, 70);
+            helpView.frame = helpViewFrame;            
             helpView.alpha = (animated) ? 0.0 : 0.9;
-
+            
             [self.view addSubview: helpView];
             [helpView release];
-
+            
             if (animated)
                 [UIView animateWithDuration: 0.33
                                       delay: 0.33
@@ -156,8 +189,11 @@
                                  animations: ^{ helpView.alpha = 0.9; }
                                  completion: NULL];
         }
-
-        self.navigationItem.leftBarButtonItem = nil;
+        else
+        {
+            helpView.image = [UIImage imageNamed: helpImageName];
+            helpView.frame = helpViewFrame;
+        }
     }
     else
     {
@@ -169,9 +205,10 @@
                              completion: ^(BOOL finished){ [helpView removeFromSuperview]; }];
         else
             [helpView removeFromSuperview];
-
-        self.navigationItem.leftBarButtonItem = self.editButtonItem;
     }
+
+    // Update the toolbar button
+    self.navigationItem.leftBarButtonItem = (carCount == 0) ? nil : self.editButtonItem;
 }
 
 
@@ -310,7 +347,7 @@
 
 - (void)handleLongPress: (UILongPressGestureRecognizer*)sender
 {
-    if (!isEditing && sender.state == UIGestureRecognizerStateEnded)
+    if (!isEditing && sender.state == UIGestureRecognizerStateBegan)
     {
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: [sender locationInView: self.tableView]];
 
@@ -341,6 +378,9 @@
 
             [self presentModalViewController: configurator animated: YES];
             [configurator release];
+
+            // Edit started => prevent edit help from now on
+            [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithInteger: maxEditHelpCounter] forKey: @"editHelpCounter"];
         }
     }
 }
@@ -403,16 +443,16 @@
 
 - (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath
 {
-    ShadedTableViewCell *tableCell = (ShadedTableViewCell*)cell;    
+    ShadedTableViewCell *tableCell = (ShadedTableViewCell*)cell;
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath: indexPath];
- 
+
     UILabel *label;
 
     // Car and Numberplate
     label      = [tableCell topLeftLabel];
     label.text = [NSString stringWithFormat: @"%@", [managedObject valueForKey: @"name"]];
     tableCell.topLeftAccessibilityLabel  = nil;
-    
+
     label      = [tableCell botLeftLabel];
     label.text = [NSString stringWithFormat: @"%@", [managedObject valueForKey: @"numberPlate"]];
     tableCell.topRightAccessibilityLabel = nil;
@@ -434,13 +474,13 @@
                                                                withUnit: consumptionUnit]];
 
         tableCell.topRightAccessibilityLabel = avgConsumption;
-        tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitShadedTableViewCellDescription: consumptionUnit];        
+        tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitShadedTableViewCellDescription: consumptionUnit];
     }
     else
     {
         avgConsumption = [NSString stringWithFormat: @"%@", _I18N (@"-")];
 
-        tableCell.topRightAccessibilityLabel = _I18N (@"fuel economy not available");        
+        tableCell.topRightAccessibilityLabel = _I18N (@"fuel mileage not available");
         tableCell.botRightAccessibilityLabel = nil;
     }
 

@@ -46,7 +46,7 @@ static CGGradientRef PageCellBackgroundGradient (BOOL selected)
 }
 
 
-static CGPathRef allocPathWithRoundRect (CGRect rect, PageCellGroupPosition position, CGFloat cornerRadius)
+static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCellGroupPosition position, CGFloat cornerRadius)
 {
 	CGMutablePathRef path = CGPathCreateMutable ();
 	CGPathMoveToPoint (path, NULL,

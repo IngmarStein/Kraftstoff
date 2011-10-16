@@ -6,6 +6,7 @@
 #import "CarTableCell.h"
 #import "FuelCalculatorController.h"
 #import "PickerImageView.h"
+#import "AppDelegate.h"
 
 
 // Standard cell geometry
@@ -268,12 +269,15 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     {
         imageView = [[[PickerImageView alloc] initWithImage: image] autorelease];
 
-        //UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: imageView action: @selector(viewTapped:)];
-        //[imageView addGestureRecognizer: tap];
-        //[tap release];
+        // Workaround for disabled autoselection of pickerView prior to iOS5
+        if ([AppDelegate runningOS5] == NO)
+        {
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: imageView action: @selector(viewTapped:)];
+            [imageView addGestureRecognizer: tap];
+            [tap release];
+        }
     }
 
-    // Configure for Taps
     imageView.userInteractionEnabled = YES;
     imageView.pickerView = pickerView;
     imageView.rowIndex   = row;

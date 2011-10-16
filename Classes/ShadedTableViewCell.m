@@ -112,7 +112,7 @@
         if (botRightAccessibilityLabel)
             label = [label stringByAppendingFormat: @" %@",  botRightAccessibilityLabel];
     }
-    
+
     return label;
 }
 

@@ -62,6 +62,8 @@
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
 		4DAF2ED2139419D60052A39E /* ConfiguratorBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DAF2ED0139419D60052A39E /* ConfiguratorBackground.png */; };
 		4DAF2ED3139419D60052A39E /* ConfiguratorBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DAF2ED1139419D60052A39E /* ConfiguratorBackground@2x.png */; };
+		4DB0DE3F144B26A1003E778F /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB0DE41144B26A1003E778F /* Edit.png */; };
+		4DB0DE43144B26A9003E778F /* Edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB0DE45144B26A9003E778F /* Edit@2x.png */; };
 		4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA531367154C00AE03CC /* DateEditTableCell.m */; };
 		4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA641368601D00AE03CC /* EditablePageCell.m */; };
 		4DB4DA68136886BC00AE03CC /* EditablePageCellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA67136886BC00AE03CC /* EditablePageCellTextField.m */; };
@@ -170,6 +172,10 @@
 		4DAC562913032B1000D02BEC /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAF2ED0139419D60052A39E /* ConfiguratorBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ConfiguratorBackground.png; sourceTree = "<group>"; };
 		4DAF2ED1139419D60052A39E /* ConfiguratorBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ConfiguratorBackground@2x.png"; sourceTree = "<group>"; };
+		4DB0DE40144B26A1003E778F /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = English.lproj/Edit.png; sourceTree = "<group>"; };
+		4DB0DE42144B26A6003E778F /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/Edit.png; sourceTree = "<group>"; };
+		4DB0DE44144B26A9003E778F /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = "English.lproj/Edit@2x.png"; sourceTree = "<group>"; };
+		4DB0DE46144B26AE003E778F /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/Edit@2x.png"; sourceTree = "<group>"; };
 		4DB4DA521367154C00AE03CC /* DateEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DateEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DB4DA531367154C00AE03CC /* DateEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DateEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DB4DA631368601D00AE03CC /* EditablePageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditablePageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -303,6 +309,8 @@
 		4D18471F123CF8B1008D7454 /* Bitmaps */ = {
 			isa = PBXGroup;
 			children = (
+				4DB0DE41144B26A1003E778F /* Edit.png */,
+				4DB0DE45144B26A9003E778F /* Edit@2x.png */,
 				4DD538D9143853ED003ED398 /* Cars.png */,
 				4DD538DA143853ED003ED398 /* Cars@2x.png */,
 				4DC75A111239409300275150 /* CellShade.png */,
@@ -629,6 +637,8 @@
 				4DD538D8143853E4003ED398 /* Zapfhahn@2x.png in Resources */,
 				4DD538DB143853ED003ED398 /* Cars.png in Resources */,
 				4DD538DC143853ED003ED398 /* Cars@2x.png in Resources */,
+				4DB0DE3F144B26A1003E778F /* Edit.png in Resources */,
+				4DB0DE43144B26A9003E778F /* Edit@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,6 +778,24 @@
 				4D959D08142AA0EB0079A61A /* English */,
 			);
 			name = FuelEventEditor.xib;
+			sourceTree = "<group>";
+		};
+		4DB0DE41144B26A1003E778F /* Edit.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DB0DE40144B26A1003E778F /* English */,
+				4DB0DE42144B26A6003E778F /* de */,
+			);
+			name = Edit.png;
+			sourceTree = "<group>";
+		};
+		4DB0DE45144B26A9003E778F /* Edit@2x.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DB0DE44144B26A9003E778F /* English */,
+				4DB0DE46144B26AE003E778F /* de */,
+			);
+			name = "Edit@2x.png";
 			sourceTree = "<group>";
 		};
 		4DCFE36C138EE2930051FEC9 /* Localizable.strings */ = {

@@ -19,11 +19,12 @@
 
 - (void)selectRowAtIndexPath: (NSIndexPath*)path;
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion;
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
 - (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex;
 - (void)handleCancelCompletion: (id)sender;
 - (void)handleSaveCompletion: (id)sender;
 
+- (void)localeChangedCompletion: (id)previousSelection;
 - (void)localeChanged: (id)object;
 
 @end
@@ -150,11 +151,25 @@
 }
 
 
-- (void)localeChanged: (id)object
+- (void)localeChangedCompletion: (id)previousSelection
 {
+    [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
+
     [self recreateTableContents];
+    [self selectRowAtIndexPath: previousSelection];
 }
 
+
+- (void)localeChanged: (id)object
+{
+    NSIndexPath *path = [self.tableView indexPathForSelectedRow];
+
+    if (path)
+        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+    else
+        [self localeChangedCompletion: path];
+}
 
 
 #pragma mark -
@@ -307,8 +322,11 @@
 
 - (void)selectRowAtIndexPath: (NSIndexPath*)path
 {
-    [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
-    [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    if (path)
+    {
+        [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
+        [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    }
 }
 
 
@@ -342,7 +360,7 @@
 
 
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
 
@@ -359,7 +377,7 @@
                      }
                      completion: ^(BOOL finished){
 
-                         [self performSelector: completion withObject: self];
+                         [self performSelector: completion withObject: object];
                      }];
 }
 
@@ -376,6 +394,7 @@
 - (void)handleCancelCompletion: (id)sender
 {
     [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
 
     BOOL showAlertPanel = YES;
 
@@ -415,12 +434,15 @@
     // Remember currently selected row in case the action shhet gets canceled
     mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
 
-    [self dismissKeyboardWithCompletionSelector: @selector (handleCancelCompletion:)];
+    [self dismissKeyboardWithCompletionSelector: @selector (handleCancelCompletion:) object: self];
 }
 
 
 - (void)handleSaveCompletion: (id)sender
 {
+    [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
+
     [delegate carConfigurationController: self
                      didFinishWithResult: editing ? CarConfigurationEditSucceded
                                                   : CarConfigurationCreateSucceded];
@@ -429,7 +451,7 @@
 
 - (IBAction)handleSave: (id)sender
 {
-    [self dismissKeyboardWithCompletionSelector: @selector (handleSaveCompletion:)];
+    [self dismissKeyboardWithCompletionSelector: @selector (handleSaveCompletion:) object: self];
 }
 
 

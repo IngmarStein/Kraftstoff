@@ -5,8 +5,10 @@
 
 @interface PageViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {
-	NSMutableArray *tableSections;
-	NSMutableArray *headerViews;
+    NSMutableArray *tableSections;
+    NSMutableArray *headerViews;
+    
+    BOOL keyboardIsVisible;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;

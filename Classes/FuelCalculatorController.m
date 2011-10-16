@@ -14,31 +14,40 @@
 #import "SwitchTableCell.h"
 
 
-#define DISTANCE_DATA_ROW  1
-#define PRICE_DATA_ROW     2
-#define AMOUNT_DATA_ROW    4
-#define ALL_DATA_ROWS      7
+typedef enum
+{
+    FCDistanceRow = 1,
+    FCPriceRow    = 2,
+    FCAmountRow   = 4,
+    FCAllDataRows = 7,    
+} FuelCalculatorDataRow;
 
 
 @interface FuelCalculatorController (private)
 
 - (void)createConsumptionRowWithAnimation: (UITableViewRowAnimation)animation;
-- (void)createDataRows: (unsigned)rowMask withAnimation: (UITableViewRowAnimation)animation;
+- (void)createDataRows: (FuelCalculatorDataRow)rowMask withAnimation: (UITableViewRowAnimation)animation;
 - (void)createTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 
 - (void)recreateTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 - (void)recreateDataRowsWithPreviousCar: (NSManagedObject*)oldCar;
 - (void)recreateDistanceRowWithAnimation: (UITableViewRowAnimation)animation;
 
-- (void)dismissKeyboardAndUpdateContinuation;
-- (void)dismissKeyboardAndUpdate: (id)sender;
-- (void)deselectRowDismissKeyboardAndUpdate: (id)sender;
+- (void)endEditingModeCompletion: (id)sender;
+- (void)endEditingModeAlert: (id)sender;
+- (IBAction)endEditingMode: (id)sender;
 
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
+
+- (void)localeChangedCompletion: (id)object;
 - (void)localeChanged: (id)object;
 
 - (void)subscribeToShakeNotification;
 - (void)unsubscribeFromShakeNotification;
 - (void)handleShake: (id)object;
+
+- (void)willEnterForeground: (NSNotification*)notification;
+- (void)selectRowAtIndexPath: (NSIndexPath*)path;
 
 @end
 
@@ -78,7 +87,7 @@
     // Navigation-Bar buttons
     self.doneButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                      target: self
-                                                                     action: @selector (deselectRowDismissKeyboardAndUpdate:)] autorelease];
+                                                                     action: @selector (endEditingMode:)] autorelease];
 
     self.saveButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                      target: self
@@ -100,13 +109,17 @@
 
     changeIsUserDriven = NO;
 
-    // Dump any old tables
-
     // Observe locale changes
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
                name: NSCurrentLocaleDidChangeNotification
+             object: nil];
+
+    [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector (willEnterForeground:)
+               name: UIApplicationWillEnterForegroundNotification
              object: nil];
 
     // Schedule this to avoid some animation stuttering
@@ -115,7 +128,7 @@
                         if ([tableSections count] == 0)
                             [self   createTableContentsWithAnimation: UITableViewRowAnimationFade];
                         else
-                            [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];                        
+                            [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
                     });
 }
 
@@ -212,7 +225,7 @@
 
                          NSDate *now = [NSDate date];
 
-                         [self valueChanged: now  identifier: @"date"];
+                         [self valueChanged: [AppDelegate dateWithoutSeconds: now] identifier: @"date"];
                          [self valueChanged: now  identifier: @"lastChangeDate"];
                          [self valueChanged: zero identifier: @"distance"];
                          [self valueChanged: zero identifier: @"price"];
@@ -297,7 +310,7 @@
 }
 
 
-- (void)createDataRows: (unsigned)rowMask withAnimation: (UITableViewRowAnimation)animation
+- (void)createDataRows: (FuelCalculatorDataRow)rowMask withAnimation: (UITableViewRowAnimation)animation
 {
     KSDistance odometerUnit;
     KSVolume fuelUnit;
@@ -316,7 +329,7 @@
 
     int rowOffset = ([self.fetchedResultsController.fetchedObjects count] < 2) ? 1 : 2;
 
-    if (rowMask & DISTANCE_DATA_ROW)
+    if (rowMask & FCDistanceRow)
     {
         if (distance == nil)
             self.distance = [NSDecimalNumber decimalNumberWithDecimal:
@@ -335,7 +348,7 @@
               withAnimation: animation];
     }
 
-    if (rowMask & PRICE_DATA_ROW)
+    if (rowMask & FCPriceRow)
     {
         if (price == nil)
             self.price = [NSDecimalNumber decimalNumberWithDecimal:
@@ -355,7 +368,7 @@
               withAnimation: animation];
     }
 
-    if (rowMask & AMOUNT_DATA_ROW)
+    if (rowMask & FCAmountRow)
     {
         if (fuelVolume == nil)
             self.fuelVolume = [NSDecimalNumber decimalNumberWithDecimal:
@@ -418,6 +431,9 @@
     if (date == nil)
         self.date = [AppDelegate dateWithoutSeconds: [NSDate date]];
 
+    if (lastChangeDate == nil)
+        self.lastChangeDate = [NSDate date];
+
     [self addRowAtIndex: (self.car) ? 1 : 0
               inSection: 0
               cellClass: [DateEditTableCell class]
@@ -430,7 +446,7 @@
                             nil]
           withAnimation: animation];
 
-    [self createDataRows: ALL_DATA_ROWS withAnimation: animation];
+    [self createDataRows: FCAllDataRows withAnimation: animation];
 
     self.filledUp = [[[NSUserDefaults standardUserDefaults] objectForKey: @"recentFilledUp"] boolValue];
 
@@ -479,7 +495,7 @@
     for (int row = 4; row >= 2; row--)
         [self removeRowAtIndex: row inSection: 0 withAnimation: UITableViewRowAnimationNone];
 
-    [self createDataRows: ALL_DATA_ROWS withAnimation: UITableViewRowAnimationNone];
+    [self createDataRows: FCAllDataRows withAnimation: UITableViewRowAnimationNone];
 
     // ...then update the tableview
     BOOL odoChanged  = [[oldCar   valueForKey: @"odometerUnit"] integerValue]
@@ -512,13 +528,13 @@
     int rowOffset = ([self.fetchedResultsController.fetchedObjects count] < 2) ? 1 : 2;
 
     // Replace distance row in the internal data model...
-    [self removeRowAtIndex: 0 + rowOffset inSection: 0 withAnimation: UITableViewRowAnimationNone];
-    [self createDataRows: DISTANCE_DATA_ROW withAnimation: UITableViewRowAnimationNone];
+    [self removeRowAtIndex: rowOffset inSection: 0 withAnimation: UITableViewRowAnimationNone];
+    [self createDataRows: FCDistanceRow withAnimation: UITableViewRowAnimationNone];
 
     // ...then update the tableview
     if (animation != UITableViewRowAnimationNone)
         [self.tableView reloadRowsAtIndexPaths: [NSArray arrayWithObject:
-                                                    [NSIndexPath indexPathForRow: 0 + rowOffset
+                                                    [NSIndexPath indexPathForRow: rowOffset
                                                                        inSection: 0]]
                               withRowAnimation: animation];
     else
@@ -526,9 +542,71 @@
 }
 
 
+- (void)localeChangedCompletion: (id)previousSelection
+{
+    [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
+    
+    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
+    [self selectRowAtIndexPath: previousSelection];
+}
+
+
 - (void)localeChanged: (id)object
 {
-    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
+    NSIndexPath *path = [self.tableView indexPathForSelectedRow];
+    
+    if (path)
+        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+    else
+        [self localeChangedCompletion: path];
+}
+
+
+- (void)willEnterForeground: (NSNotification*)notification
+{
+    // Table may not be empty, keyboard may not be visible
+    if ([tableSections count] == 0 || keyboardIsVisible == YES)
+        return;
+    
+    // Last update must be longer than 5 minutes ago
+    NSTimeInterval noChangeInterval;
+
+    if (self.lastChangeDate)
+        noChangeInterval = [[NSDate date] timeIntervalSinceDate: self.lastChangeDate];
+    else
+        noChangeInterval = -1;
+
+    if (lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0)
+    {
+        // Reset date to current time
+        NSDate *now         = [NSDate date];
+        self.date           = [AppDelegate dateWithoutSeconds: now];
+        self.lastChangeDate = now;
+
+        // Update table
+        int rowOffset = ([self.fetchedResultsController.fetchedObjects count] < 2) ? 0 : 1;
+
+        [self.tableView reloadRowsAtIndexPaths: [NSArray arrayWithObject:
+                                                    [NSIndexPath indexPathForRow: rowOffset inSection: 0]]
+                              withRowAnimation: UITableViewRowAnimationNone];
+    }
+}
+
+
+
+#pragma mark -
+#pragma mark Programatically Selecting Table Rows
+
+
+
+- (void)selectRowAtIndexPath: (NSIndexPath*)path
+{
+    if (path)
+    {
+        [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
+        [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    }
 }
 
 
@@ -593,12 +671,16 @@
         [self recreateDistanceRowWithAnimation: UITableViewRowAnimationRight];
     }
 
-    [self dismissKeyboardAndUpdateContinuation];
+    [self endEditingModeCompletion: self];
 }
 
 
 - (BOOL)askOdometerConversion
 {
+    // No conversion when there is no car
+    if (self.car == nil)
+        return NO;
+
     // A simple heuristics when to ask for distance cobversion
     NSDecimalNumber *zero = [NSDecimalNumber zero];
     NSDecimalNumber *one  = [NSDecimalNumber one];
@@ -662,49 +744,61 @@
 
 
 #pragma mark -
-#pragma mark Dismissing the Keyboard
+#pragma mark Leaving Editing Mode
 
 
 
-- (void)dismissKeyboardAndUpdateContinuation
+- (void)endEditingModeCompletion: (id)sender
 {
+    self.navigationItem.leftBarButtonItem = nil;
+
     [self createConsumptionRowWithAnimation: UITableViewRowAnimationFade];
     [self subscribeToShakeNotification];
 }
 
 
-- (void)dismissKeyboardAndUpdate: (id)userInfo
+- (void)endEditingModeAlert: (id)sender
 {
     [self.editingTextField resignFirstResponder];
-
-    self.navigationItem.leftBarButtonItem = nil;
-
-    if (self.car == nil || [self askOdometerConversion] == NO)
+    self.editingTextField = nil;
+    
+    if ([self askOdometerConversion] == NO)
     {
-        [self dismissKeyboardAndUpdateContinuation];
+        [self endEditingModeCompletion: sender];
     }
 }
 
 
-- (void)deselectRowDismissKeyboardAndUpdate: (id)sender
+- (IBAction)endEditingMode: (id)sender
+{
+    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAlert:) object: self];
+}
+
+
+
+#pragma mark -
+#pragma mark Dismissing the Keyboard
+
+
+
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
-
+    
     [UIView animateWithDuration: scrollToTop ? 0.2 : 0.1
                      animations: ^{
-
-                         // Deselect active row
+                         
+                         // Deselect row and scroll table to the top
                          [self.tableView deselectRowAtIndexPath: [self.tableView indexPathForSelectedRow] animated: NO];
-
-                         // If necessary scroll table to the top (this avoids ugly behavour when the keyboard slides away)
+                         
                          if (scrollToTop)
                              [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
                                                    atScrollPosition: UITableViewScrollPositionTop
                                                            animated: NO];
                      }
                      completion: ^(BOOL finished){
-
-                         [self dismissKeyboardAndUpdate: sender];
+                         
+                         [self performSelector: completion withObject: object];
                      }];
 }
 
@@ -744,7 +838,7 @@
             self.date = [AppDelegate dateWithoutSeconds: (NSDate*)newValue];
 
         else if ([valueIdentifier isEqualToString: @"lastChangeDate"])
-            self.lastChangeDate = [AppDelegate dateWithoutSeconds: (NSDate*)newValue];
+            self.lastChangeDate = (NSDate*)newValue;
     }
 
     else if ([newValue isKindOfClass: [NSDecimalNumber class]])
@@ -837,7 +931,7 @@
 
 - (NSString*)tableView: (UITableView*)aTableView titleForHeaderInSection: (NSInteger)section
 {
-	return nil;
+    return nil;
 }
 
 

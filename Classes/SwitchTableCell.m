@@ -68,8 +68,8 @@ static CGFloat const margin = 8.0;
 - (void)dealloc
 {
     self.valueSwitch     = nil;
-    self.valueLabel      = nil;    
-    self.valueIdentifier = nil;        
+    self.valueLabel      = nil;
+    self.valueIdentifier = nil;
 
     [super dealloc];
 }
@@ -115,7 +115,7 @@ static CGFloat const margin = 8.0;
                                          floor ((height - valueFrame.size.height)/2),
                                          valueFrame.size.width,
                                          valueFrame.size.height);
-    
+
     // Alternate for UISwitch
     CGFloat alternateHeight = [self.valueLabel.text sizeWithFont: self.valueLabel.font].height;
     self.valueLabel.frame = CGRectMake (width - margin - 100.0, floor ((height - alternateHeight)/2), 100.0, alternateHeight);

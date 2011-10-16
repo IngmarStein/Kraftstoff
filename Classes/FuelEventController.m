@@ -184,7 +184,7 @@
 
 
 - (void)orientationChanged: (NSNotification*)aNotification
-{ 
+{
     // Ignore rotation when:
     //  - showing the export sheet
     //  - composing an export mail
@@ -193,7 +193,7 @@
     if (isShowingAskForExportSheet || isShowingMailComposer || isWaitingForACK || !isObservingRotationEvents)
         return;
 
-    // Switch view controllers according rotation state    
+    // Switch view controllers according rotation state
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
 
     if (UIDeviceOrientationIsLandscape (deviceOrientation) && [self modalViewController] == nil)
@@ -437,15 +437,15 @@
     KSFuelConsumption consumptionUnit = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
 
     UILabel *label;
-    
-    
+
+
     // Timestamp
     label      = [tableCell topLeftLabel];
     label.text = [[AppDelegate sharedDateFormatter] stringForObjectValue: [managedObject valueForKey: @"timestamp"]];
     tableCell.topLeftAccessibilityLabel = nil;
 
 
-    // Distance    
+    // Distance
     NSDecimalNumber *convertedDistance;
 
     if (odometerUnit == KSDistanceKilometer)
@@ -459,7 +459,7 @@
                     [AppDelegate odometerUnitString: odometerUnit]];
     tableCell.botLeftAccessibilityLabel = nil;
 
-    
+
     // Price
     label      = [tableCell topRightLabel];
     label.text = [[AppDelegate sharedCurrencyFormatter] stringFromNumber: [fuelVolume decimalNumberByMultiplyingBy: price]];
@@ -488,7 +488,7 @@
     {
         consumptionDescription = _I18N (@"-");
 
-        tableCell.botRightAccessibilityLabel = _I18N (@"fuel economy not available");
+        tableCell.botRightAccessibilityLabel = _I18N (@"fuel mileage not available");
     }
 
     label = [tableCell botRightLabel];

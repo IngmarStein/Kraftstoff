@@ -36,8 +36,9 @@
 - (void)createTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 - (void)recreateTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion;
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
 
+- (void)localeChangedCompletion: (id)previousSelection;
 - (void)localeChanged: (id)object;
 
 @end
@@ -148,12 +149,12 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
+
     self.managedObjectContext = nil;
 
     self.event      = nil;
     self.car        = nil;
-    self.date       = nil;    
+    self.date       = nil;
     self.distance   = nil;
     self.price      = nil;
     self.fuelVolume = nil;
@@ -263,6 +264,7 @@
 - (void)endEditingModeAndSaveCompletion: (id)sender
 {
     [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
 
     self.navigationItem.leftBarButtonItem  = nil;
     self.navigationItem.rightBarButtonItem = editButton;
@@ -301,7 +303,7 @@
     self.tableView.allowsSelection = editing = NO;
 
     [self reconfigureRow: 4];
-    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndSaveCompletion:)];
+    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndSaveCompletion:) object: self];
 }
 
 
@@ -339,6 +341,7 @@
 - (void)endEditingModeAndRevertSheet: (id)sender
 {
     [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
 
     if (dataChanged)
     {
@@ -363,7 +366,7 @@
     // Remember currently selected row in case the action shhet gets canceled
     mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
 
-    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndRevertSheet:)];
+    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndRevertSheet:) object: self];
 }
 
 
@@ -375,8 +378,11 @@
 
 - (void)selectRowAtIndexPath: (NSIndexPath*)path
 {
-    [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
-    [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    if (path)
+    {
+        [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
+        [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    }
 }
 
 
@@ -512,9 +518,24 @@
 }
 
 
+- (void)localeChangedCompletion: (id)previousSelection
+{
+    [self.editingTextField resignFirstResponder];
+    self.editingTextField = nil;
+
+    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
+    [self selectRowAtIndexPath: previousSelection];
+}
+
+
 - (void)localeChanged: (id)object
 {
-    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
+    NSIndexPath *path = [self.tableView indexPathForSelectedRow];
+    
+    if (path)
+        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+    else
+        [self localeChangedCompletion: path];
 }
 
 
@@ -524,8 +545,7 @@
 
 
 
-
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion
+- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
 
@@ -542,7 +562,7 @@
                      }
                      completion: ^(BOOL finished){
 
-                         [self performSelector: completion withObject: self];
+                         [self performSelector: completion withObject: object];
                      }];
 }
 
@@ -703,28 +723,27 @@
 
     if (self.editingTextField)
     {
-        [UIView animateWithDuration: 0.3 // Seems to be overwritten by the table animation
-                         animations: ^{
+        void (^selectCompletion)(BOOL) = ^(BOOL finished){            
 
-                             // Fade out consumption section
-                             if ([self.tableView numberOfSections] == 2)
-                                 [self removeSectionAtIndex: 1 withAnimation: UITableViewRowAnimationFade];
-                         }
-                         completion: ^(BOOL finished){
+            self.navigationItem.leftBarButtonItem  = doneButton;
+            self.navigationItem.rightBarButtonItem = cancelButton;            
+            
+            // Enable user inputs for textfield in selected cell and show keyboard
+            self.editingTextField.userInteractionEnabled = YES;
+            [self.editingTextField becomeFirstResponder];
+            
+            // Scroll selected cell into middle of screen
+            [tableView scrollToRowAtIndexPath: indexPath
+                             atScrollPosition: UITableViewScrollPositionMiddle
+                                     animated: YES];        
+        };
 
-                             self.navigationItem.leftBarButtonItem  = doneButton;
-                             self.navigationItem.rightBarButtonItem = cancelButton;
-
-
-                             // Enable user inputs for textfield in selected cell and show keyboard
-                             self.editingTextField.userInteractionEnabled = YES;
-                             [self.editingTextField becomeFirstResponder];
-
-                             // Scroll selected cell into middle of screen
-                             [tableView scrollToRowAtIndexPath: indexPath
-                                              atScrollPosition: UITableViewScrollPositionMiddle
-                                                      animated: YES];
-                         }];
+        if ([self.tableView numberOfSections] == 2)
+            [UIView animateWithDuration: 0.3
+                             animations: ^{ [self removeSectionAtIndex: 1 withAnimation: UITableViewRowAnimationFade]; }
+                             completion: selectCompletion];
+        else
+            selectCompletion (YES);
     }
     else
     {

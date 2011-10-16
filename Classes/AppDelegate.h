@@ -213,4 +213,9 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSString*)odometerUnitString: (KSDistance)unit;
 + (NSString*)odometerUnitDescription: (KSDistance)unit;
 
+
+#pragma mark Mixed Pickles
+
++ (BOOL)runningOS5;
+
 @end
