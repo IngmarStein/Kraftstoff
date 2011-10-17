@@ -119,6 +119,12 @@ static NSInteger maxEditHelpCounter = 2;
 
     [super setEditing: editing animated: animated];
 
+    // No help badges during editing
+    if (editing == NO)
+        [self updateHelp: animated];
+    else
+        [self hideHelp: animated];
+
     // No gesture recognizers during editing mode
     self.longPressRecognizer.enabled = !editing;
 
@@ -184,7 +190,7 @@ static NSInteger maxEditHelpCounter = 2;
             
             if (animated)
                 [UIView animateWithDuration: 0.33
-                                      delay: 0.33
+                                      delay: 0.6
                                     options: UIViewAnimationOptionCurveEaseOut
                                  animations: ^{ helpView.alpha = 0.9; }
                                  completion: NULL];
@@ -314,7 +320,7 @@ static NSInteger maxEditHelpCounter = 2;
 
 - (void)insertNewObject: (id)sender
 {
-    [self.tableView setEditing: NO animated: YES];
+    [self setEditing: NO animated: YES];
 
     CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName: @"CarConfigurationController" bundle: nil];
     [configurator setDelegate: self];
@@ -580,12 +586,14 @@ static NSInteger maxEditHelpCounter = 2;
 - (void)tableView: (UITableView*)tableView willBeginEditingRowAtIndexPath: (NSIndexPath*)indexPath
 {
     self.navigationItem.leftBarButtonItem.enabled = NO;
+    [self hideHelp: YES];
 }
 
 
 - (void)tableView: (UITableView*)tableView didEndEditingRowAtIndexPath: (NSIndexPath*)indexPath
 {
     [self checkEnableEditButton];
+    [self updateHelp: YES];
 }
 
 
