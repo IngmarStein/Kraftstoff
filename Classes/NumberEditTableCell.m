@@ -32,6 +32,18 @@
 }
 
 
+- (void)updateTextFieldColorForValue: (id)value
+{
+    BOOL valid = YES;
+    
+    if ([(id)self.delegate respondsToSelector: @selector(valueValid:identifier:)])
+        if (! [self.delegate valueValid:value identifier: self.valueIdentifier])
+            valid = NO;
+
+    self.textField.textColor = (valid) ? [UIColor blackColor] : [self invalidTextColor];
+}
+
+
 - (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
@@ -54,6 +66,8 @@
     }
     else
         self.textField.text = @"";
+
+    [self updateTextFieldColorForValue: value];
 }
 
 
@@ -120,6 +134,7 @@
 
     // Tell delegate about new value
     [self.delegate valueChanged: value identifier: self.valueIdentifier];
+    [self updateTextFieldColorForValue: value];
 
     return NO;
 }
@@ -148,7 +163,8 @@
 
     // Tell delegate about new value
     [self.delegate valueChanged: clearedValue identifier: self.valueIdentifier];
-
+    [self updateTextFieldColorForValue: clearedValue];
+    
     return NO;
 }
 

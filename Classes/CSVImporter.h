@@ -11,6 +11,6 @@
 }
 
 - (BOOL)importCarIDs:  (NSArray*)records;
-- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents;
+- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents sourceURL: (NSURL*)sourceURL;
 
 @end

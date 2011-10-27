@@ -158,7 +158,7 @@ static AppDelegate *sharedDelegateObject = nil;
             }
         }
 
-        if ([importer importRecords: CSVTable detectedCars: &numCars detectedEvents: &numEvents])
+        if ([importer importRecords: CSVTable detectedCars: &numCars detectedEvents: &numEvents sourceURL: url])
         {
             success = YES;
             break;

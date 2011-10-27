@@ -220,8 +220,57 @@
 }
 
 
-- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents
+- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents sourceURL: (NSURL*)sourceURL
 {
+    // Analyze source URL for name/plate
+    NSString *guessedName  = nil;
+    NSString *guessedPlate = nil;    
+
+    if ([sourceURL isFileURL])
+    {
+        NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString: @"__"];
+        NSString *part;
+
+        // New exported files
+        if ([nameComponents count] == 2)
+        {
+            part = [nameComponents objectAtIndex: 0];
+
+            if ([part length] > 0)
+            {
+                if ([part length] > maximumTextFieldLength)
+                    part = [part substringToIndex: maximumTextFieldLength];
+
+                guessedName = part;
+            }
+
+            part = [nameComponents objectAtIndex: 1];
+
+            if ([part length] > 0)
+            {
+                if ([part length] > maximumTextFieldLength)
+                    part = [part substringToIndex: maximumTextFieldLength];
+                
+                guessedPlate = part;
+            }
+        }
+
+        // Old exported files
+        else if ([nameComponents count] == 1)
+        {            
+            part = [nameComponents objectAtIndex: 0];
+
+            if ([part length] > 0)
+            {
+                if ([part length] > maximumTextFieldLength)
+                    part = [part substringToIndex: maximumTextFieldLength];
+                
+                guessedPlate = part;
+            }
+        }
+    }
+        
+    
     // Analyse record headers
     NSDictionary *first = [records objectAtIndex: 0];
 
@@ -307,6 +356,8 @@
         NSString *name = [modelForID objectForKey: importID];
 
         if (name == nil)
+            name = guessedName;
+        if (name == nil)
             name = [NSString stringWithFormat: @"%@", _I18N (@"Imported Car")];
         else if ([name length] > maximumTextFieldLength)
             name = [name substringToIndex: maximumTextFieldLength];
@@ -314,7 +365,9 @@
         NSString *plate = [nameForID objectForKey: importID];
 
         if (plate == nil)
-            plate = [NSString stringWithFormat: @"%@", _I18N (@"Tap and hold to Edit")];
+            plate = guessedPlate;
+        if (plate == nil)
+            plate = @"";
         else if ([plate length] > maximumTextFieldLength)
             plate = [plate substringToIndex: maximumTextFieldLength];
 

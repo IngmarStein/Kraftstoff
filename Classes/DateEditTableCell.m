@@ -37,6 +37,18 @@
 }
 
 
+- (void)updateTextFieldColorForValue: (id)value
+{
+    BOOL valid = YES;
+    
+    if ([(id)self.delegate respondsToSelector: @selector(valueValid:identifier:)])
+        if (! [self.delegate valueValid:value identifier: self.valueIdentifier])
+            valid = NO;
+    
+    self.textFieldProxy.textColor = (valid) ? [UIColor blackColor] : [self invalidTextColor];
+}
+
+
 - (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
@@ -48,6 +60,8 @@
     self.autoRefreshedDate   = [[(NSDictionary*)dataObject objectForKey: @"autorefresh"] boolValue];
 
     self.textFieldProxy.text = (value) ? [self.dateFormatter stringFromDate: value] : @"";
+
+    [self updateTextFieldColorForValue: value];
 }
 
 
@@ -80,6 +94,7 @@
         self.textFieldProxy.text = [self.dateFormatter stringFromDate: selectedDate];
         [self.delegate valueChanged: selectedDate  identifier: self.valueIdentifier];
         [self.delegate valueChanged: [NSDate date] identifier: self.valueTimestamp];
+        [self updateTextFieldColorForValue: selectedDate];        
     }
 }
 

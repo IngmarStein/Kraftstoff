@@ -14,12 +14,16 @@
 
 @optional
 
+- (BOOL)valueValid: (id)newValue identifier: (NSString*)valueIdentifier;
+
 - (void)focusNextFieldForValueIdentifier: (NSString*)valueIdentifier;
 
 @end
 
 
 @interface EditablePageCell : PageCell <UITextFieldDelegate> {}
+
+- (UIColor*)invalidTextColor;
 
 @property (nonatomic, retain) EditablePageCellTextField *textField;
 @property (nonatomic, retain) NSString                  *valueIdentifier;

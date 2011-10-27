@@ -408,7 +408,8 @@
 
         [mailComposer addAttachmentData: [self exportTextData]
                                mimeType: @"text"
-                               fileName: [NSString stringWithFormat: @"%@.csv",
+                               fileName: [NSString stringWithFormat: @"%@__%@.csv",
+                                            [self.selectedCar valueForKey: @"name"],
                                             [self.selectedCar valueForKey: @"numberPlate"]]];
 
         isShowingMailComposer = YES;

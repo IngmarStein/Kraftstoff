@@ -35,7 +35,7 @@ static CGFloat const margin = 8.0;
 	textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	textField.autoresizingMask         = UIViewAutoresizingFlexibleWidth;
 	textField.userInteractionEnabled   = NO;
-
+    
 	[self.contentView addSubview: textField];
 
 
@@ -95,6 +95,12 @@ static CGFloat const margin = 8.0;
 
     // Correct frame for textField would be:
     // CGRectMake (labelWidth + 2*margin, 0, width - labelWidth - 3*margin, height - 1);
+}
+
+
+- (UIColor*)invalidTextColor
+{
+    return [UIColor colorWithRed: 0.42 green: 0.0 blue: 0.0 alpha: 1.0];
 }
 
 

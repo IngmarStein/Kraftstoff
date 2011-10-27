@@ -49,6 +49,8 @@ typedef enum
 - (void)willEnterForeground: (NSNotification*)notification;
 - (void)selectRowAtIndexPath: (NSIndexPath*)path;
 
+- (void)updateSaveButtonState;
+
 @end
 
 
@@ -129,6 +131,8 @@ typedef enum
                             [self   createTableContentsWithAnimation: UITableViewRowAnimationFade];
                         else
                             [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
+
+                        [self updateSaveButtonState];
                     });
 }
 
@@ -233,6 +237,7 @@ typedef enum
                          [self valueChanged: [NSNumber numberWithBool: YES] identifier: @"filledUp"];
 
                          [self recreateTableContentsWithAnimation: UITableViewRowAnimationLeft];
+                         [self updateSaveButtonState];
                      }];
 }
 
@@ -245,8 +250,6 @@ typedef enum
 
 - (void)createConsumptionRowWithAnimation: (UITableViewRowAnimation)animation;
 {
-    self.navigationItem.rightBarButtonItem = nil;
-
     // Don't add the section when no value can be computed
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
@@ -302,11 +305,6 @@ typedef enum
                             highlightStrings,   @"highlightStrings",
                             nil]
           withAnimation: animation];
-
-    // Enable save-button when bo other object for car/date exists
-    if (car != nil && date != nil)
-        if ([AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: car andDate: date] == NO)
-            self.navigationItem.rightBarButtonItem = saveButton;
 }
 
 
@@ -520,6 +518,10 @@ typedef enum
         [self.tableView reloadRowsAtIndexPaths: [NSArray arrayWithObject: [NSIndexPath indexPathForRow: row inSection: 0]]
                               withRowAnimation: animation];
     }
+
+    // ..reload date row too to get colors updates
+    [self.tableView reloadRowsAtIndexPaths: [NSArray arrayWithObject: [NSIndexPath indexPathForRow: 1 inSection: 0]]
+                          withRowAnimation: UITableViewRowAnimationNone];
 }
 
 
@@ -618,6 +620,9 @@ typedef enum
 
 - (void)saveAction: (id)sender
 {
+    // hide button before animation to prevent double actions
+    self.navigationItem.rightBarButtonItem = nil;
+
     if (car != nil)
     {
         [UIView animateWithDuration: 0.3
@@ -648,6 +653,25 @@ typedef enum
                              [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
                          }];
     }
+}
+
+
+- (void)updateSaveButtonState
+{
+    BOOL saveValid = (car != nil);
+    
+    if (saveValid)
+    {
+        NSDecimalNumber *zero = [NSDecimalNumber zero];
+        
+        if ([distance compare: zero] == NSOrderedSame || [fuelVolume compare: zero] == NSOrderedSame || [price compare: zero] == NSOrderedSame)
+            saveValid = NO;
+        
+        if (date == nil || [AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: car andDate: date])
+            saveValid = NO;
+    }
+    
+    self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil;
 }
 
 
@@ -754,6 +778,7 @@ typedef enum
 
     [self createConsumptionRowWithAnimation: UITableViewRowAnimationFade];
     [self subscribeToShakeNotification];
+    [self updateSaveButtonState];
 }
 
 
@@ -904,6 +929,28 @@ typedef enum
 
 
 
+- (BOOL)valueValid:(id)newValue identifier:(NSString *)valueIdentifier
+{
+    // Validate only when there is a car for saving
+    if (self.car == nil)
+        return YES;
+
+    // Date must be collision free
+    if ([newValue isKindOfClass: [NSDate class]])
+        if ([valueIdentifier isEqualToString: @"date"])
+            if ([AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: self.car andDate: (NSDate*)newValue] == YES)
+                return NO; 
+
+    // DecimalNumbers <= 0.0 are invalid
+    if ([newValue isKindOfClass: [NSDecimalNumber class]])
+        if ([(NSDecimalNumber*)newValue compare: [NSDecimalNumber zero]] != NSOrderedDescending)
+            return NO;
+
+    return YES;
+}
+
+
+
 #pragma mark -
 #pragma mark NSFetchedResultsControllerDelegate
 
@@ -919,6 +966,7 @@ typedef enum
     [self recreateTableContentsWithAnimation: changeIsUserDriven ? UITableViewRowAnimationRight
                                                                  : UITableViewRowAnimationNone];
 
+    [self updateSaveButtonState];
     changeIsUserDriven = NO;
 }
 
@@ -979,6 +1027,9 @@ typedef enum
 
         [UIView animateWithDuration: 0.3 // Seems to be overwritten by the table animation
                          animations: ^{
+
+                            // Away with the save button
+                             self.navigationItem.rightBarButtonItem = nil;
 
                              // Fade out consumption section
                              if ([self.tableView numberOfSections] == 2)
