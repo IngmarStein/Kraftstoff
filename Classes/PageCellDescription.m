@@ -17,17 +17,11 @@
 	if ((self = [super init]))
 	{
 		cellClass = class;
-		cellData  = [object retain];
+		cellData  = object;
 	}
 
 	return self;
 }
 
-- (void)dealloc
-{
-    self.cellData = nil;
-
-    [super dealloc];
-}
 
 @end

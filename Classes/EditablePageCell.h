@@ -15,7 +15,6 @@
 @optional
 
 - (BOOL)valueValid: (id)newValue identifier: (NSString*)valueIdentifier;
-
 - (void)focusNextFieldForValueIdentifier: (NSString*)valueIdentifier;
 
 @end
@@ -25,9 +24,9 @@
 
 - (UIColor*)invalidTextColor;
 
-@property (nonatomic, retain) EditablePageCellTextField *textField;
-@property (nonatomic, retain) NSString                  *valueIdentifier;
+@property (nonatomic, strong) EditablePageCellTextField *textField;
+@property (nonatomic, strong) NSString                  *valueIdentifier;
 
-@property (nonatomic, assign) id<EditablePageCellDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<EditablePageCellDelegate> delegate;
 
 @end

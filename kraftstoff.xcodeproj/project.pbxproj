@@ -62,8 +62,6 @@
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
 		4DAF2ED2139419D60052A39E /* ConfiguratorBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DAF2ED0139419D60052A39E /* ConfiguratorBackground.png */; };
 		4DAF2ED3139419D60052A39E /* ConfiguratorBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DAF2ED1139419D60052A39E /* ConfiguratorBackground@2x.png */; };
-		4DB0DE3F144B26A1003E778F /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB0DE41144B26A1003E778F /* Edit.png */; };
-		4DB0DE43144B26A9003E778F /* Edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DB0DE45144B26A9003E778F /* Edit@2x.png */; };
 		4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA531367154C00AE03CC /* DateEditTableCell.m */; };
 		4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA641368601D00AE03CC /* EditablePageCell.m */; };
 		4DB4DA68136886BC00AE03CC /* EditablePageCellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA67136886BC00AE03CC /* EditablePageCellTextField.m */; };
@@ -84,6 +82,8 @@
 		4DE963BA12CD045C007E7E16 /* FuelStatisticsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE963B812CD045C007E7E16 /* FuelStatisticsViewController.m */; };
 		4DECCE86125517A2009485FC /* SelectedCellShade.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DECCE84125517A2009485FC /* SelectedCellShade.png */; };
 		4DECCE87125517A2009485FC /* SelectedCellShade@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DECCE85125517A2009485FC /* SelectedCellShade@2x.png */; };
+		4DF5F5A2144630DF008E7A1C /* Edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DF5F5A4144630DF008E7A1C /* Edit@2x.png */; };
+		4DF5F5AD14463D46008E7A1C /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DF5F5AF14463D46008E7A1C /* Edit.png */; };
 		4DF6DACD13C2868300703A1F /* AppWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF6DACC13C2868300703A1F /* AppWindow.m */; };
 /* End PBXBuildFile section */
 
@@ -172,10 +172,6 @@
 		4DAC562913032B1000D02BEC /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAF2ED0139419D60052A39E /* ConfiguratorBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ConfiguratorBackground.png; sourceTree = "<group>"; };
 		4DAF2ED1139419D60052A39E /* ConfiguratorBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ConfiguratorBackground@2x.png"; sourceTree = "<group>"; };
-		4DB0DE40144B26A1003E778F /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = English.lproj/Edit.png; sourceTree = "<group>"; };
-		4DB0DE42144B26A6003E778F /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/Edit.png; sourceTree = "<group>"; };
-		4DB0DE44144B26A9003E778F /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = "English.lproj/Edit@2x.png"; sourceTree = "<group>"; };
-		4DB0DE46144B26AE003E778F /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/Edit@2x.png"; sourceTree = "<group>"; };
 		4DB4DA521367154C00AE03CC /* DateEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DateEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DB4DA531367154C00AE03CC /* DateEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = DateEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DB4DA631368601D00AE03CC /* EditablePageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditablePageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -205,6 +201,10 @@
 		4DE963B812CD045C007E7E16 /* FuelStatisticsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DECCE84125517A2009485FC /* SelectedCellShade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectedCellShade.png; sourceTree = "<group>"; };
 		4DECCE85125517A2009485FC /* SelectedCellShade@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectedCellShade@2x.png"; sourceTree = "<group>"; };
+		4DF5F5A3144630DF008E7A1C /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = "English.lproj/Edit@2x.png"; sourceTree = "<group>"; };
+		4DF5F5A5144630E8008E7A1C /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/Edit@2x.png"; sourceTree = "<group>"; };
+		4DF5F5AE14463D46008E7A1C /* English */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = English; path = English.lproj/Edit.png; sourceTree = "<group>"; };
+		4DF5F5B014463D4D008E7A1C /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/Edit.png; sourceTree = "<group>"; };
 		4DF6DACB13C2868300703A1F /* AppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppWindow.h; path = Classes/AppWindow.h; sourceTree = "<group>"; };
 		4DF6DACC13C2868300703A1F /* AppWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppWindow.m; path = Classes/AppWindow.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -309,8 +309,8 @@
 		4D18471F123CF8B1008D7454 /* Bitmaps */ = {
 			isa = PBXGroup;
 			children = (
-				4DB0DE41144B26A1003E778F /* Edit.png */,
-				4DB0DE45144B26A9003E778F /* Edit@2x.png */,
+				4DF5F5AF14463D46008E7A1C /* Edit.png */,
+				4DF5F5A4144630DF008E7A1C /* Edit@2x.png */,
 				4DD538D9143853ED003ED398 /* Cars.png */,
 				4DD538DA143853ED003ED398 /* Cars@2x.png */,
 				4DC75A111239409300275150 /* CellShade.png */,
@@ -637,8 +637,8 @@
 				4DD538D8143853E4003ED398 /* Zapfhahn@2x.png in Resources */,
 				4DD538DB143853ED003ED398 /* Cars.png in Resources */,
 				4DD538DC143853ED003ED398 /* Cars@2x.png in Resources */,
-				4DB0DE3F144B26A1003E778F /* Edit.png in Resources */,
-				4DB0DE43144B26A9003E778F /* Edit@2x.png in Resources */,
+				4DF5F5A2144630DF008E7A1C /* Edit@2x.png in Resources */,
+				4DF5F5AD14463D46008E7A1C /* Edit.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -780,24 +780,6 @@
 			name = FuelEventEditor.xib;
 			sourceTree = "<group>";
 		};
-		4DB0DE41144B26A1003E778F /* Edit.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DB0DE40144B26A1003E778F /* English */,
-				4DB0DE42144B26A6003E778F /* de */,
-			);
-			name = Edit.png;
-			sourceTree = "<group>";
-		};
-		4DB0DE45144B26A9003E778F /* Edit@2x.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DB0DE44144B26A9003E778F /* English */,
-				4DB0DE46144B26AE003E778F /* de */,
-			);
-			name = "Edit@2x.png";
-			sourceTree = "<group>";
-		};
 		4DCFE36C138EE2930051FEC9 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -807,6 +789,24 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
+		4DF5F5A4144630DF008E7A1C /* Edit@2x.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DF5F5A3144630DF008E7A1C /* English */,
+				4DF5F5A5144630E8008E7A1C /* de */,
+			);
+			name = "Edit@2x.png";
+			sourceTree = "<group>";
+		};
+		4DF5F5AF14463D46008E7A1C /* Edit.png */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4DF5F5AE14463D46008E7A1C /* English */,
+				4DF5F5B014463D4D008E7A1C /* de */,
+			);
+			name = Edit.png;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -814,11 +814,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = kraftstoff;
@@ -830,9 +832,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = kraftstoff;
@@ -845,8 +849,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

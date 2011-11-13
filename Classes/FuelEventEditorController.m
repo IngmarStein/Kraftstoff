@@ -36,7 +36,7 @@
 - (void)createTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 - (void)recreateTableContentsWithAnimation: (UITableViewRowAnimation)animation;
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion;
 
 - (void)localeChangedCompletion: (id)previousSelection;
 - (void)localeChanged: (id)object;
@@ -72,7 +72,7 @@
 
 
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (id)initWithNibName: (NSString*)nibName bundle: (NSBundle*)nibBundle
 {
     if ((self = [super initWithNibName: nibName bundle: nibBundle]))
     {
@@ -90,17 +90,17 @@
     [super viewDidLoad];
 
     // Navigation-Bar buttons
-    self.editButton   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
+    self.editButton   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                        target: self
-                                                                       action: @selector (enterEditingMode:)] autorelease];
+                                                                       action: @selector (enterEditingMode:)];
 
-    self.doneButton   = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
+    self.doneButton   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                        target: self
-                                                                       action: @selector (endEditingModeAndSave:)] autorelease];
+                                                                       action: @selector (endEditingModeAndSave:)];
 
-    self.cancelButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop
+    self.cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop
                                                                        target: self
-                                                                       action: @selector (endEditingModeAndRevert:)] autorelease];
+                                                                       action: @selector (endEditingModeAndRevert:)];
 
     self.navigationItem.rightBarButtonItem = editButton;
 
@@ -150,25 +150,11 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
-    self.managedObjectContext = nil;
-
-    self.event      = nil;
-    self.car        = nil;
-    self.date       = nil;
-    self.distance   = nil;
-    self.price      = nil;
-    self.fuelVolume = nil;
-
-    self.editingTextField = nil;
-    self.editButton       = nil;
-    self.cancelButton     = nil;
-    self.doneButton       = nil;
-
-    [super dealloc];
+    self.event = nil;
 }
 
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear: (BOOL)animated
 {
     [super viewDidAppear: animated];
 
@@ -178,7 +164,7 @@
 }
 
 
-- (void)viewDidDisappear:(BOOL)animated
+- (void)viewDidDisappear: (BOOL)animated
 {
     [super viewDidDisappear: animated];
 
@@ -215,8 +201,7 @@
 {
     if (event != newEvent)
     {
-        [event release];
-        event = [newEvent retain];
+        event = newEvent;
 
         [self reloadStateFromEvent];
 
@@ -278,7 +263,7 @@
 
         [AppDelegate removeEventFromArchive: self.event
                      inManagedObjectContext: managedObjectContext
-                        forceOdometerUpdate: NO]; // FIXME: YES
+                        forceOdometerUpdate: YES];
 
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
 
@@ -291,7 +276,7 @@
                                                                            withUnit: [[car valueForKey: @"fuelUnit"] integerValue]]
                                              filledUp: filledUp
                                inManagedObjectContext: managedObjectContext
-                                  forceOdometerUpdate: NO]; // FIXME: YES
+                                  forceOdometerUpdate: YES];
 
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
     }
@@ -303,7 +288,7 @@
     self.tableView.allowsSelection = editing = NO;
 
     [self reconfigureRow: 4];
-    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndSaveCompletion:) object: self];
+    [self dismissKeyboardWithCompletion: ^{ [self endEditingModeAndSaveCompletion: sender]; }];
 }
 
 
@@ -354,7 +339,6 @@
         sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
         [sheet showFromTabBar: self.tabBarController.tabBar];
-        [sheet release];
     }
     else
         [self endEditingModeAndRevertCompletion: sender];
@@ -366,7 +350,7 @@
     // Remember currently selected row in case the action shhet gets canceled
     mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
 
-    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAndRevertSheet:) object: self];
+    [self dismissKeyboardWithCompletion: ^{ [self endEditingModeAndRevertSheet: self]; }];
 }
 
 
@@ -397,9 +381,7 @@
     // Don't add the section when no value can be computed
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-    if (! ([distance   compare: zero] == NSOrderedDescending &&
-           [fuelVolume compare: zero] == NSOrderedDescending &&
-           [price      compare: zero] == NSOrderedDescending))
+    if (! ([distance compare: zero] == NSOrderedDescending && [fuelVolume compare: zero] == NSOrderedDescending))
         return;
 
     // Conversion units
@@ -531,9 +513,9 @@
 - (void)localeChanged: (id)object
 {
     NSIndexPath *path = [self.tableView indexPathForSelectedRow];
-    
+
     if (path)
-        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+        [self dismissKeyboardWithCompletion: ^{ [self localeChangedCompletion: path ]; }];
     else
         [self localeChangedCompletion: path];
 }
@@ -545,7 +527,7 @@
 
 
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
 
@@ -562,7 +544,7 @@
                      }
                      completion: ^(BOOL finished){
 
-                         [self performSelector: completion withObject: object];
+                         completion ();
                      }];
 }
 
@@ -656,9 +638,7 @@
 
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-    if (! ([distance   compare: zero] == NSOrderedDescending &&
-           [fuelVolume compare: zero] == NSOrderedDescending &&
-           [price      compare: zero] == NSOrderedDescending))
+    if (! ([distance compare: zero] == NSOrderedDescending && [fuelVolume compare: zero] == NSOrderedDescending))
     {
         canBeSaved = NO;
     }
@@ -673,6 +653,24 @@
     doneButton.enabled = canBeSaved;
 }
 
+
+- (BOOL)valueValid: (id)newValue identifier: (NSString*)valueIdentifier
+{
+    // Date must be collision free
+    if ([newValue isKindOfClass: [NSDate class]])
+        if ([valueIdentifier isEqualToString: @"date"])
+            if (! [self.date isEqualToDate: [self.event valueForKey: @"timestamp"]])
+                if ([AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: self.car andDate: (NSDate*)newValue] == YES)
+                    return NO;
+
+    // DecimalNumbers <= 0.0 are invalid
+    if ([newValue isKindOfClass: [NSDecimalNumber class]])
+        if (![valueIdentifier isEqualToString: @"price"])
+            if ([(NSDecimalNumber*)newValue compare: [NSDecimalNumber zero]] != NSOrderedDescending)
+                return NO;
+
+    return YES;
+}
 
 
 #pragma mark -
@@ -693,7 +691,7 @@
 
 
 // Don't activate rows with a UISwitch
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath*)tableView: (UITableView*)tableView willSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath: indexPath];
 
@@ -723,19 +721,19 @@
 
     if (self.editingTextField)
     {
-        void (^selectCompletion)(BOOL) = ^(BOOL finished){            
+        void (^selectCompletion)(BOOL) = ^(BOOL finished){
 
             self.navigationItem.leftBarButtonItem  = doneButton;
-            self.navigationItem.rightBarButtonItem = cancelButton;            
-            
+            self.navigationItem.rightBarButtonItem = cancelButton;
+
             // Enable user inputs for textfield in selected cell and show keyboard
             self.editingTextField.userInteractionEnabled = YES;
             [self.editingTextField becomeFirstResponder];
-            
+
             // Scroll selected cell into middle of screen
             [tableView scrollToRowAtIndexPath: indexPath
                              atScrollPosition: UITableViewScrollPositionMiddle
-                                     animated: YES];        
+                                     animated: YES];
         };
 
         if ([self.tableView numberOfSections] == 2)

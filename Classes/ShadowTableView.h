@@ -13,7 +13,7 @@
     BOOL shadowsNeedUpdate;
 }
 
-@property (nonatomic, retain) NSIndexPath *reorderSourceIndexPath;
-@property (nonatomic, retain) NSIndexPath *reorderDestinationIndexPath;
+@property (nonatomic, strong) NSIndexPath *reorderSourceIndexPath;
+@property (nonatomic, strong) NSIndexPath *reorderDestinationIndexPath;
 
 @end

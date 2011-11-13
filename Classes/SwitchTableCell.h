@@ -10,10 +10,10 @@
 
 @interface SwitchTableCell : PageCell {}
 
-@property (nonatomic, retain) UISwitch *valueSwitch;
-@property (nonatomic, retain) UILabel  *valueLabel;
-@property (nonatomic, retain) NSString *valueIdentifier;
+@property (nonatomic, strong) UISwitch *valueSwitch;
+@property (nonatomic, strong) UILabel  *valueLabel;
+@property (nonatomic, strong) NSString *valueIdentifier;
 
-@property (nonatomic, assign) id<EditablePageCellDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<EditablePageCellDelegate> delegate;
 
 @end

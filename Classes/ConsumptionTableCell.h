@@ -9,6 +9,6 @@
 
 @interface ConsumptionTableCell : PageCell {}
 
-@property (nonatomic, readonly) ConsumptionLabel *coloredLabel;
+@property (nonatomic, strong, readonly) ConsumptionLabel *coloredLabel;
 
 @end

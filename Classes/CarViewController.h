@@ -6,15 +6,15 @@
 #import "CarConfigurationController.h"
 
 
-@interface CarViewController : UITableViewController <NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
+@interface CarViewController : UITableViewController <UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
 {
     BOOL changeIsUserDriven;
     BOOL isEditing;
 }
 
-@property (nonatomic, retain) NSManagedObjectContext       *managedObjectContext;
-@property (nonatomic, retain) NSManagedObject              *editedObject;
-@property (nonatomic, retain) NSFetchedResultsController   *fetchedResultsController;
-@property (nonatomic, retain) UILongPressGestureRecognizer *longPressRecognizer;
+@property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;
+@property (nonatomic, strong) NSManagedObject              *editedObject;
+@property (nonatomic, strong) NSFetchedResultsController   *fetchedResultsController;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressRecognizer;
 
 @end

@@ -21,17 +21,22 @@ CGFloat const NavBarHeight        = 44.0;
 CGFloat const StatusBarHeight     = 20.0;
 CGFloat const HugeStatusBarHeight = 40.0;
 
-// Calender componet-mask for date+time but without seconds
+// Calendar component-mask for date+time but without seconds
 static NSUInteger noSecondsComponentMask = (NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit);
 
 // Pointer to shared Application Delegate Object
 static AppDelegate *sharedDelegateObject = nil;
 
 
-
 @interface AppDelegate (private)
 
 - (NSString*)applicationDocumentsDirectory;
+
+- (void)showImportAlert;
+- (void)hideImportAlert;
+- (NSString*)contentsOfURL: (NSURL*)url;
+- (void)removeFileItemAtURL: (NSURL*)url;
+- (void)mergeChanges: (NSNotification*)notifications;
 
 @end
 
@@ -39,6 +44,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 @implementation AppDelegate
 
+@synthesize importAlert;
 @synthesize window;
 @synthesize tabBarController;
 @synthesize calculatorNavigationController;
@@ -112,93 +118,171 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+
+#pragma mark -
+#pragma mark Data Import
+
+
+
+- (void)showImportAlert
 {
-    BOOL success = NO;
-
-
-    // Read file contents from given URL
-    NSError *error  = nil;
-    NSString *CSVString = [NSString stringWithContentsOfURL: url
-                                                   encoding: NSUTF8StringEncoding
-                                                      error: &error];
-
-    if (CSVString == nil || error != nil)
+    if (self.importAlert == nil)
     {
-        NSLog (@"%@", [error localizedDescription]);
-        return NO;
+        UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake (125, 50, 30, 30)];
+        [progress setActivityIndicatorViewStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        [progress startAnimating];
+
+
+        self.importAlert = [[UIAlertView alloc] initWithTitle: _I18N (@"Importing")
+                                                      message: @""
+                                                     delegate: nil
+                                            cancelButtonTitle: nil
+                                            otherButtonTitles: nil];
+
+        [importAlert addSubview: progress];
+        [importAlert show];
+    }
+}
+
+
+- (void)hideImportAlert
+{
+    [self.importAlert dismissWithClickedButtonIndex: 0 animated: YES];
+    self.importAlert = nil;
+}
+
+
+// Read file contents from given URL, guess file encoding
+- (NSString*)contentsOfURL: (NSURL*)url
+{
+    NSStringEncoding enc;
+
+    NSError  *error  = nil;
+    NSString *string = [NSString stringWithContentsOfURL: url usedEncoding: &enc error: &error];
+
+    if (string == nil || error != nil)
+    {
+        error  = nil;
+        string = [NSString stringWithContentsOfURL: url encoding: NSMacOSRomanStringEncoding error: &error];
     }
 
-
-    // Read tables from the CSV
-    CSVParser   *parser   = [[CSVParser alloc] initWithString: CSVString];
-    CSVImporter *importer = [[CSVImporter alloc] init];
-    BOOL foundCarIDTable  = NO;
-
-    NSInteger numCars   = 0;
-    NSInteger numEvents = 0;
-
-    while (1)
-    {
-        NSArray *CSVTable = [parser parseTable];
-
-        if (CSVTable == nil)
-            break;
-
-        if ([CSVTable count] == 0)
-            continue;
-
-        // If not yet found look for TankPro's Car Table (ID -> Name and Model description)
-        if (!foundCarIDTable)
-        {
-            if ([importer importCarIDs: CSVTable])
-            {
-                foundCarIDTable = YES;
-                continue;
-            }
-        }
-
-        if ([importer importRecords: CSVTable detectedCars: &numCars detectedEvents: &numEvents sourceURL: url])
-        {
-            success = YES;
-            break;
-        }
-    }
-
-    [parser   release];
-    [importer release];
+    return string;
+}
 
 
-    // display alert with results
-    NSString *title = (numCars > 0)
-        ? _I18N (@"Import Finished")
-        : _I18N (@"Import Failed");
-
-    NSString *message = (numCars > 0)
-        ? [NSString stringWithFormat: _I18N (@"Imported %d car(s) with %d fuel event(s)."), numCars, numEvents]
-        : _I18N (@"No valid CSV-data could be found.");
-
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle: title
-                                                     message: message
-                                                    delegate: nil
-                                           cancelButtonTitle: _I18N (@"OK")
-                                           otherButtonTitles: nil] autorelease];
-    [alert show];
-
-
-    // Delete imported file from inbox
+// Removes files from the inbox
+- (void)removeFileItemAtURL: (NSURL*)url
+{
     if ([url isFileURL])
     {
+        NSError *error = nil;
+
         [[NSFileManager defaultManager] removeItemAtURL: url error: &error];
 
         if (error != nil)
         {
             NSLog (@"%@", [error localizedDescription]);
-            success = NO;
         }
     }
+}
 
-    return success;
+
+// Merge changes done by importer thread into main threads context
+- (void)mergeChanges: (NSNotification*)notification
+{
+    [self.managedObjectContext performSelectorOnMainThread: @selector (mergeChangesFromContextDidSaveNotification:)
+                                                withObject: notification
+                                             waitUntilDone: YES];
+}
+
+
+- (BOOL)application: (UIApplication*)application openURL: (NSURL*)url sourceApplication: (NSString*)sourceApplication annotation: (id)annotation
+{
+    // Ugly, but don't allow nested imports
+    if (self.importAlert)
+    {
+        [self removeFileItemAtURL: url];
+        return NO;
+    }
+
+    // Show modal activity indicator while importing
+    [self showImportAlert];
+
+    // Schedule work in other thread
+    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                    ^{
+                        // Read file contents from given URL, guess file encoding
+                        NSString *CSVString = [self contentsOfURL: url];
+
+                        [self removeFileItemAtURL: url];
+
+                        if (CSVString)
+                        {
+                            // Thread local managed object context
+                            NSManagedObjectContext *localObjectContext = [[NSManagedObjectContext alloc] init];
+                            NSPersistentStoreCoordinator *persistentStoreCoordinator = [[AppDelegate sharedDelegate] persistentStoreCoordinator];
+
+                            [localObjectContext setPersistentStoreCoordinator: persistentStoreCoordinator];
+                            [localObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+
+                            // Register context with the notification center
+                            [[NSNotificationCenter defaultCenter] addObserver: self
+                                                                     selector: @selector (mergeChanges:)
+                                                                         name: NSManagedObjectContextDidSaveNotification
+                                                                       object: localObjectContext];
+
+                            // Read tables from the CSV
+                            CSVImporter *importer = [[CSVImporter alloc] init];
+
+                            NSInteger numCars   = 0;
+                            NSInteger numEvents = 0;
+
+                            [importer importFromCSVString: CSVString
+                                             detectedCars: &numCars
+                                           detectedEvents: &numEvents
+                                                sourceURL: url
+                                                inContext: localObjectContext];
+
+                            // Unregister context
+                            [[NSNotificationCenter defaultCenter] removeObserver: self
+                                                                            name: NSManagedObjectContextDidSaveNotification
+                                                                          object: localObjectContext];
+
+                            dispatch_sync (dispatch_get_main_queue (),
+                                           ^{
+                                               [self hideImportAlert];
+
+                                               NSString *title = (numCars > 0)
+                                                    ? _I18N (@"Import Finished")
+                                                    : _I18N (@"Import Failed");
+
+                                               NSString *message = (numCars > 0)
+                                                    ? [NSString stringWithFormat: _I18N (@"Imported %d car(s) with %d fuel event(s)."), numCars, numEvents]
+                                                    : _I18N (@"No valid CSV-data could be found.");
+
+                                               [[[UIAlertView alloc] initWithTitle: title
+                                                                           message: message
+                                                                          delegate: nil
+                                                                 cancelButtonTitle: _I18N (@"OK")
+                                                                 otherButtonTitles: nil] show];
+                                           });
+                        }
+                        else
+                        {
+                            dispatch_sync (dispatch_get_main_queue (),
+                                           ^{
+                                               [self hideImportAlert];
+
+                                               [[[UIAlertView alloc] initWithTitle: _I18N (@"Import Failed")
+                                                                           message: _I18N (@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
+                                                                          delegate: nil
+                                                                 cancelButtonTitle: _I18N (@"OK")
+                                                                 otherButtonTitles: nil] show];
+                                           });
+                        }
+                    });
+
+    return YES;
 }
 
 
@@ -247,10 +331,10 @@ static AppDelegate *sharedDelegateObject = nil;
 
 + (NSDate*)dateWithOffsetInMonths: (NSInteger)numberOfMonths fromDate: (NSDate*)date
 {
-    NSCalendar *gregorianCalendar = [[[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar] autorelease];
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
 
     NSDateComponents *noSecComponents  = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
-    NSDateComponents *deltaComponents = [[[NSDateComponents alloc] init] autorelease];
+    NSDateComponents *deltaComponents = [[NSDateComponents alloc] init];
 
     [deltaComponents setMonth: numberOfMonths];
 
@@ -262,7 +346,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 + (NSDate*)dateWithoutSeconds: (NSDate*)date
 {
-    NSCalendar *gregorianCalendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
 
     return [gregorianCalendar dateFromComponents: noSecComponents];
@@ -281,18 +365,16 @@ static AppDelegate *sharedDelegateObject = nil;
                         lightFactor: (CGFloat)lightFactor
                             inverse: (BOOL)inverse
 {
-    CAGradientLayer *newShadow = [[[CAGradientLayer alloc] init] autorelease];
+    CAGradientLayer *newShadow = [[CAGradientLayer alloc] init];
 
+    UIColor *darkColor  = [UIColor colorWithWhite: 0.0         alpha: darkFactor];
+    UIColor *lightColor = [UIColor colorWithWhite: lightFactor alpha: 0.0       ];
 
-    CGColorRef darkColor  = [UIColor colorWithWhite: 0.0         alpha: darkFactor].CGColor;
-    CGColorRef lightColor = [UIColor colorWithWhite: lightFactor alpha: 0.0       ].CGColor;
-
-    newShadow.frame  = frame;
+    newShadow.frame           = frame;
     newShadow.backgroundColor = [UIColor clearColor].CGColor;
-    newShadow.colors = [NSArray arrayWithObjects:
-                        (id)(inverse ? lightColor : darkColor),
-                        (id)(inverse ? darkColor  : lightColor),
-                        nil];
+    newShadow.colors          = inverse
+                                    ? [NSArray arrayWithObjects: (id)[lightColor CGColor], (id)[darkColor  CGColor], nil]
+                                    : [NSArray arrayWithObjects: (id)[darkColor  CGColor], (id)[lightColor CGColor], nil];
 
     return newShadow;
 }
@@ -558,12 +640,12 @@ static AppDelegate *sharedDelegateObject = nil;
     dispatch_once (&pred, ^{
 
         short fractionDigits = (short)[[self sharedFuelVolumeFormatter] maximumFractionDigits];
-        consumptionRoundingHandler = [[NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
-                                                                                             scale: fractionDigits
-                                                                                  raiseOnExactness: NO
-                                                                                   raiseOnOverflow: NO
-                                                                                  raiseOnUnderflow: NO
-                                                                               raiseOnDivideByZero: NO] retain];
+        consumptionRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
+                                                                                            scale: fractionDigits
+                                                                                 raiseOnExactness: NO
+                                                                                  raiseOnOverflow: NO
+                                                                                 raiseOnUnderflow: NO
+                                                                              raiseOnDivideByZero: NO];
     });
 
     return consumptionRoundingHandler;
@@ -579,12 +661,12 @@ static AppDelegate *sharedDelegateObject = nil;
     dispatch_once (&pred, ^{
 
         short fractionDigits = (short)[[self sharedEditPreciseCurrencyFormatter] maximumFractionDigits];
-        priceRoundingHandler = [[NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
-                                                                                       scale: fractionDigits
-                                                                            raiseOnExactness: NO
-                                                                             raiseOnOverflow: NO
-                                                                            raiseOnUnderflow: NO
-                                                                         raiseOnDivideByZero: NO] retain];
+        priceRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
+                                                                                      scale: fractionDigits
+                                                                           raiseOnExactness: NO
+                                                                            raiseOnOverflow: NO
+                                                                           raiseOnUnderflow: NO
+                                                                        raiseOnDivideByZero: NO];
     });
 
     return priceRoundingHandler;
@@ -614,6 +696,7 @@ static AppDelegate *sharedDelegateObject = nil;
         {
             managedObjectContext_ = [[NSManagedObjectContext alloc] init];
             [managedObjectContext_ setPersistentStoreCoordinator: coordinator];
+            [managedObjectContext_ setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
         }
     }
 
@@ -647,14 +730,13 @@ static AppDelegate *sharedDelegateObject = nil;
                                                               options: nil
                                                                 error: &error])
         {
-            UIAlertView *alert = [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Open Database")
-                                                             message: _I18N (@"Sorry, the application database cannot be opened. Please quit the application by pressing the Home button.")
-                                                            delegate: self
-                                                   cancelButtonTitle: nil
-                                                   otherButtonTitles: nil] autorelease];
-
             NSLog (@"%@", [error localizedDescription]);
-            [alert show];
+
+            [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Open Database")
+                                        message: _I18N (@"Sorry, the application database cannot be opened. Please quit the application by pressing the Home button.")
+                                       delegate: self
+                              cancelButtonTitle: nil
+                              otherButtonTitles: nil] show];
         }
     }
 
@@ -672,14 +754,13 @@ static AppDelegate *sharedDelegateObject = nil;
         {
             [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
 
-            // UIAlertView *alert = [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Save Database")
-            //                                                  message: _I18N (@"Sorry, the application database cannot be saved. Please quit the application by pressing the Home button.")
-            //                                                 delegate: self
-            //                                        cancelButtonTitle: nil
-            //                                        otherButtonTitles: nil] autorelease];
-            //
             // NSLog (@"%@", [error localizedDescription]);
-            // [alert show];
+            //
+            // [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Save Database")
+            //                             message: _I18N (@"Sorry, the application database cannot be saved. Please quit the application by pressing the Home button.")
+            //                            delegate: self
+            //                   cancelButtonTitle: nil
+            //                   otherButtonTitles: nil] show];
         }
 
         return YES;
@@ -726,14 +807,11 @@ static AppDelegate *sharedDelegateObject = nil;
     [fetchRequest setSortDescriptors: sortDescriptors];
 
     // No section names; perform fetch without cache
-    NSFetchedResultsController *fetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
                                                                                                 managedObjectContext: managedObjectContext
                                                                                                   sectionNameKeyPath: nil
-                                                                                                           cacheName: nil] autorelease];
+                                                                                                           cacheName: nil];
 
-    [sortDescriptors release];
-    [sortDescriptor release];
-    [fetchRequest release];
 
     // Perform the Core Data fetch
     NSError *error = nil;
@@ -767,7 +845,7 @@ static AppDelegate *sharedDelegateObject = nil;
                                    dateMatches: (BOOL)dateMatches
                         inManagedObjectContext: (NSManagedObjectContext*)moc
 {
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent" inManagedObjectContext: moc];
@@ -800,8 +878,6 @@ static AppDelegate *sharedDelegateObject = nil;
 
     [fetchRequest setSortDescriptors: sortDescriptors];
 
-    [sortDescriptor  release];
-    [sortDescriptors release];
 
     return fetchRequest;
 }
@@ -812,7 +888,7 @@ static AppDelegate *sharedDelegateObject = nil;
                                    dateMatches: (BOOL)dateMatches
                         inManagedObjectContext: (NSManagedObjectContext*)moc
 {
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent" inManagedObjectContext: moc];
@@ -845,8 +921,6 @@ static AppDelegate *sharedDelegateObject = nil;
 
     [fetchRequest setSortDescriptors: sortDescriptors];
 
-    [sortDescriptor  release];
-    [sortDescriptors release];
 
     return fetchRequest;
 }
@@ -871,7 +945,7 @@ static AppDelegate *sharedDelegateObject = nil;
         containsEventWithCar: (NSManagedObject*)car
                      andDate: (NSDate*)date;
 {
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent"
@@ -1198,7 +1272,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     dispatch_once (&pred, ^{
 
-        litersPerUSGallon = [[NSDecimalNumber decimalNumberWithMantissa: 3785411784 exponent: -9 isNegative: NO] retain];
+        litersPerUSGallon = [NSDecimalNumber decimalNumberWithMantissa: 3785411784 exponent: -9 isNegative: NO];
     });
 
     return litersPerUSGallon;
@@ -1212,7 +1286,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     dispatch_once (&pred, ^{
 
-        litersPerImperialGallon = [[NSDecimalNumber decimalNumberWithMantissa: 454609 exponent: -5 isNegative: NO] retain];
+        litersPerImperialGallon = [NSDecimalNumber decimalNumberWithMantissa: 454609 exponent: -5 isNegative: NO];
     });
 
     return litersPerImperialGallon;
@@ -1226,7 +1300,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     dispatch_once (&pred, ^{
 
-        kilometersPerStatuteMile = [[NSDecimalNumber decimalNumberWithMantissa: 1609344 exponent: -6 isNegative: NO] retain];
+        kilometersPerStatuteMile = [NSDecimalNumber decimalNumberWithMantissa: 1609344 exponent: -6 isNegative: NO];
     });
 
     return kilometersPerStatuteMile;
@@ -1235,7 +1309,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 #pragma mark -
-#pragma mark Conversion to/from internal Data Format
+#pragma mark Conversion to/from Internal Data Format
 
 
 
@@ -1339,7 +1413,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     dispatch_once (&pred, ^{
 
-        mpgUSFromKML = [[NSDecimalNumber decimalNumberWithMantissa: 2352145833 exponent: -9 isNegative: NO] retain];
+        mpgUSFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2352145833 exponent: -9 isNegative: NO];
     });
 
     return mpgUSFromKML;
@@ -1353,7 +1427,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     dispatch_once (&pred, ^{
 
-        mpgImperialFromKML = [[NSDecimalNumber decimalNumberWithMantissa: 2737067636 exponent: -9 isNegative: NO] retain];
+        mpgImperialFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2737067636 exponent: -9 isNegative: NO];
     });
 
     return mpgImperialFromKML;
@@ -1408,7 +1482,7 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons:(BOOL)discernGallons
++ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons
 {
     switch (unit)
     {
@@ -1459,28 +1533,6 @@ static AppDelegate *sharedDelegateObject = nil;
         return NO;
     else
         return YES;
-}
-
-
-
-#pragma mark -
-#pragma mark Memory Management
-
-
-
-- (void)dealloc
-{
-    [managedObjectContext_       release];
-    [managedObjectModel_         release];
-    [persistentStoreCoordinator_ release];
-
-    [tabBarController               release];
-    [calculatorNavigationController release];
-    [statisticsNavigationController release];
-    [window                         release];
-    [background                     release];
-
-    [super dealloc];
 }
 
 @end

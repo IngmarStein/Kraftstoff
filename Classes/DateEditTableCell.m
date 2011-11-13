@@ -40,11 +40,11 @@
 - (void)updateTextFieldColorForValue: (id)value
 {
     BOOL valid = YES;
-    
+
     if ([(id)self.delegate respondsToSelector: @selector(valueValid:identifier:)])
         if (! [self.delegate valueValid:value identifier: self.valueIdentifier])
             valid = NO;
-    
+
     self.textFieldProxy.textColor = (valid) ? [UIColor blackColor] : [self invalidTextColor];
 }
 
@@ -68,11 +68,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.valueTimestamp = nil;
-	self.dateFormatter  = nil;
-
-	[super dealloc];
 }
 
 
@@ -94,7 +89,7 @@
         self.textFieldProxy.text = [self.dateFormatter stringFromDate: selectedDate];
         [self.delegate valueChanged: selectedDate  identifier: self.valueIdentifier];
         [self.delegate valueChanged: [NSDate date] identifier: self.valueTimestamp];
-        [self updateTextFieldColorForValue: selectedDate];        
+        [self updateTextFieldColorForValue: selectedDate];
     }
 }
 
@@ -123,7 +118,7 @@
     // Create new datepicker with a correct 'today' flag
     if (datePicker == nil || forceRecreation)
     {
-        datePicker                = [[[UIDatePicker alloc] init] autorelease];
+        datePicker                = [[UIDatePicker alloc] init];
         datePicker.datePickerMode = UIDatePickerModeDateAndTime;
 
         [datePicker addTarget: self
@@ -149,7 +144,7 @@
 
 
 
-- (void)textFieldDidBeginEditing: (UITextField *)aTextField
+- (void)textFieldDidBeginEditing: (UITextField*)aTextField
 {
     // Optional: update selected value to current time when no change was done in the last 5 minutes
     NSDate *selectedDate = nil;

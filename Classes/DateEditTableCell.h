@@ -7,8 +7,8 @@
 
 @interface DateEditTableCell : EditableProxyPageCell {}
 
-@property (nonatomic, retain) NSString        *valueTimestamp;
-@property (nonatomic, retain) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSString        *valueTimestamp;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 @property (nonatomic) BOOL autoRefreshedDate;
 

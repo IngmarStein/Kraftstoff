@@ -5,6 +5,6 @@
 
 @interface ConsumptionLabel : UILabel
 
-@property (nonatomic, retain) NSArray *highlightStrings;
+@property (nonatomic, strong) NSArray *highlightStrings;
 
 @end

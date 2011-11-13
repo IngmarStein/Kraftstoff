@@ -12,7 +12,7 @@
 	NSCharacterSet *endTextCharacterSet;
 }
 
-- (id)initWithString:(NSString *)aCSVString;
+- (id)initWithString: (NSString*)aCSVString;
 - (NSArray*)parseTable;
 
 + (NSString*)simplifiedHeader: (NSString*)header;

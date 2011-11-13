@@ -50,9 +50,8 @@
     if ((self = [super initWithNibName: nibName bundle: nibBundle]))
     {
         // Alternate view controller for statistics
-        self.statisticsController = [[[FuelStatisticsPageController alloc]
-                                           initWithNibName: @"FuelStatisticsPageController" bundle:nil]
-                                               autorelease];
+        self.statisticsController = [[FuelStatisticsPageController alloc]
+                                           initWithNibName: @"FuelStatisticsPageController" bundle:nil];
 
         self.statisticsController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
@@ -84,7 +83,6 @@
 
     // Sending mail needs a configured mail account
     [exportButton setEnabled: [MFMailComposeViewController canSendMail] && [[[self fetchedResultsController] fetchedObjects] count] > 0];
-    [exportButton release];
 
     // Observe locale changes
     [[NSNotificationCenter defaultCenter]
@@ -125,14 +123,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    [selectedCar              release];
-    [managedObjectContext     release];
-    [fetchRequest             release];
-    [fetchedResultsController release];
-    [statisticsController     release];
-
-    [super dealloc];
 }
 
 
@@ -306,8 +296,6 @@
          ];
     }
 
-    [numberFormatter release];
-    [dateFormatter release];
 
     return [dataString dataUsingEncoding:NSUTF8StringEncoding];
 }
@@ -331,7 +319,6 @@
                         ? [NSString stringWithFormat: _I18N (@"in the period from %@ to %@"), from, to]
                         : [NSString stringWithFormat: _I18N (@"on %@"), from];
     }
-    [outputFormatter release];
 
     return [NSString stringWithFormat: _I18N (@"Here is your fuel data for %@ (%@) %@.\n"),
                 [self.selectedCar valueForKey: @"name"],
@@ -349,13 +336,11 @@
 
     if (result == MFMailComposeResultFailed)
     {
-        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle: _I18N (@"Sending Failed")
-                                                         message: _I18N (@"The exported fuel data could not be sent.")
-                                                        delegate: nil
-                                               cancelButtonTitle: _I18N (@"OK")
-                                               otherButtonTitles: nil] autorelease];
-
-        [alert show];
+        [[[UIAlertView alloc] initWithTitle: _I18N (@"Sending Failed")
+                                    message: _I18N (@"The exported fuel data could not be sent.")
+                                   delegate: nil
+                          cancelButtonTitle: _I18N (@"OK")
+                          otherButtonTitles: nil] show];
     }
 }
 
@@ -379,7 +364,6 @@
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
     [sheet showFromTabBar: self.tabBarController.tabBar];
-    [sheet release];
 }
 
 
@@ -390,7 +374,7 @@
 
     if (buttonIndex != actionSheet.cancelButtonIndex)
     {
-        MFMailComposeViewController *mailComposer = [[[MFMailComposeViewController alloc] init] autorelease];
+        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
 
         // Copy look of navigation bar to compose window
         UINavigationBar *navBar = [mailComposer navigationBar];
@@ -518,9 +502,9 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier];
 
     if (cell == nil)
-        cell = [[[ShadedTableViewCell alloc] initWithStyle: UITableViewCellStyleDefault
+        cell = [[ShadedTableViewCell alloc] initWithStyle: UITableViewCellStyleDefault
                                            reuseIdentifier: CellIdentifier
-                                      enlargeTopRightLabel: NO] autorelease];
+                                      enlargeTopRightLabel: NO];
 
     [self configureCell: cell atIndexPath: indexPath];
     return cell;
@@ -554,7 +538,6 @@
     editController.event                   = [self.fetchedResultsController objectAtIndexPath: indexPath];
 
     [self.navigationController pushViewController: editController animated: YES];
-    [editController release];
 }
 
 
@@ -597,7 +580,6 @@
         fetchController.delegate = self;
         self.fetchedResultsController = fetchController;
 
-        [fetchController release];
 
         // Perform the data fetch
         NSError *error = nil;

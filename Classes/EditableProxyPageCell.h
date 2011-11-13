@@ -7,6 +7,6 @@
 
 @interface EditableProxyPageCell : EditablePageCell {}
 
-@property (nonatomic, retain) UILabel *textFieldProxy;
+@property (nonatomic, strong) UILabel *textFieldProxy;
 
 @end

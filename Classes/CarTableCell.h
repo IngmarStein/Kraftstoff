@@ -7,7 +7,7 @@
 
 @interface CarTableCell : EditableProxyPageCell <UIPickerViewDataSource, UIPickerViewDelegate> {}
 
-@property (nonatomic, retain) UIPickerView *carPicker;
-@property (nonatomic, retain) NSArray      *fetchedObjects;
+@property (nonatomic, strong) UIPickerView *carPicker;
+@property (nonatomic, strong) NSArray      *fetchedObjects;
 
 @end

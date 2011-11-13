@@ -11,12 +11,6 @@
 @synthesize highlightStrings;
 
 
-- (void)dealloc
-{
-    self.highlightStrings = nil;
-
-    [super dealloc];
-}
 
 
 - (void)drawRect: (CGRect)rect

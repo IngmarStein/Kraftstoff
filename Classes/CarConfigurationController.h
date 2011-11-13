@@ -31,19 +31,19 @@ typedef enum
     NSInteger mostRecentSelectedRow;
 }
 
-@property (nonatomic, retain) UITextField              *editingTextField;
-@property (nonatomic, retain) IBOutlet UINavigationBar *navBar;
+@property (nonatomic, strong) UITextField              *editingTextField;
+@property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
 
-@property (nonatomic, retain) NSString        *name;
-@property (nonatomic, retain) NSString        *plate;
-@property (nonatomic, retain) NSNumber        *odometerUnit;
-@property (nonatomic, retain) NSDecimalNumber *odometer;
-@property (nonatomic, retain) NSNumber        *fuelUnit;
-@property (nonatomic, retain) NSNumber        *fuelConsumptionUnit;
+@property (nonatomic, strong) NSString        *name;
+@property (nonatomic, strong) NSString        *plate;
+@property (nonatomic, strong) NSNumber        *odometerUnit;
+@property (nonatomic, strong) NSDecimalNumber *odometer;
+@property (nonatomic, strong) NSNumber        *fuelUnit;
+@property (nonatomic, strong) NSNumber        *fuelConsumptionUnit;
 
 @property (nonatomic, getter=isEditing) BOOL editing;
 
-@property (nonatomic, assign) id<CarConfigurationControllerDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<CarConfigurationControllerDelegate> delegate;
 
 - (IBAction)handleCancel: (id)sender;
 - (IBAction)handleSave: (id)sender;

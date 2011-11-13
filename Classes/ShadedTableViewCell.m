@@ -28,7 +28,7 @@
         state = UITableViewCellStateDefaultMask;
         large = enlargeTopRightLabel;
 
-        topLeftLabel = [[[UILabel alloc] initWithFrame: CGRectZero] autorelease];
+        topLeftLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
         topLeftLabel.backgroundColor           = [UIColor clearColor];
         topLeftLabel.textColor                 = [UIColor blackColor];
@@ -41,7 +41,7 @@
         [self.contentView addSubview: topLeftLabel];
 
 
-        botLeftLabel = [[[UILabel alloc] initWithFrame: CGRectZero] autorelease];
+        botLeftLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
         botLeftLabel.backgroundColor           = [UIColor clearColor];
         botLeftLabel.textColor                 = [UIColor darkGrayColor];
@@ -54,7 +54,7 @@
         [self.contentView addSubview: botLeftLabel];
 
 
-        topRightLabel = [[[UILabel alloc] initWithFrame: CGRectZero] autorelease];
+        topRightLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
         topRightLabel.backgroundColor           = [UIColor clearColor];
         topRightLabel.textColor                 = [UIColor blackColor];
@@ -68,7 +68,7 @@
         [self.contentView addSubview: topRightLabel];
 
 
-        botRightLabel = [[[UILabel alloc] initWithFrame: CGRectZero] autorelease];
+        botRightLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
         botRightLabel.backgroundColor           = [UIColor clearColor];
         botRightLabel.textColor                 = [UIColor darkGrayColor];
@@ -83,11 +83,11 @@
 
         UIImageView *imageView;
 
-        imageView                   = [[[UIImageView alloc] init] autorelease];
+        imageView                   = [[UIImageView alloc] init];
         imageView.image             = [UIImage imageNamed: @"CellShade"];
         self.backgroundView         = imageView;
 
-        imageView                   = [[[UIImageView alloc] init] autorelease];
+        imageView                   = [[UIImageView alloc] init];
         imageView.image             = [UIImage imageNamed: @"SelectedCellShade"];
         self.selectedBackgroundView = imageView;
 

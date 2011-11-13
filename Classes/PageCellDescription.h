@@ -5,8 +5,8 @@
 
 @interface PageCellDescription : NSObject {}
 
-@property (nonatomic, assign, readonly) Class cellClass;
-@property (nonatomic, retain) id cellData;
+@property (nonatomic, unsafe_unretained, readonly) Class cellClass;
+@property (nonatomic, strong) id cellData;
 
 - (id)initWithCellClass: (Class)class andData: (id)object;
 

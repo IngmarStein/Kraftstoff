@@ -42,8 +42,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)setTableView: (UITableView*)newTableView
 {
-    [newTableView retain];
-    [tableView release];
     tableView = newTableView;
 
     [tableView setDelegate: self];
@@ -75,7 +73,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
         self.view      = aTableView;
         self.tableView = aTableView;
 
-        [aTableView release];
     }
 }
 
@@ -93,7 +90,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     tableView.delegate   = nil;
     tableView.dataSource = nil;
 
-    [tableView release], tableView = nil;
+    tableView = nil;
 }
 
 
@@ -103,12 +100,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
     tableView.delegate   = nil;
     tableView.dataSource = nil;
-
-    [tableView     release], tableView     = nil;
-    [tableSections release], tableSections = nil;
-    [headerViews   release], headerViews   = nil;
-
-    [super dealloc];
 }
 
 
@@ -251,7 +242,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if (sectionIndex > [tableSections count])
         sectionIndex = [tableSections count];
 
-    [tableSections insertObject: [[[NSMutableArray alloc] init] autorelease] atIndex: sectionIndex];
+    [tableSections insertObject: [[NSMutableArray alloc] init] atIndex: sectionIndex];
 
     if (animation != UITableViewRowAnimationNone)
         [self.tableView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] withRowAnimation: animation];
@@ -318,7 +309,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     {
         [tableSection insertObject: description atIndex: rowIndex];
     }
-    [description release];
 
     if (animation != UITableViewRowAnimationNone)
     {
@@ -412,7 +402,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)headerSectionsReordered
 {
-    [headerViews release];
     headerViews = nil;
 }
 
@@ -439,7 +428,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                                        isGrouped ? PageViewSectionGroupHeaderHeight
                                                  : PageViewSectionPlainHeaderHeight);
 
-            UIView *headerView = [[[UIView alloc] initWithFrame: frame] autorelease];
+            UIView *headerView = [[UIView alloc] initWithFrame: frame];
 
             headerView.backgroundColor =
                 isGrouped ?
@@ -449,7 +438,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
             frame.origin.x    = isGrouped ? PageViewSectionGroupHeaderMargin : PageViewSectionPlainHeaderMargin;
             frame.size.width -= 2.0 * frame.origin.x;
 
-            UILabel *label = [[[UILabel alloc] initWithFrame: frame] autorelease];
+            UILabel *label = [[UILabel alloc] initWithFrame: frame];
 
             label.text                      = [self tableView: aTableView titleForHeaderInSection: [headerViews count]];
             label.backgroundColor           = [UIColor clearColor];
@@ -508,7 +497,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (NSString *)tableView: (UITableView*)aTableView titleForHeaderInSection: (NSInteger)section
+- (NSString*)tableView: (UITableView*)aTableView titleForHeaderInSection: (NSInteger)section
 {
     return nil;
 }
@@ -518,10 +507,10 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 {
     PageCellDescription *description = [self cellDescriptionForRow: indexPath.row inSection: indexPath.section];
 
-    PageCell *cell = (PageCell *)[tableView dequeueReusableCellWithIdentifier: [description.cellClass reuseIdentifier]];
+    PageCell *cell = (PageCell*)[tableView dequeueReusableCellWithIdentifier: [description.cellClass reuseIdentifier]];
 
     if (cell == nil)
-        cell = [[[description.cellClass alloc] init] autorelease];
+        cell = [[description.cellClass alloc] init];
 
     [cell configureForData: description.cellData
             viewController: self

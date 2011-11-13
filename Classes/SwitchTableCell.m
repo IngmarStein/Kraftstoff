@@ -31,14 +31,14 @@ static CGFloat const margin = 8.0;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 
     // Create switch
-    self.valueSwitch = [[[UISwitch alloc] initWithFrame: CGRectZero] autorelease];
+    self.valueSwitch = [[UISwitch alloc] initWithFrame: CGRectZero];
     [valueSwitch addTarget: self action: @selector (switchToggledAction:) forControlEvents: UIControlEventValueChanged];
 
 	[self.contentView addSubview: valueSwitch];
 
 
     // Configure the alternate textlabel
-    self.valueLabel = [[[UILabel alloc] initWithFrame: CGRectZero] autorelease];
+    self.valueLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
     valueLabel.font             = [UIFont systemFontOfSize: [UIFont labelFontSize] - 2];
 	valueLabel.textAlignment    = UITextAlignmentRight;
@@ -65,14 +65,6 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (void)dealloc
-{
-    self.valueSwitch     = nil;
-    self.valueLabel      = nil;
-    self.valueIdentifier = nil;
-
-    [super dealloc];
-}
 
 
 - (void)configureForData: (id)dataObject
@@ -122,7 +114,7 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (void)switchToggledAction:(UISwitch*)sender
+- (void)switchToggledAction: (UISwitch*)sender
 {
     BOOL isON = [sender isOn];
 

@@ -10,7 +10,10 @@
     NSMutableDictionary *modelForID;
 }
 
-- (BOOL)importCarIDs:  (NSArray*)records;
-- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents sourceURL: (NSURL*)sourceURL;
+- (BOOL)importFromCSVString: (NSString*)CSVString
+               detectedCars: (NSInteger*)numCars
+             detectedEvents: (NSInteger*)numEvents
+                  sourceURL: (NSURL*)sourceURL
+                  inContext: (NSManagedObjectContext*)managedObjectContext;
 
 @end

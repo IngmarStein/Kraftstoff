@@ -45,7 +45,7 @@
     [self scrollToPage: pageControl.currentPage animated: NO];
 
     // Load content pages
-    self.viewControllers = [[[NSMutableArray alloc] init] autorelease];
+    self.viewControllers = [[NSMutableArray alloc] init];
 
     for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
     {
@@ -58,7 +58,7 @@
             case 2: controller = [FuelStatisticsViewController_PriceAmount    alloc]; break;
         }
 
-        controller = [[controller initWithNibName: @"FuelStatisticsViewController" bundle: nil] autorelease];
+        controller = [controller initWithNibName: @"FuelStatisticsViewController" bundle: nil];
 
         controller.selectedCar = self.selectedCar;
         controller.active      = (page == pageControl.currentPage);
@@ -84,7 +84,7 @@
 }
 
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewWillAppear: (BOOL)animated
 {
     [super viewWillAppear: animated];
 
@@ -210,14 +210,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    [selectedCar     release];
-    [viewControllers release];
-
-    [scrollView      release], scrollView  = nil;
-    [pageControl     release], pageControl = nil;
-
-    [super dealloc];
 }
 
 @end

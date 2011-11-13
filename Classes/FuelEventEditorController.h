@@ -14,21 +14,21 @@
 }
 
 
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
-@property (nonatomic, retain) NSManagedObject *event;
-@property (nonatomic, retain) NSManagedObject *car;
-@property (nonatomic, retain) NSDate          *date;
-@property (nonatomic, retain) NSDecimalNumber *distance;
-@property (nonatomic, retain) NSDecimalNumber *price;
-@property (nonatomic, retain) NSDecimalNumber *fuelVolume;
+@property (nonatomic, strong) NSManagedObject *event;
+@property (nonatomic, strong) NSManagedObject *car;
+@property (nonatomic, strong) NSDate          *date;
+@property (nonatomic, strong) NSDecimalNumber *distance;
+@property (nonatomic, strong) NSDecimalNumber *price;
+@property (nonatomic, strong) NSDecimalNumber *fuelVolume;
 @property (nonatomic)         BOOL             filledUp;
 
-@property (nonatomic, retain) UITextField *editingTextField;
+@property (nonatomic, strong) UITextField *editingTextField;
 
-@property (nonatomic, retain) UIBarButtonItem *editButton;
-@property (nonatomic, retain) UIBarButtonItem *cancelButton;
-@property (nonatomic, retain) UIBarButtonItem *doneButton;
+@property (nonatomic, strong) UIBarButtonItem *editButton;
+@property (nonatomic, strong) UIBarButtonItem *cancelButton;
+@property (nonatomic, strong) UIBarButtonItem *doneButton;
 
 @property (nonatomic, getter=isEditing) BOOL editing;
 

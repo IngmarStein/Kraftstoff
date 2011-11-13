@@ -22,20 +22,12 @@
 }
 
 
-- (void)dealloc
-{
-    self.numberFormatter          = nil;
-    self.alternateNumberFormatter = nil;
-    self.textFieldSuffix          = nil;
-
-    [super dealloc];
-}
 
 
 - (void)updateTextFieldColorForValue: (id)value
 {
     BOOL valid = YES;
-    
+
     if ([(id)self.delegate respondsToSelector: @selector(valueValid:identifier:)])
         if (! [self.delegate valueValid:value identifier: self.valueIdentifier])
             valid = NO;
@@ -164,13 +156,13 @@
     // Tell delegate about new value
     [self.delegate valueChanged: clearedValue identifier: self.valueIdentifier];
     [self updateTextFieldColorForValue: clearedValue];
-    
+
     return NO;
 }
 
 
 // Editing starts, remove suffix and switch to normal formatter
-- (void)textFieldDidBeginEditing: (UITextField *)aTextField
+- (void)textFieldDidBeginEditing: (UITextField*)aTextField
 {
     if (self.textFieldSuffix)
     {
@@ -192,7 +184,7 @@
 
 
 // Editing ends, switch back to alternate formatter and append specified suffix
-- (void)textFieldDidEndEditing: (UITextField *)aTextField
+- (void)textFieldDidEndEditing: (UITextField*)aTextField
 {
     if (self.alternateNumberFormatter)
     {

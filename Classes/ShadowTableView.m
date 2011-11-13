@@ -41,10 +41,10 @@
 
     // Construct the origin shadow if needed
     if (originShadow == nil)
-        originShadow = [[AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, LargeShadowHeight)
-                                          darkFactor: 0.5
-                                         lightFactor: 150.0 / 255.0
-                                             inverse: NO] retain];
+        originShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, LargeShadowHeight)
+                                         darkFactor: 0.5
+                                        lightFactor: 150.0 / 255.0
+                                            inverse: NO];
 
     if (! [[self.layer.sublayers objectAtIndex: 0] isEqual: originShadow])
         [self.layer insertSublayer: originShadow atIndex: 0];
@@ -77,11 +77,9 @@
     if (visibleRowCount == 0)
     {
         [topCellShadow removeFromSuperlayer];
-        [topCellShadow release];
         topCellShadow = nil;
 
         [bottomCellShadow removeFromSuperlayer];
-        [bottomCellShadow release];
         bottomCellShadow = nil;
 
         return;
@@ -104,10 +102,10 @@
         UIView *cell = [self cellForRowAtIndexPath: firstRow];
 
         if (topCellShadow == nil)
-            topCellShadow = [[AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, SmallShadowHeight)
-                                               darkFactor: 0.3
-                                              lightFactor: 100.0 / 255.0
-                                                  inverse: YES] retain];
+            topCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, SmallShadowHeight)
+                                              darkFactor: 0.3
+                                             lightFactor: 100.0 / 255.0
+                                                 inverse: YES];
 
         if ([cell.layer.sublayers indexOfObjectIdenticalTo: topCellShadow] != 0)
             [cell.layer insertSublayer: topCellShadow atIndex: 0];
@@ -139,10 +137,10 @@
         UIView *cell = [self cellForRowAtIndexPath: lastRow];
 
         if (bottomCellShadow == nil)
-            bottomCellShadow = [[AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, MediumShadowHeight)
-                                                  darkFactor: 0.5
-                                                 lightFactor: 100.0 / 255.0
-                                                     inverse: NO] retain];
+            bottomCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, MediumShadowHeight)
+                                                 darkFactor: 0.5
+                                                lightFactor: 100.0 / 255.0
+                                                    inverse: NO];
 
         if ([cell.layer.sublayers indexOfObjectIdenticalTo: bottomCellShadow] != 0)
             [cell.layer insertSublayer: bottomCellShadow atIndex :0];
@@ -161,19 +159,9 @@
 
 - (void)dealloc
 {
-    self.reorderSourceIndexPath      = nil;
-    self.reorderDestinationIndexPath = nil;
-
     [originShadow removeFromSuperlayer];
-    [originShadow release];
-
     [topCellShadow removeFromSuperlayer];
-    [topCellShadow release];
-
     [bottomCellShadow removeFromSuperlayer];
-    [bottomCellShadow release];
-
-    [super dealloc];
 }
 
 

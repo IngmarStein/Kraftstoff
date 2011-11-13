@@ -21,12 +21,12 @@
 - (void)invalidateCaches;
 - (void)purgeDiscardableCacheContent;
 
-@property (nonatomic, retain) NSManagedObject *selectedCar;
+@property (nonatomic, strong) NSManagedObject *selectedCar;
 @property (nonatomic)         BOOL             active;
 
-@property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityView;
-@property (nonatomic, retain) IBOutlet UILabel                 *leftLabel;
-@property (nonatomic, retain) IBOutlet UILabel                 *rightLabel;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityView;
+@property (nonatomic, strong) IBOutlet UILabel                 *leftLabel;
+@property (nonatomic, strong) IBOutlet UILabel                 *rightLabel;
 
 @end
 
@@ -73,7 +73,7 @@
     NSInteger vMarkCount;
 }
 
-@property (nonatomic, retain) UIImage  *contentImage;
-@property (nonatomic, retain) NSNumber *contentAverage;
+@property (nonatomic, strong) UIImage  *contentImage;
+@property (nonatomic, strong) NSNumber *contentAverage;
 
 @end

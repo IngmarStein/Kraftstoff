@@ -19,7 +19,8 @@
 
 - (void)selectRowAtIndexPath: (NSIndexPath*)path;
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion;
+
 - (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex;
 - (void)handleCancelCompletion: (id)sender;
 - (void)handleSaveCompletion: (id)sender;
@@ -54,7 +55,7 @@
 
 
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (id)initWithNibName: (NSString*)nibName bundle: (NSBundle*)nibBundle
 {
     if ((self = [super initWithNibName: nibName bundle: nibBundle]))
     {
@@ -86,13 +87,13 @@
     // Update navigation bar
     UINavigationItem *item = navBar.topItem;
 
-    item.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
+    item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                             target: self
-                                                                            action: @selector (handleSave:)] autorelease];
+                                                                            action: @selector (handleSave:)];
 
-    item.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop
                                                                             target: self
-                                                                            action: @selector (handleCancel:)] autorelease];
+                                                                            action: @selector (handleCancel:)];
 
     item.title = (editing) ? _I18N (@"Edit Car") : _I18N (@"New Car");
     [navBar setItems: [NSArray arrayWithObject: item] animated: NO];
@@ -106,7 +107,7 @@
 }
 
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear: (BOOL)animated
 {
     [super viewDidAppear: animated];
 
@@ -130,18 +131,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.editingTextField = nil;
-    self.navBar           = nil;
-
-    self.name                = nil;
-    self.plate               = nil;
-    self.odometerUnit        = nil;
-    self.odometer            = nil;
-    self.fuelUnit            = nil;
-    self.fuelConsumptionUnit = nil;
-
-    [super dealloc];
 }
 
 
@@ -166,7 +155,7 @@
     NSIndexPath *path = [self.tableView indexPathForSelectedRow];
 
     if (path)
-        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+        [self dismissKeyboardWithCompletion: ^{ [self localeChangedCompletion: path]; }];
     else
         [self localeChangedCompletion: path];
 }
@@ -210,9 +199,9 @@
               inSection: 0
               cellClass: [TextEditTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                          _I18N (@"Name"),  @"label",
-                          @"name",          @"valueIdentifier",
-                          nil]
+                            _I18N (@"Name"),  @"label",
+                            @"name",          @"valueIdentifier",
+                            nil]
           withAnimation: UITableViewRowAnimationNone];
 
     if (plate == nil)
@@ -222,10 +211,10 @@
               inSection: 0
               cellClass: [TextEditTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                          _I18N (@"Number Plate"),        @"label",
-                          @"plate",                       @"valueIdentifier",
-                          [NSNumber numberWithBool: YES], @"autocapitalizeAll",
-                          nil]
+                            _I18N (@"Number Plate"),        @"label",
+                            @"plate",                       @"valueIdentifier",
+                            [NSNumber numberWithBool: YES], @"autocapitalizeAll",
+                            nil]
           withAnimation: UITableViewRowAnimationNone];
 
 
@@ -241,10 +230,10 @@
               inSection: 0
               cellClass: [PickerTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                          _I18N (@"Odometer Type"), @"label",
-                          @"odometerUnit",          @"valueIdentifier",
-                          pickerLabels,             @"labels",
-                          nil]
+                            _I18N (@"Odometer Type"), @"label",
+                            @"odometerUnit",          @"valueIdentifier",
+                            pickerLabels,             @"labels",
+                            nil]
           withAnimation: UITableViewRowAnimationNone];
 
 
@@ -264,10 +253,10 @@
               inSection: 0
               cellClass: [PickerTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                          _I18N (@"Fuel Unit"), @"label",
-                          @"fuelUnit",          @"valueIdentifier",
-                          pickerLabels,         @"labels",
-                          nil]
+                            _I18N (@"Fuel Unit"), @"label",
+                            @"fuelUnit",          @"valueIdentifier",
+                            pickerLabels,         @"labels",
+                            nil]
           withAnimation: UITableViewRowAnimationNone];
 
 
@@ -285,10 +274,10 @@
               inSection: 0
               cellClass: [PickerTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                          _I18N (@"Mileage"),     @"label",
-                          @"fuelConsumptionUnit", @"valueIdentifier",
-                          pickerLabels,           @"labels",
-                          nil]
+                            _I18N (@"Mileage"),     @"label",
+                            @"fuelConsumptionUnit", @"valueIdentifier",
+                            pickerLabels,           @"labels",
+                            nil]
           withAnimation: UITableViewRowAnimationNone];
 }
 
@@ -360,7 +349,7 @@
 
 
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
 
@@ -377,7 +366,7 @@
                      }
                      completion: ^(BOOL finished){
 
-                         [self performSelector: completion withObject: object];
+                         completion ();
                      }];
 }
 
@@ -422,7 +411,6 @@
         sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
         [sheet showInView: [self.view viewWithTag: 100]];
-        [sheet release];
     }
     else
         [delegate carConfigurationController: self didFinishWithResult: CarConfigurationCanceled];
@@ -434,7 +422,7 @@
     // Remember currently selected row in case the action shhet gets canceled
     mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
 
-    [self dismissKeyboardWithCompletionSelector: @selector (handleCancelCompletion:) object: self];
+    [self dismissKeyboardWithCompletion: ^{ [self handleCancelCompletion: self]; }];
 }
 
 
@@ -451,7 +439,7 @@
 
 - (IBAction)handleSave: (id)sender
 {
-    [self dismissKeyboardWithCompletionSelector: @selector (handleSaveCompletion:) object: self];
+    [self dismissKeyboardWithCompletion: ^{ [self handleSaveCompletion: self]; }];
 }
 
 

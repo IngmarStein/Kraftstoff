@@ -19,7 +19,7 @@ typedef enum
     FCDistanceRow = 1,
     FCPriceRow    = 2,
     FCAmountRow   = 4,
-    FCAllDataRows = 7,    
+    FCAllDataRows = 7,
 } FuelCalculatorDataRow;
 
 
@@ -37,7 +37,7 @@ typedef enum
 - (void)endEditingModeAlert: (id)sender;
 - (IBAction)endEditingMode: (id)sender;
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object;
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion;
 
 - (void)localeChangedCompletion: (id)object;
 - (void)localeChanged: (id)object;
@@ -87,13 +87,13 @@ typedef enum
     self.constantRowHeight = false;
 
     // Navigation-Bar buttons
-    self.doneButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
+    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                      target: self
-                                                                     action: @selector (endEditingMode:)] autorelease];
+                                                                     action: @selector (endEditingMode:)];
 
-    self.saveButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
+    self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
                                                                      target: self
-                                                                     action: @selector (saveAction:)] autorelease];
+                                                                     action: @selector (saveAction:)];
 
     // Add shadow layer onto the background image view
     UIView *imageView = [self.view viewWithTag: 100];
@@ -166,21 +166,6 @@ typedef enum
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.editingTextField         = nil;
-    self.managedObjectContext     = nil;
-    self.fetchedResultsController = nil;
-
-    self.date           = nil;
-    self.lastChangeDate = nil;
-    self.distance       = nil;
-    self.fuelVolume     = nil;
-    self.price          = nil;
-
-    self.doneButton = nil;
-    self.saveButton = nil;
-
-    [super dealloc];
 }
 
 
@@ -253,9 +238,7 @@ typedef enum
     // Don't add the section when no value can be computed
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-    if (! ([distance   compare: zero] == NSOrderedDescending &&
-           [fuelVolume compare: zero] == NSOrderedDescending &&
-           [price      compare: zero] == NSOrderedDescending))
+    if (! ([distance compare: zero] == NSOrderedDescending && [fuelVolume compare: zero] == NSOrderedDescending))
         return;
 
     // Conversion units
@@ -284,10 +267,11 @@ typedef enum
     NSDecimalNumber *consumption = [AppDelegate consumptionForDistance: kilometers Volume: liters withUnit: consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat: @"%@ %@ %@ %@",
-                                    [[AppDelegate sharedCurrencyFormatter]   stringFromNumber: cost],
-                                    _I18N (@"/"),
-                                    [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber: consumption],
-                                    [AppDelegate consumptionUnitString: consumptionUnit]];
+                                        [[AppDelegate sharedCurrencyFormatter]   stringFromNumber: cost],
+                                        _I18N (@"/"),
+                                        [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber: consumption],
+                                        [AppDelegate consumptionUnitString: consumptionUnit]];
+
 
     // Substrings for highlighting
     NSArray *highlightStrings = [NSArray arrayWithObjects:
@@ -453,9 +437,9 @@ typedef enum
                   inSection: 0
                   cellClass: [SwitchTableCell class]
                    cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                              _I18N (@"Full Fill-Up"), @"label",
-                              @"filledUp",             @"valueIdentifier",
-                              nil]
+                                _I18N (@"Full Fill-Up"), @"label",
+                                @"filledUp",             @"valueIdentifier",
+                                nil]
               withAnimation: animation];
 
     [self createConsumptionRowWithAnimation: animation];
@@ -548,7 +532,7 @@ typedef enum
 {
     [self.editingTextField resignFirstResponder];
     self.editingTextField = nil;
-    
+
     [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
     [self selectRowAtIndexPath: previousSelection];
 }
@@ -557,9 +541,9 @@ typedef enum
 - (void)localeChanged: (id)object
 {
     NSIndexPath *path = [self.tableView indexPathForSelectedRow];
-    
+
     if (path)
-        [self dismissKeyboardWithCompletionSelector: @selector(localeChangedCompletion:) object: path];
+        [self dismissKeyboardWithCompletion: ^{ [self localeChangedCompletion: path]; }];
     else
         [self localeChangedCompletion: path];
 }
@@ -570,7 +554,7 @@ typedef enum
     // Table may not be empty, keyboard may not be visible
     if ([tableSections count] == 0 || keyboardIsVisible == YES)
         return;
-    
+
     // Last update must be longer than 5 minutes ago
     NSTimeInterval noChangeInterval;
 
@@ -659,18 +643,18 @@ typedef enum
 - (void)updateSaveButtonState
 {
     BOOL saveValid = (car != nil);
-    
+
     if (saveValid)
     {
         NSDecimalNumber *zero = [NSDecimalNumber zero];
-        
-        if ([distance compare: zero] == NSOrderedSame || [fuelVolume compare: zero] == NSOrderedSame || [price compare: zero] == NSOrderedSame)
+
+        if ([distance compare: zero] == NSOrderedSame || [fuelVolume compare: zero] == NSOrderedSame)
             saveValid = NO;
-        
+
         if (date == nil || [AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: car andDate: date])
             saveValid = NO;
     }
-    
+
     self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil;
 }
 
@@ -681,7 +665,7 @@ typedef enum
 
 
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+- (void)alertView: (UIAlertView*)alertView didDismissWithButtonIndex: (NSInteger)buttonIndex
 {
     // Replace distance in table with difference to car odometer
     if (buttonIndex == 1)
@@ -756,12 +740,12 @@ typedef enum
                                 [distanceFormatter stringFromNumber: [AppDelegate distanceForKilometers: convDistance withUnit: odometerUnit]],
                                 [AppDelegate odometerUnitString: odometerUnit]];
 
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle: _I18N (@"Convert odometer reading into distance?")
-                                                     message: _I18N (@"Please choose the distance driven:")
-                                                    delegate: self
-                                           cancelButtonTitle: rawButton
-                                           otherButtonTitles: convButton, nil] autorelease];
-    [alert show];
+    [[[UIAlertView alloc] initWithTitle: _I18N (@"Convert odometer reading into distance?")
+                                message: _I18N (@"Please choose the distance driven:")
+                               delegate: self
+                      cancelButtonTitle: rawButton
+                      otherButtonTitles: convButton, nil] show];
+
     return YES;
 }
 
@@ -786,7 +770,7 @@ typedef enum
 {
     [self.editingTextField resignFirstResponder];
     self.editingTextField = nil;
-    
+
     if ([self askOdometerConversion] == NO)
     {
         [self endEditingModeCompletion: sender];
@@ -796,7 +780,7 @@ typedef enum
 
 - (IBAction)endEditingMode: (id)sender
 {
-    [self dismissKeyboardWithCompletionSelector: @selector (endEditingModeAlert:) object: self];
+    [self dismissKeyboardWithCompletion: ^{ [self endEditingModeAlert: nil]; }];
 }
 
 
@@ -806,24 +790,24 @@ typedef enum
 
 
 
-- (void)dismissKeyboardWithCompletionSelector: (SEL)completion object: (id)object
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
-    
+
     [UIView animateWithDuration: scrollToTop ? 0.2 : 0.1
                      animations: ^{
-                         
+
                          // Deselect row and scroll table to the top
                          [self.tableView deselectRowAtIndexPath: [self.tableView indexPathForSelectedRow] animated: NO];
-                         
+
                          if (scrollToTop)
                              [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
                                                    atScrollPosition: UITableViewScrollPositionTop
                                                            animated: NO];
                      }
                      completion: ^(BOOL finished){
-                         
-                         [self performSelector: completion withObject: object];
+
+                         completion ();
                      }];
 }
 
@@ -929,7 +913,7 @@ typedef enum
 
 
 
-- (BOOL)valueValid:(id)newValue identifier:(NSString *)valueIdentifier
+- (BOOL)valueValid: (id)newValue identifier: (NSString*)valueIdentifier
 {
     // Validate only when there is a car for saving
     if (self.car == nil)
@@ -939,12 +923,13 @@ typedef enum
     if ([newValue isKindOfClass: [NSDate class]])
         if ([valueIdentifier isEqualToString: @"date"])
             if ([AppDelegate managedObjectContext: self.managedObjectContext containsEventWithCar: self.car andDate: (NSDate*)newValue] == YES)
-                return NO; 
+                return NO;
 
     // DecimalNumbers <= 0.0 are invalid
     if ([newValue isKindOfClass: [NSDecimalNumber class]])
-        if ([(NSDecimalNumber*)newValue compare: [NSDecimalNumber zero]] != NSOrderedDescending)
-            return NO;
+        if (![valueIdentifier isEqualToString: @"price"])
+            if ([(NSDecimalNumber*)newValue compare: [NSDecimalNumber zero]] != NSOrderedDescending)
+                return NO;
 
     return YES;
 }
@@ -990,7 +975,7 @@ typedef enum
 
 
 // Don't activate rows with a UISwitch
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath*)tableView: (UITableView*)tableView willSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath: indexPath];
 

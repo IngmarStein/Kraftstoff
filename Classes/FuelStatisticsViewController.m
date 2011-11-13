@@ -51,23 +51,6 @@ static CGFloat const StatisticsHeight       = 182.0;
     return self;
 }
 
-
-- (void)dealloc
-{
-    int i;
-
-    self.contentImage   = nil;
-    self.contentAverage = nil;
-
-    for (i = 0; i < hMarkCount; i++)
-        [hMarkNames [i] release];
-
-    for (i = 0; i < vMarkCount; i++)
-        [vMarkNames [i] release];
-
-    [super dealloc];
-}
-
 @end
 
 
@@ -342,15 +325,15 @@ static CGFloat const StatisticsHeight       = 182.0;
     NSNumberFormatter *numberFormatter = [self axisFormatterForCar: car];
 
     state->hMarkPositions [0] = 0.0;
-    state->hMarkNames     [0] = [[numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange]] retain];
+    state->hMarkNames     [0] = [numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange]];
     state->hMarkPositions [1] = 0.25;
-    state->hMarkNames     [1] = [[numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.75]] retain];
+    state->hMarkNames     [1] = [numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.75]];
     state->hMarkPositions [2] = 0.5;
-    state->hMarkNames     [2] = [[numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.5]] retain];
+    state->hMarkNames     [2] = [numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.5]];
     state->hMarkPositions [3] = 0.75;
-    state->hMarkNames     [3] = [[numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.25]] retain];
+    state->hMarkNames     [3] = [numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin + valRange*0.25]];
     state->hMarkPositions [4] = 1.0;
-    state->hMarkNames     [4] = [[numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin]] retain];
+    state->hMarkNames     [4] = [numberFormatter stringFromNumber: [NSNumber numberWithFloat: valMin]];
     state->hMarkCount = 5;
 
 
@@ -361,11 +344,11 @@ static CGFloat const StatisticsHeight       = 182.0;
     NSDateFormatter *dateFormatter = [AppDelegate sharedDateFormatter];
 
     state->vMarkPositions [0] = 0.0;
-    state->vMarkNames     [0] = [[dateFormatter stringForObjectValue: sampleDate] retain];
+    state->vMarkNames     [0] = [dateFormatter stringForObjectValue: sampleDate];
     state->vMarkPositions [1] = 0.5;
-    state->vMarkNames     [1] = [[dateFormatter stringForObjectValue: midDate] retain];
+    state->vMarkNames     [1] = [dateFormatter stringForObjectValue: midDate];
     state->vMarkPositions [2] = 1.0;
-    state->vMarkNames     [2] = [[dateFormatter stringForObjectValue: mostRecentDate] retain];
+    state->vMarkNames     [2] = [dateFormatter stringForObjectValue: mostRecentDate];
     state->vMarkCount = 3;
 
     return valAverage;
@@ -679,66 +662,65 @@ static CGFloat const StatisticsHeight       = 182.0;
 
     dispatch_async (dispatch_get_global_queue (active ? DISPATCH_QUEUE_PRIORITY_DEFAULT : DISPATCH_QUEUE_PRIORITY_LOW, 0),
     ^{
-        NSAutoreleasePool *dispatchComputePool = [[NSAutoreleasePool alloc] init];
-
-        // Thread local managed object context
-        NSManagedObjectContext *localObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
-        [localObjectContext setPersistentStoreCoordinator: [[AppDelegate sharedDelegate] persistentStoreCoordinator]];
-
-        NSError *error = nil;
-        NSManagedObject *localSelectedCar = [localObjectContext existingObjectWithID: selectedCarID error: &error];
-
-        if (localSelectedCar != nil)
+        @autoreleasepool
         {
-            FuelStatisticsSamplingData *state = cell;
-            BOOL stateAllocated = NO;
+            // Thread local managed object context
+            NSManagedObjectContext *localObjectContext = [[NSManagedObjectContext alloc] init];
+            [localObjectContext setPersistentStoreCoordinator: [[AppDelegate sharedDelegate] persistentStoreCoordinator]];
 
+            NSError *error = nil;
+            NSManagedObject *localSelectedCar = [localObjectContext existingObjectWithID: selectedCarID error: &error];
 
-            // No cache cell exists => resample data and compute average value
-            if (state == nil)
+            if (localSelectedCar != nil)
             {
-                state = [[[FuelStatisticsSamplingData alloc] init] autorelease];
-
-                NSArray *fetchedObjects = [self fetchObjectsForRecentMonths: numberOfMonths
-                                                                     forCar: localSelectedCar
-                                                                  inContext: localObjectContext];
-
-                state.contentAverage = [NSNumber numberWithFloat:
-                                            [self resampleFetchedObjects: fetchedObjects
-                                                                  forCar: localSelectedCar
-                                                                andState: state]];
-
-                stateAllocated = YES;
-            }
+                FuelStatisticsSamplingData *state = cell;
+                BOOL stateAllocated = NO;
 
 
-            // Create image data from resampled data
-            if (state.contentImage == nil)
-            {
-                UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+                // No cache cell exists => resample data and compute average value
+                if (state == nil)
                 {
-                    [self drawStatisticsForState: state];
-                    state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
+                    state = [[FuelStatisticsSamplingData alloc] init];
+
+                    NSArray *fetchedObjects = [self fetchObjectsForRecentMonths: numberOfMonths
+                                                                         forCar: localSelectedCar
+                                                                      inContext: localObjectContext];
+
+                    state.contentAverage = [NSNumber numberWithFloat:
+                                                [self resampleFetchedObjects: fetchedObjects
+                                                                      forCar: localSelectedCar
+                                                                    andState: state]];
+
+                    stateAllocated = YES;
                 }
-                UIGraphicsEndImageContext ();
+
+
+                // Create image data from resampled data
+                if (state.contentImage == nil)
+                {
+                    UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+                    {
+                        [self drawStatisticsForState: state];
+                        state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
+                    }
+                    UIGraphicsEndImageContext ();
+                }
+
+
+                // Schedule update of cache display in main thread
+                dispatch_sync (dispatch_get_main_queue (),
+                               ^{
+                                   if (invalidationCounter == expectedCounter)
+                                   {
+                                       if (stateAllocated)
+                                           [contentCache setObject: state forKey: [NSNumber numberWithInteger: numberOfMonths]];
+
+                                       if (displayedNumberOfMonths == numberOfMonths)
+                                           [self displayStatisticsForRecentMonths: numberOfMonths];
+                                   }
+                               });
             }
-
-
-            // Schedule update of cache display in main thread
-            dispatch_sync (dispatch_get_main_queue (),
-                           ^{
-                               if (invalidationCounter == expectedCounter)
-                               {
-                                   if (stateAllocated)
-                                       [contentCache setObject: state forKey: [NSNumber numberWithInteger: numberOfMonths]];
-
-                                   if (displayedNumberOfMonths == numberOfMonths)
-                                       [self displayStatisticsForRecentMonths: numberOfMonths];
-                               }
-                           });
         }
-
-        [dispatchComputePool drain];
     });
 }
 
@@ -787,7 +769,7 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 
 
-- (void)didEnterBackground: (NSNotification *)notification
+- (void)didEnterBackground: (NSNotification*)notification
 {
     [self purgeDiscardableCacheContent];
 }
@@ -814,15 +796,6 @@ static CGFloat const StatisticsHeight       = 182.0;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    [contentCache release];
-    [selectedCar  release];
-
-    [activityView release], activityView = nil;
-    [leftLabel    release], leftLabel    = nil;
-    [rightLabel   release], rightLabel   = nil;
-
-    [super dealloc];
 }
 
 @end
@@ -877,20 +850,19 @@ static CGFloat const StatisticsHeight       = 182.0;
     {
         if ([[managedObject valueForKey: @"filledUp"] boolValue] == NO)
             return NAN;
+
+        NSInteger consumptionUnit   = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
+        NSDecimalNumber *distance   = [[managedObject valueForKey: @"distance"]   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
+        NSDecimalNumber *fuelVolume = [[managedObject valueForKey: @"fuelVolume"] decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
+
+        return [[AppDelegate consumptionForDistance: distance
+                                             Volume: fuelVolume
+                                           withUnit: consumptionUnit] floatValue];
     }
     @catch (NSException *e)
     {
         return NAN;
     }
-
-    NSInteger consumptionUnit   = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
-
-    NSDecimalNumber *distance   = [[managedObject valueForKey: @"distance"]   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
-    NSDecimalNumber *fuelVolume = [[managedObject valueForKey: @"fuelVolume"] decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
-
-    return [[AppDelegate consumptionForDistance: distance
-                                         Volume: fuelVolume
-                                       withUnit: consumptionUnit] floatValue];
 }
 
 @end
@@ -944,20 +916,19 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 - (CGFloat)valueForManagedObject: (NSManagedObject*)managedObject forCar: (NSManagedObject*)car
 {
-    id price;
-
     @try
     {
-        price = [managedObject valueForKey: @"price"];
+        NSDecimalNumber *price = [managedObject valueForKey: @"price"];
+
+        if ([price compare: [NSDecimalNumber zero]] == NSOrderedSame)
+            return NAN;
+
+        return [[AppDelegate pricePerUnit: price withUnit: [[car valueForKey: @"fuelUnit"] integerValue]] floatValue];
     }
     @catch (NSException *e)
     {
         return NAN;
     }
-
-    NSInteger fuelUnit = [[car valueForKey: @"fuelUnit"] integerValue];
-
-    return [[AppDelegate pricePerUnit: price withUnit: fuelUnit] floatValue];
 }
 
 @end
@@ -1029,30 +1000,35 @@ static CGFloat const StatisticsHeight       = 182.0;
     {
         if ([[managedObject valueForKey: @"filledUp"] boolValue] == NO)
             return NAN;
+
+        NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
+        KSFuelConsumption consumptionUnit = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
+
+        NSDecimalNumber *price = [managedObject valueForKey: @"price"];
+
+        NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
+        NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
+        NSDecimalNumber *cost       = [fuelVolume decimalNumberByMultiplyingBy: price];
+
+        distance = [distance decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
+        cost     = [cost     decimalNumberByAdding: [managedObject valueForKey: @"inheritedCost"]];
+
+        if ([cost compare: [NSDecimalNumber zero]] == NSOrderedSame)
+            return NAN;
+
+        if (KSFuelConsumptionIsMetric (consumptionUnit))
+            return [[[cost decimalNumberByMultiplyingByPowerOf10: 2]
+                     decimalNumberByDividingBy: distance
+                                  withBehavior: handler] floatValue];
+        else
+            return [[[distance decimalNumberByDividingBy: [AppDelegate kilometersPerStatuteMile]]
+                     decimalNumberByDividingBy: cost
+                                  withBehavior: handler] floatValue];
     }
     @catch (NSException *e)
     {
         return NAN;
     }
-
-    NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
-    KSFuelConsumption consumptionUnit = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
-
-    NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
-    NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
-    NSDecimalNumber *cost       = [fuelVolume decimalNumberByMultiplyingBy: [managedObject valueForKey: @"price"]];
-
-    distance = [distance decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
-    cost     = [cost     decimalNumberByAdding: [managedObject valueForKey: @"inheritedCost"]];
-
-    if (KSFuelConsumptionIsMetric (consumptionUnit))
-        return [[[cost decimalNumberByMultiplyingByPowerOf10: 2]
-                    decimalNumberByDividingBy: distance
-                                 withBehavior: handler] floatValue];
-    else
-        return [[[distance decimalNumberByDividingBy: [AppDelegate kilometersPerStatuteMile]]
-                    decimalNumberByDividingBy: cost
-                                 withBehavior: handler] floatValue];
 }
 
 @end

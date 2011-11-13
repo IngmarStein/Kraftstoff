@@ -12,10 +12,10 @@
 
 - (void)invalidateCaches;
 
-@property (nonatomic, retain) NSManagedObject *selectedCar;
-@property (nonatomic, retain) NSMutableArray  *viewControllers;
+@property (nonatomic, strong) NSManagedObject *selectedCar;
+@property (nonatomic, strong) NSMutableArray  *viewControllers;
 
-@property (nonatomic, retain) IBOutlet UIScrollView  *scrollView;
-@property (nonatomic, retain) IBOutlet UIPageControl *pageControl;
+@property (nonatomic, strong) IBOutlet UIScrollView  *scrollView;
+@property (nonatomic, strong) IBOutlet UIPageControl *pageControl;
 
 @end

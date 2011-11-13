@@ -49,26 +49,22 @@ extern CGFloat const HugeStatusBarHeight;
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
-    UIWindow               *window;
-    UITabBarController     *tabBarController;
-    UINavigationController *calculatorNavigationController;
-    UINavigationController *statisticsNavigationController;
-
     NSManagedObjectContext       *managedObjectContext_;
     NSManagedObjectModel         *managedObjectModel_;
     NSPersistentStoreCoordinator *persistentStoreCoordinator_;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow               *window;
-@property (nonatomic, retain) IBOutlet UITabBarController     *tabBarController;
-@property (nonatomic, retain) IBOutlet UINavigationController *calculatorNavigationController;
-@property (nonatomic, retain) IBOutlet UINavigationController *statisticsNavigationController;
-@property (nonatomic, retain) IBOutlet UIImageView            *background;
+@property (nonatomic, strong) UIAlertView *importAlert;
 
+@property (nonatomic, strong) IBOutlet UIWindow               *window;
+@property (nonatomic, strong) IBOutlet UITabBarController     *tabBarController;
+@property (nonatomic, strong) IBOutlet UINavigationController *calculatorNavigationController;
+@property (nonatomic, strong) IBOutlet UINavigationController *statisticsNavigationController;
+@property (nonatomic, strong) IBOutlet UIImageView            *background;
 
-@property (nonatomic, retain, readonly) NSManagedObjectContext       *managedObjectContext;
-@property (nonatomic, retain, readonly) NSManagedObjectModel         *managedObjectModel;
-@property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, strong, readonly) NSManagedObjectContext       *managedObjectContext;
+@property (nonatomic, strong, readonly) NSManagedObjectModel         *managedObjectModel;
+@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 
 // Setting the background image (for EventEditor)
@@ -150,6 +146,7 @@ extern CGFloat const HugeStatusBarHeight;
 
 #pragma mark Core Data Updates
 
+
 + (NSManagedObject*)addToArchiveWithCar: (NSManagedObject*)car
                                    date: (NSDate*)date
                                distance: (NSDecimalNumber*)distance
@@ -207,7 +204,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSString*)consumptionUnitShadedTableViewCellDescription: (KSFuelConsumption)unit;
 
 + (NSString*)fuelUnitString: (KSVolume)unit;
-+ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons:(BOOL)discernGallons;
++ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons;
 + (NSString*)fuelPriceUnitDescription: (KSVolume)unit;
 
 + (NSString*)odometerUnitString: (KSDistance)unit;

@@ -8,8 +8,8 @@
 
 static NSString *separatorStrings [] =
 {
-    @",",
     @";",
+    @",",
     @"\t",
     nil
 };
@@ -50,11 +50,11 @@ static NSString *separatorStrings [] =
 }
 
 
-- (id)initWithString:(NSString *)aCSVString
+- (id)initWithString: (NSString*)aCSVString
 {
     if ((self = [super init]))
     {
-        csvString = [aCSVString retain];
+        csvString = aCSVString;
         scanner   = [[NSScanner alloc] initWithString: csvString];
 
         [scanner setCharactersToBeSkipped: nil];
@@ -64,26 +64,14 @@ static NSString *separatorStrings [] =
 }
 
 
-- (void)dealloc
-{
-    [csvString           release];
-    [fieldNames          release];
-    [scanner             release];
-    [separator           release];
-    [endTextCharacterSet release];
-
-    [super dealloc];
-}
 
 
 - (void)setSeparator: (NSString*)separatorString
 {
     if (! [separator isEqualToString: separatorString])
     {
-        [separator release];
-        separator = [separatorString retain];
+        separator = separatorString;
 
-        [endTextCharacterSet release];
         NSMutableCharacterSet *endTextMutableCharacterSet = [[NSCharacterSet newlineCharacterSet] mutableCopy];
         [endTextMutableCharacterSet addCharactersInString: @"\""];
         [endTextMutableCharacterSet addCharactersInString: [separator substringToIndex:1]];
@@ -92,7 +80,21 @@ static NSString *separatorStrings [] =
 }
 
 
-- (NSArray *)parseTable
+- (NSInteger)numberOfNonEmtyFieldNames: (NSArray*)array
+{
+    NSInteger count = [array count];
+
+    for (NSString *name in array)
+    {
+        if ([name isEqualToString: @""])
+            count --;
+    }
+
+    return count;
+}
+
+
+- (NSArray*)parseTable
 {
     while (! [scanner isAtEnd])
     {
@@ -106,12 +108,14 @@ static NSString *separatorStrings [] =
             [self setSeparator: separatorStrings [index++]];
             [scanner setScanLocation: location];
 
-            [fieldNames release];
-            fieldNames = [[self parseHeader] retain];
+            fieldNames = [self parseHeader];
 
             if (fieldNames != nil && [fieldNames count] > 1 && [self parseLineSeparator])
                 goto foundHeader;
         }
+
+        if (separatorStrings [index] == nil)
+            return nil;
     }
 
 foundHeader:
@@ -120,30 +124,33 @@ foundHeader:
         return nil;
 
     NSMutableArray *records = [NSMutableArray array];
-    NSDictionary *record = [[self parseRecord] retain];
+
+    if ([self numberOfNonEmtyFieldNames: fieldNames] < 2)
+        return records;
+
+    NSDictionary *record = [self parseRecord];
 
     if (!record)
-        return nil;
+        return records;
 
     while (record)
     {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        @autoreleasepool
+        {
+            [records addObject: record];
 
-        [records addObject: record];
-        [record release];
+            if (![self parseLineSeparator])
+                break;
 
-        if (![self parseLineSeparator])
-            break;
-
-        record = [[self parseRecord] retain];
-        [pool drain];
+            record = [self parseRecord];
+        }
     }
 
     return records;
 }
 
 
-- (NSMutableArray *)parseHeader
+- (NSMutableArray*)parseHeader
 {
     NSString *name = [self parseField];
 
@@ -166,7 +173,7 @@ foundHeader:
 }
 
 
-- (NSDictionary *)parseRecord
+- (NSDictionary*)parseRecord
 {
     if ([self parseEmptyLines])
         return nil;
@@ -212,7 +219,7 @@ foundHeader:
 }
 
 
-- (NSString *)parseField
+- (NSString*)parseField
 {
     NSString *escapedString = [self parseEscaped];
 
@@ -236,7 +243,7 @@ foundHeader:
 }
 
 
-- (NSString *)parseEscaped
+- (NSString*)parseEscaped
 {
     if (! [self parseDoubleQuote])
         return nil;
@@ -275,13 +282,13 @@ foundHeader:
 }
 
 
-- (NSString *)parseNonEscaped
+- (NSString*)parseNonEscaped
 {
     return [self parseTextData];
 }
 
 
-- (NSString *)parseTwoDoubleQuotes
+- (NSString*)parseTwoDoubleQuotes
 {
     if ([scanner scanString:@"\"\"" intoString:NULL])
         return @"\"\"";
@@ -290,7 +297,7 @@ foundHeader:
 }
 
 
-- (NSString *)parseDoubleQuote
+- (NSString*)parseDoubleQuote
 {
     if ([scanner scanString:@"\"" intoString:NULL])
         return @"\"";
@@ -299,7 +306,7 @@ foundHeader:
 }
 
 
-- (NSString *)parseSeparator
+- (NSString*)parseSeparator
 {
     if ([scanner scanString: separator intoString: NULL])
         return separator;
@@ -308,28 +315,43 @@ foundHeader:
 }
 
 
-- (NSString *)parseEmptyLines
+- (NSString*)parseEmptyLines
 {
     NSString *matchedNewlines = nil;
 
-    [scanner scanCharactersFromSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]
+    NSUInteger location = [scanner scanLocation];
+
+    [scanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet]
                         intoString: &matchedNewlines];
+
+    if (matchedNewlines == nil)
+    {
+        [scanner scanCharactersFromSet: [NSCharacterSet characterSetWithCharactersInString: @",;"]
+                            intoString: &matchedNewlines];
+    }
+
+    if (matchedNewlines == nil || [self parseLineSeparator] == nil)
+    {
+        [scanner setScanLocation: location];
+        return nil;
+    }
 
     return matchedNewlines;
 }
 
 
-- (NSString *)parseLineSeparator
+- (NSString*)parseLineSeparator
 {
-    if ([scanner scanString:@"\n" intoString: NULL])
-        return @"\n";
-    else
-        return nil;
+    NSString *matchedSeparator = nil;
 
+    [scanner scanCharactersFromSet: [NSCharacterSet newlineCharacterSet]
+                        intoString: &matchedSeparator];
+
+    return matchedSeparator;
 }
 
 
-- (NSString *)parseTextData
+- (NSString*)parseTextData
 {
     NSString *data = nil;
 

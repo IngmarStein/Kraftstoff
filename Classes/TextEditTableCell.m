@@ -40,7 +40,7 @@ NSUInteger const maximumTextFieldLength = 15;
 
 
 
-- (BOOL)textFieldShouldReturn: (UITextField *)aTextField
+- (BOOL)textFieldShouldReturn: (UITextField*)aTextField
 {
     // Let delegate handle switching to next textfield
     if ([(id)self.delegate respondsToSelector: @selector(focusNextFieldForValueIdentifier:)])

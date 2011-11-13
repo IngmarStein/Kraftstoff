@@ -127,7 +127,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 	else
         result = PageCellGroupPositionMiddle;
 
-	PageViewController *pageViewController = (PageViewController *)[tableView delegate];
+	PageViewController *pageViewController = (PageViewController*)[tableView delegate];
 
 	if ([indexPath row] == [pageViewController tableView: tableView numberOfRowsInSection: indexPath.section] - 1)
 	{
@@ -157,12 +157,6 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 }
 
 
-- (void)dealloc
-{
-	self.strokeColor = nil;
-
-	[super dealloc];
-}
 
 
 - (void)layoutSubviews

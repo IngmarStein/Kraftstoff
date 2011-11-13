@@ -14,12 +14,6 @@
 @synthesize rowIndex;
 
 
-- (void)dealloc
-{
-    self.textualDescription = nil;
-
-    [super dealloc];
-}
 
 
 - (BOOL)isAccessibilityElement

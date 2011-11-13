@@ -7,11 +7,11 @@
 {
     NSMutableArray *tableSections;
     NSMutableArray *headerViews;
-    
+
     BOOL keyboardIsVisible;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
 @property (nonatomic, assign) BOOL constantRowHeight;
 @property (nonatomic, assign) BOOL useCustomHeaders;
 

@@ -11,7 +11,7 @@
 #import "TextEditTableCell.h"
 
 
-static NSInteger maxEditHelpCounter = 2;
+static NSInteger maxEditHelpCounter = 1;
 
 
 @interface CarViewController (private)
@@ -56,18 +56,17 @@ static NSInteger maxEditHelpCounter = 2;
     // Buttons in navigation bar
     self.navigationItem.leftBarButtonItem = nil;
 
-    UIBarButtonItem *addButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
-                                                                                target: self
-                                                                                action: @selector (insertNewObject:)] autorelease];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
+                                                                               target: self
+                                                                               action: @selector (insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
 
-    // Gesture recognizer for touch and hold, tag used for identification
-    self.longPressRecognizer = [[[UILongPressGestureRecognizer alloc]
+    // Gesture recognizer for touch and hold
+    self.longPressRecognizer = [[UILongPressGestureRecognizer alloc]
                                     initWithTarget: self
-                                            action: @selector (handleLongPress:)]
-                                    autorelease];
+                                            action: @selector (handleLongPress:)];
 
-    self.longPressRecognizer.minimumPressDuration = 0.6;
+    self.longPressRecognizer.delegate = self;
 
     // Observe locale changes
     [[NSNotificationCenter defaultCenter]
@@ -119,16 +118,8 @@ static NSInteger maxEditHelpCounter = 2;
 
     [super setEditing: editing animated: animated];
 
-    // No help badges during editing
-    if (editing == NO)
-        [self updateHelp: animated];
-    else
-        [self hideHelp: animated];
-
-    // No gesture recognizers during editing mode
-    self.longPressRecognizer.enabled = !editing;
-
     [self checkEnableEditButton];
+    [self updateHelp: animated];
 
     // Force Core Data save after editing mode is finished
     if (editing == NO)
@@ -144,64 +135,38 @@ static NSInteger maxEditHelpCounter = 2;
 
 - (void)updateHelp: (BOOL)animated
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     // Number of cars determins the help badge
     NSString *helpImageName = nil;
     CGRect helpViewFrame;
 
-    NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];    
-    
-    if (carCount == 0)
+    NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];
+
+    if (isEditing == NO && carCount == 0)
     {
         helpImageName = @"Start";
         helpViewFrame = CGRectMake (0, 0, 320, 70);
 
         [defaults setObject: [NSNumber numberWithInteger: 0] forKey: @"editHelpCounter"];
     }
-    else if (carCount <= 3)
+    else if (isEditing == YES && 1 <= carCount && carCount <= 3)
     {
         NSInteger editCounter = [[defaults objectForKey: @"editHelpCounter"] integerValue];
-        
+
         if (editCounter < maxEditHelpCounter)
         {
-            [defaults setObject: [NSNumber numberWithInteger: ++editCounter] forKey: @"editHelpCounter"];            
+            [defaults setObject: [NSNumber numberWithInteger: ++editCounter] forKey: @"editHelpCounter"];
 
             helpImageName = @"Edit";
-            helpViewFrame = CGRectMake (0, carCount * 92.0 - 16, 320, 92);
-        }
-    }    
-
-    // Update the help view state
-    UIImageView *helpView = (UIImageView*)[self.view viewWithTag: 100];
-
-    if (helpImageName)        
-    {
-        if (helpView == nil)
-        {
-            helpView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: helpImageName]];
-            
-            helpView.tag   = 100;
-            helpView.frame = helpViewFrame;            
-            helpView.alpha = (animated) ? 0.0 : 0.9;
-            
-            [self.view addSubview: helpView];
-            [helpView release];
-            
-            if (animated)
-                [UIView animateWithDuration: 0.33
-                                      delay: 0.6
-                                    options: UIViewAnimationOptionCurveEaseOut
-                                 animations: ^{ helpView.alpha = 0.9; }
-                                 completion: NULL];
-        }
-        else
-        {
-            helpView.image = [UIImage imageNamed: helpImageName];
-            helpView.frame = helpViewFrame;
+            helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
         }
     }
-    else
+
+    // Remove outdated help images
+    UIImageView *helpView = (UIImageView*)[self.view viewWithTag: 100];
+
+    if (helpImageName == nil || (helpView && CGRectEqualToRect (helpView.frame, helpViewFrame) == NO))
     {
         if (animated)
             [UIView animateWithDuration: 0.33
@@ -211,6 +176,37 @@ static NSInteger maxEditHelpCounter = 2;
                              completion: ^(BOOL finished){ [helpView removeFromSuperview]; }];
         else
             [helpView removeFromSuperview];
+
+        helpView = nil;
+    }
+
+    // Add or update existing help image
+    if (helpImageName)
+    {
+        if (helpView == nil)
+        {
+            helpView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: helpImageName]];
+
+            helpView.tag   = 100;
+            helpView.frame = helpViewFrame;
+            helpView.alpha = (animated) ? 0.0 : 0.9;
+
+            [self.view addSubview: helpView];
+
+            if (animated)
+            {
+                [UIView animateWithDuration: 0.33
+                                      delay: 0.6
+                                    options: UIViewAnimationOptionCurveEaseOut
+                                 animations: ^{ helpView.alpha = 0.9; }
+                                 completion: NULL];
+            }
+        }
+        else
+        {
+            helpView.image = [UIImage imageNamed: helpImageName];
+            helpView.frame = helpViewFrame;
+        }
     }
 
     // Update the toolbar button
@@ -311,9 +307,7 @@ static NSInteger maxEditHelpCounter = 2;
 
 - (void)checkEnableEditButton
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex: 0];
-
-    [self.navigationItem.leftBarButtonItem setEnabled: ([sectionInfo numberOfObjects] > 0)];
+    self.editButtonItem.enabled = ([[[self fetchedResultsController] fetchedObjects] count] > 0);
 }
 
 
@@ -328,7 +322,30 @@ static NSInteger maxEditHelpCounter = 2;
     configurator.editing = NO;
 
     [self presentModalViewController: configurator animated: YES];
-    [configurator release];
+}
+
+
+
+#pragma mark -
+#pragma mark UIGestureRecognizerDelegate
+
+
+
+- (BOOL)gestureRecognizer: (UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch: (UITouch*)touch
+{
+    // Editing mode must be enabled and the touch must hit the contentview of a tableview cell
+    if (isEditing)
+    {
+        if ([touch.view.superview isKindOfClass: [UITableViewCell class]])
+        {
+            UITableViewCell *cell = (UITableViewCell*)touch.view.superview;
+
+            if (cell.contentView == touch.view)
+                return YES;
+        }
+    }
+
+    return NO;
 }
 
 
@@ -338,22 +355,21 @@ static NSInteger maxEditHelpCounter = 2;
 
 
 
-- (void)setLongPressRecognizer:(UILongPressGestureRecognizer*)newRecognizer
+- (void)setLongPressRecognizer: (UILongPressGestureRecognizer*)newRecognizer
 {
     if (longPressRecognizer != newRecognizer)
     {
         [self.tableView removeGestureRecognizer: longPressRecognizer];
-        [longPressRecognizer release];
-
         [self.tableView addGestureRecognizer: newRecognizer];
-        longPressRecognizer = [newRecognizer retain];
+
+        longPressRecognizer = newRecognizer;
     }
 }
 
 
 - (void)handleLongPress: (UILongPressGestureRecognizer*)sender
 {
-    if (!isEditing && sender.state == UIGestureRecognizerStateBegan)
+    if (sender.state == UIGestureRecognizerStateBegan)
     {
         NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: [sender locationInView: self.tableView]];
 
@@ -383,10 +399,12 @@ static NSInteger maxEditHelpCounter = 2;
             configurator.fuelConsumptionUnit = [editedObject valueForKey: @"fuelConsumptionUnit"];
 
             [self presentModalViewController: configurator animated: YES];
-            [configurator release];
 
             // Edit started => prevent edit help from now on
             [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithInteger: maxEditHelpCounter] forKey: @"editHelpCounter"];
+
+            // Quit editing mode
+            [self setEditing: NO animated: YES];
         }
     }
 }
@@ -438,6 +456,11 @@ static NSInteger maxEditHelpCounter = 2;
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
     }
     changeIsUserDriven = NO;
+
+    // Exit editing mode after last object is deleted
+    if (isEditing)
+        if ([[[self fetchedResultsController] fetchedObjects] count] == 0)
+            [self setEditing: NO animated: YES];
 }
 
 
@@ -519,11 +542,12 @@ static NSInteger maxEditHelpCounter = 2;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier];
 
     if (cell == nil)
-        cell = [[[ShadedTableViewCell alloc] initWithStyle: UITableViewCellStyleDefault
-                                   reuseIdentifier: CellIdentifier
-                              enlargeTopRightLabel: YES] autorelease];
+        cell = [[ShadedTableViewCell alloc] initWithStyle: UITableViewCellStyleDefault
+                                          reuseIdentifier: CellIdentifier
+                                     enlargeTopRightLabel: YES];
 
     [self configureCell: cell atIndexPath: indexPath];
+
     return cell;
 }
 
@@ -583,20 +607,6 @@ static NSInteger maxEditHelpCounter = 2;
 }
 
 
-- (void)tableView: (UITableView*)tableView willBeginEditingRowAtIndexPath: (NSIndexPath*)indexPath
-{
-    self.navigationItem.leftBarButtonItem.enabled = NO;
-    [self hideHelp: YES];
-}
-
-
-- (void)tableView: (UITableView*)tableView didEndEditingRowAtIndexPath: (NSIndexPath*)indexPath
-{
-    [self checkEnableEditButton];
-    [self updateHelp: YES];
-}
-
-
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -616,17 +626,36 @@ static NSInteger maxEditHelpCounter = 2;
 }
 
 
-
 - (void)tableView: (UITableView*)tableView didSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
-    FuelEventController *fuelController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
+    if (isEditing)
+    {
+        [tableView deselectRowAtIndexPath: indexPath animated: YES];
+    }
+    else
+    {
+        FuelEventController *fuelController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
 
-    NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath: indexPath];
-    fuelController.selectedCar          = selectedObject;
-    fuelController.managedObjectContext = self.managedObjectContext;
+        NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath: indexPath];
+        fuelController.selectedCar          = selectedObject;
+        fuelController.managedObjectContext = self.managedObjectContext;
 
-    [self.navigationController pushViewController: fuelController animated: YES];
-    [fuelController release];
+        [self.navigationController pushViewController: fuelController animated: YES];
+    }
+}
+
+
+- (void)tableView: (UITableView*)tableView willBeginEditingRowAtIndexPath: (NSIndexPath*)indexPath
+{
+    self.editButtonItem.enabled = NO;
+    [self hideHelp: YES];
+}
+
+
+- (void)tableView: (UITableView*)tableView didEndEditingRowAtIndexPath: (NSIndexPath*)indexPath
+{
+    [self checkEnableEditButton];
+    [self updateHelp: YES];
 }
 
 
@@ -725,7 +754,9 @@ static NSInteger maxEditHelpCounter = 2;
 - (void)controllerDidChangeContent: (NSFetchedResultsController*)controller
 {
     [self.tableView endUpdates];
+
     [self updateHelp: YES];
+    [self checkEnableEditButton];
 
     changeIsUserDriven = NO;
 }
@@ -746,13 +777,6 @@ static NSInteger maxEditHelpCounter = 2;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    [fetchedResultsController release];
-    [managedObjectContext     release];
-    [editedObject             release];
-    [longPressRecognizer      release];
-
-    [super dealloc];
 }
 
 @end

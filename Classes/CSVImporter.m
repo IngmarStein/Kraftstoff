@@ -31,6 +31,15 @@
                           filledUp: (BOOL)filledUp
                          inContext: (NSManagedObjectContext*)managedObjectContext;
 
+// Import helpers
+- (BOOL)importCarIDs: (NSArray*)records;
+
+- (BOOL)importRecords: (NSArray*)records
+         detectedCars: (NSInteger*)numCars
+       detectedEvents: (NSInteger*)numEvents
+            sourceURL: (NSURL*)sourceURL
+            inContext: (NSManagedObjectContext*)managedObjectContext;
+
 // Scanning support for CSVs
 - (NSDecimalNumber*)scanNumberWithString: (NSString*)string;
 
@@ -43,7 +52,7 @@
 - (KSVolume)scanVolumeUnitWithString: (NSString*)string;
 
 // CSV interpretation support
-- (NSString*)hittestForKeystrings: (NSString**)keyStrings inDictionary: (NSDictionary*)record;
+- (NSString*)hittestForKeystrings: (NSString* const*)keyStrings inDictionary: (NSDictionary*)record;
 
 - (NSString*)keyForDate: (NSDictionary*)record;
 - (NSString*)keyForTime: (NSDictionary*)record;
@@ -72,67 +81,19 @@
 {
     if ((self = [super init]))
     {
-        carIDs     = [[NSMutableSet setWithCapacity: 7] retain];
-        nameForID  = [[NSMutableDictionary dictionaryWithCapacity: 7] retain];
-        modelForID = [[NSMutableDictionary dictionaryWithCapacity: 7] retain];
+        carIDs     = [NSMutableSet setWithCapacity: 7];
+        nameForID  = [NSMutableDictionary dictionaryWithCapacity: 7];
+        modelForID = [NSMutableDictionary dictionaryWithCapacity: 7];
     }
 
     return self;
 }
 
 
-- (void)dealloc
-{
-    [carIDs     release];
-    [nameForID  release];
-    [modelForID release];
 
-    [super dealloc];
-}
+#pragma mark -
+#pragma mark Data Import
 
-
-- (BOOL)importCarIDs: (NSArray*)records
-{
-    NSDictionary *first = [records objectAtIndex: 0];
-
-    if ([first count] != 3)
-        return NO;
-
-    if ([first objectForKey: @"ID"] == nil)
-        return NO;
-
-    NSString *modelKey = [self keyForModel: first];
-
-    if (modelKey == nil)
-        return NO;
-
-    if ([first objectForKey: @"NAME"] == nil)
-        return NO;
-
-    [carIDs     removeAllObjects];
-    [nameForID  removeAllObjects];
-    [modelForID removeAllObjects];
-
-    for (NSDictionary *record in records)
-    {
-        NSNumber *ID = [self scanNumberWithString: [record objectForKey: @"ID"]];
-
-        if (ID != nil && [carIDs containsObject: ID] == NO)
-        {
-            NSString *name  = [record objectForKey: @"NAME"];
-            NSString *model = [record objectForKey: modelKey];
-
-            if (name != nil && model != nil)
-            {
-                [carIDs addObject: ID];
-                [nameForID  setObject: name  forKey: ID];
-                [modelForID setObject: model forKey: ID];
-            }
-        }
-    }
-
-    return ([carIDs count] != 0);
-}
 
 
 - (NSManagedObject*)addCarWithName: (NSString*)name
@@ -220,11 +181,59 @@
 }
 
 
-- (BOOL)importRecords: (NSArray*)records detectedCars: (NSInteger*)numCars detectedEvents: (NSInteger*)numEvents sourceURL: (NSURL*)sourceURL
+- (BOOL)importCarIDs: (NSArray*)records
+{
+    NSDictionary *first = [records objectAtIndex: 0];
+
+    if ([first count] < 3)
+        return NO;
+
+    if ([first objectForKey: @"ID"] == nil)
+        return NO;
+
+    NSString *modelKey = [self keyForModel: first];
+
+    if (modelKey == nil)
+        return NO;
+
+    if ([first objectForKey: @"NAME"] == nil)
+        return NO;
+
+    [carIDs     removeAllObjects];
+    [nameForID  removeAllObjects];
+    [modelForID removeAllObjects];
+
+    for (NSDictionary *record in records)
+    {
+        NSNumber *ID = [self scanNumberWithString: [record objectForKey: @"ID"]];
+
+        if (ID != nil && [carIDs containsObject: ID] == NO)
+        {
+            NSString *name  = [record objectForKey: @"NAME"];
+            NSString *model = [record objectForKey: modelKey];
+
+            if (name != nil && model != nil)
+            {
+                [carIDs addObject: ID];
+                [nameForID  setObject: name  forKey: ID];
+                [modelForID setObject: model forKey: ID];
+            }
+        }
+    }
+
+    return ([carIDs count] != 0);
+}
+
+
+- (BOOL)importRecords: (NSArray*)records
+         detectedCars: (NSInteger*)numCars
+       detectedEvents: (NSInteger*)numEvents
+            sourceURL: (NSURL*)sourceURL
+            inContext: (NSManagedObjectContext*)managedObjectContext
 {
     // Analyze source URL for name/plate
     NSString *guessedName  = nil;
-    NSString *guessedPlate = nil;    
+    NSString *guessedPlate = nil;
 
     if ([sourceURL isFileURL])
     {
@@ -250,27 +259,27 @@
             {
                 if ([part length] > maximumTextFieldLength)
                     part = [part substringToIndex: maximumTextFieldLength];
-                
+
                 guessedPlate = part;
             }
         }
 
         // Old exported files
         else if ([nameComponents count] == 1)
-        {            
+        {
             part = [nameComponents objectAtIndex: 0];
 
             if ([part length] > 0)
             {
                 if ([part length] > maximumTextFieldLength)
                     part = [part substringToIndex: maximumTextFieldLength];
-                
+
                 guessedPlate = part;
             }
         }
     }
-        
-    
+
+
     // Analyse record headers
     NSDictionary *first = [records objectAtIndex: 0];
 
@@ -336,7 +345,6 @@
 
 
     // Parse all records for all cars
-    NSManagedObjectContext *managedObjectContext = [[AppDelegate sharedDelegate] managedObjectContext];
     NSFetchedResultsController *fetchedResultsController = [AppDelegate fetchedResultsControllerForCarsInContext: managedObjectContext];
 
     for (NSNumber *importID in carIDs)
@@ -456,9 +464,7 @@
             BOOL filledUp = [self scanBooleanWithString: [record objectForKey: fillupKey]];
 
             // Consistency check and import
-            if ([distance compare: zero] == NSOrderedDescending &&
-                [volume   compare: zero] == NSOrderedDescending &&
-                [price    compare: zero] == NSOrderedDescending)
+            if ([distance compare: zero] == NSOrderedDescending && [volume compare: zero] == NSOrderedDescending)
             {
                 [self addEventForCar: newCar
                                 date: date
@@ -494,7 +500,7 @@
         if (detectedEvents)
             [newCar setValue: [odometer max: [newCar valueForKey: @"distanceTotalSum"]] forKey: @"odometer"];
 
-        // Save imported objects
+        // Save after every imported car, this triggers a merge of changes on the main threads context
         [[AppDelegate sharedDelegate] saveContext: managedObjectContext];
     }
 
@@ -502,6 +508,49 @@
         [carIDs removeAllObjects];
 
     return YES;
+}
+
+
+- (BOOL)importFromCSVString: (NSString*)CSVString
+               detectedCars: (NSInteger*)numCars
+             detectedEvents: (NSInteger*)numEvents
+                  sourceURL: (NSURL*)sourceURL
+                  inContext: (NSManagedObjectContext*)managedObjectContext
+{
+    CSVParser *parser    = [[CSVParser alloc] initWithString: CSVString];
+    BOOL foundCarIDTable = NO;
+
+    *numCars   = 0;
+    *numEvents = 0;
+
+    while (1)
+    {
+        NSArray *CSVTable = [parser parseTable];
+
+        if (CSVTable == nil)
+            break;
+
+        if ([CSVTable count] == 0)
+            continue;
+
+        if (!foundCarIDTable)
+        {
+            if ([self importCarIDs: CSVTable])
+            {
+                foundCarIDTable = YES;
+                continue;
+            }
+        }
+
+        if ([self importRecords: CSVTable
+                   detectedCars: numCars
+                 detectedEvents: numEvents
+                      sourceURL: sourceURL
+                      inContext: managedObjectContext])
+            break;
+    }
+
+    return (*numCars != 0);
 }
 
 
@@ -534,29 +583,35 @@
 
 
     // Scan with localized numberformatter (sloppy, catches grouping separators)
-    static NSNumberFormatter *nf = nil;
+    static NSNumberFormatter *nf_system  = nil;
+    static NSNumberFormatter *nf_current = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        nf = [[NSNumberFormatter alloc] init];
+        nf_current = [[NSNumberFormatter alloc] init];
 
-        [nf setGeneratesDecimalNumbers: YES];
-        [nf setUsesGroupingSeparator: YES];
-        [nf setNumberStyle: NSNumberFormatterDecimalStyle];
-        [nf setLenient: YES];
+        [nf_current setGeneratesDecimalNumbers: YES];
+        [nf_current setUsesGroupingSeparator: YES];
+        [nf_current setNumberStyle: NSNumberFormatterDecimalStyle];
+        [nf_current setLenient: YES];
+        [nf_current setLocale: [NSLocale currentLocale]];
+
+        nf_system = [[NSNumberFormatter alloc] init];
+
+        [nf_system setGeneratesDecimalNumbers: YES];
+        [nf_system setUsesGroupingSeparator: YES];
+        [nf_system setNumberStyle: NSNumberFormatterDecimalStyle];
+        [nf_system setLenient: YES];
+        [nf_system setLocale: [NSLocale systemLocale]];
     });
 
     NSNumber *dn;
 
-    [nf setLocale: [NSLocale currentLocale]];
-
-    if ((dn = [nf numberFromString: string]))
+    if ((dn = [nf_current numberFromString: string]))
         return (NSDecimalNumber*)dn;
 
-    [nf setLocale: [NSLocale systemLocale]];
-
-    if ((dn = [nf numberFromString: string]))
+    if ((dn = [nf_system numberFromString: string]))
         return (NSDecimalNumber*)dn;
 
     return nil;
@@ -583,12 +638,23 @@
 
 - (NSDate*)scanDateWithString: (NSString*)string
 {
-    static NSDateFormatter *df = nil;
+    static NSDateFormatter *df_system  = nil;
+    static NSDateFormatter *df_current = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        df = [[NSDateFormatter alloc] init];
+        df_system = [[NSDateFormatter alloc] init];
+        [df_system setLocale: [NSLocale systemLocale]];
+        [df_system setDateFormat: @"yyyy-MM-dd"];
+        [df_system setLenient: NO];
+
+        df_current = [[NSDateFormatter alloc] init];
+        [df_current setLocale: [NSLocale currentLocale]];
+        [df_current setDateStyle: NSDateFormatterShortStyle];
+        [df_current setTimeStyle: NSDateFormatterNoStyle];
+        [df_current setLenient: YES];
+
     });
 
     NSDate *d;
@@ -597,20 +663,11 @@
         return nil;
 
     // Strictly scan own format in system locale
-    [df setLocale: [NSLocale systemLocale]];
-    [df setDateFormat: @"yyyy-MM-dd"];
-    [df setLenient: NO];
-
-    if ((d = [df dateFromString: string]))
+    if ((d = [df_system dateFromString: string]))
         return d;
 
     // Alternatively scan date in short local style
-    [df setLocale: [NSLocale currentLocale]];
-    [df setDateStyle: NSDateFormatterShortStyle];
-    [df setTimeStyle: NSDateFormatterNoStyle];
-    [df setLenient: YES];
-
-    if ((d = [df dateFromString: string]))
+    if ((d = [df_current dateFromString: string]))
         return d;
 
     return nil;
@@ -619,13 +676,25 @@
 
 - (NSDate*)scanTimeWithString: (NSString*)string
 {
-    static NSDateFormatter *df = nil;
+    static NSDateFormatter *df_system  = nil;
+    static NSDateFormatter *df_current = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        df = [[NSDateFormatter alloc] init];
-        [df setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
+        df_system = [[NSDateFormatter alloc] init];
+        [df_system setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
+        [df_system setLocale: [NSLocale systemLocale]];
+        [df_system setDateFormat: @"HH:mm"];
+        [df_system setLenient: NO];
+
+        df_current = [[NSDateFormatter alloc] init];
+        [df_current setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
+        [df_current setLocale: [NSLocale currentLocale]];
+        [df_current setTimeStyle: NSDateFormatterShortStyle];
+        [df_current setDateStyle: NSDateFormatterNoStyle];
+        [df_current setLenient: YES];
+
     });
 
     NSDate *d;
@@ -634,20 +703,11 @@
         return nil;
 
     // Strictly scan own format in system locale
-    [df setLocale: [NSLocale systemLocale]];
-    [df setDateFormat: @"HH:mm"];
-    [df setLenient: NO];
-
-    if ((d = [df dateFromString: string]))
+    if ((d = [df_system dateFromString: string]))
         return d;
 
     // Alternatively scan date in short local style
-    [df setLocale: [NSLocale currentLocale]];
-    [df setTimeStyle: NSDateFormatterShortStyle];
-    [df setDateStyle: NSDateFormatterNoStyle];
-    [df setLenient: YES];
-
-    if ((d = [df dateFromString: string]))
+    if ((d = [df_current dateFromString: string]))
         return d;
 
     return nil;
@@ -728,7 +788,7 @@
 
 
 
-- (NSString*)hittestForKeystrings: (NSString**)keyStrings inDictionary: (NSDictionary*)record
+- (NSString*)hittestForKeystrings: (NSString* const*)keyStrings inDictionary: (NSDictionary*)record
 {
     for (int i = 0; keyStrings [i] != nil; i++)
         if ([record objectForKey: keyStrings [i]] != nil)
@@ -740,7 +800,7 @@
 
 - (NSString*)keyForDate: (NSDictionary*)record
 {
-    static NSString *dateStrings [] =
+    static NSString * const dateStrings [] =
     {
         @"JJJJMMTT",
         @"YYYYMMDD",
@@ -755,7 +815,7 @@
 
 - (NSString*)keyForTime: (NSDictionary*)record
 {
-    static NSString *timeStrings [] =
+    static NSString * const timeStrings [] =
     {
         @"HHMM",
         @"TIME",
@@ -771,14 +831,14 @@
 {
     NSString *key;
 
-    static NSString *kilometersStrings [] =
+    static NSString * const kilometersStrings [] =
     {
         @"KILOMETERS",
         @"KILOMETER",
         nil
     };
 
-    static NSString *milesStrings [] =
+    static NSString * const milesStrings [] =
     {
         @"MILES",
         @"MEILEN",
@@ -800,18 +860,18 @@
 }
 
 
-- (NSString*)keyForOdometer:(NSDictionary *)record unit:(KSDistance*)unit
+- (NSString*)keyForOdometer: (NSDictionary*)record unit: (KSDistance*)unit
 {
     NSString *key;
 
-    static NSString *kilometersStrings [] =
+    static NSString * const kilometersStrings [] =
     {
         @"ODOMETER(KM)",
         @"KILOMETERSTAND(KM)",
         nil
     };
 
-    static NSString *milesStrings [] =
+    static NSString * const milesStrings [] =
     {
         @"ODOMETER(MI)",
         @"KILOMETERSTAND(MI)",
@@ -837,21 +897,21 @@
 {
     NSString *key;
 
-    static NSString *literStrings [] =
+    static NSString * const literStrings [] =
     {
         @"LITERS",
         @"LITER",
         nil
     };
 
-    static NSString *galStringsUS [] =
+    static NSString * const galStringsUS [] =
     {
         @"GALLONS(US)",
         @"GALLONEN(US)",
         nil
     };
 
-    static NSString *galStringsUK [] =
+    static NSString * const galStringsUK [] =
     {
         @"GALLONS(UK)",
         @"GALLONEN(UK)",
@@ -880,7 +940,7 @@
 
 - (NSString*)keyForVolume: (NSDictionary*)record
 {
-    static NSString *filledStrings [] =
+    static NSString * const filledStrings [] =
     {
         @"GETANKT",
         @"AMOUNTFILLED",
@@ -893,10 +953,11 @@
 
 - (NSString*)keyForVolumeUnit: (NSDictionary*)record
 {
-    static NSString *unitStrings [] =
+    static NSString * const unitStrings [] =
     {
         @"MASSEINHEIT",
         @"UNIT",
+        @"MAFLEINHEIT",  // This happens when Windows encoding is misintepreted as MacRoman...
         nil
     };
 
@@ -906,7 +967,7 @@
 
 - (NSString*)keyForPrice: (NSDictionary*)record
 {
-    static NSString *priceStrings [] =
+    static NSString * const priceStrings [] =
     {
         @"PRICEPERLITER",
         @"PRICEPERGALLON",
@@ -923,7 +984,7 @@
 
 - (NSString*)keyForFillup: (NSDictionary*)record
 {
-    static NSString *fillupStrings [] =
+    static NSString * const fillupStrings [] =
     {
         @"FULLFILLUP",
         @"VOLLGETANKT",
@@ -936,7 +997,7 @@
 
 - (NSString*)keyForModel: (NSDictionary*)record
 {
-    static NSString *modelStrings [] =
+    static NSString * const modelStrings [] =
     {
         @"MODEL",
         @"MODELL",
@@ -949,7 +1010,7 @@
 
 - (NSString*)keyForCarID: (NSDictionary*)record
 {
-    static NSString *idStrings [] =
+    static NSString * const idStrings [] =
     {
         @"CARID",
         @"FAHRZEUGID",

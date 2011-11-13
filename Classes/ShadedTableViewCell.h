@@ -11,16 +11,16 @@
 
 - (id)initWithStyle: (UITableViewCellStyle)style reuseIdentifier: (NSString*)reuseIdentifier enlargeTopRightLabel: (BOOL)largeRightLabel;
 
-@property (nonatomic, readonly) UILabel  *topLeftLabel;
-@property (nonatomic, retain)   NSString *topLeftAccessibilityLabel;
+@property (nonatomic, strong, readonly) UILabel  *topLeftLabel;
+@property (nonatomic, strong)           NSString *topLeftAccessibilityLabel;
 
-@property (nonatomic, readonly) UILabel  *botLeftLabel;
-@property (nonatomic, retain)   NSString *botLeftAccessibilityLabel;
+@property (nonatomic, strong, readonly) UILabel  *botLeftLabel;
+@property (nonatomic, strong)           NSString *botLeftAccessibilityLabel;
 
-@property (nonatomic, readonly) UILabel  *topRightLabel;
-@property (nonatomic, retain)   NSString *topRightAccessibilityLabel;
+@property (nonatomic, strong, readonly) UILabel  *topRightLabel;
+@property (nonatomic, strong)           NSString *topRightAccessibilityLabel;
 
-@property (nonatomic, readonly) UILabel  *botRightLabel;
-@property (nonatomic, retain)   NSString *botRightAccessibilityLabel;
+@property (nonatomic, strong, readonly) UILabel  *botRightLabel;
+@property (nonatomic, strong)           NSString *botRightAccessibilityLabel;
 
 @end

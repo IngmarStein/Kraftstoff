@@ -20,7 +20,7 @@ typedef enum
 }
 
 @property (nonatomic) PageCellGroupPosition position;
-@property (nonatomic, retain) UIColor *strokeColor;
+@property (nonatomic, strong) UIColor *strokeColor;
 
 + (PageCellGroupPosition)positionForIndexPath: (NSIndexPath*)indexPath inTableView: (UITableView*)tableView;
 

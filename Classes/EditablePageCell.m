@@ -35,7 +35,7 @@ static CGFloat const margin = 8.0;
 	textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	textField.autoresizingMask         = UIViewAutoresizingFlexibleWidth;
 	textField.userInteractionEnabled   = NO;
-    
+
 	[self.contentView addSubview: textField];
 
 
@@ -51,16 +51,7 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (void)dealloc
-{
-	self.textField       = nil;
-	self.valueIdentifier = nil;
-
-	[super dealloc];
-}
-
-
-- (NSString *)accessibilityLabel
+- (NSString*)accessibilityLabel
 {
 	return [NSString stringWithFormat: @"%@ %@", self.textLabel.text, textField.text];
 }
@@ -110,7 +101,7 @@ static CGFloat const margin = 8.0;
 
 
 
-- (void)textFieldDidEndEditing: (UITextField *)aTextField
+- (void)textFieldDidEndEditing: (UITextField*)aTextField
 {
     aTextField.userInteractionEnabled = NO;
 }

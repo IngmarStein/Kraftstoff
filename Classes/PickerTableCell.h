@@ -7,7 +7,7 @@
 
 @interface PickerTableCell : EditableProxyPageCell <UIPickerViewDataSource, UIPickerViewDelegate> {}
 
-@property (nonatomic, retain) UIPickerView *picker;
-@property (nonatomic, retain) NSArray      *pickerLabels;
+@property (nonatomic, strong) UIPickerView *picker;
+@property (nonatomic, strong) NSArray      *pickerLabels;
 
 @end

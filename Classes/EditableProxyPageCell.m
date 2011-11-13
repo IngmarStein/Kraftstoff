@@ -46,11 +46,5 @@
 }
 
 
-- (void)dealloc
-{
-	self.textFieldProxy = nil;
-
-	[super dealloc];
-}
 
 @end

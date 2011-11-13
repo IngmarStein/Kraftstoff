@@ -30,7 +30,7 @@ static CGFloat const cellVMargin          =  1.0;
 
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 
-    coloredLabel = [[[ConsumptionLabel alloc] initWithFrame: CGRectZero] autorelease];
+    coloredLabel = [[ConsumptionLabel alloc] initWithFrame: CGRectZero];
 
 	coloredLabel.textAlignment             = UITextAlignmentCenter;
     coloredLabel.adjustsFontSizeToFitWidth = YES;
@@ -55,7 +55,7 @@ static CGFloat const cellVMargin          =  1.0;
 }
 
 
-- (NSString *)accessibilityLabel
+- (NSString*)accessibilityLabel
 {
 	return self.coloredLabel.text;
 }

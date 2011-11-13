@@ -43,40 +43,36 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 + (void)initialize
 {
-    CGColorRef whiteColor = [UIColor whiteColor].CGColor;
-
     if (prefixAttributesDict == nil)
     {
-        CTFontRef  helvetica24 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 24, NULL);
-        CGColorRef prefixColor = [UIColor blackColor].CGColor;
+        CTFontRef helvetica24 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 24, NULL);
 
-        prefixAttributesDict = [[NSDictionary dictionaryWithObjectsAndKeys:
-                                                (id)helvetica24, (NSString*)kCTFontAttributeName,
-                                                (id)prefixColor, (NSString*)kCTForegroundColorAttributeName,
-                                                nil] retain];
+        prefixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                (__bridge id)helvetica24,           (NSString*)kCTFontAttributeName,
+                                                (id)[[UIColor blackColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
+                                                nil];
 
-        shadowPrefixAttributesDict = [[NSDictionary dictionaryWithObjectsAndKeys:
-                                                (id)helvetica24, (NSString*)kCTFontAttributeName,
-                                                (id)whiteColor,  (NSString*)kCTForegroundColorAttributeName,
-                                                nil] retain];
+        shadowPrefixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                (__bridge id)helvetica24,           (NSString*)kCTFontAttributeName,
+                                                (id)[[UIColor whiteColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
+                                                nil];
 
         CFRelease (helvetica24);
     }
 
     if (suffixAttributesDict == nil)
     {
-        CTFontRef  helvetica18 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 18, NULL);
-        CGColorRef suffixColor = [UIColor darkGrayColor].CGColor;
+        CTFontRef helvetica18 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 18, NULL);
 
-        suffixAttributesDict = [[NSDictionary dictionaryWithObjectsAndKeys:
-                                                (id)helvetica18, (NSString*)kCTFontAttributeName,
-                                                (id)suffixColor, (NSString*)kCTForegroundColorAttributeName,
-                                                nil] retain];
+        suffixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                (__bridge id)helvetica18,              (NSString*)kCTFontAttributeName,
+                                                (id)[[UIColor darkGrayColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
+                                                nil];
 
-        shadowSuffixAttributesDict = [[NSDictionary dictionaryWithObjectsAndKeys:
-                                                (id)helvetica18, (NSString*)kCTFontAttributeName,
-                                                (id)whiteColor,  (NSString*)kCTForegroundColorAttributeName,
-                                                nil] retain];
+        shadowSuffixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                (__bridge id)helvetica18,           (NSString*)kCTFontAttributeName,
+                                                (id)[[UIColor whiteColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
+                                                nil];
 
         CFRelease (helvetica18);
     }
@@ -87,7 +83,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 {
 	[super finishConstruction];
 
-    self.carPicker = [[[UIPickerView alloc] init] autorelease];
+    self.carPicker = [[UIPickerView alloc] init];
 
     carPicker.showsSelectionIndicator = YES;
     carPicker.dataSource              = self;
@@ -106,13 +102,6 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-- (void)dealloc
-{
-	self.carPicker      = nil;
-	self.fetchedObjects = nil;
-
-	[super dealloc];
-}
 
 
 - (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
@@ -139,7 +128,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-- (void)selectCar: (NSManagedObject *)managedObject
+- (void)selectCar: (NSManagedObject*)managedObject
 {
     // Update textfield in cell
     NSString *description = [NSString stringWithFormat: @"%@ %@",
@@ -164,19 +153,19 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
 
-- (NSInteger)numberOfComponentsInPickerView: (UIPickerView *)pickerView
+- (NSInteger)numberOfComponentsInPickerView: (UIPickerView*)pickerView
 {
     return 1;
 }
 
 
-- (NSInteger)pickerView: (UIPickerView *)pickerView numberOfRowsInComponent: (NSInteger)component
+- (NSInteger)pickerView: (UIPickerView*)pickerView numberOfRowsInComponent: (NSInteger)component
 {
     return [self.fetchedObjects count];
 }
 
 
-- (void)pickerView: (UIPickerView *)pickerView didSelectRow: (NSInteger)row inComponent: (NSInteger)component
+- (void)pickerView: (UIPickerView*)pickerView didSelectRow: (NSInteger)row inComponent: (NSInteger)component
 {
     [self selectCar: [fetchedObjects objectAtIndex: row]];
 }
@@ -202,23 +191,24 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 - (CTLineRef)truncatedLineForName: (NSString*)name info: (NSString*)info shadow: (BOOL)shadow
 {
-    NSAttributedString *truncationString = [[[NSAttributedString alloc]
-                            initWithString: [NSString stringWithFormat: @"%C", 0x2026]
-                                attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict] autorelease];
+    NSAttributedString *truncationString = [[NSAttributedString alloc]
+                                                initWithString: [NSString stringWithFormat: @"%C", 0x2026]
+                                                    attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
 
-    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc]
-                            initWithString: [NSString stringWithFormat: @"%@  %@", name, info]
-                                attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict] autorelease];
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]
+                                                        initWithString: [NSString stringWithFormat: @"%@  %@", name, info]
+                                                            attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
 
     [attributedString setAttributes: (shadow) ? shadowPrefixAttributesDict : prefixAttributesDict
                               range: NSMakeRange (0, [name length])];
 
-    CTLineRef line            = CTLineCreateWithAttributedString ((CFAttributedStringRef) attributedString);
-    CTLineRef truncationToken = CTLineCreateWithAttributedString ((CFAttributedStringRef) truncationString);
+    CTLineRef line            = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) attributedString);
+    CTLineRef truncationToken = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) truncationString);
     CTLineRef truncatedLine   = CTLineCreateTruncatedLine (line, PickerViewCellWidth - 2*PickerViewCellMargin, kCTLineTruncationEnd, truncationToken);
 
     CFRelease (line);
     CFRelease (truncationToken);
+
 
     return truncatedLine;
 }
@@ -267,14 +257,13 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     }
     else
     {
-        imageView = [[[PickerImageView alloc] initWithImage: image] autorelease];
+        imageView = [[PickerImageView alloc] initWithImage: image];
 
         // Workaround for disabled autoselection of pickerView prior to iOS5
         if ([AppDelegate runningOS5] == NO)
         {
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: imageView action: @selector(viewTapped:)];
             [imageView addGestureRecognizer: tap];
-            [tap release];
         }
     }
 

@@ -20,7 +20,7 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 }
 
 
-+ (NSString *)reuseIdentifier
++ (NSString*)reuseIdentifier
 {
 	return NSStringFromClass (self);
 }
@@ -58,8 +58,8 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 
 	if (self.backgroundView == nil)
 	{
-		self.backgroundView = [[[PageCellBackground alloc] initSelected: NO grouped: grouped] autorelease];
-		self.selectedBackgroundView = [[[PageCellBackground alloc] initSelected: YES grouped: grouped] autorelease];
+		self.backgroundView = [[PageCellBackground alloc] initSelected: NO grouped: grouped];
+		self.selectedBackgroundView = [[PageCellBackground alloc] initSelected: YES grouped: grouped];
 	}
 
 	if (grouped)

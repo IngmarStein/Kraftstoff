@@ -8,8 +8,8 @@
 
 @interface NumberEditTableCell : EditablePageCell {}
 
-@property (nonatomic, retain) NSNumberFormatter *numberFormatter;
-@property (nonatomic, retain) NSNumberFormatter *alternateNumberFormatter;
-@property (nonatomic, retain) NSString          *textFieldSuffix;
+@property (nonatomic, strong) NSNumberFormatter *numberFormatter;
+@property (nonatomic, strong) NSNumberFormatter *alternateNumberFormatter;
+@property (nonatomic, strong) NSString          *textFieldSuffix;
 
 @end

@@ -16,10 +16,10 @@
     BOOL isWaitingForACK;
 }
 
-@property (nonatomic, retain) NSManagedObject              *selectedCar;
-@property (nonatomic, retain) NSManagedObjectContext       *managedObjectContext;
-@property (nonatomic, retain) NSFetchRequest               *fetchRequest;
-@property (nonatomic, retain) NSFetchedResultsController   *fetchedResultsController;
-@property (nonatomic, retain) FuelStatisticsPageController *statisticsController;
+@property (nonatomic, strong) NSManagedObject              *selectedCar;
+@property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;
+@property (nonatomic, strong) NSFetchRequest               *fetchRequest;
+@property (nonatomic, strong) NSFetchedResultsController   *fetchedResultsController;
+@property (nonatomic, strong) FuelStatisticsPageController *statisticsController;
 
 @end
