@@ -11,8 +11,6 @@
 @synthesize highlightStrings;
 
 
-
-
 - (void)drawRect: (CGRect)rect
 {
     // Clear background

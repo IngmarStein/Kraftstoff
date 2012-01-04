@@ -46,7 +46,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
     // Array of picker labels
     self.pickerLabels = [(NSDictionary*)dataObject objectForKey: @"labels"];
     [picker reloadAllComponents];
-    
+
     // (Re-)configure initial selected row
     NSInteger initialIndex = [[self.delegate valueForIdentifier: self.valueIdentifier] integerValue];
 

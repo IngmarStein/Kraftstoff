@@ -116,7 +116,7 @@
 
 
     // Create new datepicker with a correct 'today' flag
-    if (datePicker == nil || forceRecreation)
+    if (datePicker == nil)
     {
         datePicker                = [[UIDatePicker alloc] init];
         datePicker.datePickerMode = UIDatePickerModeDateAndTime;

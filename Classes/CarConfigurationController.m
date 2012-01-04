@@ -36,6 +36,7 @@
 
 
 @synthesize editingTextField;
+@synthesize backgroundImageView;
 @synthesize navBar;
 
 @synthesize name;
@@ -71,16 +72,6 @@
 {
     [super viewDidLoad];
 
-    // Add shadow layer onto the background image view
-    UIView *imageView = [self.view viewWithTag: 100];
-
-    [imageView.layer
-        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, imageView.frame.size.width, LargeShadowHeight)
-                                          darkFactor: 0.5
-                                         lightFactor: 150.0 / 255.0
-                                             inverse: NO]
-               atIndex: 0];
-
     // Build table contents
     [self recreateTableContents];
 
@@ -107,16 +98,6 @@
 }
 
 
-- (void)viewDidAppear: (BOOL)animated
-{
-    [super viewDidAppear: animated];
-
-    dataChanged = NO;
-
-    [self selectRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]];
-}
-
-
 - (void)viewDidUnload
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -126,6 +107,43 @@
 
     [super viewDidUnload];
 }
+
+
+- (void)viewWillAppear: (BOOL)animated
+{
+    [super viewWillAppear: animated];
+
+    // Add shadow layer onto the background image view
+    UIView *imageView = [self.view viewWithTag: 100];
+
+    [imageView.layer
+        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, imageView.frame.size.width, LargeShadowHeight)
+                                          darkFactor: 0.5
+                                         lightFactor: 150.0 / 255.0
+                                             inverse: NO]
+               atIndex: 0];
+
+    if (backgroundImageView.layer.sublayers.count == 0)
+        [backgroundImageView.layer
+            insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, backgroundImageView.frame.size.width,LargeShadowHeight)
+                                              darkFactor: 0.5
+                                             lightFactor: 150.0 / 255.0
+                                                 inverse: NO]
+                  atIndex: 0];
+
+    backgroundImageView.image = [[UIImage imageNamed: @"ConfiguratorPattern"] resizableImageWithCapInsets: UIEdgeInsetsZero];
+}
+
+
+- (void)viewDidAppear: (BOOL)animated
+{
+    [super viewDidAppear: animated];
+
+    dataChanged = NO;
+
+    [self selectRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]];
+}
+
 
 
 - (void)dealloc

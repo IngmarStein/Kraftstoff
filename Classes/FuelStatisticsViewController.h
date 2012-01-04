@@ -25,8 +25,13 @@
 @property (nonatomic)         BOOL             active;
 
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityView;
-@property (nonatomic, strong) IBOutlet UILabel                 *leftLabel;
-@property (nonatomic, strong) IBOutlet UILabel                 *rightLabel;
+
+@property (nonatomic, strong) IBOutlet UILabel *leftLabel;
+@property (nonatomic, strong) IBOutlet UILabel *rightLabel;
+@property (nonatomic, strong) IBOutlet UILabel *centerLabel;
+
+@property (nonatomic)         BOOL     zooming;
+@property (nonatomic, strong) UILongPressGestureRecognizer *zoomRecognizer;
 
 @end
 
@@ -62,6 +67,10 @@
     // Curve data
     CGPoint   data [MAX_SAMPLES];
     NSInteger dataCount;
+
+    // Lens data
+    NSTimeInterval lensDate [MAX_SAMPLES][2];
+    CGFloat lensValue [MAX_SAMPLES];
 
     // Data for marker positions
     CGFloat   hMarkPositions [5];

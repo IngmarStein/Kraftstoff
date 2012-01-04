@@ -329,7 +329,9 @@
             NSDate *date2 = [self scanDate: [obj2 objectForKey: dateKey] withOptionalTime: [obj2 objectForKey: timeKey]];
 
             if (date1 != nil && date2 != nil)
+            {
                 cmpResult = [date1 compare: date2];
+            }
 
             if (cmpResult == NSOrderedSame && odometerKey != nil)
             {

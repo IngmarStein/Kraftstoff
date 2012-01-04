@@ -9,14 +9,19 @@
 
 
 // Coordinates for the graph area
-static CGFloat const StatisticsViewHeight   = 268.0;
+static CGFloat const StatisticsViewHeight     = 268.0;
 
-static CGFloat const StatisticsLeftBorder   =  10.0;
-static CGFloat const StatisticsRightBorder  = 430.0;
-static CGFloat const StatisticsTopBorder    =  58.0;
-static CGFloat const StatisticsBottomBorder = 240.0;
-static CGFloat const StatisticsWidth        = 420.0;
-static CGFloat const StatisticsHeight       = 182.0;
+static CGFloat const StatisticsLeftBorder     =  10.0;
+static CGFloat const StatisticsRightBorder    = 430.0;
+static CGFloat const StatisticsTopBorder      =  58.0;
+static CGFloat const StatisticsBottomBorder   = 240.0;
+static CGFloat const StatisticsWidth          = 420.0;
+static CGFloat const StatisticsHeight         = 182.0;
+
+static CGFloat const StatisticsTrackYPosition =  40.0;
+static CGFloat const StatisticsTrackThickness =   4.0;
+static CGFloat const StatisticsInfoXMargin    =   9.0;
+static CGFloat const StatisticsInfoYMargin    =   3.0;
 
 
 
@@ -66,7 +71,7 @@ static CGFloat const StatisticsHeight       = 182.0;
 - (CGGradientRef)curveGradient;
 
 - (NSNumberFormatter*)averageFormatter;
-- (NSString*)averageFormatString;
+- (NSString*)averageFormatString: (BOOL)avgPrefix;
 - (NSString*)noAverageString;
 
 - (NSNumberFormatter*)axisFormatterForCar: (NSManagedObject*)car;
@@ -85,6 +90,10 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 - (void)displayStatisticsForRecentMonths: (NSInteger)numberOfMonths;
 - (void)switchToSelectedTimeSpan: (NSInteger)timeSpan;
+
+// Zoom lens for graph
+- (void)longPressChanged: (id)sender;
+- (void)drawLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info;
 
 // Backgroundhandler
 - (void)didEnterBackground: (NSNotification*)notification;
@@ -105,6 +114,9 @@ static CGFloat const StatisticsHeight       = 182.0;
 @synthesize activityView;
 @synthesize leftLabel;
 @synthesize rightLabel;
+@synthesize centerLabel;
+
+@synthesize zoomRecognizer;
 
 
 
@@ -142,6 +154,13 @@ static CGFloat const StatisticsHeight       = 182.0;
 
     leftLabel.text  = [NSString stringWithFormat: @"%@", [selectedCar valueForKey: @"name"]];
     rightLabel.text = @"";
+
+    self.zoomRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector (longPressChanged:)];
+    zoomRecognizer.minimumPressDuration    = 0.6;
+    zoomRecognizer.numberOfTouchesRequired = 1;
+    zoomRecognizer.enabled                 = NO;
+
+    [self.view addGestureRecognizer: zoomRecognizer];
 }
 
 
@@ -177,9 +196,13 @@ static CGFloat const StatisticsHeight       = 182.0;
     [contentCache enumerateKeysAndObjectsUsingBlock:
         ^(id key, id data, BOOL *stop)
         {
-            [(FuelStatisticsSamplingData*)data setContentImage: nil];
+            FuelStatisticsSamplingData *cell = (FuelStatisticsSamplingData*)data;
+
+            if (self.zooming == NO || [key integerValue] != displayedNumberOfMonths)
+                [cell setContentImage: nil];
         }];
 }
+
 
 
 #pragma mark -
@@ -286,6 +309,10 @@ static CGFloat const StatisticsHeight       = 182.0;
     {
         samples      [i] = 0.0;
         samplesCount [i] = 0;
+
+        state->lensDate  [i][0] = 0.0;
+        state->lensDate  [i][1] = 0.0;
+        state->lensValue [i]    = 0.0;
     }
 
     NSDate *mostRecentDate = [[fetchedObjects objectAtIndex: valFirstIndex] valueForKey: @"timestamp"];
@@ -300,6 +327,7 @@ static CGFloat const StatisticsHeight       = 182.0;
 
         if (!isnan (value))
         {
+            // Collect sample data
             NSTimeInterval sampleInterval = [mostRecentDate timeIntervalSinceDate: [managedObject valueForKey: @"timestamp"]];
             NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
 
@@ -307,6 +335,10 @@ static CGFloat const StatisticsHeight       = 182.0;
                 samples [sampleIndex] += 0.5;
             else
                 samples [sampleIndex] += (value - valMin) / valRange;
+
+            // Collect lens data
+            state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey: @"timestamp"] timeIntervalSince1970];
+            state->lensValue [sampleIndex] += value;
 
             samplesCount [sampleIndex] += 1;
         }
@@ -318,8 +350,15 @@ static CGFloat const StatisticsHeight       = 182.0;
 
     for (NSInteger i = 0; i < MAX_SAMPLES; i++)
         if (samplesCount [i])
-            state->data [state->dataCount++] = CGPointMake ((CGFloat)i / (MAX_SAMPLES-1), 1.0 - samples [i] / samplesCount [i]);
+        {
+            state->data [state->dataCount] = CGPointMake ((CGFloat)i / (MAX_SAMPLES-1), 1.0 - samples [i] / samplesCount [i]);
 
+            state->lensDate  [state->dataCount][0] = state->lensDate [i][0];
+            state->lensDate  [state->dataCount][1] = state->lensDate [i][(samplesCount [i] > 1)];
+            state->lensValue [state->dataCount]    = state->lensValue [i] / samplesCount [i];
+
+            state->dataCount++;
+        }
 
     // Markers for vertical axis
     NSNumberFormatter *numberFormatter = [self axisFormatterForCar: car];
@@ -338,18 +377,35 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 
     // Markers for horizontal axis
-    NSDate *midDate = [NSDate dateWithTimeInterval: [mostRecentDate timeIntervalSinceDate: sampleDate]/2.0
-                                         sinceDate: sampleDate];
+    NSDateFormatter *dateFormatter;
+    NSDate *midDate;
 
-    NSDateFormatter *dateFormatter = [AppDelegate sharedDateFormatter];
+    if (state->dataCount < 3 || [mostRecentDate timeIntervalSinceDate: sampleDate] < 604800)
+    {
+        dateFormatter = [AppDelegate sharedDateTimeFormatter];
+        midDate       = nil;
+    }
+    else
+    {
+        dateFormatter = [AppDelegate sharedDateFormatter];
+        midDate       = [NSDate dateWithTimeInterval: [mostRecentDate timeIntervalSinceDate: sampleDate]/2.0 sinceDate: sampleDate];
+    }
 
-    state->vMarkPositions [0] = 0.0;
-    state->vMarkNames     [0] = [dateFormatter stringForObjectValue: sampleDate];
-    state->vMarkPositions [1] = 0.5;
-    state->vMarkNames     [1] = [dateFormatter stringForObjectValue: midDate];
-    state->vMarkPositions [2] = 1.0;
-    state->vMarkNames     [2] = [dateFormatter stringForObjectValue: mostRecentDate];
-    state->vMarkCount = 3;
+    state->vMarkCount = 0;
+    state->vMarkPositions [state->vMarkCount] = 0.0;
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: sampleDate];
+    state->vMarkCount++;
+
+    if (midDate)
+    {
+        state->vMarkPositions [state->vMarkCount] = 0.5;
+        state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: midDate];
+        state->vMarkCount++;
+    }
+
+    state->vMarkPositions [state->vMarkCount] = 1.0;
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: mostRecentDate];
+    state->vMarkCount++;
 
     return valAverage;
 }
@@ -631,7 +687,7 @@ static CGFloat const StatisticsHeight       = 182.0;
 
     // Summary in top right of view
     if (averageValue != nil && !isnan ([averageValue floatValue]))
-        rightLabel.text = [NSString stringWithFormat: [self averageFormatString], [[self averageFormatter] stringFromNumber: averageValue]];
+        rightLabel.text = [NSString stringWithFormat: [self averageFormatString: YES], [[self averageFormatter] stringFromNumber: averageValue]];
     else
         rightLabel.text = [self noAverageString];
 
@@ -640,7 +696,8 @@ static CGFloat const StatisticsHeight       = 182.0;
     {
         [activityView stopAnimating];
 
-        imageView.image = cachedImage;
+        imageView.image        = cachedImage;
+        zoomRecognizer.enabled = (cell->dataCount > 0);
         return;
     }
 
@@ -651,7 +708,9 @@ static CGFloat const StatisticsHeight       = 182.0;
     UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
     {
         [self drawStatisticsForState: nil];
-        imageView.image = UIGraphicsGetImageFromCurrentImageContext ();
+
+        imageView.image        = UIGraphicsGetImageFromCurrentImageContext ();
+        zoomRecognizer.enabled = NO;
     }
     UIGraphicsEndImageContext ();
 
@@ -765,6 +824,245 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 
 #pragma mark -
+#pragma mark Zoom Lens
+
+
+
+@synthesize zooming;
+
+- (void)setZooming: (BOOL)flag
+{
+    for (UIView *subview in [self.view subviews])
+        if (subview.tag > 0)
+        {
+            if (subview.tag < 1000)
+                subview.hidden = flag;
+            else
+                subview.hidden = !flag;
+        }
+
+    if (!flag)
+        [self switchToSelectedTimeSpan: displayedNumberOfMonths];
+}
+
+
+- (void)longPressChanged: (id)sender
+{
+    switch ([zoomRecognizer state])
+    {
+        case UIGestureRecognizerStatePossible:
+            break;
+
+        case UIGestureRecognizerStateBegan:
+            self.zooming = YES;
+
+            // no break
+
+        case UIGestureRecognizerStateChanged:
+            {
+                CGPoint lensLocation = [zoomRecognizer locationInView: self.view];
+
+                // Keep horizontal position above graphics
+                if (lensLocation.x < StatisticsLeftBorder)
+                    lensLocation.x = StatisticsLeftBorder;
+
+                else if (lensLocation.x > StatisticsLeftBorder + StatisticsWidth)
+                    lensLocation.x = StatisticsLeftBorder + StatisticsWidth;
+
+                lensLocation.x -= StatisticsLeftBorder;
+                lensLocation.x /= StatisticsWidth;
+
+                // Match nearest data point
+                FuelStatisticsSamplingData *cell = [contentCache objectForKey: [NSNumber numberWithInteger: displayedNumberOfMonths]];
+
+                int lb = 0, ub = cell->dataCount - 1;
+
+                while (ub - lb > 1)
+                {
+                    int mid = (lb+ub)/2;
+
+                    if (lensLocation.x < cell->data [mid].x)
+                        ub = mid;
+                    else if (lensLocation.x > cell->data [mid].x)
+                        lb = mid;
+                    else
+                        lb = ub = mid;
+                }
+
+                int minIndex = (fabs (cell->data [lb].x - lensLocation.x) < fabs (cell->data [ub].x - lensLocation.x)) ? lb : ub;
+
+                // Update screen contents
+                if (minIndex >= 0)
+                {
+                    // Date information
+                    NSDateFormatter *df = [AppDelegate sharedLongDateFormatter];
+
+                    if (cell->lensDate [minIndex][0] == cell->lensDate [minIndex][1])
+                        centerLabel.text = [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][0]]];
+                    else
+                        centerLabel.text = [NSString stringWithFormat: @"%@  ➡  %@",
+                                                [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][0]]],
+                                                [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][1]]]];
+
+                    // Knob position
+                    lensLocation.x = rint (StatisticsLeftBorder + StatisticsWidth  * cell->data [minIndex].x);
+                    lensLocation.y = rint (StatisticsTopBorder  + StatisticsHeight * cell->data [minIndex].y);
+
+                    // Image with value information
+                    UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+                    {
+                        NSString *valueString = [NSString stringWithFormat:
+                                                    [self averageFormatString: NO],
+                                                    [self.averageFormatter stringFromNumber: [NSNumber numberWithFloat: cell->lensValue [minIndex]]]];
+
+                        [self drawLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
+
+                        UIImageView *imageView = (UIImageView*)self.view;
+                        imageView.image = UIGraphicsGetImageFromCurrentImageContext ();
+                    }
+                    UIGraphicsEndImageContext ();
+                }
+            }
+            break;
+
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+            self.zooming = NO;
+            break;
+    }
+}
+
+
+- (void)drawLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info
+{
+    CGContextRef cgContext = UIGraphicsGetCurrentContext ();
+
+    UIBezierPath *path;
+
+
+    // Graph as background
+    [background drawAtPoint: CGPointZero blendMode: kCGBlendModeCopy alpha: 1.0];
+
+
+    // Slider track
+    CGContextSaveGState (cgContext);
+    {
+        path = [UIBezierPath bezierPathWithRoundedRect: CGRectMake (StatisticsLeftBorder, StatisticsTrackYPosition, StatisticsWidth, StatisticsTrackThickness)
+                                     byRoundingCorners: UIRectCornerAllCorners
+                                           cornerRadii: CGSizeMake (2.0, 2.0)];
+
+        CGFloat scale = [[UIScreen mainScreen] scale];
+
+        CGContextTranslateCTM (cgContext, 0.0, -1.0 / scale);
+        [[UIColor blackColor] setFill];
+        [path fill];
+
+        CGContextTranslateCTM (cgContext, 0.0, +2.0 / scale);
+        [[UIColor colorWithWhite: 0.5 alpha: 1.0] setFill];
+        [path fill];
+
+        CGContextTranslateCTM (cgContext, 0.0, -1.0 / scale);
+        [[UIColor colorWithWhite: 0.28 alpha: 1.0] setFill];
+        [path fill];
+    }
+    CGContextRestoreGState (cgContext);
+
+
+    // Marker line
+    CGContextSaveGState (cgContext);
+    {
+        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +2.0), 2.0, [[UIColor colorWithWhite: 0.0 alpha: 0.6] CGColor]);
+
+        [[UIColor colorWithRed: 1.0 green: 0.756 blue: 0.188 alpha: 1.0] set];
+
+        // Knob shadow
+        [path removeAllPoints];
+        [path addArcWithCenter: location radius: 8.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+        [path fill];
+
+        // Marker line
+        path.lineWidth = 2;
+
+        [path removeAllPoints];
+        [path moveToPoint:    CGPointMake (location.x, StatisticsTrackYPosition + StatisticsTrackThickness)];
+        [path addLineToPoint: CGPointMake (location.x, StatisticsBottomBorder)];
+        [path stroke];
+    }
+    CGContextRestoreGState (cgContext);
+
+
+    // Marker knob
+    CGContextSaveGState (cgContext);
+    {
+        [[UIBezierPath bezierPathWithArcCenter: location radius: 8.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO] addClip];
+
+        CGContextDrawRadialGradient (cgContext,
+                                     [AppDelegate knobGradient],
+                                     CGPointMake (location.x, location.y - 2),
+                                     0.0,
+                                     location,
+                                     8.0,
+                                     kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    }
+    CGContextRestoreGState (cgContext);
+
+
+    // Layout for info box
+    UIFont *font = [UIFont boldSystemFontOfSize: 14];
+    CGRect infoRect;
+
+    infoRect.size         = [info sizeWithFont: font];
+    infoRect.size.width  += StatisticsInfoXMargin * 2.0;
+    infoRect.size.height += StatisticsInfoYMargin * 2.0;
+    infoRect.origin.x     = rint (location.x - infoRect.size.width/2);
+    infoRect.origin.y     = StatisticsTrackYPosition + rint ((StatisticsTrackThickness - infoRect.size.height) / 2);
+
+    if (infoRect.origin.x < StatisticsLeftBorder - 1)
+        infoRect.origin.x = StatisticsLeftBorder - 1;
+
+    if (infoRect.origin.x > StatisticsRightBorder - infoRect.size.width + 1)
+        infoRect.origin.x = StatisticsRightBorder - infoRect.size.width + 1;
+
+    // Info box
+    path = [UIBezierPath bezierPathWithRoundedRect: infoRect
+                                 byRoundingCorners: UIRectCornerAllCorners
+                                       cornerRadii: CGSizeMake (6.0, 6.0)];
+
+    // Box background
+    CGContextSaveGState (cgContext);
+    {
+        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 2.0, [[UIColor colorWithWhite: 0.0 alpha: 0.6] CGColor]);
+
+        [[UIColor blackColor] set];
+        [path fill];
+    }
+    CGContextRestoreGState (cgContext);
+
+    // Box gradient
+    CGContextSaveGState (cgContext);
+    {
+        [path addClip];
+
+        CGContextDrawLinearGradient (cgContext,
+                                     [AppDelegate infoGradient],
+                                     infoRect.origin,
+                                     CGPointMake (infoRect.origin.x, infoRect.origin.y + infoRect.size.height),
+                                     kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    }
+    CGContextRestoreGState (cgContext);
+
+
+    // Info text
+    CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 0.0, [[UIColor whiteColor] CGColor]);
+
+    [[UIColor darkGrayColor] set];
+    [info drawAtPoint: CGPointMake (infoRect.origin.x + StatisticsInfoXMargin, infoRect.origin.y + StatisticsInfoYMargin) withFont: font];
+}
+
+
+
+#pragma mark -
 #pragma mark Memory Management
 
 
@@ -785,9 +1083,10 @@ static CGFloat const StatisticsHeight       = 182.0;
 
 - (void)viewDidUnload
 {
-    self.activityView = nil;
-    self.leftLabel    = nil;
-    self.rightLabel   = nil;
+    self.activityView   = nil;
+    self.leftLabel      = nil;
+    self.rightLabel     = nil;
+    self.zoomRecognizer = nil;
 
     [super viewDidUnload];
 }
@@ -822,11 +1121,11 @@ static CGFloat const StatisticsHeight       = 182.0;
 }
 
 
-- (NSString*)averageFormatString
+- (NSString*)averageFormatString: (BOOL)avgPrefix
 {
     KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
 
-    return [NSString stringWithFormat: @"∅ %%@ %@", [AppDelegate consumptionUnitString: consumptionUnit]];
+    return [NSString stringWithFormat: @"%@%%@ %@", avgPrefix ? @"∅ " : @"", [AppDelegate consumptionUnitString: consumptionUnit]];
 }
 
 
@@ -890,11 +1189,11 @@ static CGFloat const StatisticsHeight       = 182.0;
 }
 
 
-- (NSString*)averageFormatString
+- (NSString*)averageFormatString: (BOOL)avgPrefix
 {
     NSInteger fuelUnit = [[self.selectedCar valueForKey: @"fuelUnit"] integerValue];
 
-    return [NSString stringWithFormat: @"∅ %%@/%@", [AppDelegate fuelUnitString: fuelUnit]];
+    return [NSString stringWithFormat: @"%@%%@/%@", avgPrefix ? @"∅ " : @"", [AppDelegate fuelUnitString: fuelUnit]];
 }
 
 
@@ -949,7 +1248,6 @@ static CGFloat const StatisticsHeight       = 182.0;
 }
 
 
-
 - (NSNumberFormatter*)averageFormatter
 {
     KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
@@ -961,14 +1259,14 @@ static CGFloat const StatisticsHeight       = 182.0;
 }
 
 
-- (NSString*)averageFormatString
+- (NSString*)averageFormatString: (BOOL)avgPrefix
 {
     KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
 
     if (KSFuelConsumptionIsMetric (consumptionUnit))
-        return @"∅ %@/100km";
+        return [NSString stringWithFormat: @"%@%%@/100km", avgPrefix ? @"∅ " : @""];
     else
-        return [NSString stringWithFormat: @"∅ %%@ mi/%@", [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
+        return [NSString stringWithFormat: @"%@%%@ mi/%@", avgPrefix ? @"∅ " : @"", [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
 }
 
 

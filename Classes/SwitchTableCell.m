@@ -65,8 +65,6 @@ static CGFloat const margin = 8.0;
 }
 
 
-
-
 - (void)configureForData: (id)dataObject
           viewController: (id)viewController
                tableView: (UITableView*)tableView

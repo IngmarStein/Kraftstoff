@@ -50,6 +50,9 @@ static AppDelegate *sharedDelegateObject = nil;
 @synthesize calculatorNavigationController;
 @synthesize statisticsNavigationController;
 @synthesize background;
+@synthesize managedObjectContext;
+@synthesize managedObjectModel;
+@synthesize persistentStoreCoordinator;
 
 
 
@@ -108,13 +111,13 @@ static AppDelegate *sharedDelegateObject = nil;
 
 - (void)applicationDidEnterBackground: (UIApplication*)application
 {
-    [self saveContext: managedObjectContext_];
+    [self saveContext: managedObjectContext];
 }
 
 
 - (void)applicationWillTerminate: (UIApplication*)application
 {
-    [self saveContext: managedObjectContext_];
+    [self saveContext: managedObjectContext];
 }
 
 
@@ -220,9 +223,8 @@ static AppDelegate *sharedDelegateObject = nil;
                         {
                             // Thread local managed object context
                             NSManagedObjectContext *localObjectContext = [[NSManagedObjectContext alloc] init];
-                            NSPersistentStoreCoordinator *persistentStoreCoordinator = [[AppDelegate sharedDelegate] persistentStoreCoordinator];
 
-                            [localObjectContext setPersistentStoreCoordinator: persistentStoreCoordinator];
+                            [localObjectContext setPersistentStoreCoordinator: self.persistentStoreCoordinator];
                             [localObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
 
                             // Register context with the notification center
@@ -459,10 +461,64 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
++ (CGGradientRef)infoGradient
+{
+    static CGGradientRef infoGradient = NULL;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        static CGFloat colorComponents [8] = { 0.97, 0.97, 0.97, 1.0,  0.80, 0.80, 0.80, 1.0 };
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+
+        infoGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        CGColorSpaceRelease (colorSpace);
+    });
+
+    return infoGradient;
+}
+
+
++ (CGGradientRef)knobGradient
+{
+    static CGGradientRef knobGradient = NULL;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        static CGFloat colorComponents [8] = { 1.0, 0.964, 0.078, 1.0,  1.0, 0.756, 0.188, 1.0 };
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+
+        knobGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        CGColorSpaceRelease (colorSpace);
+    });
+
+    return knobGradient;
+}
+
+
 
 #pragma mark -
 #pragma mark Shared Data Formatters
 
+
+
++ (NSDateFormatter*)sharedLongDateFormatter
+{
+    static NSDateFormatter *dateFormatter = nil;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeStyle: NSDateFormatterShortStyle];
+        [dateFormatter setDateStyle: NSDateFormatterLongStyle];
+    });
+
+    return dateFormatter;
+}
 
 
 + (NSDateFormatter*)sharedDateFormatter
@@ -473,8 +529,8 @@ static AppDelegate *sharedDelegateObject = nil;
     dispatch_once (&pred, ^{
 
         dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormatter setTimeStyle: NSDateFormatterNoStyle];
+        [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
     });
 
     return dateFormatter;
@@ -489,8 +545,8 @@ static AppDelegate *sharedDelegateObject = nil;
     dispatch_once (&pred, ^{
 
         dateTimeFormatter = [[NSDateFormatter alloc] init];
-        [dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
-        [dateTimeFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [dateTimeFormatter setTimeStyle: NSDateFormatterShortStyle];
+        [dateTimeFormatter setDateStyle: NSDateFormatterMediumStyle];
     });
 
     return dateTimeFormatter;
@@ -688,47 +744,47 @@ static AppDelegate *sharedDelegateObject = nil;
 
 - (NSManagedObjectContext*)managedObjectContext
 {
-    if (managedObjectContext_ == nil)
+    if (managedObjectContext == nil)
     {
         NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
 
         if (coordinator != nil)
         {
-            managedObjectContext_ = [[NSManagedObjectContext alloc] init];
-            [managedObjectContext_ setPersistentStoreCoordinator: coordinator];
-            [managedObjectContext_ setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+            managedObjectContext = [[NSManagedObjectContext alloc] init];
+            [managedObjectContext setPersistentStoreCoordinator: coordinator];
+            [managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
         }
     }
 
-    return managedObjectContext_;
+    return managedObjectContext;
 }
 
 
 - (NSManagedObjectModel*)managedObjectModel
 {
-    if (managedObjectModel_ == nil)
+    if (managedObjectModel == nil)
     {
         NSString *modelPath = [[NSBundle mainBundle] pathForResource: @"Kraftstoffrechner" ofType: @"momd"];
-        managedObjectModel_ = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: modelPath]];
+        managedObjectModel  = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: modelPath]];
     }
 
-    return managedObjectModel_;
+    return managedObjectModel;
 }
 
 
 - (NSPersistentStoreCoordinator*)persistentStoreCoordinator
 {
-    if (persistentStoreCoordinator_ == nil)
+    if (persistentStoreCoordinator == nil)
     {
         NSError *error = nil;
 
-        persistentStoreCoordinator_ = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+        persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
 
-        if (! [persistentStoreCoordinator_ addPersistentStoreWithType: NSSQLiteStoreType
-                                                        configuration: nil
-                                                                  URL: [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"Kraftstoffrechner.sqlite"]]
-                                                              options: nil
-                                                                error: &error])
+        if (! [persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
+                                                       configuration: nil
+                                                                 URL: [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"Kraftstoffrechner.sqlite"]]
+                                                             options: nil
+                                                               error: &error])
         {
             NSLog (@"%@", [error localizedDescription]);
 
@@ -740,7 +796,7 @@ static AppDelegate *sharedDelegateObject = nil;
         }
     }
 
-    return persistentStoreCoordinator_;
+    return persistentStoreCoordinator;
 }
 
 
@@ -792,12 +848,12 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 
-+ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)managedObjectContext
++ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName: @"car" inManagedObjectContext: managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName: @"car" inManagedObjectContext: moc];
     [fetchRequest setEntity: entity];
     [fetchRequest setFetchBatchSize: 32];
 
@@ -808,7 +864,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     // No section names; perform fetch without cache
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
-                                                                                                managedObjectContext: managedObjectContext
+                                                                                                managedObjectContext: moc
                                                                                                   sectionNameKeyPath: nil
                                                                                                            cacheName: nil];
 
@@ -927,10 +983,10 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 + (NSArray*)objectsForFetchRequest: (NSFetchRequest*)fetchRequest
-            inManagedObjectContext: (NSManagedObjectContext*)managedObjectContext
+            inManagedObjectContext: (NSManagedObjectContext*)moc
 {
     NSError *error = nil;
-    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest: fetchRequest error: &error];
+    NSArray *fetchedObjects = [moc executeFetchRequest: fetchRequest error: &error];
 
     if (error != nil)
     {
@@ -941,7 +997,7 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (BOOL)managedObjectContext: (NSManagedObjectContext*)managedObjectContext
++ (BOOL)managedObjectContext: (NSManagedObjectContext*)moc
         containsEventWithCar: (NSManagedObject*)car
                      andDate: (NSDate*)date;
 {
@@ -949,7 +1005,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     // Entity name
     NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent"
-                                              inManagedObjectContext: managedObjectContext];
+                                              inManagedObjectContext: moc];
     [fetchRequest setEntity: entity];
     [fetchRequest setFetchBatchSize: 2];
 
@@ -964,7 +1020,7 @@ static AppDelegate *sharedDelegateObject = nil;
             [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
 
     // Check whether fetch reveals any event objects
-    return ([[self objectsForFetchRequest: fetchRequest inManagedObjectContext: managedObjectContext] count] > 0);
+    return ([[self objectsForFetchRequest: fetchRequest inManagedObjectContext: moc] count] > 0);
 }
 
 
@@ -980,7 +1036,7 @@ static AppDelegate *sharedDelegateObject = nil;
                                   price: (NSDecimalNumber*)price
                              fuelVolume: (NSDecimalNumber*)fuelVolume
                                filledUp: (BOOL)filledUp
-                 inManagedObjectContext: (NSManagedObjectContext*)managedObjectContext
+                 inManagedObjectContext: (NSManagedObjectContext*)moc
                     forceOdometerUpdate: (BOOL)forceOdometerUpdate
 {
     NSDecimalNumber *zero = [NSDecimalNumber zero];
@@ -1005,8 +1061,8 @@ static AppDelegate *sharedDelegateObject = nil;
         NSArray *olderEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
                                                                                     beforeDate: date
                                                                                    dateMatches: NO
-                                                                        inManagedObjectContext: managedObjectContext]
-                                     inManagedObjectContext: managedObjectContext];
+                                                                        inManagedObjectContext: moc]
+                                     inManagedObjectContext: moc];
 
         if ([olderEvents count])
         {
@@ -1030,8 +1086,8 @@ static AppDelegate *sharedDelegateObject = nil;
         NSArray *youngerEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
                                                                                        afterDate: date
                                                                                      dateMatches: NO
-                                                                          inManagedObjectContext: managedObjectContext]
-                                       inManagedObjectContext: managedObjectContext];
+                                                                          inManagedObjectContext: moc]
+                                       inManagedObjectContext: moc];
 
         if ([youngerEvents count])
         {
@@ -1073,7 +1129,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
     // Create new managed object for this event
     NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName: @"fuelEvent"
-                                                              inManagedObjectContext: managedObjectContext];
+                                                              inManagedObjectContext: moc];
 
     [newEvent setValue: car           forKey: @"car"];
     [newEvent setValue: date          forKey: @"timestamp"];
@@ -1121,7 +1177,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 + (void)removeEventFromArchive: (NSManagedObject*)event
-        inManagedObjectContext: (NSManagedObjectContext*)managedObjectContext
+        inManagedObjectContext: (NSManagedObjectContext*)moc
            forceOdometerUpdate: (BOOL)forceOdometerUpdate
 {
     NSManagedObject *car        = [event valueForKey: @"car"];
@@ -1134,8 +1190,8 @@ static AppDelegate *sharedDelegateObject = nil;
     NSArray *youngerEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
                                                                                    afterDate: [event valueForKey: @"timestamp"]
                                                                                  dateMatches: NO
-                                                                      inManagedObjectContext: managedObjectContext]
-                                   inManagedObjectContext: managedObjectContext];
+                                                                      inManagedObjectContext: moc]
+                                   inManagedObjectContext: moc];
 
     NSUInteger row = [youngerEvents count];
 
@@ -1215,7 +1271,7 @@ static AppDelegate *sharedDelegateObject = nil;
         [car setValue: [[[car valueForKey: @"odometer"] decimalNumberBySubtracting: distance] max: zero] forKey: @"odometer"];
 
     // Delete the managed event object
-    [managedObjectContext deleteObject: event];
+    [moc deleteObject: event];
 }
 
 

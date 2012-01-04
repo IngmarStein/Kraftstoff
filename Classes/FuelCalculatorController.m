@@ -88,22 +88,25 @@ typedef enum
 
     // Navigation-Bar buttons
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
-                                                                     target: self
-                                                                     action: @selector (endEditingMode:)];
+                                                                    target: self
+                                                                    action: @selector (endEditingMode:)];
 
     self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemSave
-                                                                     target: self
-                                                                     action: @selector (saveAction:)];
+                                                                    target: self
+                                                                    action: @selector (saveAction:)];
 
     // Add shadow layer onto the background image view
-    UIView *imageView = [self.view viewWithTag: 100];
-
-    [imageView.layer
-        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, imageView.frame.size.width, LargeShadowHeight)
+    [self.view.layer
+        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, self.view.frame.size.width, LargeShadowHeight)
                                           darkFactor: 0.5
                                          lightFactor: 150.0 / 255.0
                                              inverse: NO]
                atIndex: 0];
+
+    // Background image
+    [[AppDelegate sharedDelegate]
+             setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+                        animated: NO];
 
     // Fetch the cars
     self.fetchedResultsController          = [AppDelegate fetchedResultsControllerForCarsInContext: self.managedObjectContext];
@@ -151,6 +154,10 @@ typedef enum
 {
     [super viewDidAppear: animated];
 
+    [[AppDelegate sharedDelegate]
+        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+                   animated: animated];
+
     [self subscribeToShakeNotification];
 }
 
@@ -158,6 +165,10 @@ typedef enum
 - (void)viewWillDisappear: (BOOL)animated
 {
     [super viewWillDisappear: animated];
+
+    [[AppDelegate sharedDelegate]
+         setWindowBackground: [UIImage imageNamed: @"TableBackground"]
+                    animated: animated];
 
     [self unsubscribeFromShakeNotification];
 }
@@ -675,6 +686,7 @@ typedef enum
         NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting: [car valueForKey: @"odometer"]];
 
         self.distance = [AppDelegate distanceForKilometers: convDistance withUnit: odometerUnit];
+        [self valueChanged: self.distance identifier: @"distance"];
 
         [self recreateDistanceRowWithAnimation: UITableViewRowAnimationRight];
     }
@@ -690,8 +702,6 @@ typedef enum
         return NO;
 
     // A simple heuristics when to ask for distance cobversion
-    NSDecimalNumber *zero = [NSDecimalNumber zero];
-    NSDecimalNumber *one  = [NSDecimalNumber one];
 
 
     // 1.) entered "distance" must be larger than car odometer
@@ -700,21 +710,54 @@ typedef enum
     NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance: distance withUnit: odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting: [car valueForKey: @"odometer"]];
 
-    if ([zero compare: convDistance] != NSOrderedAscending)
+    if ([[NSDecimalNumber zero] compare: convDistance] != NSOrderedAscending)
         return NO;
 
 
     // 2.) consumption with converted distances is more 'logical'
-    KSVolume fuelUnit     = [[car valueForKey: @"fuelUnit"] integerValue];
-    NSDecimalNumber *liters = [AppDelegate litersForVolume: fuelVolume withUnit: fuelUnit];
+    NSDecimalNumber *liters = [AppDelegate litersForVolume: fuelVolume
+                                                  withUnit: [[car valueForKey: @"fuelUnit"] integerValue]];
 
-    if ([zero compare: liters] != NSOrderedAscending)
+    if ([[NSDecimalNumber zero] compare: liters] != NSOrderedAscending)
         return NO;
 
-    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForDistance: rawDistance  Volume: liters withUnit: 0];
-    NSDecimalNumber *convConsumption = [AppDelegate consumptionForDistance: convDistance Volume: liters withUnit: 0];
+    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForDistance: rawDistance
+                                                                    Volume: liters
+                                                                  withUnit: KSFuelConsumptionLitersPer100km];
 
-    if ([one compare: rawConsumption] != NSOrderedDescending || [one compare: convConsumption] != NSOrderedAscending)
+    if ([rawConsumption isEqual: [NSDecimalNumber notANumber]])
+        return NO;
+
+    NSDecimalNumber *convConsumption = [AppDelegate consumptionForDistance: convDistance
+                                                                    Volume: liters
+                                                                  withUnit: KSFuelConsumptionLitersPer100km];
+
+    if ([convConsumption isEqual: [NSDecimalNumber notANumber]])
+        return NO;
+
+    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForDistance: [car valueForKey: @"distanceTotalSum"]
+                                                                   Volume: [car valueForKey: @"fuelVolumeTotalSum"]
+                                                                 withUnit: KSFuelConsumptionLitersPer100km];
+
+    NSDecimalNumber *loBound, *hiBound;
+
+    if ([avgConsumption isEqual: [NSDecimalNumber notANumber]])
+    {
+        loBound = [NSDecimalNumber decimalNumberWithMantissa:  2 exponent: 0 isNegative: NO];
+        hiBound = [NSDecimalNumber decimalNumberWithMantissa: 20 exponent: 0 isNegative: NO];
+    }
+    else
+    {
+        loBound = [avgConsumption decimalNumberByMultiplyingBy: [NSDecimalNumber decimalNumberWithMantissa: 5 exponent: -1 isNegative: NO]];
+        hiBound = [avgConsumption decimalNumberByMultiplyingBy: [NSDecimalNumber decimalNumberWithMantissa: 5 exponent:  0 isNegative: NO]];
+    }
+
+    // conversion only when rawConsumtion <= lowerBound
+    if ([rawConsumption compare: loBound] == NSOrderedDescending)
+        return NO;
+
+    // conversion only when lowerBound <= convConversion <= highBound
+    if ([convConsumption compare: loBound] == NSOrderedAscending || [convConsumption compare: hiBound] == NSOrderedDescending)
         return NO;
 
 
@@ -740,7 +783,7 @@ typedef enum
                                 [distanceFormatter stringFromNumber: [AppDelegate distanceForKilometers: convDistance withUnit: odometerUnit]],
                                 [AppDelegate odometerUnitString: odometerUnit]];
 
-    [[[UIAlertView alloc] initWithTitle: _I18N (@"Convert odometer reading into distance?")
+    [[[UIAlertView alloc] initWithTitle: _I18N (@"Convert from odometer reading into distance?")
                                 message: _I18N (@"Please choose the distance driven:")
                                delegate: self
                       cancelButtonTitle: rawButton

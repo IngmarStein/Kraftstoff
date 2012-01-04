@@ -36,6 +36,8 @@ static NSInteger maxEditHelpCounter = 1;
 @synthesize editedObject;
 @synthesize longPressRecognizer;
 
+@synthesize fuelEventController;
+
 
 
 #pragma mark -
@@ -634,13 +636,16 @@ static NSInteger maxEditHelpCounter = 1;
     }
     else
     {
-        FuelEventController *fuelController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
+        NSManagedObject *selectedCar = [[self fetchedResultsController] objectAtIndexPath: indexPath];
 
-        NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath: indexPath];
-        fuelController.selectedCar          = selectedObject;
-        fuelController.managedObjectContext = self.managedObjectContext;
+        if (self.fuelEventController == nil || self.fuelEventController.selectedCar != selectedCar)
+        {
+            self.fuelEventController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
+            self.fuelEventController.managedObjectContext = self.managedObjectContext;
+            self.fuelEventController.selectedCar          = selectedCar;
+        }
 
-        [self.navigationController pushViewController: fuelController animated: YES];
+        [self.navigationController pushViewController: self.fuelEventController animated: YES];
     }
 }
 
@@ -771,6 +776,9 @@ static NSInteger maxEditHelpCounter = 1;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+
+    if (self.navigationController.topViewController == self)
+        self.fuelEventController = nil;
 }
 
 

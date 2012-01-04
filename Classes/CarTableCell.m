@@ -102,8 +102,6 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-
-
 - (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];

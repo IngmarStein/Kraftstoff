@@ -137,7 +137,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
     self.editingTextField = nil;
-
     self.editButton       = nil;
     self.cancelButton     = nil;
     self.doneButton       = nil;
@@ -149,8 +148,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.event = nil;
 }
 
 
@@ -159,7 +156,7 @@
     [super viewDidAppear: animated];
 
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [UIImage imageNamed: @"PageBackground"]
+        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
                    animated: animated];
 }
 
@@ -182,7 +179,7 @@
 
 - (void)reloadStateFromEvent
 {
-    self.car  = [event valueForKey: @"car"];
+    self.car = [event valueForKey: @"car"];
 
     KSDistance odometerUnit = [[car valueForKey: @"odometerUnit"] integerValue];
     KSVolume   fuelUnit     = [[car valueForKey: @"fuelUnit"]     integerValue];

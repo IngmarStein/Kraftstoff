@@ -14,8 +14,6 @@
 @synthesize rowIndex;
 
 
-
-
 - (BOOL)isAccessibilityElement
 {
     return YES;

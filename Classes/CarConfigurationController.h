@@ -32,6 +32,7 @@ typedef enum
 }
 
 @property (nonatomic, strong) UITextField              *editingTextField;
+@property (nonatomic, strong) IBOutlet UIImageView     *backgroundImageView;
 @property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
 
 @property (nonatomic, strong) NSString        *name;

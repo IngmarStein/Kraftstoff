@@ -29,6 +29,7 @@ static NSString *separatorStrings [] =
 - (NSString*)parseSeparator;
 - (NSString*)parseEmptyLines;
 - (NSString*)parseLineSeparator;
+- (void)skipLine;
 - (NSString*)parseTwoDoubleQuotes;
 - (NSString*)parseTextData;
 
@@ -62,8 +63,6 @@ static NSString *separatorStrings [] =
 
     return self;
 }
-
-
 
 
 - (void)setSeparator: (NSString*)separatorString
@@ -114,8 +113,7 @@ static NSString *separatorStrings [] =
                 goto foundHeader;
         }
 
-        if (separatorStrings [index] == nil)
-            return nil;
+        [self skipLine];
     }
 
 foundHeader:
@@ -330,7 +328,12 @@ foundHeader:
                             intoString: &matchedNewlines];
     }
 
-    if (matchedNewlines == nil || [self parseLineSeparator] == nil)
+    if (matchedNewlines == nil)
+    {
+        matchedNewlines = @"";
+    }
+
+    if ([self parseLineSeparator] == nil)
     {
         [scanner setScanLocation: location];
         return nil;
@@ -342,12 +345,19 @@ foundHeader:
 
 - (NSString*)parseLineSeparator
 {
-    NSString *matchedSeparator = nil;
+    // FIXME: hier alle Möglichkeiten für Newlines, aber nur einen Zeilenumbruch parsen...
+    if ([scanner scanString: @"\n" intoString: NULL])
+        return @"\n";
+    else
+        return nil;
+}
 
-    [scanner scanCharactersFromSet: [NSCharacterSet newlineCharacterSet]
-                        intoString: &matchedSeparator];
 
-    return matchedSeparator;
+- (void)skipLine
+{
+    // FIXME: braucht man das noch?
+    [scanner scanUpToCharactersFromSet: [NSCharacterSet newlineCharacterSet] intoString: NULL];
+    [self parseLineSeparator];
 }
 
 
@@ -355,8 +365,7 @@ foundHeader:
 {
     NSString *data = nil;
 
-    [scanner scanUpToCharactersFromSet: endTextCharacterSet
-                            intoString: &data];
+    [scanner scanUpToCharactersFromSet: endTextCharacterSet intoString: &data];
 
     return data;
 }

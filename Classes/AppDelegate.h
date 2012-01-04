@@ -47,12 +47,7 @@ extern CGFloat const StatusBarHeight;
 extern CGFloat const HugeStatusBarHeight;
 
 
-@interface AppDelegate : NSObject <UIApplicationDelegate>
-{
-    NSManagedObjectContext       *managedObjectContext_;
-    NSManagedObjectModel         *managedObjectModel_;
-    NSPersistentStoreCoordinator *persistentStoreCoordinator_;
-}
+@interface AppDelegate : NSObject <UIApplicationDelegate> {}
 
 @property (nonatomic, strong) UIAlertView *importAlert;
 
@@ -95,10 +90,13 @@ extern CGFloat const HugeStatusBarHeight;
 + (CGGradientRef)blueGradient;
 + (CGGradientRef)greenGradient;
 + (CGGradientRef)orangeGradient;
++ (CGGradientRef)infoGradient;
++ (CGGradientRef)knobGradient;
 
 
 #pragma mark Shared Data Formatters
 
++ (NSDateFormatter*)sharedLongDateFormatter;
 + (NSDateFormatter*)sharedDateFormatter;
 + (NSDateFormatter*)sharedDateTimeFormatter;
 

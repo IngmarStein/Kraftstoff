@@ -116,6 +116,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 
 
 @synthesize strokeColor;
+@synthesize position;
 
 
 + (PageCellGroupPosition)positionForIndexPath: (NSIndexPath*)indexPath inTableView: (UITableView*)tableView;
@@ -157,16 +158,12 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 }
 
 
-
-
 - (void)layoutSubviews
 {
 	[super layoutSubviews];
 	[self setNeedsDisplay];
 }
 
-
-@synthesize position;
 
 - (void)setPosition: (PageCellGroupPosition)newPosition
 {

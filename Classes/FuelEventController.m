@@ -13,24 +13,28 @@
 
 @interface FuelEventController (private)
 
-- (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath;
+- (void)localeChanged: (id)object;
+
+#pragma mark Rotation
+
+- (void)setWaitForRotationAck: (BOOL)flag;
+- (void)rotationAckExpired: (id)object;
+
+#pragma mark Export
+
+- (void)validateExport;
+- (void)askExportObjects: (id)sender;
 
 - (void)mailComposeController: (MFMailComposeViewController*)mailComposer
           didFinishWithResult: (MFMailComposeResult)result
                         error: (NSError*)error;
 
-- (void)askExportObjects: (id)sender;
-
-- (void)localeChanged: (id)object;
-
-- (void)setWaitForRotationAck: (BOOL)flag;
-- (void)rotationAckExpired: (id)object;
+- (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath;
 
 @end
 
 
 @implementation FuelEventController
-
 
 @synthesize selectedCar;
 @synthesize managedObjectContext;
@@ -51,7 +55,8 @@
     {
         // Alternate view controller for statistics
         self.statisticsController = [[FuelStatisticsPageController alloc]
-                                           initWithNibName: @"FuelStatisticsPageController" bundle:nil];
+                                           initWithNibName: @"FuelStatisticsPageController"
+                                                    bundle: nil];
 
         self.statisticsController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
@@ -73,16 +78,13 @@
     // Configure root view
     self.title = [self.selectedCar valueForKey: @"name"];
 
-    // Buttons in navigation bar
-    UIBarButtonItem *exportButton = [[UIBarButtonItem alloc]
-                                        initWithBarButtonSystemItem: UIBarButtonSystemItemAction
-                                                             target: self
-                                                             action: @selector (askExportObjects:)];
+    // Export button in navigation bar
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                initWithBarButtonSystemItem: UIBarButtonSystemItemAction
+                                                                     target: self
+                                                                     action: @selector (askExportObjects:)];
 
-    self.navigationItem.rightBarButtonItem = exportButton;
-
-    // Sending mail needs a configured mail account
-    [exportButton setEnabled: [MFMailComposeViewController canSendMail] && [[[self fetchedResultsController] fetchedObjects] count] > 0];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 
     // Observe locale changes
     [[NSNotificationCenter defaultCenter]
@@ -132,6 +134,14 @@
 
 
 
+- (void)viewWillAppear: (BOOL)animated
+{
+    [super viewWillAppear: animated];
+
+    [self validateExport];
+}
+
+
 - (void)viewDidAppear: (BOOL)animated
 {
     [super viewDidAppear: animated];
@@ -141,10 +151,10 @@
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
         [[NSNotificationCenter defaultCenter]
-            addObserver: self
-               selector: @selector (orientationChanged:)
-                   name: UIDeviceOrientationDidChangeNotification
-                 object: [UIDevice currentDevice]];
+                addObserver: self
+                   selector: @selector (orientationChanged:)
+                       name: UIDeviceOrientationDidChangeNotification
+                     object: [UIDevice currentDevice]];
 
         isObservingRotationEvents = YES;
     }
@@ -160,9 +170,9 @@
     if (isObservingRotationEvents && [self modalViewController] == nil)
     {
         [[NSNotificationCenter defaultCenter]
-            removeObserver: self
-                      name: UIDeviceOrientationDidChangeNotification
-                    object: [UIDevice currentDevice]];
+                removeObserver: self
+                          name: UIDeviceOrientationDidChangeNotification
+                        object: [UIDevice currentDevice]];
 
         [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 
@@ -208,7 +218,7 @@
 - (void)setWaitForRotationAck: (BOOL)enabled
 {
     if (enabled)
-        [self performSelector: @selector(rotationAckExpired:) withObject: nil afterDelay: 1.0];
+        [self performSelector: @selector(rotationAckExpired:) withObject: nil afterDelay: 0.5];
     else
         [FuelEventController cancelPreviousPerformRequestsWithTarget: self];
 
@@ -232,6 +242,13 @@
 #pragma mark -
 #pragma mark Export Objects via eMail
 
+
+
+- (void)validateExport
+{
+    // Sending mail needs a configured mail account
+    self.navigationItem.rightBarButtonItem.enabled = ([MFMailComposeViewController canSendMail] && [[[self fetchedResultsController] fetchedObjects] count] > 0);
+}
 
 
 - (NSData*)exportTextData
@@ -665,6 +682,8 @@
 - (void)controllerDidChangeContent: (NSFetchedResultsController*)controller
 {
     [self.tableView endUpdates];
+
+    [self validateExport];
     [self.statisticsController invalidateCaches];
 }
 

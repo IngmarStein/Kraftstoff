@@ -22,8 +22,6 @@
 }
 
 
-
-
 - (void)updateTextFieldColorForValue: (id)value
 {
     BOOL valid = YES;

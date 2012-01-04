@@ -45,6 +45,4 @@
     return [NSString stringWithFormat: @"%@ %@", self.textLabel.text, self.textFieldProxy.text];
 }
 
-
-
 @end
