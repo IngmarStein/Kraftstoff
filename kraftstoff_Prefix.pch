@@ -15,3 +15,11 @@
 
 // Cocoa Extension
 #import "NSDecimalNumber_extension.h"
+
+#ifndef CF_RETURNS_RETAINED
+# if __has_feature(attribute_cf_returns_retained)
+#  define CF_RETURNS_RETAINED __attribute__((cf_returns_retained))
+# else
+#  define CF_RETURNS_RETAINED
+# endif
+#endif
