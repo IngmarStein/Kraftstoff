@@ -84,6 +84,7 @@
         carIDs     = [NSMutableSet setWithCapacity: 7];
         nameForID  = [NSMutableDictionary dictionaryWithCapacity: 7];
         modelForID = [NSMutableDictionary dictionaryWithCapacity: 7];
+        carForID   = [NSMutableDictionary dictionaryWithCapacity: 7];
     }
 
     return self;
@@ -199,9 +200,7 @@
     if ([first objectForKey: @"NAME"] == nil)
         return NO;
 
-    [carIDs     removeAllObjects];
-    [nameForID  removeAllObjects];
-    [modelForID removeAllObjects];
+    NSInteger previousCarIDCount = [carIDs count];
 
     for (NSDictionary *record in records)
     {
@@ -221,7 +220,7 @@
         }
     }
 
-    return ([carIDs count] != 0);
+    return ([carIDs count] > previousCarIDCount);
 }
 
 
@@ -235,7 +234,7 @@
     NSString *guessedName  = nil;
     NSString *guessedPlate = nil;
 
-    if ([sourceURL isFileURL])
+    if ([carIDs count] == 0 && [sourceURL isFileURL])
     {
         NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString: @"__"];
         NSString *part;
@@ -283,7 +282,6 @@
     // Analyse record headers
     NSDictionary *first = [records objectAtIndex: 0];
 
-    BOOL importFromTankPro = NO;
     KSDistance distanceUnit = -1;
     KSDistance odometerUnit = -1;
     KSVolume   volumeUnit   = -1;
@@ -305,15 +303,14 @@
         || priceKey == nil)
         return NO;
 
-    if ([carIDs count])
-    {
-        if (IDKey != nil && distanceKey == nil && odometerKey != nil && volumeKey == nil && volumeUnitKey != nil && fillupKey != nil)
-            importFromTankPro = YES;
-    }
 
-    // Dummy object for carID loop
-    if (!importFromTankPro)
-        [carIDs addObject: [NSNull null]];
+    // Detect import from TankPro
+    BOOL importFromTankPro;
+
+    if ([carIDs count] && IDKey != nil && distanceKey == nil && odometerKey != nil && volumeKey == nil && volumeUnitKey != nil && fillupKey != nil)
+        importFromTankPro = YES;
+    else
+        importFromTankPro = NO;
 
 
     // Sort records according time and odometer
@@ -349,8 +346,48 @@
     // Parse all records for all cars
     NSFetchedResultsController *fetchedResultsController = [AppDelegate fetchedResultsControllerForCarsInContext: managedObjectContext];
 
+    if ([carIDs count] == 0)
+        [carIDs addObject: [NSNull null]];
+
     for (NSNumber *importID in carIDs)
     {
+        // Create or get the car object
+        NSManagedObject *newCar = [carForID objectForKey: importID];
+
+        if (newCar == nil)
+        {
+            *numCars = *numCars + 1;
+
+            NSString *name = [modelForID objectForKey: importID];
+
+            if (name == nil)
+                name = guessedName;
+            if (name == nil)
+                name = [NSString stringWithFormat: @"%@", _I18N (@"Imported Car")];
+            else if ([name length] > maximumTextFieldLength)
+                name = [name substringToIndex: maximumTextFieldLength];
+
+            NSString *plate = [nameForID objectForKey: importID];
+
+            if (plate == nil)
+                plate = guessedPlate;
+            if (plate == nil)
+                plate = @"";
+            else if ([plate length] > maximumTextFieldLength)
+                plate = [plate substringToIndex: maximumTextFieldLength];
+
+            newCar = [self addCarWithName: name
+                                    plate: plate
+                             odometerUnit: (distanceUnit != -1) ? distanceUnit : odometerUnit
+                               volumeUnit: volumeUnit
+                      fuelConsumptionUnit: -1
+                                inContext: managedObjectContext
+                           fetchedObjects: [fetchedResultsController fetchedObjects]];
+
+            [carForID setObject: newCar forKey: importID];
+        }
+
+        // Handle records for current car
         NSDate *lastDate         = [NSDate distantPast];
         NSTimeInterval lastDelta = 0.0;
         BOOL detectedEvents      = NO;
@@ -360,34 +397,6 @@
         NSDecimalNumber *inheritedCost       = zero;
         NSDecimalNumber *inheritedDistance   = zero;
         NSDecimalNumber *inheritedFuelVolume = zero;
-
-        *numCars = *numCars + 1;
-
-        NSString *name = [modelForID objectForKey: importID];
-
-        if (name == nil)
-            name = guessedName;
-        if (name == nil)
-            name = [NSString stringWithFormat: @"%@", _I18N (@"Imported Car")];
-        else if ([name length] > maximumTextFieldLength)
-            name = [name substringToIndex: maximumTextFieldLength];
-
-        NSString *plate = [nameForID objectForKey: importID];
-
-        if (plate == nil)
-            plate = guessedPlate;
-        if (plate == nil)
-            plate = @"";
-        else if ([plate length] > maximumTextFieldLength)
-            plate = [plate substringToIndex: maximumTextFieldLength];
-
-        NSManagedObject *newCar = [self addCarWithName: name
-                                                 plate: plate
-                                          odometerUnit: (distanceUnit != -1) ? distanceUnit : odometerUnit
-                                            volumeUnit: volumeUnit
-                                   fuelConsumptionUnit: -1
-                                             inContext: managedObjectContext
-                                        fetchedObjects: [fetchedResultsController fetchedObjects]];
 
         for (NSDictionary *record in sortedRecords)
         {
@@ -465,6 +474,7 @@
 
             BOOL filledUp = [self scanBooleanWithString: [record objectForKey: fillupKey]];
 
+
             // Consistency check and import
             if ([distance compare: zero] == NSOrderedDescending && [volume compare: zero] == NSOrderedDescending)
             {
@@ -492,9 +502,9 @@
                     inheritedFuelVolume = [inheritedFuelVolume decimalNumberByAdding: volume];
                 }
 
-                *numEvents = *numEvents + 1;
+                *numEvents     = *numEvents + 1;
                 detectedEvents = YES;
-                lastDate = date;
+                lastDate       = date;
             }
         }
 
@@ -502,13 +512,12 @@
         if (detectedEvents)
             [newCar setValue: [odometer max: [newCar valueForKey: @"distanceTotalSum"]] forKey: @"odometer"];
 
-        // Save after every imported car, this triggers a merge of changes on the main threads context
-        [[AppDelegate sharedDelegate] saveContext: managedObjectContext];
+        // Save when changes where made
+        if ([managedObjectContext hasChanges])
+            [[AppDelegate sharedDelegate] saveContext: managedObjectContext];
     }
 
-    if (!importFromTankPro)
-        [carIDs removeAllObjects];
-
+    [carIDs removeObject: [NSNull null]];
     return YES;
 }
 
@@ -519,11 +528,13 @@
                   sourceURL: (NSURL*)sourceURL
                   inContext: (NSManagedObjectContext*)managedObjectContext
 {
-    CSVParser *parser    = [[CSVParser alloc] initWithString: CSVString];
-    BOOL foundCarIDTable = NO;
+    CSVParser *parser = nil;
 
     *numCars   = 0;
     *numEvents = 0;
+
+    // TankPro import: find all car tables
+    parser = [[CSVParser alloc] initWithString: CSVString];
 
     while (1)
     {
@@ -535,21 +546,27 @@
         if ([CSVTable count] == 0)
             continue;
 
-        if (!foundCarIDTable)
-        {
-            if ([self importCarIDs: CSVTable])
-            {
-                foundCarIDTable = YES;
-                continue;
-            }
-        }
+        [self importCarIDs: CSVTable];
+    }
 
-        if ([self importRecords: CSVTable
-                   detectedCars: numCars
-                 detectedEvents: numEvents
-                      sourceURL: sourceURL
-                      inContext: managedObjectContext])
+    // Data import
+    parser = [[CSVParser alloc] initWithString: CSVString];
+
+    while (1)
+    {
+        NSArray *CSVTable = [parser parseTable];
+
+        if (CSVTable == nil)
             break;
+
+        if ([CSVTable count] == 0)
+            continue;
+
+        [self importRecords: CSVTable
+               detectedCars: numCars
+             detectedEvents: numEvents
+                  sourceURL: sourceURL
+                  inContext: managedObjectContext];
     }
 
     return (*numCars != 0);

@@ -100,7 +100,7 @@ static NSString *separatorStrings [] =
         [self parseEmptyLines];
 
         NSUInteger location = [scanner scanLocation];
-        NSInteger  index = 0;
+        NSInteger  index    = 0;
 
         while (separatorStrings [index] != nil)
         {
@@ -345,17 +345,20 @@ foundHeader:
 
 - (NSString*)parseLineSeparator
 {
-    // FIXME: hier alle Möglichkeiten für Newlines, aber nur einen Zeilenumbruch parsen...
-    if ([scanner scanString: @"\n" intoString: NULL])
+    NSUInteger location = [scanner scanLocation];
+
+    if ([scanner scanCharactersFromSet: [NSCharacterSet newlineCharacterSet] intoString: NULL])
+    {
+        [scanner setScanLocation: location+1];
         return @"\n";
-    else
-        return nil;
+    }
+
+    return nil;
 }
 
 
 - (void)skipLine
 {
-    // FIXME: braucht man das noch?
     [scanner scanUpToCharactersFromSet: [NSCharacterSet newlineCharacterSet] intoString: NULL];
     [self parseLineSeparator];
 }
