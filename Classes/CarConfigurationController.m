@@ -220,7 +220,7 @@
               inSection: 0
               cellClass: [TextEditTableCell class]
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            _I18N (@"Number Plate"),        @"label",
+                            _I18N (@"License Plate"),       @"label",
                             @"plate",                       @"valueIdentifier",
                             [NSNumber numberWithBool: YES], @"autocapitalizeAll",
                             nil]
