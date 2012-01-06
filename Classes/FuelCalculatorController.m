@@ -100,7 +100,7 @@ typedef enum
         insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, self.view.frame.size.width, LargeShadowHeight)
                                           darkFactor: 0.5
                                          lightFactor: 150.0 / 255.0
-                                             inverse: NO]
+                                       fadeDownwards: YES]
                atIndex: 0];
 
     // Background image
@@ -275,7 +275,7 @@ typedef enum
 
     NSDecimalNumber *liters      = [AppDelegate litersForVolume: fuelVolume withUnit: fuelUnit];
     NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance: distance withUnit: odometerUnit];
-    NSDecimalNumber *consumption = [AppDelegate consumptionForDistance: kilometers Volume: liters withUnit: consumptionUnit];
+    NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers: kilometers Liters: liters inUnit: consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat: @"%@ %@ %@ %@",
                                         [[AppDelegate sharedCurrencyFormatter]   stringFromNumber: cost],
@@ -721,23 +721,23 @@ typedef enum
     if ([[NSDecimalNumber zero] compare: liters] != NSOrderedAscending)
         return NO;
 
-    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForDistance: rawDistance
-                                                                    Volume: liters
-                                                                  withUnit: KSFuelConsumptionLitersPer100km];
+    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers: rawDistance
+                                                                      Liters: liters
+                                                                      inUnit: KSFuelConsumptionLitersPer100km];
 
     if ([rawConsumption isEqual: [NSDecimalNumber notANumber]])
         return NO;
 
-    NSDecimalNumber *convConsumption = [AppDelegate consumptionForDistance: convDistance
-                                                                    Volume: liters
-                                                                  withUnit: KSFuelConsumptionLitersPer100km];
+    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers: convDistance
+                                                                      Liters: liters
+                                                                      inUnit: KSFuelConsumptionLitersPer100km];
 
     if ([convConsumption isEqual: [NSDecimalNumber notANumber]])
         return NO;
 
-    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForDistance: [car valueForKey: @"distanceTotalSum"]
-                                                                   Volume: [car valueForKey: @"fuelVolumeTotalSum"]
-                                                                 withUnit: KSFuelConsumptionLitersPer100km];
+    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForKilometers: [car valueForKey: @"distanceTotalSum"]
+                                                                     Liters: [car valueForKey: @"fuelVolumeTotalSum"]
+                                                                     inUnit: KSFuelConsumptionLitersPer100km];
 
     NSDecimalNumber *loBound, *hiBound;
 

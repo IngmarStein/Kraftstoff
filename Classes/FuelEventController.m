@@ -306,9 +306,10 @@
             [numberFormatter stringFromNumber: [AppDelegate pricePerUnit: price withUnit: fuelUnit]],
 
             [[managedObject valueForKey: @"filledUp"] boolValue]
-                ? [numberFormatter stringFromNumber: [AppDelegate consumptionForDistance: [distance   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]]
-                                                                                  Volume: [fuelVolume decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]]
-                                                                                withUnit: consumptionUnit]]
+                ? [numberFormatter stringFromNumber:
+                      [AppDelegate consumptionForKilometers: [distance   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]]
+                                                     Liters: [fuelVolume decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]]
+                                                     inUnit: consumptionUnit]]
                 : @" "
          ];
     }
@@ -476,9 +477,9 @@
         distance   = [distance   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
         fuelVolume = [fuelVolume decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
 
-        NSDecimalNumber *avg = [AppDelegate consumptionForDistance: distance
-                                                            Volume: fuelVolume
-                                                          withUnit: consumptionUnit];
+        NSDecimalNumber *avg = [AppDelegate consumptionForKilometers: distance
+                                                              Liters: fuelVolume
+                                                              inUnit: consumptionUnit];
 
         consumptionDescription = [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber: avg];
 

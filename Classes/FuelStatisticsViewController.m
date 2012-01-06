@@ -1154,9 +1154,9 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
         NSDecimalNumber *distance   = [[managedObject valueForKey: @"distance"]   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
         NSDecimalNumber *fuelVolume = [[managedObject valueForKey: @"fuelVolume"] decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
 
-        return [[AppDelegate consumptionForDistance: distance
-                                             Volume: fuelVolume
-                                           withUnit: consumptionUnit] floatValue];
+        return [[AppDelegate consumptionForKilometers: distance
+                                               Liters: fuelVolume
+                                               inUnit: consumptionUnit] floatValue];
     }
     @catch (NSException *e)
     {

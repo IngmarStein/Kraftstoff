@@ -111,7 +111,7 @@
         insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, imageView.frame.size.width, LargeShadowHeight)
                                           darkFactor: 0.5
                                          lightFactor: 150.0 / 255.0
-                                             inverse: NO]
+                                       fadeDownwards: YES]
                atIndex: 0];
 
     // Observe locale changes
@@ -391,7 +391,7 @@
 
     NSDecimalNumber *liters      = [AppDelegate litersForVolume: fuelVolume withUnit: fuelUnit];
     NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance: distance withUnit: odometerUnit];
-    NSDecimalNumber *consumption = [AppDelegate consumptionForDistance: kilometers Volume: liters withUnit: consumptionUnit];
+    NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers: kilometers Liters: liters inUnit: consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat: @"%@ %@ %@ %@",
                                       [[AppDelegate sharedCurrencyFormatter]   stringFromNumber: cost],

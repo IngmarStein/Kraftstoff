@@ -288,7 +288,7 @@ foundHeader:
 
 - (NSString*)parseTwoDoubleQuotes
 {
-    if ([scanner scanString:@"\"\"" intoString:NULL])
+    if ([scanner scanString: @"\"\"" intoString: NULL])
         return @"\"\"";
     else
         return nil;
@@ -297,7 +297,7 @@ foundHeader:
 
 - (NSString*)parseDoubleQuote
 {
-    if ([scanner scanString:@"\"" intoString:NULL])
+    if ([scanner scanString: @"\"" intoString: NULL])
         return @"\"";
     else
         return nil;
@@ -345,14 +345,15 @@ foundHeader:
 
 - (NSString*)parseLineSeparator
 {
-    NSUInteger location = [scanner scanLocation];
-
-    if ([scanner scanCharactersFromSet: [NSCharacterSet newlineCharacterSet] intoString: NULL])
-    {
-        [scanner setScanLocation: location+1];
+    if ([scanner scanString: @"\r\n" intoString: NULL])
         return @"\n";
-    }
 
+    if ([scanner scanString: @"\n" intoString: NULL])
+        return @"\n";
+
+    if ([scanner scanString: @"\r" intoString: NULL])
+        return @"\n";
+    
     return nil;
 }
 

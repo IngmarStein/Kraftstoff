@@ -18,7 +18,7 @@
                         volumeUnit: (KSVolume)volumeUnit
                fuelConsumptionUnit: (KSFuelConsumption)fuelConsumptionUnit
                          inContext: (NSManagedObjectContext*)managedObjectContext
-                    fetchedObjects: (NSArray*)fetchedObjects;
+                 fetchedCarObjects: (NSArray*)fetchedCarObjects;
 
 - (NSManagedObject*)addEventForCar: (NSManagedObject*)car
                               date: (NSDate*)date
@@ -103,10 +103,10 @@
                         volumeUnit: (KSVolume)volumeUnit
                fuelConsumptionUnit: (KSFuelConsumption)fuelConsumptionUnit
                          inContext: (NSManagedObjectContext*)managedObjectContext
-                    fetchedObjects: (NSArray*)fetchedObjects
+                 fetchedCarObjects: (NSArray*)fetchedCarObjects
 {
     // Update order of existing objects
-    for (NSManagedObject *managedObject in fetchedObjects)
+    for (NSManagedObject *managedObject in fetchedCarObjects)
     {
         NSInteger order = [[managedObject valueForKey: @"order"] integerValue];
 
@@ -382,9 +382,15 @@
                                volumeUnit: volumeUnit
                       fuelConsumptionUnit: -1
                                 inContext: managedObjectContext
-                           fetchedObjects: [fetchedResultsController fetchedObjects]];
+                        fetchedCarObjects: [fetchedResultsController fetchedObjects]];
 
             [carForID setObject: newCar forKey: importID];
+        }
+        else
+        {
+            // Events can only be imported once
+            if ([[newCar valueForKey: @"distanceTotalSum"] compare: [NSDecimalNumber zero]] != NSOrderedSame)
+                continue;
         }
 
         // Handle records for current car
@@ -478,6 +484,7 @@
             // Consistency check and import
             if ([distance compare: zero] == NSOrderedDescending && [volume compare: zero] == NSOrderedDescending)
             {
+                // Add event for car
                 [self addEventForCar: newCar
                                 date: date
                             distance: distance

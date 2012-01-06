@@ -216,7 +216,6 @@ static AppDelegate *sharedDelegateObject = nil;
                     ^{
                         // Read file contents from given URL, guess file encoding
                         NSString *CSVString = [self contentsOfURL: url];
-
                         [self removeFileItemAtURL: url];
 
                         if (CSVString)
@@ -335,7 +334,7 @@ static AppDelegate *sharedDelegateObject = nil;
 {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
 
-    NSDateComponents *noSecComponents  = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
+    NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
     NSDateComponents *deltaComponents = [[NSDateComponents alloc] init];
 
     [deltaComponents setMonth: numberOfMonths];
@@ -365,7 +364,7 @@ static AppDelegate *sharedDelegateObject = nil;
 + (CAGradientLayer*)shadowWithFrame: (CGRect)frame
                          darkFactor: (CGFloat)darkFactor
                         lightFactor: (CGFloat)lightFactor
-                            inverse: (BOOL)inverse
+                      fadeDownwards: (BOOL)downwards
 {
     CAGradientLayer *newShadow = [[CAGradientLayer alloc] init];
 
@@ -374,10 +373,9 @@ static AppDelegate *sharedDelegateObject = nil;
 
     newShadow.frame           = frame;
     newShadow.backgroundColor = [UIColor clearColor].CGColor;
-    newShadow.colors          = inverse
-                                    ? [NSArray arrayWithObjects: (id)[lightColor CGColor], (id)[darkColor  CGColor], nil]
-                                    : [NSArray arrayWithObjects: (id)[darkColor  CGColor], (id)[lightColor CGColor], nil];
-
+    newShadow.colors          = downwards
+                                    ? [NSArray arrayWithObjects: (id)[darkColor  CGColor], (id)[lightColor CGColor], nil]
+                                    : [NSArray arrayWithObjects: (id)[lightColor CGColor], (id)[darkColor  CGColor], nil];
     return newShadow;
 }
 
@@ -891,8 +889,8 @@ static AppDelegate *sharedDelegateObject = nil;
         return nil;
 
     return [[[objectID URIRepresentation] absoluteString]
-            stringByReplacingOccurrencesOfString: @"/"
-            withString: @"_"];
+                stringByReplacingOccurrencesOfString: @"/"
+                                          withString: @"_"];
 }
 
 
@@ -924,8 +922,8 @@ static AppDelegate *sharedDelegateObject = nil;
                                             dateDescription]];
 
         [fetchRequest setPredicate:
-         [NSCompoundPredicate andPredicateWithSubpredicates:
-          [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
+            [NSCompoundPredicate andPredicateWithSubpredicates:
+                [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
     }
 
     // Sorting keys
@@ -967,8 +965,8 @@ static AppDelegate *sharedDelegateObject = nil;
                                             dateDescription]];
 
         [fetchRequest setPredicate:
-         [NSCompoundPredicate andPredicateWithSubpredicates:
-          [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
+            [NSCompoundPredicate andPredicateWithSubpredicates:
+                [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
     }
 
     // Sorting keys
@@ -1437,16 +1435,16 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 
-+ (NSDecimalNumber*)consumptionForDistance: (NSDecimalNumber*)distance
-                                    Volume: (NSDecimalNumber*)volume
-                                  withUnit: (KSFuelConsumption)unit
++ (NSDecimalNumber*)consumptionForKilometers: (NSDecimalNumber*)kilometers
+                                      Liters: (NSDecimalNumber*)liters
+                                      inUnit: (KSFuelConsumption)unit
 {
     NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
 
     if (unit == KSFuelConsumptionLitersPer100km)
-        return [[volume decimalNumberByMultiplyingByPowerOf10: 2] decimalNumberByDividingBy: distance withBehavior: handler];
+        return [[liters decimalNumberByMultiplyingByPowerOf10: 2] decimalNumberByDividingBy: kilometers withBehavior: handler];
 
-    NSDecimalNumber *kmPerLiter = [distance decimalNumberByDividingBy: volume];
+    NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy: liters];
 
     switch (unit)
     {
@@ -1519,6 +1517,7 @@ static AppDelegate *sharedDelegateObject = nil;
     }
 }
 
+
 + (NSString*)consumptionUnitShadedTableViewCellDescription: (KSFuelConsumption)unit
 {
     switch (unit)
@@ -1528,6 +1527,7 @@ static AppDelegate *sharedDelegateObject = nil;
         default:                                  return _I18N (@"Miles per Gallon");
     }
 }
+
 
 + (NSString*)fuelUnitString: (KSVolume)unit
 {

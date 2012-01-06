@@ -44,7 +44,7 @@
         originShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, LargeShadowHeight)
                                          darkFactor: 0.5
                                         lightFactor: 150.0 / 255.0
-                                            inverse: NO];
+                                      fadeDownwards: YES];
 
     if (! [[self.layer.sublayers objectAtIndex: 0] isEqual: originShadow])
         [self.layer insertSublayer: originShadow atIndex: 0];
@@ -105,7 +105,7 @@
             topCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, SmallShadowHeight)
                                               darkFactor: 0.3
                                              lightFactor: 100.0 / 255.0
-                                                 inverse: YES];
+                                           fadeDownwards: NO];
 
         if ([cell.layer.sublayers indexOfObjectIdenticalTo: topCellShadow] != 0)
             [cell.layer insertSublayer: topCellShadow atIndex: 0];
@@ -140,7 +140,7 @@
             bottomCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, MediumShadowHeight)
                                                  darkFactor: 0.5
                                                 lightFactor: 100.0 / 255.0
-                                                    inverse: NO];
+                                              fadeDownwards: YES];
 
         if ([cell.layer.sublayers indexOfObjectIdenticalTo: bottomCellShadow] != 0)
             [cell.layer insertSublayer: bottomCellShadow atIndex :0];

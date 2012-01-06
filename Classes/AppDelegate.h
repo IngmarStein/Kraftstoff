@@ -84,7 +84,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (CAGradientLayer*)shadowWithFrame: (CGRect)frame
                          darkFactor: (CGFloat)darkFactor
                         lightFactor: (CGFloat)lightFactor
-                            inverse: (BOOL)inverse;
+                      fadeDownwards: (BOOL)downwards;
 
 + (CGGradientRef)backGradient;
 + (CGGradientRef)blueGradient;
@@ -187,9 +187,9 @@ extern CGFloat const HugeStatusBarHeight;
 
 #pragma mark Consumption/Efficiency Computation
 
-+ (NSDecimalNumber*)consumptionForDistance: (NSDecimalNumber*)distance
-                                    Volume: (NSDecimalNumber*)volume
-                                  withUnit: (KSFuelConsumption)unit;
++ (NSDecimalNumber*)consumptionForKilometers: (NSDecimalNumber*)distance
+                                      Liters: (NSDecimalNumber*)volume
+                                      inUnit: (KSFuelConsumption)unit;
 
 + (NSDecimalNumber*)mpgUSFromKML: (NSDecimalNumber*)kmPerLiter;
 + (NSDecimalNumber*)mpgImperialFromKML: (NSDecimalNumber*)kmPerLiter;

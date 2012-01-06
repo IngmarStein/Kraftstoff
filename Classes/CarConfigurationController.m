@@ -114,21 +114,12 @@
     [super viewWillAppear: animated];
 
     // Add shadow layer onto the background image view
-    UIView *imageView = [self.view viewWithTag: 100];
-
-    [imageView.layer
-        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, imageView.frame.size.width, LargeShadowHeight)
-                                          darkFactor: 0.5
-                                         lightFactor: 150.0 / 255.0
-                                             inverse: NO]
-               atIndex: 0];
-
     if (backgroundImageView.layer.sublayers.count == 0)
         [backgroundImageView.layer
-            insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, backgroundImageView.frame.size.width,LargeShadowHeight)
+            insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, backgroundImageView.frame.size.width, LargeShadowHeight)
                                               darkFactor: 0.5
                                              lightFactor: 150.0 / 255.0
-                                                 inverse: NO]
+                                           fadeDownwards: YES]
                   atIndex: 0];
 
     backgroundImageView.image = [[UIImage imageNamed: @"ConfiguratorPattern"] resizableImageWithCapInsets: UIEdgeInsetsZero];

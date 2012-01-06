@@ -500,9 +500,9 @@ static NSInteger maxEditHelpCounter = 1;
     {
         avgConsumption = [[AppDelegate sharedFuelVolumeFormatter]
                                 stringFromNumber:
-                                    [AppDelegate consumptionForDistance: distance
-                                                                 Volume: fuelVolume
-                                                               withUnit: consumptionUnit]];
+                                    [AppDelegate consumptionForKilometers: distance
+                                                                   Liters: fuelVolume
+                                                                   inUnit: consumptionUnit]];
 
         tableCell.topRightAccessibilityLabel = avgConsumption;
         tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitShadedTableViewCellDescription: consumptionUnit];
