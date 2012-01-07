@@ -14,6 +14,7 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
 		28D3F202112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 28D3F201112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld */; };
+		4D01C81214B8963800C3A3E5 /* UIImage_extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D01C81114B8963800C3A3E5 /* UIImage_extension.m */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
 		4D0C9CF01392904200430C04 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9CF21392904200430C04 /* MainWindow.xib */; };
 		4D0C9CF6139290CC00430C04 /* FuelCalculator.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9CF8139290CC00430C04 /* FuelCalculator.xib */; };
@@ -99,6 +100,8 @@
 		28A0AAE50D9B0CCF005BE974 /* kraftstoff_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = kraftstoff_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		28C286DF0D94DF7D0034E888 /* CarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CarViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		28C286E00D94DF7D0034E888 /* CarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4D01C81014B8963800C3A3E5 /* UIImage_extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImage_extension.h; sourceTree = "<group>"; };
+		4D01C81114B8963800C3A3E5 /* UIImage_extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImage_extension.m; sourceTree = "<group>"; };
 		4D092C7B13956FB000760FB7 /* TextEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TextEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D092C7C13956FB000760FB7 /* TextEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TextEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D0C9CF11392904200430C04 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow.xib; sourceTree = "<group>"; };
@@ -414,6 +417,8 @@
 			children = (
 				4D92C9CE14324BA50092CF57 /* NSDecimalNumber_extension.h */,
 				4D92C9CF14324BA50092CF57 /* NSDecimalNumber_extension.m */,
+				4D01C81014B8963800C3A3E5 /* UIImage_extension.h */,
+				4D01C81114B8963800C3A3E5 /* UIImage_extension.m */,
 			);
 			name = "Cocoa Extensions";
 			sourceTree = "<group>";
@@ -681,6 +686,7 @@
 				4DDC187A1429EC8200383F92 /* FuelEventEditorController.m in Sources */,
 				4D92C9D014324BA50092CF57 /* NSDecimalNumber_extension.m in Sources */,
 				4D1899B614328AC0001434BD /* main.m in Sources */,
+				4D01C81214B8963800C3A3E5 /* UIImage_extension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

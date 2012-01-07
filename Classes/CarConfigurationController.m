@@ -122,7 +122,7 @@
                                            fadeDownwards: YES]
                   atIndex: 0];
 
-    backgroundImageView.image = [[UIImage imageNamed: @"ConfiguratorPattern"] resizableImageWithCapInsets: UIEdgeInsetsZero];
+    backgroundImageView.image = [UIImage backgroundImageWithPattern: [UIImage imageNamed: @"ConfiguratorPattern"]];
 }
 
 

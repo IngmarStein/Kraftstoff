@@ -3,9 +3,6 @@
 // Kraftstoff
 
 
-#import "NSDecimalNumber_extension.h"
-
-
 @implementation NSDecimalNumber (NSDecimalNumber_kraftstoff)
 
 - (NSDecimalNumber*)min: (NSDecimalNumber*)other

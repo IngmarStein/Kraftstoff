@@ -156,7 +156,7 @@
     [super viewDidAppear: animated];
 
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+        setWindowBackground: [UIImage backgroundImageWithPattern: [UIImage imageNamed: @"TablePattern"]]
                    animated: animated];
 }
 

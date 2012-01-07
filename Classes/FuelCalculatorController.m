@@ -105,7 +105,7 @@ typedef enum
 
     // Background image
     [[AppDelegate sharedDelegate]
-             setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+             setWindowBackground: [UIImage backgroundImageWithPattern: [UIImage imageNamed: @"TablePattern"]]
                         animated: NO];
 
     // Fetch the cars
@@ -155,7 +155,7 @@ typedef enum
     [super viewDidAppear: animated];
 
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+        setWindowBackground: [UIImage backgroundImageWithPattern: [UIImage imageNamed: @"TablePattern"]]
                    animated: animated];
 
     [self subscribeToShakeNotification];
