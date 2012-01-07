@@ -61,6 +61,10 @@
 		4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA531367154C00AE03CC /* DateEditTableCell.m */; };
 		4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA641368601D00AE03CC /* EditablePageCell.m */; };
 		4DB4DA68136886BC00AE03CC /* EditablePageCellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA67136886BC00AE03CC /* EditablePageCellTextField.m */; };
+		4DC35A4F14AE189C0078979F /* ConfiguratorPattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC35A4D14AE189C0078979F /* ConfiguratorPattern@2x.png */; };
+		4DC35A5014AE189C0078979F /* ConfiguratorPattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC35A4E14AE189C0078979F /* ConfiguratorPattern.png */; };
+		4DC35A5314AE1A330078979F /* TablePattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC35A5114AE1A330078979F /* TablePattern.png */; };
+		4DC35A5414AE1A330078979F /* TablePattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC35A5214AE1A330078979F /* TablePattern@2x.png */; };
 		4DC75A1012393FB600275150 /* CellShade@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC75A0F12393FB600275150 /* CellShade@2x.png */; };
 		4DC75A121239409300275150 /* CellShade.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC75A111239409300275150 /* CellShade.png */; };
 		4DC75BA71239613600275150 /* TableBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DC75BA51239613600275150 /* TableBackground.png */; };
@@ -81,10 +85,6 @@
 		4DF5F5A2144630DF008E7A1C /* Edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DF5F5A4144630DF008E7A1C /* Edit@2x.png */; };
 		4DF5F5AD14463D46008E7A1C /* Edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DF5F5AF14463D46008E7A1C /* Edit.png */; };
 		4DF6DACD13C2868300703A1F /* AppWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF6DACC13C2868300703A1F /* AppWindow.m */; };
-		4DFE333914B4D90C00BF8AAD /* ConfiguratorPattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DFE333514B4D90C00BF8AAD /* ConfiguratorPattern.png */; };
-		4DFE333A14B4D90C00BF8AAD /* ConfiguratorPattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DFE333614B4D90C00BF8AAD /* ConfiguratorPattern@2x.png */; };
-		4DFE333B14B4D90C00BF8AAD /* TablePattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DFE333714B4D90C00BF8AAD /* TablePattern.png */; };
-		4DFE333C14B4D90C00BF8AAD /* TablePattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DFE333814B4D90C00BF8AAD /* TablePattern@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -174,6 +174,10 @@
 		4DB4DA641368601D00AE03CC /* EditablePageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditablePageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DB4DA66136886BB00AE03CC /* EditablePageCellTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditablePageCellTextField.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DB4DA67136886BC00AE03CC /* EditablePageCellTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditablePageCellTextField.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4DC35A4D14AE189C0078979F /* ConfiguratorPattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ConfiguratorPattern@2x.png"; sourceTree = "<group>"; };
+		4DC35A4E14AE189C0078979F /* ConfiguratorPattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ConfiguratorPattern.png; sourceTree = "<group>"; };
+		4DC35A5114AE1A330078979F /* TablePattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TablePattern.png; sourceTree = "<group>"; };
+		4DC35A5214AE1A330078979F /* TablePattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TablePattern@2x.png"; sourceTree = "<group>"; };
 		4DC75A0F12393FB600275150 /* CellShade@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CellShade@2x.png"; sourceTree = "<group>"; };
 		4DC75A111239409300275150 /* CellShade.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CellShade.png; sourceTree = "<group>"; };
 		4DC75BA51239613600275150 /* TableBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableBackground.png; sourceTree = "<group>"; };
@@ -203,10 +207,6 @@
 		4DF5F5B014463D4D008E7A1C /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/Edit.png; sourceTree = "<group>"; };
 		4DF6DACB13C2868300703A1F /* AppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppWindow.h; path = Classes/AppWindow.h; sourceTree = "<group>"; };
 		4DF6DACC13C2868300703A1F /* AppWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppWindow.m; path = Classes/AppWindow.m; sourceTree = "<group>"; };
-		4DFE333514B4D90C00BF8AAD /* ConfiguratorPattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ConfiguratorPattern.png; sourceTree = "<group>"; };
-		4DFE333614B4D90C00BF8AAD /* ConfiguratorPattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ConfiguratorPattern@2x.png"; sourceTree = "<group>"; };
-		4DFE333714B4D90C00BF8AAD /* TablePattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TablePattern.png; sourceTree = "<group>"; };
-		4DFE333814B4D90C00BF8AAD /* TablePattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TablePattern@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -315,8 +315,8 @@
 				4DD538DA143853ED003ED398 /* Cars@2x.png */,
 				4DC75A111239409300275150 /* CellShade.png */,
 				4DC75A0F12393FB600275150 /* CellShade@2x.png */,
-				4DFE333514B4D90C00BF8AAD /* ConfiguratorPattern.png */,
-				4DFE333614B4D90C00BF8AAD /* ConfiguratorPattern@2x.png */,
+				4DC35A4E14AE189C0078979F /* ConfiguratorPattern.png */,
+				4DC35A4D14AE189C0078979F /* ConfiguratorPattern@2x.png */,
 				4DA2C2541326C97C004F8A22 /* Default.png */,
 				4DA2C2521326C92C004F8A22 /* Default@2x.png */,
 				4D2199C012460EF700FCED15 /* Icon.png */,
@@ -326,8 +326,6 @@
 				4D219A4E1246163B00FCED15 /* Icon-Small-50.png */,
 				4D219A501246163B00FCED15 /* Icon-Small@2x.png */,
 				4D2199BD124608EE00FCED15 /* iTunesArtwork */,
-				4DFE333714B4D90C00BF8AAD /* TablePattern.png */,
-				4DFE333814B4D90C00BF8AAD /* TablePattern@2x.png */,
 				4D23F76B12F1C8CD004700B2 /* RadioButton.png */,
 				4D23F76812F1C7F4004700B2 /* RadioButton@2x.png */,
 				4DECCE84125517A2009485FC /* SelectedCellShade.png */,
@@ -336,6 +334,8 @@
 				4D4B4D2D138DB05500857D63 /* Start@2x.png */,
 				4DC75BA51239613600275150 /* TableBackground.png */,
 				4DC75BA61239613600275150 /* TableBackground@2x.png */,
+				4DC35A5114AE1A330078979F /* TablePattern.png */,
+				4DC35A5214AE1A330078979F /* TablePattern@2x.png */,
 				4DD538D5143853E4003ED398 /* Zapfhahn.png */,
 				4DD538D6143853E4003ED398 /* Zapfhahn@2x.png */,
 			);
@@ -635,10 +635,10 @@
 				4DD538DC143853ED003ED398 /* Cars@2x.png in Resources */,
 				4DF5F5A2144630DF008E7A1C /* Edit@2x.png in Resources */,
 				4DF5F5AD14463D46008E7A1C /* Edit.png in Resources */,
-				4DFE333914B4D90C00BF8AAD /* ConfiguratorPattern.png in Resources */,
-				4DFE333A14B4D90C00BF8AAD /* ConfiguratorPattern@2x.png in Resources */,
-				4DFE333B14B4D90C00BF8AAD /* TablePattern.png in Resources */,
-				4DFE333C14B4D90C00BF8AAD /* TablePattern@2x.png in Resources */,
+				4DC35A4F14AE189C0078979F /* ConfiguratorPattern@2x.png in Resources */,
+				4DC35A5014AE189C0078979F /* ConfiguratorPattern.png in Resources */,
+				4DC35A5314AE1A330078979F /* TablePattern.png in Resources */,
+				4DC35A5414AE1A330078979F /* TablePattern@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -820,7 +820,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = kraftstoff;
@@ -836,7 +835,6 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = kraftstoff;
@@ -849,8 +847,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -866,8 +864,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
