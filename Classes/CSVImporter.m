@@ -397,6 +397,7 @@
         NSDate *lastDate         = [NSDate distantPast];
         NSTimeInterval lastDelta = 0.0;
         BOOL detectedEvents      = NO;
+        BOOL initialFillUpSeen   = NO;
 
         NSDecimalNumber *zero                = [NSDecimalNumber zero];
         NSDecimalNumber *odometer            = zero;
@@ -479,6 +480,14 @@
             }
 
             BOOL filledUp = [self scanBooleanWithString: [record objectForKey: fillupKey]];
+
+
+            // For TankPro ignore events until after the first full-fill-up
+            if (importFromTankPro && initialFillUpSeen == NO)
+            {
+                initialFillUpSeen = filledUp;
+                continue;
+            }
 
 
             // Consistency check and import

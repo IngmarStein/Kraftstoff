@@ -50,7 +50,7 @@
         [self.layer insertSublayer: originShadow atIndex: 0];
 
 
-    // Stretch and place the origin/footer shadow
+    // Stretch and place the origin shadow
     [CATransaction begin];
     [CATransaction setValue: (id)kCFBooleanTrue forKey: kCATransactionDisableActions];
     {
