@@ -7,7 +7,7 @@
 
 - (NSDecimalNumber*)min: (NSDecimalNumber*)other
 {
-    if ([self compare: other] != NSOrderedAscending)
+    if (other != nil && [self compare: other] != NSOrderedAscending)
         return other;
     else
         return self;
@@ -15,7 +15,7 @@
 
 - (NSDecimalNumber*)max: (NSDecimalNumber*)other
 {
-    if ([self compare: other] != NSOrderedDescending)
+    if (other != nil && [self compare: other] != NSOrderedDescending)
         return other;
     else
         return self;

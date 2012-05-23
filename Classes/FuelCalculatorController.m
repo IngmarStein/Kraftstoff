@@ -354,7 +354,7 @@ typedef enum
                    cellData: [NSDictionary dictionaryWithObjectsAndKeys:
                                 [AppDelegate fuelPriceUnitDescription: fuelUnit], @"label",
                                 [AppDelegate sharedEditPreciseCurrencyFormatter], @"formatter",
-                                [AppDelegate preciseCurrencyFormatter],           @"alternateFormatter",
+                                [AppDelegate sharedPreciseCurrencyFormatter],     @"alternateFormatter",
                                 price,                                            @"value",
                                 @"price",                                         @"valueIdentifier",
                                 nil]

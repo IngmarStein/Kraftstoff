@@ -4,7 +4,9 @@
 
 
 #import "FuelStatisticsPageController.h"
-#import "FuelStatisticsViewController.h"
+#import "FuelStatisticsGraphViewController.h"
+#import "FuelStatisticsTextViewController.h"
+#import "AppDelegate.h"
 
 
 @interface FuelStatisticsPageController (private)
@@ -56,6 +58,7 @@
             case 0: controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
             case 1: controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
             case 2: controller = [FuelStatisticsViewController_PriceAmount    alloc]; break;
+            case 3: controller = [FuelStatisticsTextViewController alloc]; break;                
         }
 
         controller = [controller initWithNibName: @"FuelStatisticsViewController" bundle: nil];
@@ -81,6 +84,18 @@
            selector: @selector (localeChanged:)
                name: NSCurrentLocaleDidChangeNotification
              object: nil];
+
+    [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector (localeChanged:)
+               name: kraftstoffCarsEditedNotification
+             object: nil];
+
+    [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector (didEnterBackground:)
+               name: UIApplicationDidEnterBackgroundNotification
+             object: nil];
 }
 
 
@@ -98,6 +113,15 @@
 - (void)localeChanged: (id)object
 {
     [self invalidateCaches];
+}
+
+
+- (void)didEnterBackground: (id)object
+{
+    for (FuelStatisticsViewController *controller in self.viewControllers)
+    {
+        [controller purgeDiscardableCacheContent];
+    }
 }
 
 
@@ -142,10 +166,12 @@
 {
     if (pageControlUsed == NO)
     {
+        NSInteger currentPage   = pageControl.currentPage;
         CGFloat pageWidth       = scrollView.frame.size.width;
         pageControl.currentPage = floor ((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-
-        [self updatePageVisibility];
+        
+        if (pageControl.currentPage != currentPage)
+            [self updatePageVisibility];
     }
 
     [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];

@@ -1,4 +1,4 @@
-// FuelCalculatorPageCell.h
+// EditablePageCell.h
 //
 // Kraftstoff
 

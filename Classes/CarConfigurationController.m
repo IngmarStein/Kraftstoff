@@ -428,7 +428,7 @@
 
 - (IBAction)handleCancel: (id)sender
 {
-    // Remember currently selected row in case the action shhet gets canceled
+    // Remember currently selected row in case the action sheet gets canceled
     mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
 
     [self dismissKeyboardWithCompletion: ^{ [self handleCancelCompletion: self]; }];

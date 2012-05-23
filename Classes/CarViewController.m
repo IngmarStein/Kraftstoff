@@ -294,6 +294,11 @@ static NSInteger maxEditHelpCounter = 1;
         [editedObject setValue: controller.fuelConsumptionUnit forKey: @"fuelConsumptionUnit"];
 
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+
+        // Invalidate cached statistics
+        [[NSNotificationCenter defaultCenter]
+            postNotification: [NSNotification notificationWithName: kraftstoffCarsEditedNotification
+                                                            object: nil]];
     }
 
     self.editedObject = nil;

@@ -4,6 +4,7 @@
 
 
 #define kraftstoffDeviceShakeNotification (@"kraftstoffDeviceShakeNotification")
+#define kraftstoffCarsEditedNotification  (@"kraftstoffCarsEditedNotification")
 
 
 // Unit Constants
@@ -32,7 +33,9 @@ typedef enum
     KSFuelConsumptionMilesPerGallonUK,
 } KSFuelConsumption;
 
-#define KSFuelConsumptionIsMetric(x) ((x) == KSFuelConsumptionLitersPer100km || (x) == KSFuelConsumptionKilometersPerLiter)
+#define KSFuelConsumptionIsMetric(x)     ((x) == KSFuelConsumptionLitersPer100km || (x) == KSFuelConsumptionKilometersPerLiter)
+#define KSFuelConsumptionIsEfficiency(x) ((x) != KSFuelConsumptionLitersPer100km)
+
 
 
 // Shadow heights used within the app
@@ -77,6 +80,9 @@ extern CGFloat const HugeStatusBarHeight;
 // Removes the second component from a date
 + (NSDate*)dateWithoutSeconds: (NSDate*)date;
 
+// Number of days between two dates
++ (NSInteger)daysBetweenDate: (NSDate*)startDate andDate: (NSDate*)endDate;
+
 
 #pragma mark Color Gradients
 
@@ -104,7 +110,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSNumberFormatter*)sharedFuelVolumeFormatter;
 + (NSNumberFormatter*)sharedCurrencyFormatter;
 + (NSNumberFormatter*)sharedEditPreciseCurrencyFormatter;
-+ (NSNumberFormatter*)preciseCurrencyFormatter;
++ (NSNumberFormatter*)sharedPreciseCurrencyFormatter;
 + (NSNumberFormatter*)sharedAxisCurrencyFormatter;
 
 + (NSDecimalNumberHandler*)sharedConsumptionRoundingHandler;

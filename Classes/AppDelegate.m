@@ -89,6 +89,7 @@ static AppDelegate *sharedDelegateObject = nil;
             [NSDecimalNumber zero],         @"recentFuelVolume",
             [NSNumber numberWithBool: YES], @"recentFilledUp",
             [NSNumber numberWithInt: 0],    @"editHelpCounter",
+            [NSNumber numberWithBool: YES], @"firstStartup",
             nil]];
 
     // Assign managed object context to rootview controllers
@@ -104,6 +105,21 @@ static AppDelegate *sharedDelegateObject = nil;
 {
     [window addSubview: tabBarController.view];
     [window makeKeyAndVisible];
+
+    // Switch once to the car view for new users
+    if ([launchOptions objectForKey: UIApplicationLaunchOptionsURLKey] == nil)
+    {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+        // A first time user has the firstStartup flag still raised and no preferre car yet
+        if ([defaults boolForKey: @"firstStartup"])
+        {
+            if ([[defaults stringForKey: @"preferredCarID"] isEqualToString: @""])
+                tabBarController.selectedIndex = 1;
+
+            [defaults setObject: [NSNumber numberWithBool: NO] forKey: @"firstStartup"];
+        }
+    }
 
     return YES;
 }
@@ -283,6 +299,8 @@ static AppDelegate *sharedDelegateObject = nil;
                         }
                     });
 
+    // Treat imports as successfull first startups
+    [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithBool: NO] forKey: @"firstStartup"];
     return YES;
 }
 
@@ -351,6 +369,20 @@ static AppDelegate *sharedDelegateObject = nil;
     NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
 
     return [gregorianCalendar dateFromComponents: noSecComponents];
+}
+
+
++ (NSInteger)daysBetweenDate: (NSDate*)startDate andDate: (NSDate*)endDate
+{
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
+    NSDateComponents *daysComponents = [gregorian components: NSDayCalendarUnit fromDate: startDate toDate: endDate options: 0];
+
+    NSInteger numberOfDays = [daysComponents day];
+
+    if (numberOfDays == 0)
+        numberOfDays = 1;
+    
+    return numberOfDays;
 }
 
 
@@ -655,7 +687,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 // Currency formatter with one additional fractional digit - used for inactive textfields
-+ (NSNumberFormatter*)preciseCurrencyFormatter
++ (NSNumberFormatter*)sharedPreciseCurrencyFormatter
 {
     static NSNumberFormatter *preciseCurrencyFormatter = nil;
     static dispatch_once_t pred;
