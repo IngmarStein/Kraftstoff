@@ -103,7 +103,12 @@ static NSInteger maxEditHelpCounter = 1;
 
 
 - (void)localeChanged: (id)object
-{
+{    
+    // Invalidate fuelEvent-controller and any precomputed statistics
+    if (self.navigationController.topViewController == self)
+        self.fuelEventController = nil;
+
+    // Reload all table data
     [self.tableView reloadData];
 }
 
@@ -295,10 +300,8 @@ static NSInteger maxEditHelpCounter = 1;
 
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
 
-        // Invalidate cached statistics
-        [[NSNotificationCenter defaultCenter]
-            postNotification: [NSNotification notificationWithName: kraftstoffCarsEditedNotification
-                                                            object: nil]];
+        // Invalidate fuelEvent-controller and any precomputed statistics
+        self.fuelEventController = nil;
     }
 
     self.editedObject = nil;

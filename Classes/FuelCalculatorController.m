@@ -372,10 +372,10 @@ typedef enum
                   inSection: 0
                   cellClass: [NumberEditTableCell class]
                    cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                                [AppDelegate fuelUnitDescription: fuelUnit discernGallons: NO],         @"label",
-                                [@" " stringByAppendingString: [AppDelegate fuelUnitString: fuelUnit]], @"suffix",
-                                [AppDelegate sharedFuelVolumeFormatter],                                @"formatter",
-                                @"fuelVolume",                                                          @"valueIdentifier",
+                                [AppDelegate fuelUnitDescription: fuelUnit discernGallons: NO pluralization: YES], @"label",
+                                [@" " stringByAppendingString: [AppDelegate fuelUnitString: fuelUnit]],            @"suffix",
+                                [AppDelegate sharedFuelVolumeFormatter],                                           @"formatter",
+                                @"fuelVolume",                                                                     @"valueIdentifier",
                                 nil]
               withAnimation: animation];
     }

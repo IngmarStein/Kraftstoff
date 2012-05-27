@@ -139,9 +139,6 @@ static CGFloat const GridTextHeight     =  23.0;
         {
             NSManagedObject *managedObject = [fetchedObjects objectAtIndex: i];
 
-            if ([[managedObject valueForKey: @"filledUp"] boolValue] == NO)
-                continue;
-
             NSDecimalNumber *price      = [managedObject valueForKey: @"price"];
             NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
             NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
@@ -155,7 +152,7 @@ static CGFloat const GridTextHeight     =  23.0;
 
             if ([timestamp compare: state->lastDate] != NSOrderedAscending)
                 state->lastDate  = timestamp;
-
+            
             // Summarize all amounts
             state->totalCost       = [state->totalCost decimalNumberByAdding: cost];
             state->totalFuelVolume = [state->totalFuelVolume decimalNumberByAdding: fuelVolume];
@@ -347,7 +344,7 @@ static CGFloat const GridTextHeight     =  23.0;
             KSVolume fuelUnit        = [[state->car valueForKey: @"fuelUnit"] integerValue];
             NSString *fuelUnitString = [AppDelegate fuelUnitString: fuelUnit];
 
-            NSInteger numberOfDays = [AppDelegate daysBetweenDate: state->firstDate andDate: state->lastDate];
+            NSInteger numberOfDays = [AppDelegate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate];
 
 
             // number of days
@@ -359,7 +356,7 @@ static CGFloat const GridTextHeight     =  23.0;
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
 
-                text = [NSString stringWithFormat: @"%d", [AppDelegate daysBetweenDate: state->firstDate andDate: state->lastDate]];
+                text = [NSString stringWithFormat: @"%d", [AppDelegate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate]];
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
             }
@@ -490,7 +487,7 @@ static CGFloat const GridTextHeight     =  23.0;
             {
                 y   += GridTextHeight;
 
-                text = [NSString stringWithFormat: _I18N (@"cost_per_x"), [AppDelegate odometerUnitDescription: odometerUnit]];
+                text = [NSString stringWithFormat: _I18N (@"cost_per_x"), [AppDelegate odometerUnitDescription: odometerUnit  pluralization: NO]];
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -512,7 +509,11 @@ static CGFloat const GridTextHeight     =  23.0;
             {
                 y   += GridTextHeight;
 
-                text = [NSString stringWithFormat: _I18N (@"cost_per_x"), [AppDelegate fuelUnitDescription: fuelUnit discernGallons: YES]];
+                text = [NSString stringWithFormat: _I18N (@"cost_per_x"),
+                            [AppDelegate fuelUnitDescription: fuelUnit
+                                              discernGallons: YES
+                                               pluralization: NO]];
+
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -578,7 +579,7 @@ static CGFloat const GridTextHeight     =  23.0;
             {
                 y   += GridTextHeight;
 
-                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit], _I18N (@"event")];
+                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit pluralization: YES], _I18N (@"event")];
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -601,7 +602,7 @@ static CGFloat const GridTextHeight     =  23.0;
             {
                 y   += GridTextHeight;
 
-                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit], _I18N (@"day")];
+                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit pluralization: YES], _I18N (@"day")];
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -624,7 +625,7 @@ static CGFloat const GridTextHeight     =  23.0;
             {
                 y   += GridTextHeight;
 
-                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit], [cf currencySymbol]];
+                text = [NSString stringWithFormat: _I18N (@"x_per_y"), [AppDelegate odometerUnitDescription: odometerUnit pluralization: YES], [cf currencySymbol]];
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -658,7 +659,7 @@ static CGFloat const GridTextHeight     =  23.0;
     // Cache lookup
     FuelStatisticsData *cell = [contentCache objectForKey: [NSNumber numberWithInteger: numberOfMonths]];
     UIImageView *imageView;
-
+        
     // Cache Hit => Update image contents
     if (cell.backgroundImage != nil && cell.contentImage != nil)
     {

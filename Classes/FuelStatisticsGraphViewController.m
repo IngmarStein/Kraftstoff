@@ -92,7 +92,7 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
 // Provided by subclasses for statistics
 - (CGGradientRef)curveGradient;
 
-- (NSNumberFormatter*)averageFormatter;
+- (NSNumberFormatter*)averageFormatter: (BOOL)precise;
 - (NSString*)averageFormatString: (BOOL)avgPrefix;
 - (NSString*)noAverageString;
 
@@ -615,7 +615,9 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
 
     // Update summary in top right of view
     if (averageValue != nil && !isnan ([averageValue floatValue]))
-        self.rightLabel.text = [NSString stringWithFormat: [self averageFormatString: YES], [[self averageFormatter] stringFromNumber: averageValue]];
+        self.rightLabel.text = [NSString stringWithFormat:
+                                    [self averageFormatString: YES],
+                                        [[self averageFormatter: NO] stringFromNumber: averageValue]];
     else
         self.rightLabel.text = [self noAverageString];
 
@@ -793,8 +795,9 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
                 UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
                 {
                     NSString *valueString = [NSString stringWithFormat:
-                                             [self averageFormatString: NO],
-                                             [self.averageFormatter stringFromNumber: [NSNumber numberWithFloat: cell->lensValue [minIndex]]]];
+                                                [self averageFormatString: NO],
+                                                    [[self averageFormatter: YES]
+                                                        stringFromNumber: [NSNumber numberWithFloat: cell->lensValue [minIndex]]]];
 
                     [self drawLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
 
@@ -959,7 +962,7 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter
+- (NSNumberFormatter*)averageFormatter: (BOOL)precise
 {
     return [AppDelegate sharedFuelVolumeFormatter];
 }
@@ -1026,9 +1029,9 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter
+- (NSNumberFormatter*)averageFormatter: (BOOL)precise
 {
-    return [AppDelegate sharedCurrencyFormatter];
+    return (precise) ? [AppDelegate sharedPreciseCurrencyFormatter] : [AppDelegate sharedCurrencyFormatter];
 }
 
 
@@ -1091,7 +1094,7 @@ static CGFloat const StatisticsInfoYMargin    =   3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter
+- (NSNumberFormatter*)averageFormatter: (BOOL)precise
 {
     KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
 

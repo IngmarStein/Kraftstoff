@@ -4,7 +4,6 @@
 
 
 #define kraftstoffDeviceShakeNotification (@"kraftstoffDeviceShakeNotification")
-#define kraftstoffCarsEditedNotification  (@"kraftstoffCarsEditedNotification")
 
 
 // Unit Constants
@@ -81,7 +80,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDate*)dateWithoutSeconds: (NSDate*)date;
 
 // Number of days between two dates
-+ (NSInteger)daysBetweenDate: (NSDate*)startDate andDate: (NSDate*)endDate;
++ (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate;
 
 
 #pragma mark Color Gradients
@@ -208,11 +207,11 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSString*)consumptionUnitShadedTableViewCellDescription: (KSFuelConsumption)unit;
 
 + (NSString*)fuelUnitString: (KSVolume)unit;
-+ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons;
++ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons pluralization: (BOOL)plural;
 + (NSString*)fuelPriceUnitDescription: (KSVolume)unit;
 
 + (NSString*)odometerUnitString: (KSDistance)unit;
-+ (NSString*)odometerUnitDescription: (KSDistance)unit;
++ (NSString*)odometerUnitDescription: (KSDistance)unit pluralization: (BOOL)plural;
 
 
 #pragma mark Mixed Pickles

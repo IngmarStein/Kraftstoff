@@ -265,10 +265,10 @@
     [dataString appendString: _I18N (@"HH:mm")];
     [dataString appendString: @";"];
 
-    [dataString appendString: [AppDelegate odometerUnitDescription: odometerUnit]];
+    [dataString appendString: [AppDelegate odometerUnitDescription: odometerUnit pluralization: YES]];
     [dataString appendString: @";"];
 
-    [dataString appendString: [AppDelegate fuelUnitDescription: fuelUnit discernGallons: YES]];
+    [dataString appendString: [AppDelegate fuelUnitDescription: fuelUnit discernGallons: YES pluralization: YES]];
     [dataString appendString: @";"];
 
     [dataString appendString: _I18N (@"Full Fill-Up")];

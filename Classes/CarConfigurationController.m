@@ -231,8 +231,8 @@
         self.odometerUnit = [NSNumber numberWithInteger: [AppDelegate odometerUnitFromLocale]];
 
     pickerLabels = [NSArray arrayWithObjects:
-                        [AppDelegate odometerUnitDescription: KSDistanceKilometer],
-                        [AppDelegate odometerUnitDescription: KSDistanceStatuteMile],
+                        [AppDelegate odometerUnitDescription: KSDistanceKilometer   pluralization: YES],
+                        [AppDelegate odometerUnitDescription: KSDistanceStatuteMile pluralization: YES],
                         nil];
 
     [self addRowAtIndex: 2
@@ -253,9 +253,9 @@
         self.fuelUnit = [NSNumber numberWithInteger: [AppDelegate fuelUnitFromLocale]];
 
     pickerLabels = [NSArray arrayWithObjects:
-                        [AppDelegate fuelUnitDescription: KSVolumeLiter discernGallons: YES],
-                        [AppDelegate fuelUnitDescription: KSVolumeGalUS discernGallons: YES],
-                        [AppDelegate fuelUnitDescription: KSVolumeGalUK discernGallons: YES],
+                        [AppDelegate fuelUnitDescription: KSVolumeLiter discernGallons: YES pluralization: YES],
+                        [AppDelegate fuelUnitDescription: KSVolumeGalUS discernGallons: YES pluralization: YES],
+                        [AppDelegate fuelUnitDescription: KSVolumeGalUK discernGallons: YES pluralization: YES],
                         nil];
 
     [self addRowAtIndex: 4

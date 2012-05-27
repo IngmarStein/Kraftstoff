@@ -372,17 +372,22 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (NSInteger)daysBetweenDate: (NSDate*)startDate andDate: (NSDate*)endDate
-{
++ (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate
+{    
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
-    NSDateComponents *daysComponents = [gregorian components: NSDayCalendarUnit fromDate: startDate toDate: endDate options: 0];
+    NSDate *referenceDate = [NSDate dateWithTimeIntervalSince1970: 0.0];   
 
-    NSInteger numberOfDays = [daysComponents day];
+    NSInteger daysToStart = [[gregorian components: NSDayCalendarUnit
+                                          fromDate: referenceDate
+                                            toDate: startDate
+                                           options: 0] day];
 
-    if (numberOfDays == 0)
-        numberOfDays = 1;
-    
-    return numberOfDays;
+    NSInteger daysToEnd   = [[gregorian components: NSDayCalendarUnit
+                                          fromDate: referenceDate
+                                            toDate: endDate
+                                           options: 0] day];
+
+    return daysToEnd - daysToStart + 1;
 }
 
 
@@ -1570,13 +1575,25 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons
++ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons pluralization: (BOOL)plural
 {
-    switch (unit)
+    if (plural)
     {
-        case KSVolumeLiter: return _I18N (@"Liters");
-        case KSVolumeGalUS: return (discernGallons) ? _I18N (@"Gallons (US)") : _I18N (@"Gallons");
-        default:            return (discernGallons) ? _I18N (@"Gallons (UK)") : _I18N (@"Gallons");
+        switch (unit)
+        {
+            case KSVolumeLiter: return _I18N (@"Liters");
+            case KSVolumeGalUS: return (discernGallons) ? _I18N (@"Gallons (US)") : _I18N (@"Gallons");
+            default:            return (discernGallons) ? _I18N (@"Gallons (UK)") : _I18N (@"Gallons");
+        }
+    }
+    else
+    {
+        switch (unit)
+        {
+            case KSVolumeLiter: return _I18N (@"Liter");
+            case KSVolumeGalUS: return (discernGallons) ? _I18N (@"Gallon (US)") : _I18N (@"Gallon");
+            default:            return (discernGallons) ? _I18N (@"Gallon (UK)") : _I18N (@"Gallon");
+        }
     }
 }
 
@@ -1599,12 +1616,12 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (NSString*)odometerUnitDescription: (KSDistance)unit
++ (NSString*)odometerUnitDescription: (KSDistance)unit pluralization: (BOOL)plural
 {
-    if (KSDistanceIsMetric (unit))
-        return _I18N (@"Kilometers");
+    if (plural)
+        return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometers") : _I18N (@"Miles");
     else
-        return _I18N (@"Miles");
+        return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometer")  : _I18N (@"Mile");
 }
 
 
