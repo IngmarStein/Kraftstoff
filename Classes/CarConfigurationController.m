@@ -419,7 +419,7 @@
 
         sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
-        [sheet showInView: [self.view viewWithTag: 100]];
+        [sheet showInView: self.view];
     }
     else
         [delegate carConfigurationController: self didFinishWithResult: CarConfigurationCanceled];

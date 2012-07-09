@@ -136,7 +136,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     if ([description length] > maximumDescriptionLength)
         description = [NSString stringWithFormat: @"%@%C",
                         [description substringToIndex: maximumDescriptionLength],
-                        0x2026];
+                        (unsigned short)0x2026];
 
     self.textFieldProxy.text = description;
 
@@ -190,7 +190,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 - (CTLineRef)truncatedLineForName: (NSString*)name info: (NSString*)info shadow: (BOOL)shadow
 {
     NSAttributedString *truncationString = [[NSAttributedString alloc]
-                                                initWithString: [NSString stringWithFormat: @"%C", 0x2026]
+                                                initWithString: [NSString stringWithFormat: @"%C", (unsigned short)0x2026]
                                                     attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]

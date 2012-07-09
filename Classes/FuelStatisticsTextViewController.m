@@ -192,12 +192,10 @@ static CGFloat const GridTextHeight     =  23.0;
         }
     }
 
-    // compute average consumption
-    if (state->numberOfFullFillups > 1)
-        state->avgConsumption = [state->avgConsumption decimalNumberByDividingBy:
-                                    [NSDecimalNumber decimalNumberWithMantissa: state->numberOfFullFillups
-                                                                      exponent: 0
-                                                                    isNegative: NO]];
+    // compute average consumption    
+    state->avgConsumption = [AppDelegate consumptionForKilometers: state->totalDistance
+                                                           Liters: state->totalFuelVolume
+                                                           inUnit: consumptionUnit];
 }
 
 
