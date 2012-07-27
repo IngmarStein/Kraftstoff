@@ -186,7 +186,7 @@
 
     self.date       = [event valueForKey: @"timestamp"];
     self.distance   = [AppDelegate distanceForKilometers: [event valueForKey: @"distance"] withUnit: odometerUnit];
-    self.price      = [event valueForKey: @"price"];
+    self.price      = [AppDelegate pricePerUnit: [event valueForKey: @"price"] withUnit: fuelUnit];
     self.fuelVolume = [AppDelegate volumeForLiters: [event valueForKey: @"fuelVolume"] withUnit: fuelUnit];
     self.filledUp   = [[event valueForKey: @"filledUp"] boolValue];
 
@@ -266,11 +266,9 @@
 
         self.event = [AppDelegate addToArchiveWithCar: car
                                                  date: date
-                                             distance: [AppDelegate kilometersForDistance: distance
-                                                                                 withUnit: [[car valueForKey: @"odometerUnit"] integerValue]]
+                                             distance: distance
                                                 price: price
-                                           fuelVolume: [AppDelegate litersForVolume: fuelVolume
-                                                                           withUnit: [[car valueForKey: @"fuelUnit"] integerValue]]
+                                           fuelVolume: fuelVolume
                                              filledUp: filledUp
                                inManagedObjectContext: managedObjectContext
                                   forceOdometerUpdate: YES];
