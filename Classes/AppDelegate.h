@@ -107,6 +107,7 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (NSNumberFormatter*)sharedDistanceFormatter;
 + (NSNumberFormatter*)sharedFuelVolumeFormatter;
++ (NSNumberFormatter*)sharedPreciseFuelVolumeFormatter;
 + (NSNumberFormatter*)sharedCurrencyFormatter;
 + (NSNumberFormatter*)sharedEditPreciseCurrencyFormatter;
 + (NSNumberFormatter*)sharedPreciseCurrencyFormatter;

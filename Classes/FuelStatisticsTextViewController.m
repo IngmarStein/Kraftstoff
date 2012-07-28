@@ -6,6 +6,7 @@
 #import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsTextViewController.h"
+#import "NSDecimalNumber_extension.h"
 
 
 static CGFloat const GridLeftBorder     =  16.0;

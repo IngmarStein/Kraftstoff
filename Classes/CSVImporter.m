@@ -7,6 +7,7 @@
 #import "CSVParser.h"
 #import "AppDelegate.h"
 #import "TextEditTableCell.h"
+#import "NSDecimalNumber_extension.h"
 
 
 @interface CSVImporter (private)

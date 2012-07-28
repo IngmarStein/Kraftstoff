@@ -9,6 +9,7 @@
 #import "ShadowTableView.h"
 #import "ShadedTableViewCell.h"
 #import "TextEditTableCell.h"
+#import "NSDecimalNumber_extension.h"
 
 
 static NSInteger maxEditHelpCounter = 1;

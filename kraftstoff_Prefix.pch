@@ -13,10 +13,6 @@
 // Internationalization
 #define _I18N(string) NSLocalizedStringFromTable(string, nil, nil)
 
-// Cocoa Extension
-#import "NSDecimalNumber_extension.h"
-#import "UIImage_extension.h"
-
 #ifndef CF_RETURNS_RETAINED
 # if __has_feature(attribute_cf_returns_retained)
 #  define CF_RETURNS_RETAINED __attribute__((cf_returns_retained))

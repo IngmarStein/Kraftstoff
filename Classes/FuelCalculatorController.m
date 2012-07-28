@@ -12,6 +12,7 @@
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
 #import "SwitchTableCell.h"
+#import "UIImage_extension.h"
 
 
 typedef enum
@@ -368,13 +369,17 @@ typedef enum
                                 [[[NSUserDefaults standardUserDefaults] objectForKey: @"recentFuelVolume"]
                                     decimalValue]];
 
+        NSNumberFormatter *formatter = KSVolumeIsMetric (fuelUnit)
+            ? [AppDelegate sharedFuelVolumeFormatter]
+            : [AppDelegate sharedPreciseFuelVolumeFormatter];
+
         [self addRowAtIndex: 2 + rowOffset
                   inSection: 0
                   cellClass: [NumberEditTableCell class]
                    cellData: [NSDictionary dictionaryWithObjectsAndKeys:
                                 [AppDelegate fuelUnitDescription: fuelUnit discernGallons: NO pluralization: YES], @"label",
                                 [@" " stringByAppendingString: [AppDelegate fuelUnitString: fuelUnit]],            @"suffix",
-                                [AppDelegate sharedFuelVolumeFormatter],                                           @"formatter",
+                                formatter,                                                                         @"formatter",
                                 @"fuelVolume",                                                                     @"valueIdentifier",
                                 nil]
               withAnimation: animation];

@@ -8,6 +8,7 @@
 #import "FuelCalculatorController.h"
 #import "CSVParser.h"
 #import "CSVImporter.h"
+#import "NSDecimalNumber_extension.h"
 
 
 // Shadow heights used within the app
@@ -621,6 +622,24 @@ static AppDelegate *sharedDelegateObject = nil;
     });
 
     return fuelVolumeFormatter;
+}
+
+
++ (NSNumberFormatter*)sharedPreciseFuelVolumeFormatter
+{
+    static NSNumberFormatter *preciseFuelVolumeFormatter = nil;
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
+        
+        preciseFuelVolumeFormatter = [[NSNumberFormatter alloc] init];
+        [preciseFuelVolumeFormatter setGeneratesDecimalNumbers: YES];
+        [preciseFuelVolumeFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
+        [preciseFuelVolumeFormatter setMinimumFractionDigits: 3];
+        [preciseFuelVolumeFormatter setMaximumFractionDigits: 3];
+    });
+    
+    return preciseFuelVolumeFormatter;
 }
 
 

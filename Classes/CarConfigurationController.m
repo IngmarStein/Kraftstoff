@@ -8,7 +8,7 @@
 #import "NumberEditTableCell.h"
 #import "PickerTableCell.h"
 #import "AppDelegate.h"
-
+#import "UIImage_extension.h"
 
 
 @interface CarConfigurationController (private)
