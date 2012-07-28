@@ -356,7 +356,6 @@ typedef enum
                                 [AppDelegate fuelPriceUnitDescription: fuelUnit], @"label",
                                 [AppDelegate sharedEditPreciseCurrencyFormatter], @"formatter",
                                 [AppDelegate sharedPreciseCurrencyFormatter],     @"alternateFormatter",
-                                price,                                            @"value",
                                 @"price",                                         @"valueIdentifier",
                                 nil]
               withAnimation: animation];

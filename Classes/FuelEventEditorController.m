@@ -451,8 +451,7 @@
                cellData: [NSDictionary dictionaryWithObjectsAndKeys:
                             [AppDelegate fuelPriceUnitDescription: fuelUnit], @"label",
                             [AppDelegate sharedEditPreciseCurrencyFormatter], @"formatter",
-                            [AppDelegate sharedPreciseCurrencyFormatter],           @"alternateFormatter",
-                            price,                                            @"value",
+                            [AppDelegate sharedPreciseCurrencyFormatter],     @"alternateFormatter",
                             @"price",                                         @"valueIdentifier",
                             nil]
           withAnimation: animation];

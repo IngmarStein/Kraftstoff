@@ -314,7 +314,6 @@
          ];
     }
 
-
     return [dataString dataUsingEncoding:NSUTF8StringEncoding];
 }
 
