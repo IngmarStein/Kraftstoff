@@ -750,7 +750,7 @@ static AppDelegate *sharedDelegateObject = nil;
     dispatch_once (&pred, ^{
 
         short fractionDigits = (short)[[self sharedFuelVolumeFormatter] maximumFractionDigits];
-        consumptionRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
+        consumptionRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundPlain
                                                                                             scale: fractionDigits
                                                                                  raiseOnExactness: NO
                                                                                   raiseOnOverflow: NO

@@ -469,6 +469,13 @@
 
             NSDecimalNumber *price = [self scanNumberWithString: [record objectForKey: priceKey]];
 
+            if (price)
+            {
+                if (volumeUnit != -1)
+                    price = [AppDelegate pricePerLiter: price withUnit: volumeUnit];
+                else
+                    price = [AppDelegate pricePerLiter: price withUnit: [self scanVolumeUnitWithString: [record objectForKey: volumeUnitKey]]];
+            }
 
             // TankPro stores total costs not the price per liter...
             if (importFromTankPro)
