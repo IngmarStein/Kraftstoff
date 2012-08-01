@@ -219,6 +219,8 @@ foundHeader:
 
 - (NSString*)parseField
 {
+    [scanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet] intoString: NULL];
+    
     NSString *escapedString = [self parseEscaped];
 
     if (escapedString)
