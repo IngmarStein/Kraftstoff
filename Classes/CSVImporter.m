@@ -469,21 +469,23 @@
 
             NSDecimalNumber *price = [self scanNumberWithString: [record objectForKey: priceKey]];
             
-            if (price)
-                price = [AppDelegate pricePerLiter: price withUnit: volumeUnit];
-
-            // TankPro stores total costs not the price per liter...
             if (importFromTankPro)
             {
+                // TankPro stores total costs not the price per unit...
                 if (volume == nil || [volume isEqualToNumber: [NSDecimalNumber zero]])
                     price = [NSDecimalNumber zero];
                 else
                     price = [price decimalNumberByDividingBy: volume
                                                 withBehavior: [AppDelegate sharedPriceRoundingHandler]];
             }
-            
+            else if (price)
+            {
+                if (volumeUnit != -1)
+                    price = [AppDelegate pricePerLiter: price withUnit: volumeUnit];
+                else
+                    price = [AppDelegate pricePerLiter: price withUnit: [self scanVolumeUnitWithString: [record objectForKey: volumeUnitKey]]];
+            }            
 
-            
             BOOL filledUp = [self scanBooleanWithString: [record objectForKey: fillupKey]];
 
 
