@@ -24,6 +24,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 // Calendar component-mask for date+time but without seconds
 static NSUInteger noSecondsComponentMask = (NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit);
+static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalendarUnit);
 
 // Pointer to shared Application Delegate Object
 static AppDelegate *sharedDelegateObject = nil;
@@ -370,6 +371,15 @@ static AppDelegate *sharedDelegateObject = nil;
     NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
 
     return [gregorianCalendar dateFromComponents: noSecComponents];
+}
+
+
++ (NSTimeInterval)timeIntervalSinceBeginningOfDay: (NSDate*)date
+{
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *timeOfDayComponents = [gregorianCalendar components: timeOfDayComponentMask fromDate: date];
+    
+    return timeOfDayComponents.hour * 3600 + timeOfDayComponents.minute * 60;
 }
 
 

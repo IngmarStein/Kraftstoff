@@ -79,6 +79,8 @@ extern CGFloat const HugeStatusBarHeight;
 // Removes the second component from a date
 + (NSDate*)dateWithoutSeconds: (NSDate*)date;
 
++ (NSTimeInterval)timeIntervalSinceBeginningOfDay: (NSDate*)date;
+
 // Number of days between two dates
 + (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate;
 
