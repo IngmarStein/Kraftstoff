@@ -672,10 +672,10 @@
     if (timeString != nil)
         time = [self scanTimeWithString: timeString];
 
-    if (time == nil)
-        time = [NSDate dateWithTimeIntervalSince1970: 43200];
-
-    return [date dateByAddingTimeInterval: [time timeIntervalSince1970]];
+    if (time != nil)
+        return [date dateByAddingTimeInterval: [AppDelegate timeIntervalSinceBeginningOfDay: time]];
+    else
+        return [date dateByAddingTimeInterval: 43200];
 }
 
 
