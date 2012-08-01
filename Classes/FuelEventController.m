@@ -287,7 +287,9 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setNumberStyle: kCFNumberFormatterDecimalStyle];
     [numberFormatter setLocale: [NSLocale currentLocale]];
-    [numberFormatter setGroupingSeparator: @""];
+    [numberFormatter setUsesGroupingSeparator: NO];
+    [numberFormatter setAlwaysShowsDecimalSeparator: YES];
+    [numberFormatter setMinimumFractionDigits: 2];
     
     NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
 
@@ -314,8 +316,7 @@
                 : @" "
          ];
     }
-
-    [dataString appendFormat: @"\n\n(locale=%@)", [numberFormatter.locale localeIdentifier]];
+    NSLog(@"%@", dataString);
 
     return [dataString dataUsingEncoding:NSUTF8StringEncoding];
 }
