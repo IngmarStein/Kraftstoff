@@ -27,6 +27,6 @@
 @property (nonatomic, strong) EditablePageCellTextField *textField;
 @property (nonatomic, strong) NSString                  *valueIdentifier;
 
-@property (nonatomic, unsafe_unretained) id<EditablePageCellDelegate> delegate;
+@property (nonatomic, weak) id<EditablePageCellDelegate> delegate;
 
 @end

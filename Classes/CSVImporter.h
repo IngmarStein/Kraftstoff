@@ -6,9 +6,9 @@
 @interface CSVImporter : NSObject
 {
     NSMutableSet        *carIDs;
-    NSMutableDictionary *nameForID;
-    NSMutableDictionary *modelForID;
     NSMutableDictionary *carForID;
+    NSMutableDictionary *modelForID;
+    NSMutableDictionary *plateForID;
 }
 
 - (BOOL)importFromCSVString: (NSString*)CSVString

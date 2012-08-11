@@ -9,38 +9,41 @@
 
 static CGFloat const PageCellBackgroundRadius = 10.0;
 
-
 static CGGradientRef PageCellBackgroundGradient (BOOL selected)
 {
 	static CGGradientRef bgGradient [2] = { NULL, NULL };
-
-	if (bgGradient [selected] == NULL)
-	{
-		UIColor *colorTop;
-		UIColor *colorBot;
-
-		if (selected)
-		{
-			colorTop = [UIColor colorWithRed: 0.818 green: 0.818 blue: 0.827 alpha: 1.00];
-			colorBot = [UIColor colorWithRed: 0.746 green: 0.746 blue: 0.762 alpha: 1.00];
-		}
-		else
-		{
-			colorTop = [UIColor colorWithRed: 0.858 green: 0.858 blue: 0.867 alpha: 1.00];
-			colorBot = [UIColor colorWithRed: 0.706 green: 0.706 blue: 0.722 alpha: 1.00];
-		}
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
 
         CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB ();
+
+        for (int gradientType = 0; gradientType < 2; gradientType++)
         {
+            UIColor *colorTop;
+            UIColor *colorBot;
+
+            if (gradientType)
+            {
+                colorTop = [UIColor colorWithRed: 0.818 green: 0.818 blue: 0.827 alpha: 1.00];
+                colorBot = [UIColor colorWithRed: 0.746 green: 0.746 blue: 0.762 alpha: 1.00];
+            }
+            else
+            {
+                colorTop = [UIColor colorWithRed: 0.858 green: 0.858 blue: 0.867 alpha: 1.00];
+                colorBot = [UIColor colorWithRed: 0.706 green: 0.706 blue: 0.722 alpha: 1.00];
+            }
+
             CGFloat bgComponents [2][4];
             memcpy (bgComponents [0], CGColorGetComponents (colorTop.CGColor), sizeof (CGFloat) * 4);
             memcpy (bgComponents [1], CGColorGetComponents (colorBot.CGColor), sizeof (CGFloat) * 4);
 
             CGFloat const locations [2] = {0.0, 1.0};
-            bgGradient [selected] = CGGradientCreateWithColorComponents (colorspace, (CGFloat const*)bgComponents, locations, 2);
+            bgGradient [gradientType] = CGGradientCreateWithColorComponents (colorspace, (CGFloat const*)bgComponents, locations, 2);
         }
-		CFRelease(colorspace);
-	}
+
+		CFRelease (colorspace);
+	});
 
 	return bgGradient [selected];
 }

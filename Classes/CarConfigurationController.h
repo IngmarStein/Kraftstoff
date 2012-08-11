@@ -8,9 +8,6 @@
 
 @class CarConfigurationController;
 
-
-@protocol CarConfigurationControllerDelegate
-
 typedef enum
 {
     CarConfigurationCanceled,
@@ -19,21 +16,24 @@ typedef enum
     CarConfigurationAborted,
 } CarConfigurationResult;
 
+
+@protocol CarConfigurationControllerDelegate
+
 - (void)carConfigurationController: (CarConfigurationController*)controller didFinishWithResult: (CarConfigurationResult)result;
 
 @end
 
 
-
-@interface CarConfigurationController : PageViewController <UIActionSheetDelegate>
+@interface CarConfigurationController : PageViewController <UIViewControllerRestoration, UIActionSheetDelegate>
 {
-    BOOL      dataChanged;
-    NSInteger mostRecentSelectedRow;
+    BOOL         isShowingCancelSheet;
+
+    BOOL         dataChanged;
+    NSIndexPath *previousSelectionIndex;
 }
 
-@property (nonatomic, strong) UITextField              *editingTextField;
-@property (nonatomic, strong) IBOutlet UIImageView     *backgroundImageView;
-@property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic, weak)   IBOutlet UIImageView     *backgroundImageView;
+@property (nonatomic, weak)   IBOutlet UINavigationBar *navBar;
 
 @property (nonatomic, strong) NSString        *name;
 @property (nonatomic, strong) NSString        *plate;
@@ -42,9 +42,9 @@ typedef enum
 @property (nonatomic, strong) NSNumber        *fuelUnit;
 @property (nonatomic, strong) NSNumber        *fuelConsumptionUnit;
 
-@property (nonatomic, getter=isEditing) BOOL editing;
+@property (nonatomic) BOOL editingExistingObject;
 
-@property (nonatomic, unsafe_unretained) id<CarConfigurationControllerDelegate> delegate;
+@property (nonatomic, weak) id<CarConfigurationControllerDelegate> delegate;
 
 - (IBAction)handleCancel: (id)sender;
 - (IBAction)handleSave: (id)sender;

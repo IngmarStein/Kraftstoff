@@ -32,7 +32,7 @@
 
         topLeftLabel.backgroundColor           = [UIColor clearColor];
         topLeftLabel.textColor                 = [UIColor blackColor];
-        topLeftLabel.shadowColor               = [UIColor colorWithWhite:1.0 alpha: (CGFloat)0.8];
+        topLeftLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
         topLeftLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
         topLeftLabel.highlightedTextColor      = [UIColor whiteColor];
         topLeftLabel.adjustsFontSizeToFitWidth = YES;
@@ -45,7 +45,7 @@
 
         botLeftLabel.backgroundColor           = [UIColor clearColor];
         botLeftLabel.textColor                 = [UIColor darkGrayColor];
-        botLeftLabel.shadowColor               = [UIColor colorWithWhite:1.0 alpha: (CGFloat)0.8];
+        botLeftLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
         botLeftLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
         botLeftLabel.highlightedTextColor      = [UIColor whiteColor];
         botLeftLabel.adjustsFontSizeToFitWidth = YES;
@@ -58,7 +58,7 @@
 
         topRightLabel.backgroundColor           = [UIColor clearColor];
         topRightLabel.textColor                 = [UIColor blackColor];
-        topRightLabel.shadowColor               = [UIColor colorWithWhite:1.0 alpha: (CGFloat)0.8];
+        topRightLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
         topRightLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
         topRightLabel.highlightedTextColor      = [UIColor whiteColor];
         topRightLabel.adjustsFontSizeToFitWidth = YES;
@@ -72,7 +72,7 @@
 
         botRightLabel.backgroundColor           = [UIColor clearColor];
         botRightLabel.textColor                 = [UIColor darkGrayColor];
-        botRightLabel.shadowColor               = [UIColor colorWithWhite:1.0 alpha: (CGFloat)0.8];
+        botRightLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
         botRightLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
         botRightLabel.highlightedTextColor      = [UIColor whiteColor];
         botRightLabel.adjustsFontSizeToFitWidth = YES;

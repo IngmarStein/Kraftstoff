@@ -24,6 +24,12 @@
 }
 
 
+
+#pragma mark -
+#pragma mark Shadow Updates during Layout
+
+
+
 - (UITableViewCell*)dequeueReusableCellWithIdentifier: (NSString*)identifier
 {
     shadowsNeedUpdate = YES;
@@ -32,35 +38,35 @@
 }
 
 
-// Shadows are laid out here when layout of cell occurs.
 - (void)layoutSubviews
 {
     [super layoutSubviews];
 
     CGFloat shadowWidth = self.frame.size.width;
 
-    // Construct the origin shadow if needed
-    if (originShadow == nil)
-        originShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, LargeShadowHeight)
-                                         darkFactor: 0.5
-                                        lightFactor: 150.0 / 255.0
-                                      fadeDownwards: YES];
-
-    if (! [[self.layer.sublayers objectAtIndex: 0] isEqual: originShadow])
-        [self.layer insertSublayer: originShadow atIndex: 0];
-
-
-    // Stretch and place the origin shadow
-    [CATransaction begin];
-    [CATransaction setValue: (id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+    // Pre-iOS6: construct the origin shadow if needed
+    if ([AppDelegate isRunningOS6] == NO)
     {
-        CGRect originShadowFrame     = originShadow.frame;
-        originShadowFrame.size.width = self.frame.size.width;
-        originShadowFrame.origin.y   = self.contentOffset.y;
-        originShadow.frame           = originShadowFrame;
-    }
-    [CATransaction commit];
+        if (originShadow == nil)
+            originShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, NavBarShadowHeight)
+                                             darkFactor: 0.5
+                                            lightFactor: 150.0 / 255.0
+                                          fadeDownwards: YES];
 
+        if (! [[self.layer.sublayers objectAtIndex: 0] isEqual: originShadow])
+            [self.layer insertSublayer: originShadow atIndex: 0];
+
+        // Stretch and place the origin shadow
+        [CATransaction begin];
+        [CATransaction setValue: (id)kCFBooleanTrue forKey: kCATransactionDisableActions];
+        {
+            CGRect originShadowFrame     = originShadow.frame;
+            originShadowFrame.size.width = self.frame.size.width;
+            originShadowFrame.origin.y   = self.contentOffset.y;
+            originShadow.frame           = originShadowFrame;
+        }
+        [CATransaction commit];
+    }
 
     // Computing index paths for visible cells below is expensive,
     // so skip this if the table configuration hasn't changed...
@@ -76,11 +82,11 @@
 
     if (visibleRowCount == 0)
     {
-        [topCellShadow removeFromSuperlayer];
-        topCellShadow = nil;
+        [cellShadowTop removeFromSuperlayer];
+        cellShadowTop = nil;
 
-        [bottomCellShadow removeFromSuperlayer];
-        bottomCellShadow = nil;
+        [cellShadowBottom removeFromSuperlayer];
+        cellShadowBottom = nil;
 
         return;
     }
@@ -101,23 +107,23 @@
     {
         UIView *cell = [self cellForRowAtIndexPath: firstRow];
 
-        if (topCellShadow == nil)
-            topCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, SmallShadowHeight)
+        if (cellShadowTop == nil)
+            cellShadowTop = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, TableTopShadowHeight)
                                               darkFactor: 0.3
                                              lightFactor: 100.0 / 255.0
                                            fadeDownwards: NO];
 
-        if ([cell.layer.sublayers indexOfObjectIdenticalTo: topCellShadow] != 0)
-            [cell.layer insertSublayer: topCellShadow atIndex: 0];
+        if ([cell.layer.sublayers indexOfObjectIdenticalTo: cellShadowTop] != 0)
+            [cell.layer insertSublayer: cellShadowTop atIndex: 0];
 
-        CGRect shadowFrame     = topCellShadow.frame;
+        CGRect shadowFrame     = cellShadowTop.frame;
         shadowFrame.size.width = cell.frame.size.width;
-        shadowFrame.origin.y   = -SmallShadowHeight;
-        topCellShadow.frame    = shadowFrame;
+        shadowFrame.origin.y   = -TableTopShadowHeight;
+        cellShadowTop.frame    = shadowFrame;
     }
     else
     {
-        [topCellShadow removeFromSuperlayer];
+        [cellShadowTop removeFromSuperlayer];
     }
 
 
@@ -136,48 +142,62 @@
     {
         UIView *cell = [self cellForRowAtIndexPath: lastRow];
 
-        if (bottomCellShadow == nil)
-            bottomCellShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, MediumShadowHeight)
+        if (cellShadowBottom == nil)
+            cellShadowBottom = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, TableBotShadowHeight)
                                                  darkFactor: 0.5
                                                 lightFactor: 100.0 / 255.0
                                               fadeDownwards: YES];
 
-        if ([cell.layer.sublayers indexOfObjectIdenticalTo: bottomCellShadow] != 0)
-            [cell.layer insertSublayer: bottomCellShadow atIndex :0];
+        if ([cell.layer.sublayers indexOfObjectIdenticalTo: cellShadowBottom] != 0)
+            [cell.layer insertSublayer: cellShadowBottom atIndex :0];
 
-        CGRect shadowFrame     = bottomCellShadow.frame;
+        CGRect shadowFrame     = cellShadowBottom.frame;
         shadowFrame.size.width = cell.frame.size.width;
         shadowFrame.origin.y   = cell.frame.size.height;
-        bottomCellShadow.frame = shadowFrame;
+        cellShadowBottom.frame = shadowFrame;
     }
     else
     {
-        [bottomCellShadow removeFromSuperlayer];
+        [cellShadowBottom removeFromSuperlayer];
     }
 }
 
 
-- (void)dealloc
-{
-    [originShadow removeFromSuperlayer];
-    [topCellShadow removeFromSuperlayer];
-    [bottomCellShadow removeFromSuperlayer];
-}
+
+#pragma mark -
+#pragma mark Tracking User Updates
+
 
 
 - (void)beginUpdates
 {
     self.reorderSourceIndexPath = nil;
+
     [super beginUpdates];
 }
 
 
 - (void)endUpdates
 {
+    self.reorderSourceIndexPath = nil;
     shadowsNeedUpdate = YES;
 
-    self.reorderSourceIndexPath = nil;
     [super endUpdates];
 }
+
+
+
+#pragma mark -
+#pragma mark Memory Management
+
+
+
+- (void)dealloc
+{
+    [originShadow removeFromSuperlayer];
+    [cellShadowTop removeFromSuperlayer];
+    [cellShadowBottom removeFromSuperlayer];
+}
+
 
 @end

@@ -8,27 +8,13 @@
 #import "FuelEventController.h"
 #import "ShadowTableView.h"
 #import "ShadedTableViewCell.h"
+#import "DemoData.h"
 #import "TextEditTableCell.h"
-#import "NSDecimalNumber_extension.h"
+
+#import "NSDecimalNumber+Kraftstoff.h"
 
 
 static NSInteger maxEditHelpCounter = 1;
-
-
-@interface CarViewController (private)
-
-- (void)updateHelp: (BOOL)animated;
-- (void)hideHelp: (BOOL)animated;
-
-- (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath;
-- (void)checkEnableEditButton;
-- (void)insertNewObject: (id)sender;
-- (void)removeExistingObjectAtPath: (NSIndexPath*)indexPath;
-
-- (void)localeChanged: (id)object;
-
-@end
-
 
 
 @implementation CarViewController
@@ -51,12 +37,11 @@ static NSInteger maxEditHelpCounter = 1;
     [super viewDidLoad];
 
     changeIsUserDriven = NO;
-    isEditing          = NO;
 
     // Configure root view
     self.title = _I18N (@"Cars");
 
-    // Buttons in navigation bar
+    // Navigation bar
     self.navigationItem.leftBarButtonItem = nil;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
@@ -71,18 +56,14 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.longPressRecognizer.delegate = self;
 
-    // Observe locale changes
+    self.managedObjectContext = [[AppDelegate sharedDelegate] managedObjectContext];
+
+
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
                name: NSCurrentLocaleDidChangeNotification
              object: nil];
-}
-
-
-- (void)viewDidUnload
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 
@@ -103,15 +84,36 @@ static NSInteger maxEditHelpCounter = 1;
 }
 
 
-- (void)localeChanged: (id)object
-{    
-    // Invalidate fuelEvent-controller and any precomputed statistics
-    if (self.navigationController.topViewController == self)
-        self.fuelEventController = nil;
 
-    // Reload all table data
-    [self.tableView reloadData];
+#pragma mark -
+#pragma mark iOS 6 State Restoration
+
+
+
+#define kSRCarViewEditedObject @"CarViewEditedObject"
+
+- (void)encodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    [coder encodeObject: [appDelegate modelIdentifierForManagedObject: editedObject] forKey: kSRCarViewEditedObject];
+    [super encodeRestorableStateWithCoder: coder];
 }
+
+
+- (void)decodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    self.editedObject = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRCarViewEditedObject]];
+    [super decodeRestorableStateWithCoder: coder];
+}
+
+
+
+#pragma mark -
+#pragma mark View Rotation
+
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
@@ -120,18 +122,31 @@ static NSInteger maxEditHelpCounter = 1;
 }
 
 
-- (void)setEditing: (BOOL)editing animated: (BOOL)animated
+- (BOOL)shouldAutorotate
 {
-    isEditing = editing;
+    return YES;
+}
 
-    [super setEditing: editing animated: animated];
 
-    [self checkEnableEditButton];
-    [self updateHelp: animated];
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
 
-    // Force Core Data save after editing mode is finished
-    if (editing == NO)
-        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+
+
+#pragma mark -
+#pragma mark Locale Handling
+
+
+
+- (void)localeChanged: (id)object
+{
+    // Invalidate fuelEvent-controller and any precomputed statistics
+    if (self.navigationController.topViewController == self)
+        self.fuelEventController = nil;
+
+    [self.tableView reloadData];
 }
 
 
@@ -151,20 +166,20 @@ static NSInteger maxEditHelpCounter = 1;
 
     NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];
 
-    if (isEditing == NO && carCount == 0)
+    if (self.editing == NO && carCount == 0)
     {
         helpImageName = @"Start";
         helpViewFrame = CGRectMake (0, 0, 320, 70);
 
-        [defaults setObject: [NSNumber numberWithInteger: 0] forKey: @"editHelpCounter"];
+        [defaults setObject: @0 forKey: @"editHelpCounter"];
     }
-    else if (isEditing == YES && 1 <= carCount && carCount <= 3)
+    else if (self.editing == YES && 1 <= carCount && carCount <= 3)
     {
         NSInteger editCounter = [[defaults objectForKey: @"editHelpCounter"] integerValue];
 
         if (editCounter < maxEditHelpCounter)
         {
-            [defaults setObject: [NSNumber numberWithInteger: ++editCounter] forKey: @"editHelpCounter"];
+            [defaults setObject: @(++editCounter) forKey: @"editHelpCounter"];
 
             helpImageName = @"Edit";
             helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
@@ -252,13 +267,25 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (result == CarConfigurationCreateSucceded)
     {
+        BOOL addDemoContents = NO;
+
         // Update order of existing objects
         changeIsUserDriven = YES;
         {
             for (NSManagedObject *managedObject in [self.fetchedResultsController fetchedObjects])
             {
                 NSInteger order = [[managedObject valueForKey: @"order"] integerValue];
-                [managedObject setValue: [NSNumber numberWithInt: order+1] forKey: @"order"];
+                [managedObject setValue: @(order+1) forKey: @"order"];
+            }
+
+            // Detect demo data request
+            if ([[controller.name  lowercaseString] isEqualToString: @"apple"] &&
+                [[controller.plate lowercaseString] isEqualToString: @"demo"])
+            {
+                addDemoContents = YES;
+
+                controller.name  = @"Toyota IQ+";
+                controller.plate = @"SLS IOIOI";
             }
         }
         changeIsUserDriven = NO;
@@ -267,7 +294,7 @@ static NSInteger maxEditHelpCounter = 1;
         NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName: @"car"
                                                                           inManagedObjectContext: self.managedObjectContext];
 
-        [newManagedObject setValue: [NSNumber numberWithInt: 0]    forKey: @"order"];
+        [newManagedObject setValue: @0    forKey: @"order"];
         [newManagedObject setValue: [NSDate date]                  forKey: @"timestamp"];
         [newManagedObject setValue: controller.name                forKey: @"name"];
         [newManagedObject setValue: controller.plate               forKey: @"numberPlate"];
@@ -279,6 +306,11 @@ static NSInteger maxEditHelpCounter = 1;
 
         [newManagedObject setValue: controller.fuelUnit            forKey: @"fuelUnit"];
         [newManagedObject setValue: controller.fuelConsumptionUnit forKey: @"fuelConsumptionUnit"];
+
+
+        // Add demo contents
+        if (addDemoContents)
+            [DemoData addDemoEventsForCar: newManagedObject inContext: self.managedObjectContext];
 
         // Saving here is important here to get a stable objectID for the fuelEvent fetches
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
@@ -316,6 +348,19 @@ static NSInteger maxEditHelpCounter = 1;
 
 
 
+- (void)setEditing: (BOOL)editing animated: (BOOL)animated
+{
+    [super setEditing: editing animated: animated];
+
+    [self checkEnableEditButton];
+    [self updateHelp: animated];
+
+    // Force Core Data save after editing mode is finished
+    if (editing == NO)
+        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+}
+
+
 - (void)checkEnableEditButton
 {
     self.editButtonItem.enabled = ([[[self fetchedResultsController] fetchedObjects] count] > 0);
@@ -328,9 +373,8 @@ static NSInteger maxEditHelpCounter = 1;
     [self setEditing: NO animated: YES];
 
     CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName: @"CarConfigurationController" bundle: nil];
-    [configurator setDelegate: self];
-
-    configurator.editing = NO;
+    configurator.delegate = self;
+    configurator.editingExistingObject = NO;
 
     [self presentModalViewController: configurator animated: YES];
 }
@@ -345,7 +389,7 @@ static NSInteger maxEditHelpCounter = 1;
 - (BOOL)gestureRecognizer: (UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch: (UITouch*)touch
 {
     // Editing mode must be enabled and the touch must hit the contentview of a tableview cell
-    if (isEditing)
+    if (self.editing)
     {
         if ([touch.view.superview isKindOfClass: [UITableViewCell class]])
         {
@@ -386,33 +430,35 @@ static NSInteger maxEditHelpCounter = 1;
 
         if (indexPath)
         {
+            [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
             self.editedObject = [self.fetchedResultsController objectAtIndexPath: indexPath];
 
             // Present modal car configurator
             CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName: @"CarConfigurationController" bundle: nil];
-            [configurator setDelegate: self];
+            configurator.delegate = self;
+            configurator.editingExistingObject = YES;
 
-            configurator.editing  = YES;
-            configurator.name                = [editedObject valueForKey: @"name"];
+            configurator.name = [editedObject valueForKey: @"name"];
 
             if ([configurator.name length] > maximumTextFieldLength)
                 configurator.name = @"";
 
-            configurator.plate               = [editedObject valueForKey: @"numberPlate"];
+            configurator.plate = [editedObject valueForKey: @"numberPlate"];
 
             if ([configurator.plate length] > maximumTextFieldLength)
                 configurator.plate = @"";
 
-            configurator.odometerUnit        = [editedObject valueForKey: @"odometerUnit"];
-            configurator.odometer            = [AppDelegate distanceForKilometers:  [editedObject valueForKey: @"odometer"]
-                                                                         withUnit: [[editedObject valueForKey: @"odometerUnit"] integerValue]];
+            configurator.odometerUnit = [editedObject valueForKey: @"odometerUnit"];
+            configurator.odometer     = [AppDelegate distanceForKilometers:  [editedObject valueForKey: @"odometer"]
+                                                                  withUnit: [[editedObject valueForKey: @"odometerUnit"] integerValue]];
+
             configurator.fuelUnit            = [editedObject valueForKey: @"fuelUnit"];
             configurator.fuelConsumptionUnit = [editedObject valueForKey: @"fuelConsumptionUnit"];
 
             [self presentModalViewController: configurator animated: YES];
 
             // Edit started => prevent edit help from now on
-            [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithInteger: maxEditHelpCounter] forKey: @"editHelpCounter"];
+            [[NSUserDefaults standardUserDefaults] setObject: @(maxEditHelpCounter) forKey: @"editHelpCounter"];
 
             // Quit editing mode
             [self setEditing: NO animated: YES];
@@ -429,12 +475,14 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)removeExistingObjectAtPath: (NSIndexPath*)indexPath
 {
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
     NSManagedObject *deletedObject = [self.fetchedResultsController objectAtIndexPath: indexPath];
     NSInteger deletedObjectOrder   = [[deletedObject valueForKey: @"order"] integerValue];
 
 
     // Delete any fetch-cache for the deleted object
-    NSString *cacheName = [AppDelegate cacheNameForFuelEventFetchWithParent: deletedObject];
+    NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent: deletedObject];
 
     if (cacheName)
         [NSFetchedResultsController deleteCacheWithName: cacheName];
@@ -442,7 +490,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     // Invalidate preference for deleted car
     NSString *preferredCarID = [[NSUserDefaults standardUserDefaults] stringForKey: @"preferredCarID"];
-    NSString *deletedCarID   = [[[deletedObject objectID] URIRepresentation] absoluteString];
+    NSString *deletedCarID   = [appDelegate modelIdentifierForManagedObject: deletedObject];
 
     if ([deletedCarID isEqualToString: preferredCarID])
         [[NSUserDefaults standardUserDefaults] setObject: @"" forKey: @"preferredCarID"];
@@ -450,7 +498,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     // Delete the managed object for the given index path
     [self.managedObjectContext deleteObject: deletedObject];
-    [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+    [appDelegate saveContext: self.managedObjectContext];
 
 
     // Update order of existing objects
@@ -461,15 +509,15 @@ static NSInteger maxEditHelpCounter = 1;
             NSInteger order = [[managedObject valueForKey: @"order"] integerValue];
 
             if (order > deletedObjectOrder)
-                [managedObject setValue: [NSNumber numberWithInt: order-1] forKey: @"order"];
+                [managedObject setValue: @(order-1) forKey: @"order"];
         }
 
-        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+        [appDelegate saveContext: self.managedObjectContext];
     }
     changeIsUserDriven = NO;
 
     // Exit editing mode after last object is deleted
-    if (isEditing)
+    if (self.editing)
         if ([[[self fetchedResultsController] fetchedObjects] count] == 0)
             [self setEditing: NO animated: YES];
 }
@@ -605,7 +653,7 @@ static NSInteger maxEditHelpCounter = 1;
         else
             order = (i != to)   ? order+1 : from;
 
-        [managedObject setValue: [NSNumber numberWithInt: order] forKey: @"order"];
+        [managedObject setValue: @(order) forKey: @"order"];
     }
 
     changeIsUserDriven = YES;
@@ -615,6 +663,28 @@ static NSInteger maxEditHelpCounter = 1;
 - (BOOL)tableView: (UITableView*)tableView canMoveRowAtIndexPath: (NSIndexPath*)indexPath
 {
     return YES;
+}
+
+
+
+#pragma mark -
+#pragma mark UIDataSourceModelAssociation
+
+
+
+- (NSIndexPath*)indexPathForElementWithModelIdentifier: (NSString*)identifier inView: (UIView*)view
+{
+    NSManagedObject *object = [[AppDelegate sharedDelegate] managedObjectForModelIdentifier: identifier];
+
+    return [self.fetchedResultsController indexPathForObject: object];
+}
+
+
+- (NSString*)modelIdentifierForElementAtIndexPath: (NSIndexPath *)idx inView: (UIView*)view
+{
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath: idx];
+
+    return [[AppDelegate sharedDelegate] modelIdentifierForManagedObject: object];
 }
 
 
@@ -637,25 +707,24 @@ static NSInteger maxEditHelpCounter = 1;
 }
 
 
+- (NSIndexPath*)tableView: (UITableView*)tableView willSelectRowAtIndexPath: (NSIndexPath*)indexPath
+{
+    return (self.editing) ? nil : indexPath;
+}
+
+
 - (void)tableView: (UITableView*)tableView didSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
-    if (isEditing)
-    {
-        [tableView deselectRowAtIndexPath: indexPath animated: YES];
-    }
-    else
-    {
-        NSManagedObject *selectedCar = [[self fetchedResultsController] objectAtIndexPath: indexPath];
+    NSManagedObject *selectedCar = [[self fetchedResultsController] objectAtIndexPath: indexPath];
 
-        if (self.fuelEventController == nil || self.fuelEventController.selectedCar != selectedCar)
-        {
-            self.fuelEventController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
-            self.fuelEventController.managedObjectContext = self.managedObjectContext;
-            self.fuelEventController.selectedCar          = selectedCar;
-        }
-
-        [self.navigationController pushViewController: self.fuelEventController animated: YES];
+    if (self.fuelEventController == nil || self.fuelEventController.selectedCar != selectedCar)
+    {
+        self.fuelEventController = [[FuelEventController alloc] initWithNibName: @"FuelEventController" bundle: nil];
+        self.fuelEventController.managedObjectContext = self.managedObjectContext;
+        self.fuelEventController.selectedCar          = selectedCar;
     }
+
+    [self.navigationController pushViewController: self.fuelEventController animated: YES];
 }
 
 
@@ -740,20 +809,20 @@ static NSInteger maxEditHelpCounter = 1;
     switch (type)
     {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath]
+            [tableView insertRowsAtIndexPaths: @[newIndexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+            [tableView deleteRowsAtIndexPaths: @[indexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+            [tableView deleteRowsAtIndexPaths: @[indexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
 
-            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath]
+            [tableView insertRowsAtIndexPaths: @[newIndexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
@@ -788,6 +857,8 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (self.navigationController.topViewController == self)
         self.fuelEventController = nil;
+
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 

@@ -5,10 +5,8 @@
 
 @interface PickerImageView : UIImageView {}
 
-@property (nonatomic, strong)            NSString     *textualDescription;
-@property (nonatomic, unsafe_unretained) UIPickerView *pickerView;
-@property (nonatomic)                    NSInteger     rowIndex;
-
-- (void)viewTapped: (id)sender;
+@property (nonatomic, strong) NSString     *textualDescription;
+@property (nonatomic, weak)   UIPickerView *pickerView;
+@property (nonatomic)         NSInteger     rowIndex;
 
 @end

@@ -8,13 +8,6 @@
 static CGFloat const margin = 8.0;
 
 
-@interface SwitchTableCell (private)
-
-- (void)switchToggledAction: (UISwitch*)sender;
-
-@end
-
-
 @implementation SwitchTableCell
 
 @synthesize valueSwitch;
@@ -116,7 +109,7 @@ static CGFloat const margin = 8.0;
 {
     BOOL isON = [sender isOn];
 
-    [self.delegate valueChanged: [NSNumber numberWithBool: isON] identifier: self.valueIdentifier];
+    [self.delegate valueChanged: @(isON) identifier: self.valueIdentifier];
     [self.valueLabel setText: _I18N (isON ? @"Yes" : @"No")];
 }
 

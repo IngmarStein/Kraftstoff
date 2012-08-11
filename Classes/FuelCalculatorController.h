@@ -7,16 +7,16 @@
 #import "EditablePageCell.h"
 
 
-@interface FuelCalculatorController : PageViewController <EditablePageCellDelegate, NSFetchedResultsControllerDelegate>
+@interface FuelCalculatorController : PageViewController <EditablePageCellDelegate, UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
 {
     BOOL changeIsUserDriven;
+    BOOL isShowingConvertSheet;
 }
 
 @property (nonatomic, strong) NSManagedObjectContext     *managedObjectContext;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 
-@property (nonatomic, strong) UITextField *editingTextField;
-
+@property (nonatomic, strong) NSIndexPath     *restoredSelectionIndex;
 @property (nonatomic, strong) NSManagedObject *car;
 @property (nonatomic, strong) NSDate          *date;
 @property (nonatomic, strong) NSDate          *lastChangeDate;

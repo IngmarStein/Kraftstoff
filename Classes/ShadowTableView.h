@@ -7,8 +7,8 @@
 {
     CAGradientLayer *originShadow;
 
-    CAGradientLayer *topCellShadow;
-    CAGradientLayer *bottomCellShadow;
+    CAGradientLayer *cellShadowTop;
+    CAGradientLayer *cellShadowBottom;
 
     BOOL shadowsNeedUpdate;
 }

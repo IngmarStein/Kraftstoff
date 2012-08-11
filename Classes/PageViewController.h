@@ -11,7 +11,7 @@
     BOOL keyboardIsVisible;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, weak)   IBOutlet UITableView *tableView;
 @property (nonatomic, assign) BOOL constantRowHeight;
 @property (nonatomic, assign) BOOL useCustomHeaders;
 
@@ -21,6 +21,7 @@
 - (Class)classForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex;
 
 - (id)dataForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex;
+
 - (void)setData: (id)object forRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex;
 
 
@@ -50,5 +51,10 @@
 
 - (CGRect)frameForKeyboardApprearingInRect: (CGRect)keyboardRect;
 - (CGRect)frameForDisappearingKeyboard;
+
+
+#pragma mark Keyboard Support
+
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion;
 
 @end

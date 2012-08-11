@@ -15,92 +15,7 @@ static CGFloat const PageViewSectionGroupHeaderMargin = 20.0;
 static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
-@interface PageViewController (private)
-
-- (PageCellDescription*)cellDescriptionForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex;
-- (void)headerSectionsReordered;
-
-@end
-
-
 @implementation PageViewController
-
-
-
-#pragma mark -
-#pragma mark UITableViewController
-
-
-
-@synthesize tableView;
-
-- (UITableView*)tableView
-{
-    return tableView;
-}
-
-
-- (void)setTableView: (UITableView*)newTableView
-{
-    tableView = newTableView;
-
-    [tableView setDelegate: self];
-    [tableView setDataSource: self];
-
-    if (!self.nibName && !self.view)
-    {
-        self.view = newTableView;
-    }
-}
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
-{
-    return interfaceOrientation == UIInterfaceOrientationPortrait;
-}
-
-
-- (void)loadView
-{
-    if (self.nibName && [[NSBundle mainBundle] URLForResource: self.nibName withExtension: @"nib"])
-    {
-        [super loadView];
-    }
-    else
-    {
-        UITableView *aTableView = [[UITableView alloc] initWithFrame: CGRectZero style: UITableViewStyleGrouped];
-
-        self.view      = aTableView;
-        self.tableView = aTableView;
-
-    }
-}
-
-
-- (void)viewDidLoad
-{
-    keyboardIsVisible = NO;
-}
-
-
-- (void)viewDidUnload
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    tableView.delegate   = nil;
-    tableView.dataSource = nil;
-
-    tableView = nil;
-}
-
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    tableView.delegate   = nil;
-    tableView.dataSource = nil;
-}
 
 
 
@@ -121,6 +36,30 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 - (CGRect)frameForDisappearingKeyboard
 {
     return self.view.frame;
+}
+
+
+
+#pragma mark -
+#pragma mark View Rotation
+
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
+{
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 
@@ -164,7 +103,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 {
     UIView *view = [self.view viewWithTag: 1];
     CGRect kRect = [[[notification userInfo] objectForKey: UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect frame = [self frameForKeyboardApprearingInRect: kRect];
+    CGRect frame = [self frameForKeyboardApprearingInRect: [self.view.window convertRect: kRect fromWindow: nil]];
 
     [UIView animateWithDuration: [[[notification userInfo] objectForKey: UIKeyboardAnimationDurationUserInfoKey] doubleValue]
                      animations: ^{ view.frame = frame; }];
@@ -182,6 +121,37 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                      animations: ^{ view.frame = frame; }];
 
     keyboardIsVisible = NO;
+}
+
+
+
+#pragma mark -
+#pragma mark Dismissing the Keyboard
+
+
+
+- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
+{
+    BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
+    
+    [UIView animateWithDuration: scrollToTop ? 0.2 : 0.1
+                     animations: ^{
+                         
+                         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+                         
+                         if (indexPath)
+                             [self.tableView deselectRowAtIndexPath: indexPath animated: NO];
+                         
+                         if (scrollToTop)
+                             [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
+                                                   atScrollPosition: UITableViewScrollPositionTop
+                                                           animated: NO];
+                     }
+                     completion: ^(BOOL finished){
+                         
+                         [self.view endEditing: YES];
+                         completion ();
+                     }];
 }
 
 
@@ -321,7 +291,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
         // Add row to table
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow: rowIndex inSection: sectionIndex];
-        [self.tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] withRowAnimation: animation];
+        [self.tableView insertRowsAtIndexPaths: @[indexPath] withRowAnimation: animation];
     }
 }
 
@@ -342,7 +312,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
             if (animation != UITableViewRowAnimationNone)
             {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow: rowIndex inSection: sectionIndex];
-                [self.tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath] withRowAnimation: animation];
+                [self.tableView deleteRowsAtIndexPaths: @[indexPath] withRowAnimation: animation];
             }
         }
     }
@@ -353,6 +323,28 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 #pragma mark -
 #pragma mark Properties
 
+
+
+@synthesize tableView;
+
+- (UITableView*)tableView
+{
+    return tableView;
+}
+
+
+- (void)setTableView: (UITableView*)newTableView
+{
+    tableView = newTableView;
+
+    [tableView setDelegate: self];
+    [tableView setDataSource: self];
+
+    if (!self.nibName && !self.view)
+    {
+        self.view = newTableView;
+    }
+}
 
 
 @synthesize constantRowHeight;
@@ -520,5 +512,24 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     return cell;
 }
 
-@end
 
+
+#pragma mark -
+#pragma mark Memory Management
+
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+}
+
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+}
+
+@end

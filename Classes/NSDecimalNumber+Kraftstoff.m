@@ -1,9 +1,12 @@
-// NSDecimalNumber_extension.m
+// NSDecimalNumber+Kraftstoff.m
 //
 // Kraftstoff
 
 
-@implementation NSDecimalNumber (NSDecimalNumber_kraftstoff)
+#import "NSDecimalNumber+Kraftstoff.h"
+
+
+@implementation NSDecimalNumber (Kraftstoff)
 
 - (NSDecimalNumber*)min: (NSDecimalNumber*)other
 {

@@ -7,10 +7,9 @@
 #import "FuelEventController.h"
 
 
-@interface CarViewController : UITableViewController <UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
+@interface CarViewController : UITableViewController <UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
 {
     BOOL changeIsUserDriven;
-    BOOL isEditing;
 }
 
 @property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;

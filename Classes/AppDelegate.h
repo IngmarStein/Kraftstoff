@@ -3,7 +3,7 @@
 // Kraftstoff
 
 
-#define kraftstoffDeviceShakeNotification (@"kraftstoffDeviceShakeNotification")
+#define kraftstoffDeviceShakeNotification @"kraftstoffDeviceShakeNotification"
 
 
 // Unit Constants
@@ -36,11 +36,10 @@ typedef enum
 #define KSFuelConsumptionIsEfficiency(x) ((x) != KSFuelConsumptionLitersPer100km)
 
 
-
 // Shadow heights used within the app
-extern CGFloat const LargeShadowHeight;
-extern CGFloat const MediumShadowHeight;
-extern CGFloat const SmallShadowHeight;
+extern CGFloat const NavBarShadowHeight;
+extern CGFloat const TableBotShadowHeight;
+extern CGFloat const TableTopShadowHeight;
 
 // Standard heights for UI elements
 extern CGFloat const TabBarHeight;
@@ -49,40 +48,29 @@ extern CGFloat const StatusBarHeight;
 extern CGFloat const HugeStatusBarHeight;
 
 
-@interface AppDelegate : NSObject <UIApplicationDelegate> {}
+
+@interface AppDelegate : NSObject <UIApplicationDelegate>
+{
+    NSString *errorDescription;
+}
 
 @property (nonatomic, strong) UIAlertView *importAlert;
 
-@property (nonatomic, strong) IBOutlet UIWindow               *window;
-@property (nonatomic, strong) IBOutlet UITabBarController     *tabBarController;
-@property (nonatomic, strong) IBOutlet UINavigationController *calculatorNavigationController;
-@property (nonatomic, strong) IBOutlet UINavigationController *statisticsNavigationController;
-@property (nonatomic, strong) IBOutlet UIImageView            *background;
+@property (nonatomic, strong) IBOutlet UIWindow           *window;
+@property (nonatomic, weak)   IBOutlet UITabBarController *tabBarController;
+@property (nonatomic, weak)   IBOutlet UIImageView        *background;
 
 @property (nonatomic, strong, readonly) NSManagedObjectContext       *managedObjectContext;
 @property (nonatomic, strong, readonly) NSManagedObjectModel         *managedObjectModel;
 @property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 
-// Setting the background image (for EventEditor)
-- (void)setWindowBackground: (UIImage*)image animated: (BOOL)animated;
-
-// The shared application delegate
 + (AppDelegate*)sharedDelegate;
 
++ (BOOL)isRunningOS6;
 
-#pragma mark Date Computations
+- (void)setWindowBackground: (UIImage*)image animated: (BOOL)animated;
 
-// Adding a month offset to dates, also removes the second component
-+ (NSDate*)dateWithOffsetInMonths: (NSInteger)numberOfMonths fromDate: (NSDate*)startDate;
-
-// Removes the second component from a date
-+ (NSDate*)dateWithoutSeconds: (NSDate*)date;
-
-+ (NSTimeInterval)timeIntervalSinceBeginningOfDay: (NSDate*)date;
-
-// Number of days between two dates
-+ (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate;
 
 
 #pragma mark Color Gradients
@@ -99,6 +87,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (CGGradientRef)orangeGradient;
 + (CGGradientRef)infoGradient;
 + (CGGradientRef)knobGradient;
+
 
 
 #pragma mark Shared Data Formatters
@@ -119,18 +108,22 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDecimalNumberHandler*)sharedPriceRoundingHandler;
 
 
+
 #pragma mark Core Data Support
 
 - (BOOL)saveContext: (NSManagedObjectContext*)context;
 
-- (NSManagedObject*)managedObjectForURLString: (NSString*)URLString;
+- (NSString*)cacheNameForFuelEventFetchWithParent: (NSManagedObject*)object;
+
+- (NSString*)modelIdentifierForManagedObject: (NSManagedObject*)object;
+
+- (NSManagedObject*)managedObjectForModelIdentifier: (NSString*)identifier;
+
 
 
 #pragma mark Core Data Fetches
 
-+ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)managedObjectContext;
-
-+ (NSString*)cacheNameForFuelEventFetchWithParent: (NSManagedObject*)object;
++ (NSFetchRequest*)fetchRequestForCarsInManagedObjectContext: (NSManagedObjectContext*)moc;
 
 + (NSFetchRequest*)fetchRequestForEventsForCar: (NSManagedObject*)car
                                      afterDate: (NSDate*)date
@@ -142,6 +135,8 @@ extern CGFloat const HugeStatusBarHeight;
                                    dateMatches: (BOOL)dateMatches
                         inManagedObjectContext: (NSManagedObjectContext*)moc;
 
++ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)managedObjectContext;
+
 + (NSArray*)objectsForFetchRequest: (NSFetchRequest*)fetchRequest
             inManagedObjectContext: (NSManagedObjectContext*)managedObjectContext;
 
@@ -150,8 +145,8 @@ extern CGFloat const HugeStatusBarHeight;
                      andDate: (NSDate*)date;
 
 
-#pragma mark Core Data Updates
 
+#pragma mark Core Data Updates
 
 + (NSManagedObject*)addToArchiveWithCar: (NSManagedObject*)car
                                    date: (NSDate*)date
@@ -167,11 +162,13 @@ extern CGFloat const HugeStatusBarHeight;
            forceOdometerUpdate: (BOOL)forceOdometerUpdate;
 
 
+
 #pragma mark Locale Units
 
-+ (KSVolume)fuelUnitFromLocale;
++ (KSVolume)volumeUnitFromLocale;
 + (KSFuelConsumption)fuelConsumptionUnitFromLocale;
-+ (KSDistance)odometerUnitFromLocale;
++ (KSDistance)distanceUnitFromLocale;
+
 
 
 #pragma mark Conversion Constants
@@ -179,6 +176,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDecimalNumber*)litersPerUSGallon;
 + (NSDecimalNumber*)litersPerImperialGallon;
 + (NSDecimalNumber*)kilometersPerStatuteMile;
+
 
 
 #pragma mark Conversion to/from internal Data Format
@@ -193,6 +191,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDecimalNumber*)pricePerUnit:  (NSDecimalNumber*)literPrice withUnit: (KSVolume)unit;
 
 
+
 #pragma mark Consumption/Efficiency Computation
 
 + (NSDecimalNumber*)consumptionForKilometers: (NSDecimalNumber*)distance
@@ -201,6 +200,7 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (NSDecimalNumber*)mpgUSFromKML: (NSDecimalNumber*)kmPerLiter;
 + (NSDecimalNumber*)mpgImperialFromKML: (NSDecimalNumber*)kmPerLiter;
+
 
 
 #pragma mark Unit Strings/Descriptions
@@ -215,10 +215,5 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (NSString*)odometerUnitString: (KSDistance)unit;
 + (NSString*)odometerUnitDescription: (KSDistance)unit pluralization: (BOOL)plural;
-
-
-#pragma mark Mixed Pickles
-
-+ (BOOL)runningOS5;
 
 @end

@@ -3,13 +3,11 @@
 // Kraftstoff
 
 
-#import "FuelStatisticsViewController.h"
-
+#import "FuelStatisticsViewControllerPrivateMethods.h"
 
 
 #pragma mark -
 #pragma mark Base Class for Graphical Statistics View Controller
-
 
 
 @interface FuelStatisticsGraphViewController : FuelStatisticsViewController
@@ -23,10 +21,8 @@
 @end
 
 
-
 #pragma mark -
 #pragma mark Subclasses for different Statistic Graphs
-
 
 
 @interface FuelStatisticsViewController_AvgConsumption : FuelStatisticsGraphViewController

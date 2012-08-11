@@ -8,14 +8,14 @@
     BOOL pageControlUsed;
 }
 
-- (IBAction)pageAction: (id)sender;
-
+// Throw away all cached content, e.g. on updates to CoreData
 - (void)invalidateCaches;
 
-@property (nonatomic, strong) NSManagedObject *selectedCar;
-@property (nonatomic, strong) NSMutableArray  *viewControllers;
+- (IBAction)pageAction: (id)sender;
 
-@property (nonatomic, strong) IBOutlet UIScrollView  *scrollView;
-@property (nonatomic, strong) IBOutlet UIPageControl *pageControl;
+@property (nonatomic, weak) IBOutlet UIScrollView  *scrollView;
+@property (nonatomic, weak) IBOutlet UIPageControl *pageControl;
+
+@property (nonatomic, strong) NSManagedObject *selectedCar;
 
 @end

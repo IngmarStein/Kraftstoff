@@ -8,13 +8,14 @@
 #import "FuelCalculatorController.h"
 #import "CSVParser.h"
 #import "CSVImporter.h"
-#import "NSDecimalNumber_extension.h"
+
+#import "NSDecimalNumber+Kraftstoff.h"
 
 
 // Shadow heights used within the app
-CGFloat const LargeShadowHeight  = 16.0;
-CGFloat const MediumShadowHeight = 12.0;
-CGFloat const SmallShadowHeight  = 10.0;
+CGFloat const NavBarShadowHeight   = 4.0;  // old: 16
+CGFloat const TableBotShadowHeight = 4.0;  // old: 12
+CGFloat const TableTopShadowHeight = 4.0;  // old: 10
 
 // Standard heights for UI elements
 CGFloat const TabBarHeight        = 49.0;
@@ -22,26 +23,8 @@ CGFloat const NavBarHeight        = 44.0;
 CGFloat const StatusBarHeight     = 20.0;
 CGFloat const HugeStatusBarHeight = 40.0;
 
-// Calendar component-mask for date+time but without seconds
-static NSUInteger noSecondsComponentMask = (NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit);
-static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalendarUnit);
-
 // Pointer to shared Application Delegate Object
 static AppDelegate *sharedDelegateObject = nil;
-
-
-@interface AppDelegate (private)
-
-- (NSString*)applicationDocumentsDirectory;
-
-- (void)showImportAlert;
-- (void)hideImportAlert;
-- (NSString*)contentsOfURL: (NSURL*)url;
-- (void)removeFileItemAtURL: (NSURL*)url;
-- (void)mergeChanges: (NSNotification*)notifications;
-
-@end
-
 
 
 @implementation AppDelegate
@@ -49,8 +32,6 @@ static AppDelegate *sharedDelegateObject = nil;
 @synthesize importAlert;
 @synthesize window;
 @synthesize tabBarController;
-@synthesize calculatorNavigationController;
-@synthesize statisticsNavigationController;
 @synthesize background;
 @synthesize managedObjectContext;
 @synthesize managedObjectModel;
@@ -70,6 +51,21 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
++ (BOOL)isRunningOS6
+{
+    static BOOL initialized = NO;
+    static BOOL isOS6;
+
+    if (! initialized)
+    {
+        initialized = YES;
+        isOS6 = ([[[UIDevice currentDevice] systemVersion] hasPrefix: @"5"] == NO);
+    }
+    
+    return isOS6;
+}
+
+
 
 #pragma mark -
 #pragma mark Application Lifecycle
@@ -80,49 +76,54 @@ static AppDelegate *sharedDelegateObject = nil;
 {
     sharedDelegateObject = self;
 
-    // Register some defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:
-        [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: 6],    @"statisticTimeSpan",
-            [NSNumber numberWithInt: 1],    @"preferredStatisticsPage",
-            @"",                            @"preferredCarID",
-            [NSDecimalNumber zero],         @"recentDistance",
-            [NSDecimalNumber zero],         @"recentPrice",
-            [NSDecimalNumber zero],         @"recentFuelVolume",
-            [NSNumber numberWithBool: YES], @"recentFilledUp",
-            [NSNumber numberWithInt: 0],    @"editHelpCounter",
-            [NSNumber numberWithBool: YES], @"firstStartup",
-            nil]];
+        @{@"statisticTimeSpan":       @6,
+          @"preferredStatisticsPage": @1,
+          @"preferredCarID":          @"",
+          @"recentDistance":          [NSDecimalNumber zero],
+          @"recentPrice":             [NSDecimalNumber zero],
+          @"recentFuelVolume":        [NSDecimalNumber zero],
+          @"recentFilledUp":          @YES,
+          @"editHelpCounter":         @0,
+          @"firstStartup":            @YES}];
+}
 
-    // Assign managed object context to rootview controllers
-    CarViewController *carViewController   = (CarViewController*)[statisticsNavigationController topViewController];
-    carViewController.managedObjectContext = self.managedObjectContext;
 
-    FuelCalculatorController *calculatorViewController = (FuelCalculatorController*)[calculatorNavigationController topViewController];
-    calculatorViewController.managedObjectContext      = self.managedObjectContext;
+- (void)commonLaunchInitialization: (NSDictionary*)launchOptions
+{
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        [window makeKeyAndVisible];
+
+        // Switch once to the car view for new users
+        if ([launchOptions objectForKey: UIApplicationLaunchOptionsURLKey] == nil)
+        {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+            if ([defaults boolForKey: @"firstStartup"])
+            {
+                if ([[defaults stringForKey: @"preferredCarID"] isEqualToString: @""])
+                    tabBarController.selectedIndex = 1;
+
+                [defaults setObject: @NO forKey: @"firstStartup"];
+            }
+        }
+    });
+}
+
+
+- (BOOL)application: (UIApplication*)application willFinishLaunchingWithOptions: (NSDictionary*)launchOptions
+{
+    [self commonLaunchInitialization: launchOptions];
+    return YES;
 }
 
 
 - (BOOL)application: (UIApplication*)application didFinishLaunchingWithOptions: (NSDictionary*)launchOptions
 {
-    [window addSubview: tabBarController.view];
-    [window makeKeyAndVisible];
-
-    // Switch once to the car view for new users
-    if ([launchOptions objectForKey: UIApplicationLaunchOptionsURLKey] == nil)
-    {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-        // A first time user has the firstStartup flag still raised and no preferre car yet
-        if ([defaults boolForKey: @"firstStartup"])
-        {
-            if ([[defaults stringForKey: @"preferredCarID"] isEqualToString: @""])
-                tabBarController.selectedIndex = 1;
-
-            [defaults setObject: [NSNumber numberWithBool: NO] forKey: @"firstStartup"];
-        }
-    }
-
+    [self commonLaunchInitialization: launchOptions];
     return YES;
 }
 
@@ -136,6 +137,27 @@ static AppDelegate *sharedDelegateObject = nil;
 - (void)applicationWillTerminate: (UIApplication*)application
 {
     [self saveContext: managedObjectContext];
+}
+
+
+
+#pragma mark -
+#pragma mark iOS 6 State Restoration
+
+
+
+- (BOOL)application: (UIApplication*)application shouldSaveApplicationState: (NSCoder*)coder
+{
+    return YES;
+}
+
+
+- (BOOL)application: (UIApplication*)application shouldRestoreApplicationState: (NSCoder*)coder
+{
+    NSInteger stateVersion = [[coder decodeObjectForKey: UIApplicationStateRestorationBundleVersionKey] integerValue];
+    NSInteger bundleVersion = [[[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString*)kCFBundleVersionKey] integerValue];
+
+    return (stateVersion <= bundleVersion);
 }
 
 
@@ -201,19 +223,21 @@ static AppDelegate *sharedDelegateObject = nil;
         [[NSFileManager defaultManager] removeItemAtURL: url error: &error];
 
         if (error != nil)
-        {
             NSLog (@"%@", [error localizedDescription]);
-        }
     }
 }
 
 
-// Merge changes done by importer thread into main threads context
-- (void)mergeChanges: (NSNotification*)notification
+- (NSString*)pluralizedImportMessageForCarCount: (NSInteger)carCount eventCount: (NSInteger)eventCount
 {
-    [self.managedObjectContext performSelectorOnMainThread: @selector (mergeChangesFromContextDidSaveNotification:)
-                                                withObject: notification
-                                             waitUntilDone: YES];
+    NSString *format;
+    
+    if (carCount == 1)
+        format = _I18N (((eventCount == 1) ? @"Imported %d car with %d fuel event."  : @"Imported %d car with %d fuel events."));
+    else
+        format = _I18N (((eventCount == 1) ? @"Imported %d cars with %d fuel event." : @"Imported %d cars with %d fuel events."));
+
+    return [NSString stringWithFormat:format, carCount, eventCount];
 }
 
 
@@ -229,80 +253,74 @@ static AppDelegate *sharedDelegateObject = nil;
     // Show modal activity indicator while importing
     [self showImportAlert];
 
-    // Schedule work in other thread
-    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                    ^{
-                        // Read file contents from given URL, guess file encoding
-                        NSString *CSVString = [self contentsOfURL: url];
-                        [self removeFileItemAtURL: url];
+    // Import in context with private queue
+    NSManagedObjectContext *parentContext = self.managedObjectContext;
+    NSManagedObjectContext *importContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSPrivateQueueConcurrencyType];
+    [importContext setParentContext: parentContext];
 
-                        if (CSVString)
-                        {
-                            // Thread local managed object context
-                            NSManagedObjectContext *localObjectContext = [[NSManagedObjectContext alloc] init];
+    [importContext performBlock: ^{
 
-                            [localObjectContext setPersistentStoreCoordinator: self.persistentStoreCoordinator];
-                            [localObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+        // Read file contents from given URL, guess file encoding
+        NSString *CSVString = [self contentsOfURL: url];
+        [self removeFileItemAtURL: url];
 
-                            // Register context with the notification center
-                            [[NSNotificationCenter defaultCenter] addObserver: self
-                                                                     selector: @selector (mergeChanges:)
-                                                                         name: NSManagedObjectContextDidSaveNotification
-                                                                       object: localObjectContext];
+        if (CSVString)
+        {
+            // Try to import data from CSV file
+            CSVImporter *importer = [[CSVImporter alloc] init];
 
-                            // Read tables from the CSV
-                            CSVImporter *importer = [[CSVImporter alloc] init];
+            NSInteger numCars   = 0;
+            NSInteger numEvents = 0;
 
-                            NSInteger numCars   = 0;
-                            NSInteger numEvents = 0;
+            BOOL success = [importer importFromCSVString: CSVString
+                                            detectedCars: &numCars
+                                          detectedEvents: &numEvents
+                                               sourceURL: url
+                                              inContext: importContext];
 
-                            [importer importFromCSVString: CSVString
-                                             detectedCars: &numCars
-                                           detectedEvents: &numEvents
-                                                sourceURL: url
-                                                inContext: localObjectContext];
+            // On success propagate changes to parent context
+            if (success)
+            {
+                [self saveContext: importContext];
+                [parentContext performBlock: ^{ [self saveContext: parentContext]; }];
+            }
 
-                            // Unregister context
-                            [[NSNotificationCenter defaultCenter] removeObserver: self
-                                                                            name: NSManagedObjectContextDidSaveNotification
-                                                                          object: localObjectContext];
+            dispatch_async (dispatch_get_main_queue (),
+                            ^{
+                               [self hideImportAlert];
 
-                            dispatch_sync (dispatch_get_main_queue (),
-                                           ^{
-                                               [self hideImportAlert];
+                                NSString *title = (success)
+                                                     ? _I18N (@"Import Finished")
+                                                     : _I18N (@"Import Failed");
 
-                                               NSString *title = (numCars > 0)
-                                                    ? _I18N (@"Import Finished")
-                                                    : _I18N (@"Import Failed");
+                                NSString *message = (success)
+                                                     ? [self pluralizedImportMessageForCarCount: numCars eventCount: numEvents]
+                                                     : _I18N (@"No valid CSV-data could be found.");
 
-                                               NSString *message = (numCars > 0)
-                                                    ? [NSString stringWithFormat: _I18N (@"Imported %d car(s) with %d fuel event(s)."), numCars, numEvents]
-                                                    : _I18N (@"No valid CSV-data could be found.");
+                                [[[UIAlertView alloc] initWithTitle: title
+                                                            message: message
+                                                           delegate: nil
+                                                  cancelButtonTitle: _I18N (@"OK")
+                                                  otherButtonTitles: nil] show];
+                            });
+        }
+        else
+        {
+            dispatch_async (dispatch_get_main_queue (),
+                            ^{
+                                [self hideImportAlert];
 
-                                               [[[UIAlertView alloc] initWithTitle: title
-                                                                           message: message
-                                                                          delegate: nil
-                                                                 cancelButtonTitle: _I18N (@"OK")
-                                                                 otherButtonTitles: nil] show];
-                                           });
-                        }
-                        else
-                        {
-                            dispatch_sync (dispatch_get_main_queue (),
-                                           ^{
-                                               [self hideImportAlert];
-
-                                               [[[UIAlertView alloc] initWithTitle: _I18N (@"Import Failed")
-                                                                           message: _I18N (@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
-                                                                          delegate: nil
-                                                                 cancelButtonTitle: _I18N (@"OK")
-                                                                 otherButtonTitles: nil] show];
-                                           });
-                        }
-                    });
+                                [[[UIAlertView alloc] initWithTitle: _I18N (@"Import Failed")
+                                                            message: _I18N (@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
+                                                           delegate: nil
+                                                  cancelButtonTitle: _I18N (@"OK")
+                                                  otherButtonTitles: nil] show];
+                            });
+        }
+    }];
 
     // Treat imports as successfull first startups
-    [[NSUserDefaults standardUserDefaults] setObject: [NSNumber numberWithBool: NO] forKey: @"firstStartup"];
+    [[NSUserDefaults standardUserDefaults] setObject: @NO forKey: @"firstStartup"];
     return YES;
 }
 
@@ -346,64 +364,6 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 #pragma mark -
-#pragma mark Date Computations for Core-Data Fetches
-
-
-
-+ (NSDate*)dateWithOffsetInMonths: (NSInteger)numberOfMonths fromDate: (NSDate*)date
-{
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
-
-    NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
-    NSDateComponents *deltaComponents = [[NSDateComponents alloc] init];
-
-    [deltaComponents setMonth: numberOfMonths];
-
-    return [gregorianCalendar dateByAddingComponents: deltaComponents
-                                              toDate: [gregorianCalendar dateFromComponents: noSecComponents]
-                                             options: 0];
-}
-
-
-+ (NSDate*)dateWithoutSeconds: (NSDate*)date
-{
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
-
-    return [gregorianCalendar dateFromComponents: noSecComponents];
-}
-
-
-+ (NSTimeInterval)timeIntervalSinceBeginningOfDay: (NSDate*)date
-{
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *timeOfDayComponents = [gregorianCalendar components: timeOfDayComponentMask fromDate: date];
-    
-    return timeOfDayComponents.hour * 3600 + timeOfDayComponents.minute * 60;
-}
-
-
-+ (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate
-{    
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
-    NSDate *referenceDate = [NSDate dateWithTimeIntervalSince1970: 0.0];   
-
-    NSInteger daysToStart = [[gregorian components: NSDayCalendarUnit
-                                          fromDate: referenceDate
-                                            toDate: startDate
-                                           options: 0] day];
-
-    NSInteger daysToEnd   = [[gregorian components: NSDayCalendarUnit
-                                          fromDate: referenceDate
-                                            toDate: endDate
-                                           options: 0] day];
-
-    return daysToEnd - daysToStart + 1;
-}
-
-
-
-#pragma mark -
 #pragma mark Shared Color Gradients
 
 
@@ -422,8 +382,8 @@ static AppDelegate *sharedDelegateObject = nil;
     newShadow.frame           = frame;
     newShadow.backgroundColor = [UIColor clearColor].CGColor;
     newShadow.colors          = downwards
-                                    ? [NSArray arrayWithObjects: (id)[darkColor  CGColor], (id)[lightColor CGColor], nil]
-                                    : [NSArray arrayWithObjects: (id)[lightColor CGColor], (id)[darkColor  CGColor], nil];
+                                    ? @[(id)[darkColor  CGColor], (id)[lightColor CGColor]]
+                                    : @[(id)[lightColor CGColor], (id)[darkColor  CGColor]];
     return newShadow;
 }
 
@@ -710,7 +670,7 @@ static AppDelegate *sharedDelegateObject = nil;
         [editPreciseCurrencyFormatter setCurrencySymbol: @""];
 
         // Needed e.g. for CHF
-        [editPreciseCurrencyFormatter setRoundingIncrement: [NSNumber numberWithInt: 0]];
+        [editPreciseCurrencyFormatter setRoundingIncrement: @0];
 
         // Needed since NSNumberFormatters can't parse their own € output
         [editPreciseCurrencyFormatter setLenient: YES];
@@ -741,7 +701,7 @@ static AppDelegate *sharedDelegateObject = nil;
         [preciseCurrencyFormatter setMaximumFractionDigits: fractionDigits];
 
         // Needed e.g. for CHF
-        [preciseCurrencyFormatter setRoundingIncrement: [NSNumber numberWithInt: 0]];
+        [preciseCurrencyFormatter setRoundingIncrement: @0];
 
         // Needed since NSNumberFormatters can't parse their own € output
         [preciseCurrencyFormatter setLenient: YES];
@@ -801,7 +761,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 - (void)alertView: (UIAlertView*)alertView didDismissWithButtonIndex: (NSInteger)buttonIndex
 {
-    // Terminate and write crashlog...
+    [NSException raise: NSGenericException format: @"%@", errorDescription];
     abort ();
 }
 
@@ -814,7 +774,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
         if (coordinator != nil)
         {
-            managedObjectContext = [[NSManagedObjectContext alloc] init];
+            managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSMainQueueConcurrencyType];
             [managedObjectContext setPersistentStoreCoordinator: coordinator];
             [managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
         }
@@ -840,23 +800,28 @@ static AppDelegate *sharedDelegateObject = nil;
 {
     if (persistentStoreCoordinator == nil)
     {
-        NSError *error = nil;
+        NSURL *storeURL = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"Kraftstoffrechner.sqlite"]];
+
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES,
+                                  NSInferMappingModelAutomaticallyOption:       @YES};
 
         persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
 
+        NSError *error = nil;
+
         if (! [persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
                                                        configuration: nil
-                                                                 URL: [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"Kraftstoffrechner.sqlite"]]
-                                                             options: nil
+                                                                 URL: storeURL
+                                                             options: options
                                                                error: &error])
         {
-            NSLog (@"%@", [error localizedDescription]);
+            errorDescription = [error localizedDescription];
 
             [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Open Database")
-                                        message: _I18N (@"Sorry, the application database cannot be opened. Please quit the application by pressing the Home button.")
+                                        message: _I18N (@"Sorry, the application database cannot be opened. Please quit the application with the Home button.")
                                        delegate: self
                               cancelButtonTitle: nil
-                              otherButtonTitles: nil] show];
+                              otherButtonTitles: @"Ok", nil] show];
         }
     }
 
@@ -872,15 +837,13 @@ static AppDelegate *sharedDelegateObject = nil;
 
         if (![context save: &error])
         {
-            [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+            errorDescription = [error localizedDescription];
 
-            // NSLog (@"%@", [error localizedDescription]);
-            //
-            // [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Save Database")
-            //                             message: _I18N (@"Sorry, the application database cannot be saved. Please quit the application by pressing the Home button.")
-            //                            delegate: self
-            //                   cancelButtonTitle: nil
-            //                   otherButtonTitles: nil] show];
+            [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Save Database")
+                                        message: _I18N (@"Sorry, the application database cannot be saved. Please quit the application with the Home button.")
+                                       delegate: self
+                              cancelButtonTitle: nil
+                              otherButtonTitles: @"Ok", nil] show];
         }
 
         return YES;
@@ -890,9 +853,30 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-- (NSManagedObject*)managedObjectForURLString: (NSString*)URLString
+// Returns a unique cache-name for fetch requests which must rely on 'parent == object' properties.
+// The name is derived from the parents object ID.
+- (NSString*)cacheNameForFuelEventFetchWithParent: (NSManagedObject*)parent
 {
-    NSURL *objectURL = [NSURL URLWithString: URLString];
+    NSString *URL = [self modelIdentifierForManagedObject: parent];
+
+    return [URL stringByReplacingOccurrencesOfString: @"/" withString: @"_"];
+}
+
+
+- (NSString*)modelIdentifierForManagedObject: (NSManagedObject*)object
+{
+    NSManagedObjectID *objectID = object.objectID;
+
+    if (objectID && ! [objectID isTemporaryID])
+        return [[objectID URIRepresentation] absoluteString];
+    else
+        return nil;
+}
+
+
+- (NSManagedObject*)managedObjectForModelIdentifier: (NSString*)identifier
+{
+    NSURL *objectURL = [NSURL URLWithString: identifier];
 
     if ([[objectURL scheme] isEqualToString: @"x-coredata"])
     {
@@ -912,7 +896,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 
-+ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)moc
++ (NSFetchRequest*)fetchRequestForCarsInManagedObjectContext: (NSManagedObjectContext*)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
@@ -926,37 +910,7 @@ static AppDelegate *sharedDelegateObject = nil;
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects: sortDescriptor, nil];
     [fetchRequest setSortDescriptors: sortDescriptors];
 
-    // No section names; perform fetch without cache
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
-                                                                                                managedObjectContext: moc
-                                                                                                  sectionNameKeyPath: nil
-                                                                                                           cacheName: nil];
-
-
-    // Perform the Core Data fetch
-    NSError *error = nil;
-
-    if (! [fetchedResultsController performFetch: &error])
-    {
-        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
-    }
-
-    return fetchedResultsController;
-}
-
-
-// Returns a unique cache-name for fetch requests which must rely on 'parent == object' properties.
-// The name is derived from the parents object ID.
-+ (NSString*)cacheNameForFuelEventFetchWithParent: (NSManagedObject*)object
-{
-    NSManagedObjectID *objectID = [object objectID];
-
-    if ([objectID isTemporaryID])
-        return nil;
-
-    return [[[objectID URIRepresentation] absoluteString]
-                stringByReplacingOccurrencesOfString: @"/"
-                                          withString: @"_"];
+    return fetchRequest;
 }
 
 
@@ -989,7 +943,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
         [fetchRequest setPredicate:
             [NSCompoundPredicate andPredicateWithSubpredicates:
-                [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
+                @[parentPredicate, datePredicate]]];
     }
 
     // Sorting keys
@@ -1024,7 +978,7 @@ static AppDelegate *sharedDelegateObject = nil;
     }
     else
     {
-        NSString *dateDescription  = [[NSExpression expressionForConstantValue: date] description];
+        NSString *dateDescription = [[NSExpression expressionForConstantValue: date] description];
         NSPredicate *datePredicate = [NSPredicate predicateWithFormat:
                                         [NSString stringWithFormat: @"timestamp %@ %@",
                                             (dateMatches) ? @"<=" : @"<",
@@ -1032,7 +986,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
         [fetchRequest setPredicate:
             [NSCompoundPredicate andPredicateWithSubpredicates:
-                [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
+                @[parentPredicate, datePredicate]]];
     }
 
     // Sorting keys
@@ -1041,8 +995,30 @@ static AppDelegate *sharedDelegateObject = nil;
 
     [fetchRequest setSortDescriptors: sortDescriptors];
 
-
     return fetchRequest;
+}
+
+
++ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)moc
+{
+    NSFetchRequest *fetchRequest = [self fetchRequestForCarsInManagedObjectContext: moc];
+
+    // No section names; perform fetch without cache
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
+                                                                                               managedObjectContext: moc
+                                                                                                 sectionNameKeyPath: nil
+                                                                                                          cacheName: nil];
+
+
+    // Perform the Core Data fetch
+    NSError *error = nil;
+
+    if (! [fetchedResultsController performFetch: &error])
+    {
+        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+    }
+
+    return fetchedResultsController;
 }
 
 
@@ -1076,12 +1052,12 @@ static AppDelegate *sharedDelegateObject = nil;
     // Predicates
     NSPredicate *parentPredicate = [NSPredicate predicateWithFormat: @"car == %@", car];
 
-    NSString *dateDescription  = [[NSExpression expressionForConstantValue: date] description];
+    NSString *dateDescription = [[NSExpression expressionForConstantValue: date] description];
     NSPredicate *datePredicate = [NSPredicate predicateWithFormat: [NSString stringWithFormat: @"timestamp == %@", dateDescription]];
 
     [fetchRequest setPredicate:
         [NSCompoundPredicate andPredicateWithSubpredicates:
-            [NSArray arrayWithObjects: parentPredicate, datePredicate, nil]]];
+            @[parentPredicate, datePredicate]]];
 
     // Check whether fetch reveals any event objects
     return ([[self objectsForFetchRequest: fetchRequest inManagedObjectContext: moc] count] > 0);
@@ -1202,7 +1178,7 @@ static AppDelegate *sharedDelegateObject = nil;
     [newEvent setValue: liters        forKey: @"fuelVolume"];
 
     if (filledUp == NO)
-        [newEvent setValue: [NSNumber numberWithBool: filledUp] forKey: @"filledUp"];
+        [newEvent setValue: @(filledUp) forKey: @"filledUp"];
 
     if ([inheritedCost isEqualToNumber: zero] == NO)
         [newEvent setValue: inheritedCost forKey: @"inheritedCost"];
@@ -1345,7 +1321,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 
 
-+ (KSVolume)fuelUnitFromLocale
++ (KSVolume)volumeUnitFromLocale
 {
     NSLocale *locale  = [NSLocale autoupdatingCurrentLocale];
     NSString *country = [locale objectForKey: NSLocaleCountryCode];
@@ -1368,7 +1344,7 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (KSDistance)odometerUnitFromLocale
++ (KSDistance)distanceUnitFromLocale
 {
     NSString *country = [[NSLocale autoupdatingCurrentLocale] objectForKey: NSLocaleCountryCode];
 
@@ -1651,22 +1627,6 @@ static AppDelegate *sharedDelegateObject = nil;
         return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometers") : _I18N (@"Miles");
     else
         return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometer")  : _I18N (@"Mile");
-}
-
-
-
-#pragma mark -
-#pragma mark Mixed Pickles
-
-
-
-// Miminum supported iOS is iOS 4.3 hence everything else is iOS 5 or newer
-+ (BOOL)runningOS5
-{
-    if ([[[UIDevice currentDevice] systemVersion] hasPrefix: @"4"])
-        return NO;
-    else
-        return YES;
 }
 
 @end

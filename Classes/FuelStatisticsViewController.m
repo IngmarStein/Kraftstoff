@@ -5,19 +5,15 @@
 
 #import "AppDelegate.h"
 #import "FuelEventController.h"
-#import "FuelStatisticsViewController.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
+
+#import "NSDate+Kraftstoff.h"
 
 
 // Coordinates for the content area
-CGFloat const StatisticsViewHeight     = 268.0;
-
-CGFloat const StatisticsLeftBorder     =  10.0;
-CGFloat const StatisticsRightBorder    = 430.0;
-CGFloat const StatisticsTopBorder      =  58.0;
-CGFloat const StatisticsBottomBorder   = 240.0;
-CGFloat const StatisticsWidth          = 420.0;
-CGFloat const StatisticsHeight         = 182.0;
+CGFloat const StatisticsViewWidth  = 480.0;
+CGFloat const StatisticsViewHeight = 268.0;
+CGFloat const StatisticsHeight     = 182.0;
 
 
 
@@ -28,13 +24,13 @@ CGFloat const StatisticsHeight         = 182.0;
 
 @implementation FuelStatisticsViewController
 
-@synthesize selectedCar;
-@synthesize active;
 @synthesize activityView;
 @synthesize leftLabel;
 @synthesize rightLabel;
 @synthesize centerLabel;
 @synthesize scrollView;
+@synthesize selectedCar;
+
 
 
 #pragma mark -
@@ -50,31 +46,27 @@ CGFloat const StatisticsHeight         = 182.0;
         displayedNumberOfMonths = 0;
         invalidationCounter     = 0;
         expectedCounter         = 0;
-
-        [[NSNotificationCenter defaultCenter] addObserver: self
-                                                 selector: @selector (timeSpanSelected:)
-                                                     name: @"timeSpanChanged"
-                                                   object: nil];
     }
 
     return self;
 }
 
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    leftLabel.text  = [NSString stringWithFormat: @"%@", [selectedCar valueForKey: @"name"]];
-    rightLabel.text = @"";
-}
-
-
 - (void)viewWillAppear: (BOOL)animated
 {
     [super viewWillAppear: animated];
-    [self switchToSelectedTimeSpan: [[NSUserDefaults standardUserDefaults] integerForKey: @"statisticTimeSpan"]];
+
+    leftLabel.text  = [NSString stringWithFormat: @"%@", [selectedCar valueForKey: @"name"]];
+    rightLabel.text = @"";
+
+    [self setDisplayedNumberOfMonths: [[NSUserDefaults standardUserDefaults] integerForKey: @"statisticTimeSpan"]];
 }
+
+
+
+#pragma mark -
+#pragma mark View Rotation
+
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
@@ -83,9 +75,26 @@ CGFloat const StatisticsHeight         = 182.0;
 }
 
 
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+
+- (void)noteStatisticsPageBecomesVisible: (BOOL)visible
+{
+}
+
+
 
 #pragma mark -
-#pragma mark Cache Handling on Changes to Core Data or the User Locale
+#pragma mark Cache Handling
 
 
 
@@ -98,113 +107,152 @@ CGFloat const StatisticsHeight         = 182.0;
 
 - (void)purgeDiscardableCacheContent
 {
-    // to be implemented by subclasses
+    [contentCache enumerateKeysAndObjectsUsingBlock: ^(id key, id<DiscardableDataObject> data, BOOL *stop)
+        {
+            if ([key integerValue] != displayedNumberOfMonths)
+                [data discardContent];
+        }];
 }
 
 
 
 #pragma mark -
-#pragma mark Content Creation
+#pragma mark Statistics Computation and Display
 
-
-
-- (NSArray*)fetchObjectsForRecentMonths: (NSInteger)numberOfMonths
-                                 forCar: (NSManagedObject*)car
-                              inContext: (NSManagedObjectContext*)managedObjectContext
-{
-    return [AppDelegate objectsForFetchRequest:
-                [AppDelegate fetchRequestForEventsForCar: car
-                                               afterDate: [AppDelegate dateWithOffsetInMonths: -numberOfMonths fromDate: [NSDate date]]
-                                             dateMatches: YES
-                                  inManagedObjectContext: managedObjectContext]
-                        inManagedObjectContext: managedObjectContext];
-}
 
 
 - (void)displayStatisticsForRecentMonths: (NSInteger)numberOfMonths
 {
-    // Skip when the selected car no longer exists...
-    if ([self.selectedCar isFault])
-        return;
-
     displayedNumberOfMonths = numberOfMonths;
+    expectedCounter         = invalidationCounter;
 
-    // Try to display cached data
+
+    // First try to display cached data
     if ([self displayCachedStatisticsForRecentMonths: numberOfMonths])
         return;
 
-    // Compute and draw real contents
-    expectedCounter = invalidationCounter;
+
+    // Compute and draw new contents
     NSManagedObjectID *selectedCarID = [self.selectedCar objectID];
 
-    dispatch_async (dispatch_get_global_queue (active ? DISPATCH_QUEUE_PRIORITY_DEFAULT : DISPATCH_QUEUE_PRIORITY_LOW, 0),
-    ^{
-        @autoreleasepool
+    if (!selectedCarID)
+        return;
+
+#   if 1
+    NSManagedObjectContext *parentContext = [self.selectedCar managedObjectContext];
+    NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSPrivateQueueConcurrencyType];
+    [sampleContext setParentContext: parentContext];
+    [sampleContext performBlock: ^{
+
+        // Get the selected car
+        NSError *error = nil;
+        NSManagedObject *sampleCar = [sampleContext existingObjectWithID: selectedCarID
+                                                                   error: &error];
+
+        if (sampleCar)
         {
-            NSManagedObjectContext *localObjectContext = [[NSManagedObjectContext alloc] init];
-            [localObjectContext setPersistentStoreCoordinator: [[AppDelegate sharedDelegate] persistentStoreCoordinator]];
+            // Fetch events for the selected time period
+            NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar: sampleCar
+                                                                          afterDate: [NSDate dateWithOffsetInMonths: -numberOfMonths fromDate: [NSDate date]]
+                                                                        dateMatches: YES
+                                                             inManagedObjectContext: sampleContext];
 
-            NSError *error = nil;
-            NSManagedObject *localSelectedCar = [localObjectContext existingObjectWithID: selectedCarID error: &error];
+            NSArray *samplingObjects = [AppDelegate objectsForFetchRequest: fetchRequest
+                                                    inManagedObjectContext: sampleContext];
 
-            [self computeAndRedisplayStatisticsForRecentMonths: numberOfMonths
-                                                        forCar: localSelectedCar
-                                                     inContext: localObjectContext];
+
+            // Compute statistics
+            id sampleData = [self computeStatisticsForRecentMonths: numberOfMonths
+                                                            forCar: sampleCar
+                                                       withObjects: samplingObjects];
+
+
+            // Schedule update of cache and display in main thread
+            dispatch_async (dispatch_get_main_queue (),
+                           ^{
+                               if (invalidationCounter == expectedCounter)
+                               {
+                                   [contentCache setObject: sampleData forKey: @(numberOfMonths)];
+
+                                   if (displayedNumberOfMonths == numberOfMonths)
+                                       [self displayCachedStatisticsForRecentMonths: numberOfMonths];
+                               }
+                           });
         }
-    });
-}
+    }];
+#else
+    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                    ^{
+                        @autoreleasepool
+                        {
+                            NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] init];
+                            [sampleContext setPersistentStoreCoordinator: [[AppDelegate sharedDelegate] persistentStoreCoordinator]];
 
-
-- (BOOL)displayCachedStatisticsForRecentMonths: (NSInteger)numberOfMonths
-{
-    // to be implemented by subclasses
-    return NO;
-}
-
-
-- (void)computeAndRedisplayStatisticsForRecentMonths: (NSInteger)numberOfMonths
-                                              forCar: (NSManagedObject*)car
-                                           inContext: (NSManagedObjectContext*)context
-{
-    // to be implemented by subclasses
+                            // Get the selected car
+                            NSError *error = nil;
+                            NSManagedObject *sampleCar = [sampleContext existingObjectWithID: selectedCarID
+                                                                                       error: &error];
+                            
+                            if (sampleCar)
+                            {
+                                // Fetch events for the selected time period
+                                NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar: sampleCar
+                                                                                              afterDate: [NSDate dateWithOffsetInMonths: -numberOfMonths fromDate: [NSDate date]]
+                                                                                            dateMatches: YES
+                                                                                 inManagedObjectContext: sampleContext];
+                                
+                                NSArray *samplingObjects = [AppDelegate objectsForFetchRequest: fetchRequest
+                                                                        inManagedObjectContext: sampleContext];
+                                
+                                
+                                // Compute statistics
+                                id sampleData = [self computeStatisticsForRecentMonths: numberOfMonths
+                                                                                forCar: sampleCar
+                                                                           withObjects: samplingObjects];
+                                
+                                
+                                // Schedule update of cache and display in main thread
+                                dispatch_async (dispatch_get_main_queue (),
+                                               ^{
+                                                   if (invalidationCounter == expectedCounter)
+                                                   {
+                                                       [contentCache setObject: sampleData forKey: @(numberOfMonths)];
+                                                       
+                                                       if (displayedNumberOfMonths == numberOfMonths)
+                                                           [self displayCachedStatisticsForRecentMonths: numberOfMonths];
+                                                   }
+                                               });
+                            }
+                        }
+                    });
+#endif
 }
 
 
 
 #pragma mark -
-#pragma mark Radio Button Handling
+#pragma mark Button Handling
 
 
 
-- (IBAction)checkboxButton: (UIButton*)sender
+- (IBAction)buttonAction: (UIButton*)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName: @"timeSpanChanged"
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"numberOfMonthsSelected"
                                                         object: self
-                                                      userInfo: [NSDictionary dictionaryWithObject: [NSNumber numberWithInteger: [sender tag]]
-                                                                                            forKey: @"span"]];
+                                                      userInfo: @{@"span": @([sender tag])}];
 }
 
 
-- (void)switchToSelectedTimeSpan: (NSInteger)timeSpan
+- (void)setDisplayedNumberOfMonths: (NSInteger)numberOfMonths
 {
     // Update selection status of all buttons
     for (UIButton *button in [self.view subviews])
         if ([button isKindOfClass: [UIButton class]])
-            [button setSelected: [button tag] == timeSpan];
+            [button setSelected: [button tag] == numberOfMonths];
 
     // Switch dataset to be shown
-    [self displayStatisticsForRecentMonths: timeSpan];
+    [self displayStatisticsForRecentMonths: numberOfMonths];
 
-}
-
-
-- (void)timeSpanSelected: (NSNotification*)notification
-{
-    // Selected timespan in months
-    NSInteger timeSpan = [[[notification userInfo] valueForKey: @"span"] integerValue];
-
-    [[NSUserDefaults standardUserDefaults] setInteger: timeSpan forKey: @"statisticTimeSpan"];
-    [self switchToSelectedTimeSpan: timeSpan];
 }
 
 
@@ -219,22 +267,6 @@ CGFloat const StatisticsHeight         = 182.0;
     [super didReceiveMemoryWarning];
 
     [self purgeDiscardableCacheContent];
-}
-
-
-- (void)viewDidUnload
-{
-    self.activityView   = nil;
-    self.leftLabel      = nil;
-    self.rightLabel     = nil;
-
-    [super viewDidUnload];
-}
-
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 @end

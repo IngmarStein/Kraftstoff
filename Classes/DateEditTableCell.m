@@ -7,16 +7,7 @@
 #import "FuelCalculatorController.h"
 #import "AppDelegate.h"
 
-
-@interface DateEditTableCell (private)
-
-- (void)significantTimeChange: (id)object;
-
-- (void)datePickerValueChanged: (UIDatePicker*)sender;
-
-- (void)refreshDatePickerInputViewWithDate: (NSDate*)date forceRecreation: (BOOL)force;
-
-@end
+#import "NSDate+Kraftstoff.h"
 
 
 @implementation DateEditTableCell
@@ -82,7 +73,7 @@
 
 - (void)datePickerValueChanged: (UIDatePicker*)sender
 {
-    NSDate *selectedDate = [AppDelegate dateWithoutSeconds: [sender date]];
+    NSDate *selectedDate = [NSDate dateWithoutSeconds: [sender date]];
 
     if ([[self.delegate valueForIdentifier: self.valueIdentifier] isEqualToDate: selectedDate] == NO)
     {
@@ -128,8 +119,8 @@
         self.textField.inputView = datePicker;
     }
 
-    [datePicker setMaximumDate: [AppDelegate dateWithoutSeconds: now]];
-    [datePicker setDate: [AppDelegate dateWithoutSeconds: date] animated: NO];
+    [datePicker setMaximumDate: [NSDate dateWithoutSeconds: now]];
+    [datePicker setDate: [NSDate dateWithoutSeconds: date] animated: NO];
 
 
     // Immediate update when we are the first responder and notify delegate about new value too

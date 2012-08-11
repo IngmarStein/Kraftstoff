@@ -26,15 +26,6 @@ static NSDictionary *suffixAttributesDict       = nil;
 static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
-@interface CarTableCell (private)
-
-- (void)selectCar: (NSManagedObject*)managedObject;
-- (CTLineRef)truncatedLineForName: (NSString*)name info: (NSString*)info shadow: (BOOL)shadow;
-
-@end
-
-
-
 @implementation CarTableCell
 
 @synthesize carPicker;
@@ -47,15 +38,11 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     {
         CTFontRef helvetica24 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 24, NULL);
 
-        prefixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                (__bridge id)helvetica24,           (NSString*)kCTFontAttributeName,
-                                                (id)[[UIColor blackColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
-                                                nil];
+        prefixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica24,
+                                 (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor blackColor] CGColor]};
 
-        shadowPrefixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                (__bridge id)helvetica24,           (NSString*)kCTFontAttributeName,
-                                                (id)[[UIColor whiteColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
-                                                nil];
+        shadowPrefixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica24,
+                                       (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor whiteColor] CGColor]};
 
         CFRelease (helvetica24);
     }
@@ -64,15 +51,11 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     {
         CTFontRef helvetica18 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 18, NULL);
 
-        suffixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                (__bridge id)helvetica18,              (NSString*)kCTFontAttributeName,
-                                                (id)[[UIColor darkGrayColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
-                                                nil];
+        suffixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica18,
+                                 (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor darkGrayColor] CGColor]};
 
-        shadowSuffixAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                (__bridge id)helvetica18,           (NSString*)kCTFontAttributeName,
-                                                (id)[[UIColor whiteColor] CGColor], (NSString*)kCTForegroundColorAttributeName,
-                                                nil];
+        shadowSuffixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica18,
+                                       (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor whiteColor] CGColor]};
 
         CFRelease (helvetica18);
     }
@@ -114,9 +97,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     NSUInteger initialIndex = [self.fetchedObjects indexOfObject: managedObject];
 
     if (initialIndex == NSNotFound)
-    {
         initialIndex = 0;
-    }
 
     // (Re-)configure car picker and select the initial item
     [carPicker reloadAllComponents];
@@ -256,18 +237,12 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     else
     {
         imageView = [[PickerImageView alloc] initWithImage: image];
-
-        // Workaround for disabled autoselection of pickerView prior to iOS5
-        if ([AppDelegate runningOS5] == NO)
-        {
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: imageView action: @selector(viewTapped:)];
-            [imageView addGestureRecognizer: tap];
-        }
     }
 
     imageView.userInteractionEnabled = YES;
     imageView.pickerView = pickerView;
     imageView.rowIndex   = row;
+
 
     // Description for accessibility
     imageView.textualDescription = [NSString stringWithFormat: @"%@ %@", name, info];

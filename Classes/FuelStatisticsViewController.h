@@ -3,49 +3,47 @@
 // Kraftstoff
 
 
-// Coordinates for the content area
-extern CGFloat const StatisticsViewHeight;
-
-extern CGFloat const StatisticsLeftBorder;
-extern CGFloat const StatisticsRightBorder;
-extern CGFloat const StatisticsTopBorder;
-extern CGFloat const StatisticsBottomBorder;
-extern CGFloat const StatisticsWidth;
-extern CGFloat const StatisticsHeight;
-
-
-
 #pragma mark -
 #pragma mark Base Class for Statistics View Controller
 
+
+extern CGFloat const StatisticsViewWidth;
+extern CGFloat const StatisticsViewHeight;
+extern CGFloat const StatisticsHeight;
 
 
 @interface FuelStatisticsViewController : UIViewController
 {
     NSMutableDictionary *contentCache;
-    NSInteger displayedNumberOfMonths;
 
+    NSInteger displayedNumberOfMonths;
     NSInteger invalidationCounter;
     NSInteger expectedCounter;
 }
 
+// Throw away all cached content, e.g. on new/updated events
 - (void)invalidateCaches;
+
+// Thow away cached image content but keep the sample data
 - (void)purgeDiscardableCacheContent;
 
-- (IBAction)checkboxButton: (UIButton*)sender;
+// Notify the view controller about visibility of its page in the scroll view
+- (void)noteStatisticsPageBecomesVisible: (BOOL)visible;
+
+// Update statistics display to selected time period
+- (void)setDisplayedNumberOfMonths: (NSInteger)numberOfMonths;
+
+
+- (IBAction)buttonAction: (UIButton*)sender;
+
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityView;
+
+@property (nonatomic, weak) IBOutlet UILabel *leftLabel;
+@property (nonatomic, weak) IBOutlet UILabel *rightLabel;
+@property (nonatomic, weak) IBOutlet UILabel *centerLabel;
+
+@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
 
 @property (nonatomic, strong) NSManagedObject *selectedCar;
-@property (nonatomic)         BOOL             active;
-
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityView;
-
-@property (nonatomic, strong) IBOutlet UILabel *leftLabel;
-@property (nonatomic, strong) IBOutlet UILabel *rightLabel;
-@property (nonatomic, strong) IBOutlet UILabel *centerLabel;
-
-@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 
 @end
-
-
-

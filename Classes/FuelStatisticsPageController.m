@@ -9,23 +9,11 @@
 #import "AppDelegate.h"
 
 
-@interface FuelStatisticsPageController (private)
-
-- (void)updatePageVisibility;
-- (void)scrollToPage: (NSInteger)page animated: (BOOL)animated;
-
-- (void)localeChanged: (id)object;
-
-@end
-
-
 @implementation FuelStatisticsPageController
 
-
-@synthesize selectedCar;
-@synthesize viewControllers;
 @synthesize scrollView;
 @synthesize pageControl;
+@synthesize selectedCar;
 
 
 
@@ -34,21 +22,26 @@
 
 
 
+- (id)initWithNibName: (NSString*)nibName bundle: (NSBundle*)nibBundle
+{
+    if ((self = [super initWithNibName: nibName bundle: nibBundle]))
+    {
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    }
+
+    return self;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     // Configure scroll view
-    scrollView.contentSize  = CGSizeMake (scrollView.frame.size.width * pageControl.numberOfPages, scrollView.frame.size.height);
+    scrollView.contentSize  = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
     scrollView.scrollsToTop = NO;
 
-    // Select preferred page
-    pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredStatisticsPage"];
-    [self scrollToPage: pageControl.currentPage animated: NO];
-
     // Load content pages
-    self.viewControllers = [[NSMutableArray alloc] init];
-
     for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
     {
         FuelStatisticsViewController *controller = nil;
@@ -57,28 +50,27 @@
         {
             case 0: controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
             case 1: controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
-            case 2: controller = [FuelStatisticsViewController_PriceAmount    alloc]; break;
-            case 3: controller = [FuelStatisticsTextViewController alloc]; break;                
+            case 2: controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
+            case 3: controller = [FuelStatisticsTextViewController alloc]; break;
         }
 
         controller = [controller initWithNibName: @"FuelStatisticsViewController" bundle: nil];
-
         controller.selectedCar = self.selectedCar;
-        controller.active      = (page == pageControl.currentPage);
 
-        [self.viewControllers addObject: controller];
-
-        CGRect frame          = scrollView.frame;
-        frame.origin.x        = frame.size.width * page;
-        frame.origin.y        = 0;
-        controller.view.frame = frame;
+        [self addChildViewController: controller];
+        controller.view.frame = [self frameForPage: page];
 
         [scrollView addSubview: controller.view];
     }
 
+
+    // Select preferred page
+    pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredStatisticsPage"];
+    [self scrollToPage: pageControl.currentPage animated: NO];
+
     pageControlUsed = NO;
 
-    // Observe locale changes
+
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
@@ -90,18 +82,62 @@
            selector: @selector (didEnterBackground:)
                name: UIApplicationDidEnterBackgroundNotification
              object: nil];
+
+    [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector (didBecomeActive:)
+               name: UIApplicationDidBecomeActiveNotification
+             object: nil];
+
+    [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector (numberOfMonthsSelected:)
+               name: @"numberOfMonthsSelected"
+             object: nil];
 }
 
 
-- (void)viewWillAppear: (BOOL)animated
+
+#pragma mark -
+#pragma mark View Rotation
+
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
 {
-    [super viewWillAppear: animated];
-
-    for (FuelStatisticsViewController *controller in self.viewControllers)
-    {
-        [controller viewWillAppear: animated];
-    }
+    return UIInterfaceOrientationIsLandscape (interfaceOrientation);
 }
+
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+
+
+#pragma mark -
+#pragma mark Cache Handling
+
+
+
+- (void)invalidateCaches
+{
+    for (FuelStatisticsViewController *controller in self.childViewControllers)
+        [controller invalidateCaches];
+}
+
+
+
+#pragma mark -
+#pragma mark System Events
+
 
 
 - (void)localeChanged: (id)object
@@ -112,31 +148,54 @@
 
 - (void)didEnterBackground: (id)object
 {
-    for (FuelStatisticsViewController *controller in self.viewControllers)
-    {
+    for (FuelStatisticsViewController *controller in self.childViewControllers)
         [controller purgeDiscardableCacheContent];
-    }
 }
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
+- (void)didBecomeActive: (id)object
 {
-    return UIInterfaceOrientationIsLandscape (interfaceOrientation);
+    [self updatePageVisibility];
 }
 
 
 
 #pragma mark -
-#pragma mark Cache Handling on Changes to Core Data or the User Locale
+#pragma mark User Events
 
 
 
-- (void)invalidateCaches
+- (void)numberOfMonthsSelected: (NSNotification*)notification
 {
-    for (FuelStatisticsViewController *controller in self.viewControllers)
+    // Remeber selection in preferences
+    NSInteger numberOfMonths = [[[notification userInfo] valueForKey: @"span"] integerValue];
+    [[NSUserDefaults standardUserDefaults] setInteger: numberOfMonths forKey: @"statisticTimeSpan"];
+
+    // Update all statistics controllers
+    for (NSInteger i = 0; i < pageControl.numberOfPages; i++)
     {
-        [controller invalidateCaches];
+        NSInteger page = (pageControl.currentPage + i) % pageControl.numberOfPages;
+
+        FuelStatisticsViewController *controller = [self.childViewControllers objectAtIndex: page];
+        [controller setDisplayedNumberOfMonths: numberOfMonths];
     }
+}
+
+
+
+#pragma mark -
+#pragma mark Frame Computation for Pages
+
+
+
+- (CGRect)frameForPage: (NSInteger)page
+{
+    CGRect frame   = scrollView.frame;
+
+    frame.origin.x = frame.size.width * page;
+    frame.origin.y = 0;
+
+    return frame;
 }
 
 
@@ -146,24 +205,13 @@
 
 
 
-- (void)updatePageVisibility
-{
-    for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
-    {
-        FuelStatisticsViewController *controller = [viewControllers objectAtIndex: page];
-        controller.active = (page == pageControl.currentPage);
-    }
-}
-
-
 - (void)scrollViewDidScroll: (UIScrollView*)sender
 {
     if (pageControlUsed == NO)
     {
-        NSInteger currentPage   = pageControl.currentPage;
-        CGFloat pageWidth       = scrollView.frame.size.width;
-        pageControl.currentPage = floor ((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-        
+        NSInteger currentPage = pageControl.currentPage;
+        pageControl.currentPage = floor ((scrollView.contentOffset.x - StatisticsViewWidth / 2) / StatisticsViewWidth) + 1;
+
         if (pageControl.currentPage != currentPage)
             [self updatePageVisibility];
     }
@@ -184,15 +232,27 @@
 }
 
 
+
+#pragma mark -
+#pragma mark Page Control Handling
+
+
+
+- (void)updatePageVisibility
+{
+    for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
+    {
+        FuelStatisticsViewController *controller = [self.childViewControllers objectAtIndex: page];
+        [controller noteStatisticsPageBecomesVisible: (page == pageControl.currentPage)];
+    }
+}
+
+
 - (void)scrollToPage: (NSInteger)page animated: (BOOL)animated;
 {
-    CGRect frame   = scrollView.frame;
-    frame.origin.x = frame.size.width * page;
-    frame.origin.y = 0;
-
     pageControlUsed = YES;
-    [scrollView scrollRectToVisible: frame animated: animated];
 
+    [scrollView scrollRectToVisible: [self frameForPage: page] animated: animated];
     [self updatePageVisibility];
 }
 
@@ -212,18 +272,8 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
 
-
-- (void)viewDidUnload
-{
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.scrollView      = nil;
-    self.pageControl     = nil;
-    self.viewControllers = nil;
-
-    [super viewDidUnload];
 }
 
 

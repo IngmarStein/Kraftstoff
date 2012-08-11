@@ -12,37 +12,8 @@
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
 #import "SwitchTableCell.h"
-#import "UIImage_extension.h"
 
-
-@interface FuelEventEditorController (private)
-
-- (void)reloadStateFromEvent;
-- (void)reconfigureFillupRow;
-
-- (IBAction)enterEditingMode: (id)sender;
-
-- (void)endEditingModeAndSaveCompletion: (id)sender;
-- (IBAction)endEditingModeAndSave: (id)sender;
-
-- (void)endEditingModeAndRevertCompletion: (id)sender;
-- (void)endEditingModeAndRevertSheet: (id)sender;
-- (IBAction)endEditingModeAndRevert: (id)sender;
-
-- (void)selectRowAtIndexPath: (NSIndexPath*)path;
-
-- (void)createConsumptionRowWithAnimation: (UITableViewRowAnimation)animation;
-- (void)createDataRows: (unsigned)rowMask withAnimation: (UITableViewRowAnimation)animation;
-- (void)createTableContentsWithAnimation: (UITableViewRowAnimation)animation;
-- (void)recreateTableContentsWithAnimation: (UITableViewRowAnimation)animation;
-
-- (void)dismissKeyboardWithCompletion: (void (^)(void))completion;
-
-- (void)localeChangedCompletion: (id)previousSelection;
-- (void)localeChanged: (id)object;
-
-@end
-
+#import "NSDate+Kraftstoff.h"
 
 
 @implementation FuelEventEditorController
@@ -57,13 +28,9 @@
 @synthesize fuelVolume;
 @synthesize filledUp;
 
-@synthesize editingTextField;
-
 @synthesize editButton;
 @synthesize cancelButton;
 @synthesize doneButton;
-
-@synthesize editing;
 
 
 
@@ -76,9 +43,11 @@
 {
     if ((self = [super initWithNibName: nibName bundle: nibBundle]))
     {
-        editing               = NO;
-        dataChanged           = NO;
-        mostRecentSelectedRow = 0;
+        if ([self respondsToSelector: @selector (restorationIdentifier)])
+        {
+            self.restorationIdentifier = @"FuelEventEditor";
+            self.restorationClass = [self class];
+        }
     }
 
     return self;
@@ -89,7 +58,8 @@
 {
     [super viewDidLoad];
 
-    // Navigation-Bar buttons
+
+    // Title bar
     self.editButton   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemEdit
                                                                        target: self
                                                                        action: @selector (enterEditingMode:)];
@@ -102,52 +72,39 @@
                                                                        target: self
                                                                        action: @selector (endEditingModeAndRevert:)];
 
-    self.navigationItem.rightBarButtonItem = editButton;
+    self.title = [[AppDelegate sharedDateFormatter] stringFromDate: [event valueForKey: @"timestamp"]];
+    self.navigationItem.rightBarButtonItem = self.editButton;
 
-    // Add shadow layer onto the background image view
-    UIView *imageView = [self.view viewWithTag: 100];
 
-    [imageView.layer
-        insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, imageView.frame.size.width, LargeShadowHeight)
-                                          darkFactor: 0.5
-                                         lightFactor: 150.0 / 255.0
-                                       fadeDownwards: YES]
-               atIndex: 0];
+    // Pre-iOS6: add shadow layer onto the background image view
+    if ([AppDelegate isRunningOS6] == NO)
+    {
+        UIView *imageView = [self.view viewWithTag: 100];
 
-    // Observe locale changes
+        [imageView.layer
+            insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, imageView.frame.size.width, NavBarShadowHeight)
+                                              darkFactor: 0.5
+                                             lightFactor: 150.0 / 255.0
+                                           fadeDownwards: YES]
+                   atIndex: 0];
+    }
+
+    self.tableView.backgroundView = nil;
+
+    
+    // Table contents
+    self.constantRowHeight = NO;
+    self.tableView.allowsSelection = NO;
+
+    [self createTableContentsWithAnimation: UITableViewRowAnimationNone];
+    [self.tableView reloadData];
+
+    
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
                name: NSCurrentLocaleDidChangeNotification
              object: nil];
-
-    // View title
-    self.title = [[AppDelegate sharedDateFormatter] stringFromDate: [event valueForKey: @"timestamp"]];
-
-    // Table contents
-    self.constantRowHeight = NO;
-    self.tableView.allowsSelection = NO;
-
-    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
-}
-
-
-- (void)viewDidUnload
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-
-    self.editingTextField = nil;
-    self.editButton       = nil;
-    self.cancelButton     = nil;
-    self.doneButton       = nil;
-
-    [super viewDidUnload];
-}
-
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 
@@ -156,7 +113,7 @@
     [super viewDidAppear: animated];
 
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [UIImage backgroundImageWithPattern: [UIImage imageNamed: @"TablePattern"]]
+        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
                    animated: animated];
 }
 
@@ -173,17 +130,135 @@
 
 
 #pragma mark -
-#pragma mark Setting the Edited Event
+#pragma mark iOS 6 State Restoration
 
 
 
-- (void)reloadStateFromEvent
+#define kSRFuelEventCancelSheet     @"FuelEventCancelSheet"
+#define kSRFuelEventDataChanged     @"FuelEventDataChanged"
+#define kSRFuelEventSelectionIndex  @"FuelEventMostSelectionIndex"
+#define kSRFuelEventEventID         @"FuelEventEventID"
+#define kSRFuelEventCarID           @"FuelEventCarID"
+#define kSRFuelEventDate            @"FuelEventDate"
+#define kSRFuelEventDistance        @"FuelEventDistance"
+#define kSRFuelEventPrice           @"FuelEventPrice"
+#define kSRFuelEventVolume          @"FuelEventVolume "
+#define kSRFuelEventFilledUp        @"FuelEventFilledUp"
+#define kSRFuelEventEditing         @"FuelEventEditing"
+
+
++ (UIViewController*) viewControllerWithRestorationIdentifierPath: (NSArray *)identifierComponents coder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    FuelEventEditorController *controller = [[self alloc] initWithNibName: @"FuelEventEditor" bundle: nil];
+
+    controller.managedObjectContext = [appDelegate managedObjectContext];
+    controller.event                = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRFuelEventEventID]];
+
+    if (controller.event == nil)
+        return nil;
+
+    return controller;
+}
+
+
+- (void)encodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    NSIndexPath *indexPath = (isShowingCancelSheet) ? restoredSelectionIndex : [self.tableView indexPathForSelectedRow];
+
+    [coder encodeBool: isShowingCancelSheet forKey: kSRFuelEventCancelSheet];
+    [coder encodeBool: dataChanged forKey: kSRFuelEventDataChanged];
+    [coder encodeObject: indexPath forKey: kSRFuelEventSelectionIndex];
+    [coder encodeObject: [appDelegate modelIdentifierForManagedObject: event] forKey: kSRFuelEventEventID];
+    [coder encodeObject: [appDelegate modelIdentifierForManagedObject: car] forKey: kSRFuelEventCarID];
+    [coder encodeObject: date forKey: kSRFuelEventDate];
+    [coder encodeObject: distance forKey: kSRFuelEventDistance];
+    [coder encodeObject: price forKey: kSRFuelEventPrice];
+    [coder encodeObject: fuelVolume forKey: kSRFuelEventVolume];
+    [coder encodeBool: filledUp forKey: kSRFuelEventFilledUp];
+    [coder encodeBool: self.editing forKey: kSRFuelEventEditing];
+
+    [super encodeRestorableStateWithCoder: coder];
+}
+
+
+- (void)decodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    isShowingCancelSheet   = [coder decodeBoolForKey: kSRFuelEventCancelSheet];
+    dataChanged            = [coder decodeBoolForKey: kSRFuelEventDataChanged];
+    restoredSelectionIndex = [coder decodeObjectForKey: kSRFuelEventSelectionIndex];
+    car                    = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRFuelEventCarID]];
+    date                   = [coder decodeObjectForKey: kSRFuelEventDate];
+    distance               = [coder decodeObjectForKey: kSRFuelEventDistance];
+    price                  = [coder decodeObjectForKey: kSRFuelEventPrice];
+    fuelVolume             = [coder decodeObjectForKey: kSRFuelEventVolume];
+    filledUp               = [coder decodeBoolForKey: kSRFuelEventFilledUp];
+    
+    if ([coder decodeBoolForKey: kSRFuelEventEditing])
+    {
+        [self setEditing: YES animated: NO];
+            
+        if (isShowingCancelSheet)
+        {
+            [self showRevertActionSheet];
+        }
+        else
+        {
+            [self selectRowAtIndexPath: restoredSelectionIndex];
+            restoredSelectionIndex = nil;
+        }
+    }
+
+    [super decodeRestorableStateWithCoder: coder];
+}
+
+
+
+#pragma mark -
+#pragma mark Saving and Restoring the Fuel Event
+
+
+
+- (void)saveStateToEvent
+{
+    if (dataChanged)
+    {
+        dataChanged = NO;
+
+        // Remove event from database
+        [AppDelegate removeEventFromArchive: self.event
+                     inManagedObjectContext: managedObjectContext
+                        forceOdometerUpdate: YES];
+
+        // Reinsert new version of event
+        self.event = [AppDelegate addToArchiveWithCar: car
+                                                 date: date
+                                             distance: distance
+                                                price: price
+                                           fuelVolume: fuelVolume
+                                             filledUp: filledUp
+                               inManagedObjectContext: managedObjectContext
+                                  forceOdometerUpdate: YES];
+        
+        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+        NSLog(@"saved to %@", event);
+    }
+}
+
+
+- (void)restoreStateFromEvent
 {
     self.car = [event valueForKey: @"car"];
 
     KSDistance odometerUnit = [[car valueForKey: @"odometerUnit"] integerValue];
     KSVolume   fuelUnit     = [[car valueForKey: @"fuelUnit"]     integerValue];
-
+    
+    self.title      = [[AppDelegate sharedDateFormatter] stringFromDate: [event valueForKey: @"timestamp"]];
     self.date       = [event valueForKey: @"timestamp"];
     self.distance   = [AppDelegate distanceForKilometers: [event valueForKey: @"distance"] withUnit: odometerUnit];
     self.price      = [AppDelegate pricePerUnit: [event valueForKey: @"price"] withUnit: fuelUnit];
@@ -200,9 +275,67 @@
     {
         event = newEvent;
 
-        [self reloadStateFromEvent];
+        [self restoreStateFromEvent];
+    }
+}
 
-        self.title = [[AppDelegate sharedDateFormatter] stringFromDate: [event valueForKey: @"timestamp"]];
+
+
+#pragma mark -
+#pragma mark Modeswitching for Table Rows
+
+
+
+- (void)reconfigureRowAtIndexPath: (NSIndexPath*)indexPath
+{
+    PageCell *cell = (PageCell*)[self.tableView cellForRowAtIndexPath: indexPath];
+    
+    if (cell)
+    {
+        [cell configureForData: [self dataForRow: indexPath.row inSection: 0]
+                viewController: self
+                     tableView: self.tableView
+                     indexPath: indexPath];
+        
+        [cell setNeedsDisplay];
+    }
+}
+
+
+- (void)setEditing: (BOOL)enabled animated: (BOOL)animated
+{
+    if (self.editing != enabled)
+    {
+        UITableViewRowAnimation animation = (animated) ? UITableViewRowAnimationFade : UITableViewRowAnimationNone;
+        
+        [super setEditing: enabled animated: animated];
+        
+        if (enabled)
+        {
+            self.navigationItem.leftBarButtonItem  = doneButton;
+            self.navigationItem.rightBarButtonItem = cancelButton;
+            
+            [self removeSectionAtIndex: 1 withAnimation: animation];
+        }
+        else
+        {
+            self.navigationItem.leftBarButtonItem  = nil;
+            self.navigationItem.rightBarButtonItem = editButton;
+            
+            [self createConsumptionRowWithAnimation: animation];
+        }
+        
+        if (animated)
+        {
+            for (int row = 0; row <= 4; row++)
+                [self reconfigureRowAtIndexPath: [NSIndexPath indexPathForRow: row inSection: 0]];
+        }
+        else
+        {
+            [self.tableView reloadData];
+        }
+
+        self.tableView.allowsSelection = enabled;
     }
 }
 
@@ -213,77 +346,26 @@
 
 
 
-- (void)reconfigureRow: (int)row
-{
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: row inSection: 0];
-
-    PageCell *cell = (PageCell*)[self.tableView cellForRowAtIndexPath: indexPath];
-
-    [cell configureForData: [self dataForRow: row inSection: 0]
-            viewController: self
-                 tableView: self.tableView
-                 indexPath: indexPath];
-
-    [cell setNeedsDisplay];
-}
-
-
 - (IBAction)enterEditingMode: (id)sender
 {
-    self.tableView.allowsSelection = editing = YES;
-
-    [self reconfigureRow: 4];
+    [self setEditing: YES animated: YES];
     [self selectRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]];
 }
 
 
 
 #pragma mark -
-#pragma mark Update of Edited Data
+#pragma mark Saving Edited Data
 
-
-
-- (void)endEditingModeAndSaveCompletion: (id)sender
-{
-    [self.editingTextField resignFirstResponder];
-    self.editingTextField = nil;
-
-    self.navigationItem.leftBarButtonItem  = nil;
-    self.navigationItem.rightBarButtonItem = editButton;
-
-    [self createConsumptionRowWithAnimation: UITableViewRowAnimationFade];
-
-    // Replace event in database with new version
-    if (dataChanged)
-    {
-        dataChanged = NO;
-
-        [AppDelegate removeEventFromArchive: self.event
-                     inManagedObjectContext: managedObjectContext
-                        forceOdometerUpdate: YES];
-
-        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
-
-        self.event = [AppDelegate addToArchiveWithCar: car
-                                                 date: date
-                                             distance: distance
-                                                price: price
-                                           fuelVolume: fuelVolume
-                                             filledUp: filledUp
-                               inManagedObjectContext: managedObjectContext
-                                  forceOdometerUpdate: YES];
-
-        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
-    }
-}
 
 
 - (IBAction)endEditingModeAndSave: (id)sender
 {
-    self.tableView.allowsSelection = editing = NO;
+    [self dismissKeyboardWithCompletion: ^{
 
-    [self reconfigureRow: 4];
-    [self dismissKeyboardWithCompletion: ^{ [self endEditingModeAndSaveCompletion: sender]; }];
+        [self saveStateToEvent];        
+        [self setEditing: NO animated: YES];
+    }];
 }
 
 
@@ -293,75 +375,53 @@
 
 
 
-- (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex
-{
-    if (buttonIndex != actionSheet.cancelButtonIndex)
-        [self endEditingModeAndRevertCompletion: actionSheet];
-    else
-        [self selectRowAtIndexPath: [NSIndexPath indexPathForRow: mostRecentSelectedRow inSection: 0]];
-}
-
-
-- (void)endEditingModeAndRevertCompletion: (id)sender
-{
-    self.navigationItem.leftBarButtonItem  = nil;
-    self.navigationItem.rightBarButtonItem = editButton;
-
-    self.tableView.allowsSelection = editing = NO;
-
-    [self reloadStateFromEvent];
-
-    for (int i = 0; i <= 4; i++)
-        [self reconfigureRow: i];
-
-    [self createConsumptionRowWithAnimation: UITableViewRowAnimationFade];
-}
-
-
-- (void)endEditingModeAndRevertSheet: (id)sender
-{
-    [self.editingTextField resignFirstResponder];
-    self.editingTextField = nil;
-
-    if (dataChanged)
-    {
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle: _I18N (@"Revert Changes for Event?")
-                                                           delegate: self
-                                                  cancelButtonTitle: _I18N (@"Cancel")
-                                             destructiveButtonTitle: _I18N (@"Revert")
-                                                  otherButtonTitles: nil];
-
-        sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-
-        [sheet showFromTabBar: self.tabBarController.tabBar];
-    }
-    else
-        [self endEditingModeAndRevertCompletion: sender];
-}
-
-
 - (IBAction)endEditingModeAndRevert: (id)sender
 {
-    // Remember currently selected row in case the action shhet gets canceled
-    mostRecentSelectedRow = [self.tableView indexPathForSelectedRow].row;
+    restoredSelectionIndex = [self.tableView indexPathForSelectedRow];
+    
+    [self dismissKeyboardWithCompletion: ^{
 
-    [self dismissKeyboardWithCompletion: ^{ [self endEditingModeAndRevertSheet: self]; }];
+        if (dataChanged)
+            [self showRevertActionSheet];
+        else
+            [self endEditingModeAndRevertCompletion];    
+    }];
 }
 
 
-
-#pragma mark -
-#pragma mark Programatically Selecting Table Rows
-
-
-
-- (void)selectRowAtIndexPath: (NSIndexPath*)path
+- (void)showRevertActionSheet
 {
-    if (path)
-    {
-        [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
-        [self tableView: self.tableView didSelectRowAtIndexPath: path];
-    }
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle: _I18N (@"Revert Changes for Event?")
+                                                       delegate: self
+                                              cancelButtonTitle: _I18N (@"Cancel")
+                                         destructiveButtonTitle: _I18N (@"Revert")
+                                              otherButtonTitles: nil];
+    
+    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    
+    isShowingCancelSheet = YES;
+    [sheet showFromTabBar: self.tabBarController.tabBar];
+}
+
+
+- (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex)
+        [self selectRowAtIndexPath: restoredSelectionIndex];
+    else
+        [self endEditingModeAndRevertCompletion];
+ 
+    isShowingCancelSheet   = NO;
+    restoredSelectionIndex = nil;
+}
+
+
+- (void)endEditingModeAndRevertCompletion
+{
+    [self restoreStateFromEvent];
+    [self setEditing: NO animated: YES];    
+
+    restoredSelectionIndex = nil;
 }
 
 
@@ -398,20 +458,16 @@
                                       [AppDelegate consumptionUnitString: consumptionUnit]];
 
     // Substrings for highlighting
-    NSArray *highlightStrings = [NSArray arrayWithObjects:
-                                    [[AppDelegate sharedCurrencyFormatter] currencySymbol],
-                                    [AppDelegate consumptionUnitString: consumptionUnit],
-                                    nil];
+    NSArray *highlightStrings = @[[[AppDelegate sharedCurrencyFormatter] currencySymbol],
+                                  [AppDelegate consumptionUnitString: consumptionUnit]];
 
     [self addSectionAtIndex: 1 withAnimation: animation];
 
     [self addRowAtIndex: 0
               inSection: 1
               cellClass: [ConsumptionTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            consumptionString,  @"label",
-                            highlightStrings,   @"highlightStrings",
-                            nil]
+               cellData: @{@"label":            consumptionString,
+                           @"highlightStrings": highlightStrings}
           withAnimation: animation];
 }
 
@@ -423,11 +479,9 @@
     [self addRowAtIndex: 0
               inSection: 0
               cellClass: [DateEditTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            _I18N (@"Date"),                       @"label",
-                            [AppDelegate sharedDateTimeFormatter], @"formatter",
-                            @"date",                               @"valueIdentifier",
-                            nil]
+               cellData: @{@"label":           _I18N (@"Date"),
+                           @"formatter":       [AppDelegate sharedDateTimeFormatter],
+                           @"valueIdentifier": @"date"}
           withAnimation: animation];
 
     KSDistance odometerUnit = [[self.car valueForKey: @"odometerUnit"] integerValue];
@@ -435,12 +489,10 @@
     [self addRowAtIndex: 1
               inSection: 0
               cellClass: [NumberEditTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            _I18N (@"Distance"),                                                            @"label",
-                            [@" " stringByAppendingString: [AppDelegate odometerUnitString: odometerUnit]], @"suffix",
-                            [AppDelegate sharedDistanceFormatter],                                          @"formatter",
-                            @"distance",                                                                    @"valueIdentifier",
-                            nil]
+               cellData: @{@"label":           _I18N (@"Distance"),
+                           @"suffix":          [@" " stringByAppendingString: [AppDelegate odometerUnitString: odometerUnit]],
+                           @"formatter":       [AppDelegate sharedDistanceFormatter],
+                           @"valueIdentifier": @"distance"}
           withAnimation: animation];
 
     KSVolume fuelUnit = [[self.car valueForKey: @"fuelUnit"] integerValue];
@@ -448,103 +500,85 @@
     [self addRowAtIndex: 2
               inSection: 0
               cellClass: [NumberEditTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            [AppDelegate fuelPriceUnitDescription: fuelUnit], @"label",
-                            [AppDelegate sharedEditPreciseCurrencyFormatter], @"formatter",
-                            [AppDelegate sharedPreciseCurrencyFormatter],     @"alternateFormatter",
-                            @"price",                                         @"valueIdentifier",
-                            nil]
+               cellData: @{@"label":              [AppDelegate fuelPriceUnitDescription: fuelUnit],
+                           @"formatter":          [AppDelegate sharedEditPreciseCurrencyFormatter],
+                           @"alternateFormatter": [AppDelegate sharedPreciseCurrencyFormatter],
+                           @"valueIdentifier":    @"price"}
           withAnimation: animation];
-
-    
-    NSNumberFormatter *formatter = KSVolumeIsMetric (fuelUnit)
-        ? [AppDelegate sharedFuelVolumeFormatter]
-        : [AppDelegate sharedPreciseFuelVolumeFormatter];
 
     [self addRowAtIndex: 3
               inSection: 0
               cellClass: [NumberEditTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            [AppDelegate fuelUnitDescription: fuelUnit discernGallons: NO pluralization: YES], @"label",
-                            [@" " stringByAppendingString: [AppDelegate fuelUnitString: fuelUnit]],            @"suffix",
-                            formatter,                                                                         @"formatter",
-                            @"fuelVolume",                                                                     @"valueIdentifier",
-                            nil]
+               cellData: @{@"label":           [AppDelegate fuelUnitDescription: fuelUnit discernGallons: NO pluralization: YES],
+                           @"suffix":          [@" " stringByAppendingString: [AppDelegate fuelUnitString: fuelUnit]],
+                           @"formatter":       KSVolumeIsMetric (fuelUnit)
+                                                    ? [AppDelegate sharedFuelVolumeFormatter]
+                                                    : [AppDelegate sharedPreciseFuelVolumeFormatter],
+                           @"valueIdentifier": @"fuelVolume"}
           withAnimation: animation];
 
     [self addRowAtIndex: 4
               inSection: 0
               cellClass: [SwitchTableCell class]
-               cellData: [NSDictionary dictionaryWithObjectsAndKeys:
-                            _I18N (@"Full Fill-Up"), @"label",
-                            @"filledUp",             @"valueIdentifier",
-                            nil]
+               cellData: @{@"label":           _I18N (@"Full Fill-Up"),
+                           @"valueIdentifier": @"filledUp"}
           withAnimation: animation];
 
-    [self createConsumptionRowWithAnimation: animation];
+    if (!self.editing)
+        [self createConsumptionRowWithAnimation: animation];
 }
 
 
 
 #pragma mark -
-#pragma mark Updating the Table Rows
+#pragma mark Locale Handling
 
-
-
-- (void)recreateTableContentsWithAnimation: (UITableViewRowAnimation)animation
-{
-    [self removeAllSectionsWithAnimation:   UITableViewRowAnimationNone];
-    [self createTableContentsWithAnimation: UITableViewRowAnimationNone];
-    [self.tableView reloadData];
-}
-
-
-- (void)localeChangedCompletion: (id)previousSelection
-{
-    [self.editingTextField resignFirstResponder];
-    self.editingTextField = nil;
-
-    [self recreateTableContentsWithAnimation: UITableViewRowAnimationNone];
-    [self selectRowAtIndexPath: previousSelection];
-}
 
 
 - (void)localeChanged: (id)object
 {
-    NSIndexPath *path = [self.tableView indexPathForSelectedRow];
-
-    if (path)
-        [self dismissKeyboardWithCompletion: ^{ [self localeChangedCompletion: path ]; }];
-    else
-        [self localeChangedCompletion: path];
+    NSIndexPath *previousSelection = [self.tableView indexPathForSelectedRow];
+    
+    [self dismissKeyboardWithCompletion: ^{
+        
+        [self removeAllSectionsWithAnimation:   UITableViewRowAnimationNone];
+        [self createTableContentsWithAnimation: UITableViewRowAnimationNone];
+        [self.tableView reloadData];
+        
+        [self selectRowAtIndexPath: previousSelection];
+    }];
 }
 
 
 
 #pragma mark -
-#pragma mark Dismissing the Keyboard
+#pragma mark Programatically Selecting Table Rows
 
 
 
-- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
+- (void)activateTextFieldAtIndexPath: (NSIndexPath*)indexPath
 {
-    BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath: indexPath];
+    UITextField *field = nil;
+    
+    if ([cell isKindOfClass: [DateEditTableCell class]])
+        field = [(DateEditTableCell*)cell textField];
+    
+    else if ([cell isKindOfClass: [NumberEditTableCell class]])
+        field = [(NumberEditTableCell*)cell textField];
+    
+    field.userInteractionEnabled = YES;
+    [field becomeFirstResponder];
+}
 
-    [UIView animateWithDuration: scrollToTop ? 0.2 : 0.1
-                     animations: ^{
 
-                         // Deselect row and scroll table to the top
-                         [self.tableView deselectRowAtIndexPath: [self.tableView indexPathForSelectedRow] animated: NO];
-
-                         if (scrollToTop)
-                             [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
-                                                   atScrollPosition: UITableViewScrollPositionTop
-                                                           animated: NO];
-                     }
-                     completion: ^(BOOL finished){
-
-                         completion ();
-                     }];
+- (void)selectRowAtIndexPath: (NSIndexPath*)path
+{
+    if (path)
+    {
+        [self.tableView selectRowAtIndexPath: path animated: NO scrollPosition: UITableViewScrollPositionNone];
+        [self tableView: self.tableView didSelectRowAtIndexPath: path];
+    }
 }
 
 
@@ -569,10 +603,10 @@
         return fuelVolume;
 
     else if ([valueIdentifier isEqualToString: @"filledUp"])
-        return [NSNumber numberWithBool: filledUp];
+        return @(filledUp);
 
     else if ([valueIdentifier isEqualToString: @"showValueLabel"])
-        return [NSNumber numberWithBool: !editing];
+        return @(!(BOOL)self.editing);
 
     return nil;
 }
@@ -582,7 +616,7 @@
 {
     if ([valueIdentifier isEqualToString: @"date"])
     {
-        NSDate *newDate = [AppDelegate dateWithoutSeconds: (NSDate*)newValue];
+        NSDate *newDate = [NSDate dateWithoutSeconds: (NSDate*)newValue];
 
         if (! [self.date isEqualToDate: newDate])
         {
@@ -672,6 +706,7 @@
 }
 
 
+
 #pragma mark -
 #pragma mark UITableViewDataSource
 
@@ -689,63 +724,48 @@
 
 
 
-// Don't activate rows with a UISwitch
 - (NSIndexPath*)tableView: (UITableView*)tableView willSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath: indexPath];
 
-    if ([cell isKindOfClass: [SwitchTableCell class]])
+    if ([cell isKindOfClass: [SwitchTableCell class]] || [cell isKindOfClass: [ConsumptionTableCell class]])
         return nil;
     else
         return indexPath;
 }
 
 
-
-// Activate edit fields for selected rows, track the currently active textfield
 - (void)tableView: (UITableView*)tableView didSelectRowAtIndexPath: (NSIndexPath*)indexPath
 {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath: indexPath];
+    [self activateTextFieldAtIndexPath: indexPath];
+
+    [tableView scrollToRowAtIndexPath: indexPath
+                     atScrollPosition: UITableViewScrollPositionMiddle
+                             animated: YES];
+}
 
 
-    if ([cell isKindOfClass: [DateEditTableCell class]])
-        self.editingTextField = [(DateEditTableCell*)cell textField];
 
-    else if ([cell isKindOfClass: [NumberEditTableCell class]])
-        self.editingTextField = [(NumberEditTableCell*)cell textField];
-
-    else
-        self.editingTextField = nil;
+#pragma mark -
+#pragma mark Memory Management
 
 
-    if (self.editingTextField)
-    {
-        void (^selectCompletion)(BOOL) = ^(BOOL finished){
 
-            self.navigationItem.leftBarButtonItem  = doneButton;
-            self.navigationItem.rightBarButtonItem = cancelButton;
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
 
-            // Enable user inputs for textfield in selected cell and show keyboard
-            self.editingTextField.userInteractionEnabled = YES;
-            [self.editingTextField becomeFirstResponder];
+    self.editButton   = nil;
+    self.cancelButton = nil;
+    self.doneButton   = nil;
 
-            // Scroll selected cell into middle of screen
-            [tableView scrollToRowAtIndexPath: indexPath
-                             atScrollPosition: UITableViewScrollPositionMiddle
-                                     animated: YES];
-        };
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+}
 
-        if ([self.tableView numberOfSections] == 2)
-            [UIView animateWithDuration: 0.3
-                             animations: ^{ [self removeSectionAtIndex: 1 withAnimation: UITableViewRowAnimationFade]; }
-                             completion: selectCompletion];
-        else
-            selectCompletion (YES);
-    }
-    else
-    {
-        [tableView deselectRowAtIndexPath: indexPath animated: NO];
-    }
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 @end

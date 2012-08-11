@@ -7,10 +7,12 @@
 #import "EditablePageCell.h"
 
 
-@interface FuelEventEditorController : PageViewController <EditablePageCellDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate>
+@interface FuelEventEditorController : PageViewController <UIViewControllerRestoration, EditablePageCellDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate>
 {
-    BOOL      dataChanged;
-    NSInteger mostRecentSelectedRow;
+    BOOL         isShowingCancelSheet;
+    
+    BOOL         dataChanged;
+    NSIndexPath *restoredSelectionIndex;
 }
 
 
@@ -24,12 +26,8 @@
 @property (nonatomic, strong) NSDecimalNumber *fuelVolume;
 @property (nonatomic)         BOOL             filledUp;
 
-@property (nonatomic, strong) UITextField *editingTextField;
-
 @property (nonatomic, strong) UIBarButtonItem *editButton;
 @property (nonatomic, strong) UIBarButtonItem *cancelButton;
 @property (nonatomic, strong) UIBarButtonItem *doneButton;
-
-@property (nonatomic, getter=isEditing) BOOL editing;
 
 @end

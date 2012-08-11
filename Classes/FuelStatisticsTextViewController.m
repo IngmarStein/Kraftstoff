@@ -6,17 +6,20 @@
 #import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsTextViewController.h"
-#import "NSDecimalNumber_extension.h"
+
+#import "NSDate+Kraftstoff.h"
+#import "NSDecimalNumber+Kraftstoff.h"
+
 
 
 static CGFloat const GridLeftBorder     =  16.0;
-static CGFloat const GridRightBorder    = 464.0;
+static CGFloat       GridRightBorder    = 464.0;
 static CGFloat const GridTopBorder      =  68.0;
 static CGFloat const GridBottomBorder   = 253.0;
-static CGFloat const GridWidth          = 448.0;
+static CGFloat       GridWidth          = 448.0;
 static CGFloat const GridHeight         = 185.0;
 
-static CGFloat const GridDesColumnWidth = (240.0 - GridLeftBorder);
+static CGFloat       GridDesColumnWidth = (240.0 - GridLeftBorder);
 static CGFloat const GridTextXMargin    =  10.0;
 static CGFloat const GridTextYMargin    =   3.0;
 static CGFloat const GridTextHeight     =  23.0;
@@ -24,11 +27,11 @@ static CGFloat const GridTextHeight     =  23.0;
 
 
 #pragma mark -
-#pragma mark Disposable Content Objects for ContentCache
+#pragma mark Disposable Sampling Data Objects for ContentCache
 
 
 
-@interface FuelStatisticsData : NSObject
+@interface FuelStatisticsData : NSObject <DiscardableDataObject>
 {
 @public
 
@@ -60,14 +63,10 @@ static CGFloat const GridTextHeight     =  23.0;
 @synthesize backgroundImage;
 @synthesize contentImage;
 
-
-- (id)init
+- (void)discardContent;
 {
-    if ((self = [super init]))
-    {
-    }
-
-    return self;
+    self.backgroundImage = nil;
+    self.contentImage    = nil;
 }
 
 @end
@@ -75,35 +74,34 @@ static CGFloat const GridTextHeight     =  23.0;
 
 
 #pragma mark -
-#pragma mark Disposable Content Objects Entry for NSCache
-
-
-
-@interface FuelStatisticsTextViewController (private)
-
-// Methods for Graph Computation
-- (void)resampleFetchedObjects: (NSArray*)fetchedObjects forCar: (NSManagedObject*)car andState: (FuelStatisticsData*)state;
-
-- (void)drawBackground;
-- (void)drawStatisticsForState: (FuelStatisticsData*)state withHeight: (CGFloat)height;
-
-@end
+#pragma mark Textual Statistics View Controller
 
 
 
 @implementation FuelStatisticsTextViewController
 
 
-- (void)purgeDiscardableCacheContent
+- (void)noteStatisticsPageBecomesVisible: (BOOL)visible
 {
-    [contentCache enumerateKeysAndObjectsUsingBlock: ^(id key, id data, BOOL *stop)
-        {
-            if ([key integerValue] != displayedNumberOfMonths)
-            {
-                [(FuelStatisticsData*)data setBackgroundImage: nil];
-                [(FuelStatisticsData*)data setContentImage: nil];
-            }
-        }];
+    if (visible)
+        [self.scrollView flashScrollIndicators];
+}
+
+
+
+#pragma mark -
+#pragma mark FIXME Long-Phone Support
+
+
+
++ (void)initialize
+{
+    if (0)
+    {
+        GridRightBorder    += 88.0;
+        GridWidth          += 88.0;
+        GridDesColumnWidth += 88.0;
+    }
 }
 
 
@@ -153,7 +151,7 @@ static CGFloat const GridTextHeight     =  23.0;
 
             if ([timestamp compare: state->lastDate] != NSOrderedAscending)
                 state->lastDate  = timestamp;
-            
+
             // Summarize all amounts
             state->totalCost       = [state->totalCost decimalNumberByAdding: cost];
             state->totalFuelVolume = [state->totalFuelVolume decimalNumberByAdding: fuelVolume];
@@ -193,11 +191,61 @@ static CGFloat const GridTextHeight     =  23.0;
         }
     }
 
-    // compute average consumption    
+    // Compute average consumption
     state->avgConsumption = [AppDelegate consumptionForKilometers: state->totalDistance
                                                            Liters: state->totalFuelVolume
                                                            inUnit: consumptionUnit];
 }
+
+
+- (id<DiscardableDataObject>)computeStatisticsForRecentMonths: (NSInteger)numberOfMonths
+                                                       forCar: (NSManagedObject*)car
+                                                  withObjects: (NSArray*)fetchedObjects
+{
+    // No cache cell exists => resample data and compute average value
+    FuelStatisticsData *state = [contentCache objectForKey: @(numberOfMonths)];
+    
+    if (state == nil)
+    {
+        state = [[FuelStatisticsData alloc] init];
+        
+        [self resampleFetchedObjects: fetchedObjects
+                              forCar: car
+                            andState: state];
+    }
+    
+    
+    // Create image data from resampled data
+    if (state.backgroundImage == nil)
+    {
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+        {
+            [self drawBackground];
+            state.backgroundImage = UIGraphicsGetImageFromCurrentImageContext ();
+        }
+        UIGraphicsEndImageContext ();
+    }
+    
+    if (state.contentImage == nil)
+    {
+        CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
+        
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, height), NO, 0.0);
+        {
+            [self drawStatisticsForState: state withHeight: height];
+            state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
+        }
+        UIGraphicsEndImageContext ();
+    }
+    
+    return state;
+}
+
+
+
+#pragma mark -
+#pragma mark Graph Display
+
 
 
 - (void)drawBackground
@@ -241,7 +289,7 @@ static CGFloat const GridTextHeight     =  23.0;
             NSString *text = _I18N (@"Not enough data to display statistics");
             CGSize size    = [text sizeWithFont: font];
 
-            x = floor ((480.0 -  size.width)/2.0);
+            x = floor ((StatisticsViewWidth -  size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0 - 65.0);
 
             [text drawAtPoint: CGPointMake (x, y)   withFont: font];
@@ -252,27 +300,27 @@ static CGFloat const GridTextHeight     =  23.0;
     {
         // Horizontal grid backgrounds
         UIBezierPath *path = [UIBezierPath bezierPath];
-        
+
         path.lineWidth = GridTextHeight - 1;
-        
+
         [[UIColor colorWithWhite: 0.45 alpha: 0.1] setStroke];
-        
+
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
             [path moveToPoint:    CGPointMake (GridLeftBorder,  1.0)];
             [path addLineToPoint: CGPointMake (GridRightBorder, 1.0)];
-            
+
             CGFloat lastY;
-            
+
             for (NSInteger i = 1, y = 0.0; i < 16; i+=2)
             {
                 lastY = y;
                 y     = rint (GridTextHeight*0.5 + GridTextHeight*i);
-                
+
                 CGContextTranslateCTM (cgContext, 0.0, y - lastY);
                 [path stroke];
-            }                
+            }
         }
         CGContextRestoreGState (cgContext);
 
@@ -282,34 +330,34 @@ static CGFloat const GridTextHeight     =  23.0;
         // Horizontal grid lines
         CGFloat   dashDotPattern [2]   = { 1.0, 1.0 };
         NSInteger dashDotPatternLength = 2;
-        
+
         path.lineWidth = 1;
         [path setLineDash: dashDotPattern count: dashDotPatternLength phase: 0.0];
-        
+
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
             [path moveToPoint:    CGPointMake (GridLeftBorder,  0.5)];
             [path addLineToPoint: CGPointMake (GridRightBorder, 0.5)];
-            
+
             CGFloat lastY;
-            
+
             for (NSInteger i = 1, y = 0.0; i <= 16; i++)
             {
                 lastY = y;
                 y     = rint (GridTextHeight*i);
-                
+
                 CGContextTranslateCTM (cgContext, 0.0, y - lastY);
                 [path stroke];
-            }                
+            }
         }
         CGContextRestoreGState (cgContext);
-        
-        
+
+
         // Vertical grid line
         path.lineWidth = 2;
         [path setLineDash: NULL count: 0 phase: 0.0];
-        
+
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
@@ -331,7 +379,7 @@ static CGFloat const GridTextHeight     =  23.0;
 
             NSNumberFormatter *nf  = [AppDelegate sharedFuelVolumeFormatter];
             NSNumberFormatter *cf  = [AppDelegate sharedCurrencyFormatter];
-            NSNumberFormatter *pcf = [AppDelegate sharedPreciseCurrencyFormatter];            
+            NSNumberFormatter *pcf = [AppDelegate sharedPreciseCurrencyFormatter];
             NSDecimalNumber *val, *val2, *zero = [NSDecimalNumber zero];
 
             KSFuelConsumption consumptionUnit = [[state->car valueForKey: @"fuelConsumptionUnit"] integerValue];
@@ -343,7 +391,7 @@ static CGFloat const GridTextHeight     =  23.0;
             KSVolume fuelUnit        = [[state->car valueForKey: @"fuelUnit"] integerValue];
             NSString *fuelUnitString = [AppDelegate fuelUnitString: fuelUnit];
 
-            NSInteger numberOfDays = [AppDelegate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate];
+            NSInteger numberOfDays = [NSDate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate];
 
 
             // number of days
@@ -355,20 +403,20 @@ static CGFloat const GridTextHeight     =  23.0;
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
 
-                text = [NSString stringWithFormat: @"%d", [AppDelegate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate]];
+                text = [NSString stringWithFormat: @"%d", [NSDate numberOfCalendarDaysFrom: state->firstDate to: state->lastDate]];
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
             }
-            
+
             // avg consumptiom
             {
                 y   += GridTextHeight;
-                
+
                 text = _I18N (KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"avg_efficiency" : @"avg_consumption");
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
-                
+
                 text = [NSString stringWithFormat: @"%@ %@", [nf stringFromNumber: state->avgConsumption], consumptionUnitString];
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
@@ -459,16 +507,16 @@ static CGFloat const GridTextHeight     =  23.0;
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
             }
-            
+
             // volume per event
             {
                 y   += GridTextHeight;
-                
+
                 text = _I18N (@"volume_event");
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
-                
+
                 if (state->numberOfFillups > 0)
                 {
                     val  = [AppDelegate volumeForLiters: state->totalFuelVolume withUnit: fuelUnit];
@@ -582,7 +630,7 @@ static CGFloat const GridTextHeight     =  23.0;
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
-                
+
                 if (state->numberOfFillups > 0)
                 {
                     val  = [AppDelegate distanceForKilometers: state->totalDistance withUnit: odometerUnit];
@@ -605,7 +653,7 @@ static CGFloat const GridTextHeight     =  23.0;
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
-                
+
                 if (numberOfDays > 0)
                 {
                     val  = [AppDelegate distanceForKilometers: state->totalDistance withUnit: odometerUnit];
@@ -628,7 +676,7 @@ static CGFloat const GridTextHeight     =  23.0;
                 size = [text sizeWithFont: font];
                 x    = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint: CGPointMake (x, y) withFont: font];
-                
+
                 if ([zero compare: state->totalCost] == NSOrderedAscending)
                 {
                     val  = [AppDelegate distanceForKilometers: state->totalDistance withUnit: odometerUnit];
@@ -647,18 +695,12 @@ static CGFloat const GridTextHeight     =  23.0;
 }
 
 
-
-#pragma mark -
-#pragma mark Graph Display
-
-
-
 - (BOOL)displayCachedStatisticsForRecentMonths: (NSInteger)numberOfMonths
 {
     // Cache lookup
-    FuelStatisticsData *cell = [contentCache objectForKey: [NSNumber numberWithInteger: numberOfMonths]];
+    FuelStatisticsData *cell = [contentCache objectForKey: @(numberOfMonths)];
     UIImageView *imageView;
-        
+
     // Cache Hit => Update image contents
     if (cell.backgroundImage != nil && cell.contentImage != nil)
     {
@@ -674,18 +716,18 @@ static CGFloat const GridTextHeight     =  23.0;
 
         if (imageView == nil)
         {
-            imageView                   = [[UIImageView alloc] initWithFrame: imageFrame];            
+            imageView                   = [[UIImageView alloc] initWithFrame: imageFrame];
             imageView.tag               = 1;
             imageView.opaque            = NO;
             imageView.backgroundColor   = [UIColor clearColor];
-            
+
             self.scrollView.hidden      = NO;
             [self.scrollView addSubview: imageView];
         }
 
         imageView.image = cell.contentImage;
         imageView.frame = imageFrame;
-        
+
         self.scrollView.contentSize = imageView.image.size;
 
         [self.scrollView flashScrollIndicators];
@@ -697,7 +739,7 @@ static CGFloat const GridTextHeight     =  23.0;
     {
         [self.activityView startAnimating];
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             [self drawBackground];
 
@@ -705,7 +747,7 @@ static CGFloat const GridTextHeight     =  23.0;
             imageView.image = UIGraphicsGetImageFromCurrentImageContext ();
 
             imageView         = (UIImageView*)[self.scrollView viewWithTag: 1];
-            
+
             if (imageView )
             {
                 imageView.image = nil;
@@ -717,81 +759,6 @@ static CGFloat const GridTextHeight     =  23.0;
 
         return NO;
     }
-}
-
-
-- (void)computeAndRedisplayStatisticsForRecentMonths: (NSInteger)numberOfMonths
-                                              forCar: (NSManagedObject*)car
-                                           inContext: (NSManagedObjectContext*)context
-{
-    FuelStatisticsData *state = [contentCache objectForKey: [NSNumber numberWithInteger: numberOfMonths]];
-    BOOL stateAllocated = NO;
-
-    // No cache cell exists => resample data and compute average value
-    if (state == nil)
-    {
-        state = [[FuelStatisticsData alloc] init];
-        stateAllocated = YES;
-
-        [self resampleFetchedObjects: [self fetchObjectsForRecentMonths: numberOfMonths
-                                                                 forCar: car
-                                                              inContext: context]
-                              forCar: car
-                            andState: state];
-    }
-
-
-    // Create image data from resampled data
-    if (state.backgroundImage == nil)
-    {
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
-        {
-            [self drawBackground];
-            state.backgroundImage = UIGraphicsGetImageFromCurrentImageContext ();
-        }
-        UIGraphicsEndImageContext ();
-    }
-
-    if (state.contentImage == nil)
-    {
-        CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
-
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, height), NO, 0.0);
-        {
-            [self drawStatisticsForState: state withHeight: height];
-            state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
-        }
-        UIGraphicsEndImageContext ();
-    }
-
-
-    // Schedule update of cache display in main thread
-    dispatch_sync (dispatch_get_main_queue (),
-                    ^{
-                        if (invalidationCounter == expectedCounter)
-                        {
-                            if (stateAllocated)
-                                [contentCache setObject: state forKey: [NSNumber numberWithInteger: numberOfMonths]];
-
-                            if (displayedNumberOfMonths == numberOfMonths)
-                                [self displayStatisticsForRecentMonths: numberOfMonths];
-                        }
-                    });
-}
-
-
-
-#pragma mark -
-#pragma mark UIView Events
-
-
-
-- (void)setActive:(BOOL)active
-{
-    [super setActive: active];
-    
-    if (active)
-        [self.scrollView flashScrollIndicators];
 }
 
 @end

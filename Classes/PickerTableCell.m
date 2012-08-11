@@ -11,14 +11,6 @@ static CGFloat const PickerViewCellWidth  = 290.0;
 static CGFloat const PickerViewCellHeight =  44.0;
 
 
-@interface PickerTableCell (private)
-
-- (void)selectRow: (NSInteger)row;
-
-@end
-
-
-
 @implementation PickerTableCell
 
 @synthesize picker;
@@ -61,7 +53,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 {
     self.textFieldProxy.text = [self pickerView: picker titleForRow: row forComponent: 0];
 
-    [self.delegate valueChanged: [NSNumber numberWithInteger: (int)row] identifier: self.valueIdentifier];
+    [self.delegate valueChanged: @((int)row) identifier: self.valueIdentifier];
 }
 
 

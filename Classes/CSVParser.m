@@ -6,62 +6,39 @@
 #import "CSVParser.h"
 
 
-static NSString *separatorStrings [] =
-{
-    @";",
-    @",",
-    @"\t",
-    nil
-};
-
-
-@interface CSVParser (private)
-
-- (void)setSeparator: (NSString*)separatorString;
-
-- (NSMutableArray*)parseHeader;
-- (NSDictionary*)parseRecord;
-
-- (NSString*)parseField;
-- (NSString*)parseEscaped;
-- (NSString*)parseNonEscaped;
-- (NSString*)parseDoubleQuote;
-- (NSString*)parseSeparator;
-- (NSString*)parseEmptyLines;
-- (NSString*)parseLineSeparator;
-- (void)skipLine;
-- (NSString*)parseTwoDoubleQuotes;
-- (NSString*)parseTextData;
-
-@end
-
-
 @implementation CSVParser
 
 
-+ (NSString*)simplifiedHeader: (NSString*)header
++ (NSString*)simplifyCSVHeaderName: (NSString*)header
 {
-    header = [header stringByReplacingOccurrencesOfString: @":" withString: @""];
-    header = [header stringByReplacingOccurrencesOfString: @"?" withString: @""];
-    header = [header stringByReplacingOccurrencesOfString: @" " withString: @""];
-    header = [header stringByReplacingOccurrencesOfString: @"-" withString: @""];
-    header = [header uppercaseString];
-
-    return header;
+    return [[header stringByReplacingOccurrencesOfString: @"[? :_\\-]+"
+                                              withString: @""
+                                                 options: NSRegularExpressionSearch
+                                                   range: NSMakeRange (0, [header length])] uppercaseString];
 }
 
 
-- (id)initWithString: (NSString*)aCSVString
+- (id)initWithString: (NSString*)inputCSVString
 {
     if ((self = [super init]))
     {
-        csvString = aCSVString;
-        scanner   = [[NSScanner alloc] initWithString: csvString];
+        // Convert DOS and legacy Mac line endings to Unix
+        csvString = [inputCSVString stringByReplacingOccurrencesOfString: @"\r\n?"
+                                                              withString: @"\n"
+                                                                 options: NSRegularExpressionSearch
+                                                                   range: NSMakeRange (0, [inputCSVString length])];
 
+        scanner = [[NSScanner alloc] initWithString: csvString];
         [scanner setCharactersToBeSkipped: nil];
     }
 
     return self;
+}
+
+
+- (void)revertToBeginning
+{
+    [scanner setScanLocation: 0];
 }
 
 
@@ -73,7 +50,7 @@ static NSString *separatorStrings [] =
 
         NSMutableCharacterSet *endTextMutableCharacterSet = [[NSCharacterSet newlineCharacterSet] mutableCopy];
         [endTextMutableCharacterSet addCharactersInString: @"\""];
-        [endTextMutableCharacterSet addCharactersInString: [separator substringToIndex:1]];
+        [endTextMutableCharacterSet addCharactersInString: [separator substringToIndex: 1]];
         endTextCharacterSet = endTextMutableCharacterSet;
     }
 }
@@ -100,11 +77,10 @@ static NSString *separatorStrings [] =
         [self parseEmptyLines];
 
         NSUInteger location = [scanner scanLocation];
-        NSInteger  index    = 0;
 
-        while (separatorStrings [index] != nil)
+        for (NSString *separatorString in  @[ @";", @",", @"\t" ])
         {
-            [self setSeparator: separatorStrings [index++]];
+            [self setSeparator: separatorString];
             [scanner setScanLocation: location];
 
             fieldNames = [self parseHeader];
@@ -159,7 +135,7 @@ foundHeader:
 
     while (name)
     {
-        [names addObject: [CSVParser simplifiedHeader: name]];
+        [names addObject: [CSVParser simplifyCSVHeaderName: name]];
 
         if (![self parseSeparator])
             break;
@@ -199,7 +175,7 @@ foundHeader:
         }
         else
         {
-            fieldName = [NSString stringWithFormat: @"FIELD_%ld", (long)(fieldCount + 1)];
+            fieldName = [NSString stringWithFormat: @"FIELD_%d", fieldCount + 1];
             [fieldNames addObject: fieldName];
             fieldNamesCount++;
         }
@@ -220,7 +196,7 @@ foundHeader:
 - (NSString*)parseField
 {
     [scanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet] intoString: NULL];
-    
+
     NSString *escapedString = [self parseEscaped];
 
     if (escapedString)
@@ -292,8 +268,8 @@ foundHeader:
 {
     if ([scanner scanString: @"\"\"" intoString: NULL])
         return @"\"\"";
-    else
-        return nil;
+
+    return nil;
 }
 
 
@@ -301,8 +277,8 @@ foundHeader:
 {
     if ([scanner scanString: @"\"" intoString: NULL])
         return @"\"";
-    else
-        return nil;
+
+    return nil;
 }
 
 
@@ -310,8 +286,8 @@ foundHeader:
 {
     if ([scanner scanString: separator intoString: NULL])
         return separator;
-    else
-        return nil;
+
+    return nil;
 }
 
 
@@ -347,23 +323,17 @@ foundHeader:
 
 - (NSString*)parseLineSeparator
 {
-    if ([scanner scanString: @"\r\n" intoString: NULL])
-        return @"\n";
-
     if ([scanner scanString: @"\n" intoString: NULL])
         return @"\n";
 
-    if ([scanner scanString: @"\r" intoString: NULL])
-        return @"\n";
-    
     return nil;
 }
 
 
-- (void)skipLine
+- (NSString*)skipLine
 {
     [scanner scanUpToCharactersFromSet: [NSCharacterSet newlineCharacterSet] intoString: NULL];
-    [self parseLineSeparator];
+    return [self parseLineSeparator];
 }
 
 

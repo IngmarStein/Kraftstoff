@@ -1,8 +1,9 @@
-// NSDecimalNumber_extension.h
+// NSDecimalNumber+Kraftstoff.h
 //
 // Kraftstoff
 
-@interface NSDecimalNumber (NSDecimalNumber_kraftstoff)
+
+@interface NSDecimalNumber (Kraftstoff)
 
 - (NSDecimalNumber*)min: (NSDecimalNumber*)other;
 - (NSDecimalNumber*)max: (NSDecimalNumber*)other;

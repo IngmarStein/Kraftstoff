@@ -7,19 +7,25 @@
 #import <MessageUI/MessageUI.h>
 
 
-@interface FuelEventController : UITableViewController <NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate>
+@interface FuelEventController : UITableViewController <UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
 {
-    BOOL isEditing;
-    BOOL isShowingMailComposer;
-    BOOL isShowingAskForExportSheet;
     BOOL isObservingRotationEvents;
-    BOOL isWaitingForACK;
+    BOOL isPerformingRotation;
+
+    BOOL isShowingExportSheet;
+    BOOL isShowingExportFailedAlert;
+    BOOL isShowingMailComposer;
+
+    BOOL restoreExportSheet;
+    BOOL restoreExportFailedAlert;
+    BOOL restoreMailComposer;
 }
 
 @property (nonatomic, strong) NSManagedObject              *selectedCar;
 @property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;
 @property (nonatomic, strong) NSFetchRequest               *fetchRequest;
 @property (nonatomic, strong) NSFetchedResultsController   *fetchedResultsController;
+
 @property (nonatomic, strong) FuelStatisticsPageController *statisticsController;
 
 @end

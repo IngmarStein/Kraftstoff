@@ -11,29 +11,6 @@
 #import "AppDelegate.h"
 
 
-@interface FuelEventController (private)
-
-- (void)localeChanged: (id)object;
-
-#pragma mark Rotation
-
-- (void)setWaitForRotationAck: (BOOL)flag;
-- (void)rotationAckExpired: (id)object;
-
-#pragma mark Export
-
-- (void)validateExport;
-- (void)askExportObjects: (id)sender;
-
-- (void)mailComposeController: (MFMailComposeViewController*)mailComposer
-          didFinishWithResult: (MFMailComposeResult)result
-                        error: (NSError*)error;
-
-- (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath;
-
-@end
-
-
 @implementation FuelEventController
 
 @synthesize selectedCar;
@@ -53,12 +30,16 @@
 {
     if ((self = [super initWithNibName: nibName bundle: nibBundle]))
     {
+        if ([self respondsToSelector: @selector (restorationIdentifier)])
+        {
+            self.restorationIdentifier = @"FuelEventController";
+            self.restorationClass = [self class];
+        }
+
         // Alternate view controller for statistics
         self.statisticsController = [[FuelStatisticsPageController alloc]
                                            initWithNibName: @"FuelStatisticsPageController"
                                                     bundle: nil];
-
-        self.statisticsController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
 
     return self;
@@ -69,11 +50,16 @@
 {
     [super viewDidLoad];
 
-    isEditing                  = NO;
-    isShowingMailComposer      = NO;
-    isShowingAskForExportSheet = NO;
     isObservingRotationEvents  = NO;
-    isWaitingForACK            = NO;
+    isPerformingRotation       = NO;
+
+    isShowingExportSheet       = NO;
+    isShowingExportFailedAlert = NO;
+    isShowingMailComposer      = NO;
+
+    restoreExportSheet         = NO;
+    restoreExportFailedAlert   = NO;
+    restoreMailComposer        = NO;
 
     // Configure root view
     self.title = [self.selectedCar valueForKey: @"name"];
@@ -82,11 +68,11 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                                 initWithBarButtonSystemItem: UIBarButtonSystemItemAction
                                                                      target: self
-                                                                     action: @selector (askExportObjects:)];
+                                                                     action: @selector (showExportSheet:)];
 
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    // Observe locale changes
+
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
@@ -96,42 +82,6 @@
     if ([self modalViewController])
         [self dismissModalViewControllerAnimated: NO];
 }
-
-
-- (void)viewDidUnload
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-}
-
-
-- (void)localeChanged: (id)object
-{
-    [self.tableView reloadData];
-}
-
-
-
-#pragma mark -
-#pragma mark Memory Management
-
-
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
-}
-
-
-
-#pragma mark -
-#pragma mark Device Rotation
-
 
 
 - (void)viewWillAppear: (BOOL)animated
@@ -146,20 +96,16 @@
 {
     [super viewDidAppear: animated];
 
-    if (! isObservingRotationEvents)
-    {
-        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [self setObserveDeviceRotation: YES];
 
-        [[NSNotificationCenter defaultCenter]
-                addObserver: self
-                   selector: @selector (orientationChanged:)
-                       name: UIDeviceOrientationDidChangeNotification
-                     object: [UIDevice currentDevice]];
+    if (restoreExportSheet)
+        [self showExportSheet: nil];
 
-        isObservingRotationEvents = YES;
-    }
+    else if (restoreExportFailedAlert)
+        [self showExportFailedAlert: nil];
 
-    [self setWaitForRotationAck: NO];
+    else if (restoreMailComposer)
+        [self showMailComposer: nil];
 }
 
 
@@ -167,30 +113,125 @@
 {
     [super viewWillDisappear: animated];
 
-    if (isObservingRotationEvents && [self modalViewController] == nil)
+    if ([self modalViewController] == nil)
+        [self setObserveDeviceRotation: NO];
+}
+
+
+
+#pragma mark -
+#pragma mark iOS 6 State Restoration
+
+
+
+#define kSRFuelEventSelectedCarID     @"FuelEventSelectedCarID"
+#define kSRFuelEventExportSheet       @"FuelEventExportSheet"
+#define kSRFuelEventExportFailedAlert @"FuelEventExportFailedAlert"
+#define kSRFuelEventShowComposer      @"FuelEventShowMailComposer"
+
+
++ (UIViewController*) viewControllerWithRestorationIdentifierPath: (NSArray *)identifierComponents coder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    FuelEventController *controller = [[self alloc] initWithNibName: @"FuelEventController" bundle: nil];
+    controller.managedObjectContext = [appDelegate managedObjectContext];
+    controller.selectedCar          = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRFuelEventSelectedCarID]];
+
+    if (controller.selectedCar == nil)
+        return nil;
+
+    return controller;
+}
+
+
+- (void)encodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+
+    [coder encodeObject: [appDelegate modelIdentifierForManagedObject: self.selectedCar] forKey: kSRFuelEventSelectedCarID];
+    [coder encodeBool: restoreExportSheet|isShowingExportSheet             forKey: kSRFuelEventExportSheet];
+    [coder encodeBool: restoreExportFailedAlert|isShowingExportFailedAlert forKey: kSRFuelEventExportFailedAlert];
+    [coder encodeBool: restoreMailComposer|isShowingMailComposer           forKey: kSRFuelEventShowComposer];
+
+    [super encodeRestorableStateWithCoder: coder];
+}
+
+
+- (void)decodeRestorableStateWithCoder: (NSCoder*)coder
+{
+    restoreExportSheet       = [coder decodeBoolForKey: kSRFuelEventExportSheet];
+    restoreExportFailedAlert = [coder decodeBoolForKey: kSRFuelEventExportFailedAlert];
+    restoreMailComposer      = [coder decodeBoolForKey: kSRFuelEventShowComposer];
+
+    [super decodeRestorableStateWithCoder: coder];
+}
+
+
+
+#pragma mark -
+#pragma mark View Rotation
+
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
+{
+    return interfaceOrientation == UIInterfaceOrientationPortrait;
+}
+
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
+
+#pragma mark -
+#pragma mark Device Rotation
+
+
+
+- (void)setObserveDeviceRotation: (BOOL)observeRotation
+{
+    if (observeRotation == YES && isObservingRotationEvents == NO)
     {
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+
         [[NSNotificationCenter defaultCenter]
-                removeObserver: self
-                          name: UIDeviceOrientationDidChangeNotification
-                        object: [UIDevice currentDevice]];
-
-        [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-
-        isObservingRotationEvents = NO;
+            addObserver: self
+               selector: @selector (orientationChanged:)
+                   name: UIDeviceOrientationDidChangeNotification
+                 object: [UIDevice currentDevice]];
     }
 
-    [self setWaitForRotationAck: NO];
+    else if (observeRotation == NO && isObservingRotationEvents == YES)
+    {
+        [[NSNotificationCenter defaultCenter]
+            removeObserver: self
+                      name: UIDeviceOrientationDidChangeNotification
+                    object: [UIDevice currentDevice]];
+
+        [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    }
+
+    isObservingRotationEvents = observeRotation;
 }
 
 
 - (void)orientationChanged: (NSNotification*)aNotification
 {
     // Ignore rotation when:
-    //  - showing the export sheet
-    //  - composing an export mail
+    //  - showing the export sheets or the mail composer
     //  - the previous rotation isn't finished yet
     //  - rotations are no longer observed
-    if (isShowingAskForExportSheet || isShowingMailComposer || isWaitingForACK || !isObservingRotationEvents)
+    if (isShowingExportSheet || isShowingExportFailedAlert || isShowingMailComposer || isPerformingRotation || !isObservingRotationEvents)
         return;
 
     // Switch view controllers according rotation state
@@ -200,41 +241,29 @@
     {
         self.statisticsController.selectedCar = self.selectedCar;
 
-        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackOpaque animated: NO];
-        [self presentModalViewController: self.statisticsController animated: YES];
+        isPerformingRotation = YES;
 
-        [self setWaitForRotationAck: YES];
+        [self presentViewController: self.statisticsController
+                           animated: YES
+                         completion: ^{ isPerformingRotation = NO; }];
     }
     else if (UIDeviceOrientationIsPortrait (deviceOrientation) && [self modalViewController] != nil)
     {
-        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault animated: NO];
-        [self dismissModalViewControllerAnimated: YES];
-
-        [self setWaitForRotationAck: YES];
+        isPerformingRotation = YES;
+        [self dismissViewControllerAnimated: YES completion: ^{ isPerformingRotation = NO; }];
     }
 }
 
 
-- (void)setWaitForRotationAck: (BOOL)enabled
+
+#pragma mark -
+#pragma mark Locale Handling
+
+
+
+- (void)localeChanged: (id)object
 {
-    if (enabled)
-        [self performSelector: @selector(rotationAckExpired:) withObject: nil afterDelay: 0.5];
-    else
-        [FuelEventController cancelPreviousPerformRequestsWithTarget: self];
-
-    isWaitingForACK = enabled;
-}
-
-
-- (void)rotationAckExpired: (id)object
-{
-    isWaitingForACK = NO;
-}
-
-
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
-{
-    return interfaceOrientation == UIInterfaceOrientationPortrait;
+    [self.tableView reloadData];
 }
 
 
@@ -242,6 +271,41 @@
 #pragma mark -
 #pragma mark Export Objects via eMail
 
+
+
+- (void)showMailComposer: (id)sender
+{
+    restoreMailComposer   = NO;
+
+    if ([MFMailComposeViewController canSendMail])
+    {
+        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
+
+        // Copy look of navigation bar to compose window
+        UINavigationBar *navBar = [mailComposer navigationBar];
+
+        if (navBar != nil)
+        {
+            navBar.barStyle  = UIBarStyleBlack;
+            navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
+        }
+
+        // Setup the message
+        [mailComposer setMailComposeDelegate: self];
+        [mailComposer setSubject: [NSString stringWithFormat: _I18N (@"Your fuel data for %@"), [self.selectedCar valueForKey: @"numberPlate"]]];
+        [mailComposer setMessageBody: [self exportTextDescription] isHTML: NO];
+
+        [mailComposer addAttachmentData: [self exportTextData]
+                               mimeType: @"text"
+                               fileName: [NSString stringWithFormat: @"%@__%@.csv",
+                                              [self.selectedCar valueForKey: @"name"],
+                                              [self.selectedCar valueForKey: @"numberPlate"]]];
+
+        isShowingMailComposer = YES;
+
+        [self presentModalViewController: mailComposer animated: YES];
+    }
+}
 
 
 - (void)validateExport
@@ -290,7 +354,7 @@
     [numberFormatter setUsesGroupingSeparator: NO];
     [numberFormatter setAlwaysShowsDecimalSeparator: YES];
     [numberFormatter setMinimumFractionDigits: 2];
-    
+
     NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
 
     for (NSUInteger i = 0; i < [fetchedObjects count]; i++)
@@ -316,7 +380,7 @@
                 : @" "
          ];
     }
-    NSLog(@"%@", dataString);
+
 
     return [dataString dataUsingEncoding:NSUTF8StringEncoding];
 }
@@ -324,7 +388,7 @@
 
 - (NSString*)exportTextDescription
 {
-    NSString *period;
+    NSString *period, *count;
 
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     {
@@ -332,19 +396,26 @@
         [outputFormatter setTimeStyle: kCFDateFormatterNoStyle];
 
         NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
+        NSUInteger fetchCount = [fetchedObjects count];
 
         NSString *from = [outputFormatter stringFromDate: [[fetchedObjects lastObject]       valueForKey: @"timestamp"]];
         NSString *to   = [outputFormatter stringFromDate: [[fetchedObjects objectAtIndex: 0] valueForKey: @"timestamp"]];
 
-        period = ([fetchedObjects count] > 1)
-                        ? [NSString stringWithFormat: _I18N (@"in the period from %@ to %@"), from, to]
-                        : [NSString stringWithFormat: _I18N (@"on %@"), from];
+        switch (fetchCount)
+        {
+            case 0:  period = _I18N (@""); break;
+            case 1:  period = [NSString stringWithFormat: _I18N (@"on %@"), from]; break;
+            default: period = [NSString stringWithFormat: _I18N (@"in the period from %@ to %@"), from, to]; break;
+        }
+
+        count = [NSString stringWithFormat: _I18N (((fetchCount == 1) ? @"%d item" : @"%d items")), fetchCount];
     }
 
-    return [NSString stringWithFormat: _I18N (@"Here is your fuel data for %@ (%@) %@.\n"),
+    return [NSString stringWithFormat: _I18N (@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n"),
                 [self.selectedCar valueForKey: @"name"],
                 [self.selectedCar valueForKey: @"numberPlate"],
-                period];
+                period,
+                count];
 }
 
 
@@ -356,13 +427,7 @@
     [self dismissModalViewControllerAnimated: YES];
 
     if (result == MFMailComposeResultFailed)
-    {
-        [[[UIAlertView alloc] initWithTitle: _I18N (@"Sending Failed")
-                                    message: _I18N (@"The exported fuel data could not be sent.")
-                                   delegate: nil
-                          cancelButtonTitle: _I18N (@"OK")
-                          otherButtonTitles: nil] show];
-    }
+        [self showExportFailedAlert: nil];
 }
 
 
@@ -372,9 +437,10 @@
 
 
 
-- (void)askExportObjects: (id)sender
+- (void)showExportSheet: (id)sender
 {
-    isShowingAskForExportSheet = YES;
+    isShowingExportSheet = YES;
+    restoreExportSheet   = NO;
 
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle: _I18N (@"Export Fuel Data as CSV via Mail?")
                                                        delegate: self
@@ -388,38 +454,39 @@
 }
 
 
-
 - (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex
 {
-    isShowingAskForExportSheet = NO;
+    isShowingExportSheet = NO;
 
     if (buttonIndex != actionSheet.cancelButtonIndex)
     {
-        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
-
-        // Copy look of navigation bar to compose window
-        UINavigationBar *navBar = [mailComposer navigationBar];
-
-        if (navBar != nil)
-        {
-            navBar.barStyle  = UIBarStyleBlack;
-            navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
-        }
-
-        // Setup the message
-        [mailComposer setMailComposeDelegate: self];
-        [mailComposer setSubject: [NSString stringWithFormat: _I18N (@"Your fuel data: %@"), [self.selectedCar valueForKey: @"numberPlate"]]];
-        [mailComposer setMessageBody: [self exportTextDescription] isHTML: NO];
-
-        [mailComposer addAttachmentData: [self exportTextData]
-                               mimeType: @"text"
-                               fileName: [NSString stringWithFormat: @"%@__%@.csv",
-                                            [self.selectedCar valueForKey: @"name"],
-                                            [self.selectedCar valueForKey: @"numberPlate"]]];
-
-        isShowingMailComposer = YES;
-        [self presentModalViewController: mailComposer animated: YES];
+        [self showMailComposer: nil];
     }
+}
+
+
+
+#pragma mark -
+#pragma mark Export Failed Alert
+
+
+
+- (void)showExportFailedAlert: (id)sender
+{
+    isShowingExportFailedAlert = YES;
+    restoreExportFailedAlert   = NO;
+
+    [[[UIAlertView alloc] initWithTitle: _I18N (@"Sending Failed")
+                                message: _I18N (@"The exported fuel data could not be sent.")
+                               delegate: self
+                      cancelButtonTitle: _I18N (@"OK")
+                      otherButtonTitles: nil] show];
+}
+
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    isShowingExportFailedAlert = NO;
 }
 
 
@@ -465,7 +532,7 @@
                     [AppDelegate odometerUnitString: odometerUnit]];
     tableCell.botLeftAccessibilityLabel = nil;
 
-
+    
     // Price
     label      = [tableCell topRightLabel];
     label.text = [[AppDelegate sharedCurrencyFormatter] stringFromNumber: [fuelVolume decimalNumberByMultiplyingBy: price]];
@@ -547,6 +614,28 @@
 
 
 #pragma mark -
+#pragma mark UIDataSourceModelAssociation
+
+
+
+- (NSIndexPath*)indexPathForElementWithModelIdentifier: (NSString*)identifier inView: (UIView*)view
+{
+    NSManagedObject *object = [[AppDelegate sharedDelegate] managedObjectForModelIdentifier: identifier];
+
+    return [self.fetchedResultsController indexPathForObject: object];
+}
+
+
+- (NSString*)modelIdentifierForElementAtIndexPath: (NSIndexPath *)idx inView: (UIView*)view
+{
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath: idx];
+
+    return [[AppDelegate sharedDelegate] modelIdentifierForManagedObject: object];
+}
+
+
+
+#pragma mark -
 #pragma mark UITableViewDelegate
 
 
@@ -555,8 +644,8 @@
 {
     FuelEventEditorController *editController = [[FuelEventEditorController alloc] initWithNibName: @"FuelEventEditor" bundle: nil];
 
-    editController.managedObjectContext    =  self.managedObjectContext;
-    editController.event                   = [self.fetchedResultsController objectAtIndexPath: indexPath];
+    editController.managedObjectContext =  self.managedObjectContext;
+    editController.event                = [self.fetchedResultsController objectAtIndexPath: indexPath];
 
     [self.navigationController pushViewController: editController animated: YES];
 }
@@ -592,7 +681,9 @@
 {
     if (fetchedResultsController == nil)
     {
-        NSString *cacheName = [AppDelegate cacheNameForFuelEventFetchWithParent: self.selectedCar];
+        AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+        NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent: self.selectedCar];
+
         NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest: self.fetchRequest
                                                                                           managedObjectContext: self.managedObjectContext
                                                                                             sectionNameKeyPath: nil
@@ -658,20 +749,20 @@
     switch (type)
     {
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath]
+            [tableView insertRowsAtIndexPaths: @[newIndexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+            [tableView deleteRowsAtIndexPaths: @[indexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths: [NSArray arrayWithObject: indexPath]
+            [tableView deleteRowsAtIndexPaths: @[indexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
 
-            [tableView insertRowsAtIndexPaths: [NSArray arrayWithObject: newIndexPath]
+            [tableView insertRowsAtIndexPaths: @[newIndexPath]
                              withRowAnimation: UITableViewRowAnimationFade];
             break;
 
@@ -689,6 +780,26 @@
 
     [self validateExport];
     [self.statisticsController invalidateCaches];
+}
+
+
+
+#pragma mark -
+#pragma mark Memory Management
+
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+}
+
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
 @end
