@@ -858,6 +858,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = kraftstoff;
 			};
 			name = Debug;
@@ -870,6 +871,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = kraftstoff;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -942,7 +944,7 @@
 				4DA374AE1595C6D70017F9CA /* Kraftstoffrechner 1.1.xcdatamodel */,
 				28860B760F44E54D00985440 /* Kraftstoffrechner.xcdatamodel */,
 			);
-			currentVersion = 4DA374AE1595C6D70017F9CA /* Kraftstoffrechner 1.1.xcdatamodel */;
+			currentVersion = 28860B760F44E54D00985440 /* Kraftstoffrechner.xcdatamodel */;
 			path = Kraftstoffrechner.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
