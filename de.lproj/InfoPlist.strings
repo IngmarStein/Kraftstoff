@@ -1,1 +1,4 @@
-CFBundleDisplayName = "Kraftstoff";
+/* Localized versions of Info.plist keys */
+
+"CFBundleDisplayName"="Kraftstoff";
+"CFBundleName"="Kraftstoff";
