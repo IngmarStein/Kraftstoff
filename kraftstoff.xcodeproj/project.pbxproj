@@ -13,7 +13,6 @@
 		28860BE50F44EE6400985440 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28860BE40F44EE6400985440 /* CoreData.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
-		28D3F202112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 28D3F201112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
 		4D0B7ACD15A9F2DF0012A62B /* NSDate+Kraftstoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0B7ACC15A9F2DF0012A62B /* NSDate+Kraftstoff.m */; };
 		4D0C9CF01392904200430C04 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9CF21392904200430C04 /* MainWindow.xib */; };
@@ -38,6 +37,7 @@
 		4D23F76A12F1C7F4004700B2 /* RadioButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D23F76812F1C7F4004700B2 /* RadioButton@2x.png */; };
 		4D23F76C12F1C8CD004700B2 /* RadioButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D23F76B12F1C8CD004700B2 /* RadioButton.png */; };
 		4D2CD38E13E70E7B00B08A49 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CD38D13E70E7B00B08A49 /* CSVParser.m */; };
+		4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */; };
 		4D2DB7921236C42D005CA94B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2DB7911236C42D005CA94B /* QuartzCore.framework */; };
 		4D4B4D28138DB04A00857D63 /* Start.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4B4D2A138DB04A00857D63 /* Start.png */; };
 		4D4B4D2B138DB05500857D63 /* Start@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4B4D2D138DB05500857D63 /* Start@2x.png */; };
@@ -98,7 +98,6 @@
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		28860B760F44E54D00985440 /* Kraftstoffrechner.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Kraftstoffrechner.xcdatamodel; sourceTree = "<group>"; };
 		28860BE40F44EE6400985440 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* kraftstoff_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = kraftstoff_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -137,6 +136,7 @@
 		4D23F76B12F1C8CD004700B2 /* RadioButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RadioButton.png; sourceTree = "<group>"; };
 		4D2CD38C13E70E7B00B08A49 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		4D2CD38D13E70E7B00B08A49 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
+		4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Kraftstoffrechner.xcdatamodel; sourceTree = "<group>"; };
 		4D2DB7911236C42D005CA94B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kraftstoff-Info.plist"; sourceTree = "<group>"; };
 		4D4B4D29138DB04A00857D63 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/Start.png; sourceTree = "<group>"; };
@@ -174,7 +174,6 @@
 		4D9C88D01319968D00B3EC56 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		4DA2C2521326C92C004F8A22 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		4DA2C2541326C97C004F8A22 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		4DA374AE1595C6D70017F9CA /* Kraftstoffrechner 1.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Kraftstoffrechner 1.1.xcdatamodel"; sourceTree = "<group>"; };
 		4DA3BB5112F9D9B4000DBBB2 /* ShadedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ShadedTableViewCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DA3BB5212F9D9B4000DBBB2 /* ShadedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ShadedTableViewCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAAF49315B490D90016FAD6 /* UIViewController+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Kraftstoff.h"; sourceTree = "<group>"; };
@@ -305,7 +304,7 @@
 				4DCFE36C138EE2930051FEC9 /* Localizable.strings */,
 				4D1B06D114339BB70069B20A /* InfoPlist.strings */,
 				4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */,
-				28D3F201112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld */,
+				4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -681,7 +680,6 @@
 			files = (
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */,
-				28D3F202112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 				4D184513123BA7BE008D7454 /* ShadowTableView.m in Sources */,
 				4D184724123CF970008D7454 /* CarConfigurationController.m in Sources */,
 				4DE0454F123FA7AB009B19E3 /* FuelEventController.m in Sources */,
@@ -718,6 +716,7 @@
 				4DAAF49515B490D90016FAD6 /* UIViewController+Kraftstoff.m in Sources */,
 				4DAAF49D15B4A3490016FAD6 /* KSNavigationController.m in Sources */,
 				4DAAF4A115B4A41B0016FAD6 /* KSTabBarController.m in Sources */,
+				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -938,13 +937,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		28D3F201112F7DC200FD0661 /* Kraftstoffrechner.xcdatamodeld */ = {
+		4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4DA374AE1595C6D70017F9CA /* Kraftstoffrechner 1.1.xcdatamodel */,
-				28860B760F44E54D00985440 /* Kraftstoffrechner.xcdatamodel */,
+				4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */,
 			);
-			currentVersion = 28860B760F44E54D00985440 /* Kraftstoffrechner.xcdatamodel */;
+			currentVersion = 4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */;
 			path = Kraftstoffrechner.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
