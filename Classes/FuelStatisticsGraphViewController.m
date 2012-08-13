@@ -162,6 +162,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                            forCar: (NSManagedObject*)car
                          andState: (FuelStatisticsSamplingData*)state;
 {
+    NSDate *firstDate = nil;
+    NSDate *midDate   = nil;
+    NSDate *lastDate  = nil;
+    
     // Compute vertical range of curve
     NSInteger valCount      =  0;
     NSInteger valFirstIndex = -1;
@@ -191,9 +195,15 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                 valMax = value;
 
             if (valLastIndex < 0)
-                valLastIndex  = i;
+            {
+                valLastIndex = i;
+                lastDate     = [object valueForKey: @"timestamp"];
+            }
             else
+            {
                 valFirstIndex = i;
+                firstDate     = [object valueForKey: @"timestamp"];
+            }
         }
     }
 
@@ -250,10 +260,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
         state->lensValue [i]    = 0.0;
     }
 
-    NSDate *mostRecentDate = [[fetchedObjects objectAtIndex: valFirstIndex] valueForKey: @"timestamp"];
-    NSDate *sampleDate     = [[fetchedObjects objectAtIndex: valLastIndex]  valueForKey: @"timestamp"];
-
-    NSTimeInterval rangeInterval = [mostRecentDate timeIntervalSinceDate: sampleDate];
+    NSTimeInterval rangeInterval = [firstDate timeIntervalSinceDate: lastDate];
 
     for (NSInteger i = valLastIndex; i >= valFirstIndex; i--)
     {
@@ -263,7 +270,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
         if (!isnan (value))
         {
             // Collect sample data
-            NSTimeInterval sampleInterval = [mostRecentDate timeIntervalSinceDate: [managedObject valueForKey: @"timestamp"]];
+            NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate: [managedObject valueForKey: @"timestamp"]];
             NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
 
             if (valRange < 0.0001)
@@ -312,10 +319,9 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 
     // Markers for horizontal axis
-    NSDateFormatter *dateFormatter;
-    NSDate *midDate;
+    NSDateFormatter *dateFormatter = nil;
 
-    if (state->dataCount < 3 || [mostRecentDate timeIntervalSinceDate: sampleDate] < 604800)
+    if (state->dataCount < 3 || [firstDate timeIntervalSinceDate: lastDate] < 604800)
     {
         dateFormatter = [AppDelegate sharedDateTimeFormatter];
         midDate       = nil;
@@ -323,12 +329,12 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     else
     {
         dateFormatter = [AppDelegate sharedDateFormatter];
-        midDate       = [NSDate dateWithTimeInterval: [mostRecentDate timeIntervalSinceDate: sampleDate]/2.0 sinceDate: sampleDate];
+        midDate       = [NSDate dateWithTimeInterval: [firstDate timeIntervalSinceDate: lastDate]/2.0 sinceDate: lastDate];
     }
 
     state->vMarkCount = 0;
     state->vMarkPositions [state->vMarkCount] = 0.0;
-    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: sampleDate];
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: lastDate];
     state->vMarkCount++;
 
     if (midDate)
@@ -339,7 +345,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     }
 
     state->vMarkPositions [state->vMarkCount] = 1.0;
-    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: mostRecentDate];
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: firstDate];
     state->vMarkCount++;
 
     return valAverage;
