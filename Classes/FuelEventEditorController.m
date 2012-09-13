@@ -251,7 +251,6 @@
                                   forceOdometerUpdate: YES];
         
         [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
-        NSLog(@"saved to %@", event);
     }
 }
 

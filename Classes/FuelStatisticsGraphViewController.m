@@ -461,7 +461,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
                 [path addLineToPoint: CGPointMake (x, y)];
             }
-            NSLog(@"%f", StatisticGraphRightBorder);
+
             [path addLineToPoint: CGPointMake (StatisticGraphRightBorder, StatisticGraphTopBorder)];
             [path closePath];
             [path addClip];
