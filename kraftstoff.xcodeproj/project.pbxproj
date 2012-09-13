@@ -13,6 +13,8 @@
 		28860BE50F44EE6400985440 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28860BE40F44EE6400985440 /* CoreData.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
+		4D06B08E16024AB900CD9D25 /* TableBackground-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D06B08C16024AB900CD9D25 /* TableBackground-568h@2x.png */; };
+		4D06B08F16024AB900CD9D25 /* TablePattern-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D06B08D16024AB900CD9D25 /* TablePattern-568h@2x.png */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
 		4D0B7ACD15A9F2DF0012A62B /* NSDate+Kraftstoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0B7ACC15A9F2DF0012A62B /* NSDate+Kraftstoff.m */; };
 		4D0C9CF01392904200430C04 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9CF21392904200430C04 /* MainWindow.xib */; };
@@ -46,6 +48,7 @@
 		4D5C57CA13046B76009C545E /* PageCellDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C57C913046B76009C545E /* PageCellDescription.m */; };
 		4D5C57CD13047AAA009C545E /* NumberEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C57CC13047AAA009C545E /* NumberEditTableCell.m */; };
 		4D630C4112EEF86400134FD7 /* FuelCalculatorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D630C4012EEF86400134FD7 /* FuelCalculatorController.m */; };
+		4D792EF9160209E60076FFB9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D792EF8160209E60076FFB9 /* Default-568h@2x.png */; };
 		4D7D4EC213A6092B002277A3 /* ConsumptionLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D7D4EC113A6092B002277A3 /* ConsumptionLabel.m */; };
 		4D80796412A58D480082C40A /* DemoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D80796312A58D480082C40A /* DemoData.m */; };
 		4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8329E5140129A500E4F22F /* CSVImporter.m */; };
@@ -103,6 +106,8 @@
 		28A0AAE50D9B0CCF005BE974 /* kraftstoff_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = kraftstoff_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		28C286DF0D94DF7D0034E888 /* CarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CarViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		28C286E00D94DF7D0034E888 /* CarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4D06B08C16024AB900CD9D25 /* TableBackground-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TableBackground-568h@2x.png"; sourceTree = "<group>"; };
+		4D06B08D16024AB900CD9D25 /* TablePattern-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TablePattern-568h@2x.png"; sourceTree = "<group>"; };
 		4D092C7B13956FB000760FB7 /* TextEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TextEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D092C7C13956FB000760FB7 /* TextEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TextEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D0B7ACB15A9F2DF0012A62B /* NSDate+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Kraftstoff.h"; sourceTree = "<group>"; };
@@ -153,6 +158,7 @@
 		4D5C57CC13047AAA009C545E /* NumberEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NumberEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D630C3F12EEF86400134FD7 /* FuelCalculatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FuelCalculatorController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D630C4012EEF86400134FD7 /* FuelCalculatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelCalculatorController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		4D792EF8160209E60076FFB9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4D7D4EC013A6092B002277A3 /* ConsumptionLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ConsumptionLabel.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D7D4EC113A6092B002277A3 /* ConsumptionLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ConsumptionLabel.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D80796212A58D480082C40A /* DemoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = DemoData.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -334,6 +340,7 @@
 				4DC75A0F12393FB600275150 /* CellShade@2x.png */,
 				4DA2C2541326C97C004F8A22 /* Default.png */,
 				4DA2C2521326C92C004F8A22 /* Default@2x.png */,
+				4D792EF8160209E60076FFB9 /* Default-568h@2x.png */,
 				4D2199C012460EF700FCED15 /* Icon.png */,
 				4D2199C112460EF700FCED15 /* Icon@2x.png */,
 				4D219A3B1246139800FCED15 /* Icon-72.png */,
@@ -349,8 +356,10 @@
 				4D4B4D2D138DB05500857D63 /* Start@2x.png */,
 				4DC75BA51239613600275150 /* TableBackground.png */,
 				4DC75BA61239613600275150 /* TableBackground@2x.png */,
+				4D06B08C16024AB900CD9D25 /* TableBackground-568h@2x.png */,
 				4DC35A5114AE1A330078979F /* TablePattern.png */,
 				4DC35A5214AE1A330078979F /* TablePattern@2x.png */,
+				4D06B08D16024AB900CD9D25 /* TablePattern-568h@2x.png */,
 				4DD538D5143853E4003ED398 /* Zapfhahn.png */,
 				4DD538D6143853E4003ED398 /* Zapfhahn@2x.png */,
 			);
@@ -669,6 +678,9 @@
 				4DF5F5AD14463D46008E7A1C /* Edit.png in Resources */,
 				4DC35A5314AE1A330078979F /* TablePattern.png in Resources */,
 				4DC35A5414AE1A330078979F /* TablePattern@2x.png in Resources */,
+				4D792EF9160209E60076FFB9 /* Default-568h@2x.png in Resources */,
+				4D06B08E16024AB900CD9D25 /* TableBackground-568h@2x.png in Resources */,
+				4D06B08F16024AB900CD9D25 /* TablePattern-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

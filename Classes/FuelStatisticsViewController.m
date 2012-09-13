@@ -11,7 +11,7 @@
 
 
 // Coordinates for the content area
-CGFloat const StatisticsViewWidth  = 480.0;
+CGFloat       StatisticsViewWidth  = 480.0;
 CGFloat const StatisticsViewHeight = 268.0;
 CGFloat const StatisticsHeight     = 182.0;
 
@@ -30,6 +30,20 @@ CGFloat const StatisticsHeight     = 182.0;
 @synthesize centerLabel;
 @synthesize scrollView;
 @synthesize selectedCar;
+
+
+#pragma mark -
+#pragma mark iPhone 5 Support
+
+
+
++ (void)initialize
+{
+    if ([AppDelegate isIPhone5])
+        StatisticsViewWidth = 568.0;
+    else
+        StatisticsViewWidth = 480.0;
+}
 
 
 

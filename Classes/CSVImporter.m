@@ -266,6 +266,50 @@
 }
 
 
+
+- (NSDecimalNumber*)guessDistanceForParsedDistance: (NSDecimalNumber*)distance
+                                     andFuelVolume: (NSDecimalNumber*)liters
+{
+    NSDecimalNumber *convDistance = [distance decimalNumberByMultiplyingByPowerOf10: 3];
+    
+    
+    if ([[NSDecimalNumber zero] compare: liters] != NSOrderedAscending)
+        return distance;
+    
+    // consumption with parsed distance
+    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers: distance
+                                                                      Liters: liters
+                                                                      inUnit: KSFuelConsumptionLitersPer100km];
+    
+    if ([rawConsumption isEqual: [NSDecimalNumber notANumber]])
+        return distance;
+    
+    // consumption with increased distance
+    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers: convDistance
+                                                                      Liters: liters
+                                                                      inUnit: KSFuelConsumptionLitersPer100km];
+    
+    if ([convConsumption isEqual: [NSDecimalNumber notANumber]])
+        return distance;
+    
+    // consistency checks
+    NSDecimalNumber *loBound = [NSDecimalNumber decimalNumberWithMantissa:  2 exponent: 0 isNegative: NO];
+    NSDecimalNumber *hiBound = [NSDecimalNumber decimalNumberWithMantissa: 20 exponent: 0 isNegative: NO];
+    
+    // conversion only when unconverted >= lowerBound
+    if ([rawConsumption compare: hiBound] == NSOrderedAscending)
+        return distance;
+    
+    // conversion only when lowerBound <= convConversion <= highBound
+    if ([convConsumption compare: loBound] == NSOrderedAscending || [convConsumption compare: hiBound] == NSOrderedDescending)
+        return distance;
+    
+    // converted distance is more logical
+    return convDistance;
+}
+
+
+
 - (BOOL)importRecords: (NSArray*)records
       formatIsTankPro: (BOOL)isTankProImport
        detectedEvents: (NSInteger*)numEvents
@@ -447,6 +491,8 @@
             // Consistency check and import
             if ([distance compare: zero] == NSOrderedDescending && [volume compare: zero] == NSOrderedDescending)
             {
+                distance = [self guessDistanceForParsedDistance: distance andFuelVolume: volume];
+                
                 // Add event for car
                 [self addEventForCar: car
                                 date: date

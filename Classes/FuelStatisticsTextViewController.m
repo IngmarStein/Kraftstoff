@@ -90,17 +90,21 @@ static CGFloat const GridTextHeight     =  23.0;
 
 
 #pragma mark -
-#pragma mark FIXME Long-Phone Support
+#pragma mark iPhone 5 Support
 
 
 
 + (void)initialize
 {
-    if (0)
+    GridRightBorder    = 464.0;
+    GridWidth          = 448.0;
+    GridDesColumnWidth = (240.0 - GridLeftBorder);
+    
+    if ([AppDelegate isIPhone5])
     {
         GridRightBorder    += 88.0;
         GridWidth          += 88.0;
-        GridDesColumnWidth += 88.0;
+        GridDesColumnWidth += 44.0;
     }
 }
 
@@ -192,9 +196,10 @@ static CGFloat const GridTextHeight     =  23.0;
     }
 
     // Compute average consumption
-    state->avgConsumption = [AppDelegate consumptionForKilometers: state->totalDistance
-                                                           Liters: state->totalFuelVolume
-                                                           inUnit: consumptionUnit];
+    if ([state->totalFuelVolume compare: @(0)] == NSOrderedAscending)
+        state->avgConsumption = [AppDelegate consumptionForKilometers: state->totalDistance
+                                                               Liters: state->totalFuelVolume
+                                                               inUnit: consumptionUnit];
 }
 
 
@@ -273,7 +278,7 @@ static CGFloat const GridTextHeight     =  23.0;
     CGContextRef cgContext = UIGraphicsGetCurrentContext ();
 
     [[UIColor clearColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake (0, 0, 480, height));
+    CGContextFillRect (cgContext, CGRectMake (0, 0, StatisticsViewWidth, height));
 
     UIFont *font = [UIFont boldSystemFontOfSize: 14];
     CGFloat x, y;

@@ -7,7 +7,7 @@
 #pragma mark Base Class for Statistics View Controller
 
 
-extern CGFloat const StatisticsViewWidth;
+extern CGFloat       StatisticsViewWidth;
 extern CGFloat const StatisticsViewHeight;
 extern CGFloat const StatisticsHeight;
 

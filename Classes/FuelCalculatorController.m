@@ -120,8 +120,10 @@ typedef enum
 {
     [super viewDidAppear: animated];
 
+    NSString *imageName = [AppDelegate isIPhone5] ? @"TablePattern-568h" : @"TablePattern";
+    
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
+        setWindowBackground: [[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsZero]
                    animated: animated];
 }
 
@@ -130,8 +132,10 @@ typedef enum
 {
     [super viewWillDisappear: animated];
 
+    NSString *imageName = [AppDelegate isIPhone5] ? @"TableBackground-568h" : @"TableBackground";
+    
     [[AppDelegate sharedDelegate]
-         setWindowBackground: [UIImage imageNamed: @"TableBackground"]
+         setWindowBackground: [UIImage imageNamed: imageName]
                     animated: animated];
 }
 

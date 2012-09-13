@@ -108,23 +108,28 @@
 }
 
 
+
 - (void)viewDidAppear: (BOOL)animated
 {
     [super viewDidAppear: animated];
-
+    
+    NSString *imageName = [AppDelegate isIPhone5] ? @"TablePattern-568h" : @"TablePattern";
+    
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero]
-                   animated: animated];
+     setWindowBackground: [[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsZero]
+     animated: animated];
 }
 
 
-- (void)viewDidDisappear: (BOOL)animated
+- (void)viewWillDisappear: (BOOL)animated
 {
-    [super viewDidDisappear: animated];
-
+    [super viewWillDisappear: animated];
+    
+    NSString *imageName = [AppDelegate isIPhone5] ? @"TableBackground-568h" : @"TableBackground";
+    
     [[AppDelegate sharedDelegate]
-        setWindowBackground: [UIImage imageNamed: @"TableBackground"]
-                   animated: animated];
+     setWindowBackground: [UIImage imageNamed: imageName]
+     animated: animated];
 }
 
 

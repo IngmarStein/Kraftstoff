@@ -48,7 +48,6 @@ extern CGFloat const StatusBarHeight;
 extern CGFloat const HugeStatusBarHeight;
 
 
-
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
     NSString *errorDescription;
@@ -68,6 +67,7 @@ extern CGFloat const HugeStatusBarHeight;
 + (AppDelegate*)sharedDelegate;
 
 + (BOOL)isRunningOS6;
++ (BOOL)isIPhone5;
 
 - (void)setWindowBackground: (UIImage*)image animated: (BOOL)animated;
 

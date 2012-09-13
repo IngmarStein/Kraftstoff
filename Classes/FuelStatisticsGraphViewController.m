@@ -138,13 +138,16 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 
 #pragma mark -
-#pragma mark FIXME Long-Phone Support
+#pragma mark iPhone 5 Support
 
 
 
 + (void)initialize
 {
-    if (0)
+    StatisticGraphRightBorder = 430.0;
+    StatisticGraphWidth       = 420.0;
+    
+    if ([AppDelegate isIPhone5])
     {
         StatisticGraphRightBorder += 88.0;
         StatisticGraphWidth       += 88.0;
@@ -372,7 +375,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     // Create image data from resampled data
     if (state.contentImage == nil)
     {
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             [self drawStatisticsForState: state];
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
@@ -428,7 +431,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             NSString *text = _I18N (@"Not enough data to display statistics");
             CGSize size    = [text sizeWithFont: font];
 
-            x = floor ((480.0 -  size.width)/2.0);
+            x = floor ((StatisticsViewWidth -  size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
 
             [text drawAtPoint: CGPointMake (x, y)   withFont: font];
@@ -458,7 +461,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
                 [path addLineToPoint: CGPointMake (x, y)];
             }
-
+            NSLog(@"%f", StatisticGraphRightBorder);
             [path addLineToPoint: CGPointMake (StatisticGraphRightBorder, StatisticGraphTopBorder)];
             [path closePath];
             [path addClip];
@@ -680,7 +683,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     {
         [self.activityView startAnimating];
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             [self drawStatisticsForState: nil];
 
@@ -787,7 +790,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                     lensLocation.y = rint (StatisticGraphTopBorder  + StatisticsHeight * cell->data [minIndex].y);
 
                     // Image with value information
-                    UIGraphicsBeginImageContextWithOptions (CGSizeMake (480.0, StatisticsViewHeight), YES, 0.0);
+                    UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
                     {
                         NSString *valueString = [NSString stringWithFormat:
                                                     [self averageFormatString: NO],

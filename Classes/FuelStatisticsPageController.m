@@ -37,10 +37,6 @@
 {
     [super viewDidLoad];
 
-    // Configure scroll view
-    scrollView.contentSize  = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
-    scrollView.scrollsToTop = NO;
-
     // Load content pages
     for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
     {
@@ -63,13 +59,18 @@
         [scrollView addSubview: controller.view];
     }
 
+    // Configure scroll view
+    scrollView.contentSize  = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
+    scrollView.scrollsToTop = NO;
 
     // Select preferred page
-    pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredStatisticsPage"];
-    [self scrollToPage: pageControl.currentPage animated: NO];
+    dispatch_async (dispatch_get_main_queue (), ^{
 
-    pageControlUsed = NO;
+        pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredStatisticsPage"];
+        [self scrollToPage: pageControl.currentPage animated: NO];
 
+        pageControlUsed = NO;
+    });
 
     [[NSNotificationCenter defaultCenter]
         addObserver: self

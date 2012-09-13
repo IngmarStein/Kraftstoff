@@ -94,7 +94,9 @@
                        atIndex: 0];
     }
 
-    backgroundImageView.image = [[UIImage imageNamed: @"TablePattern"] resizableImageWithCapInsets: UIEdgeInsetsZero];
+    NSString *imageName = [AppDelegate isIPhone5] ? @"TablePattern-568h" : @"TablePattern";
+    
+    backgroundImageView.image = [[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsZero];
 }
 
 
