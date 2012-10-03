@@ -1077,8 +1077,14 @@ static AppDelegate *sharedDelegateObject = nil;
         [NSCompoundPredicate andPredicateWithSubpredicates:
             @[parentPredicate, datePredicate]]];
 
-    // Check whether fetch reveals any event objects
-    return ([[self objectsForFetchRequest: fetchRequest inManagedObjectContext: moc] count] > 0);
+    // Check whether fetch would reveal any event objects
+    NSError *error = nil;
+    NSUInteger objectCount = [moc countForFetchRequest:fetchRequest error:&error];
+
+    if (error != nil)
+        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+
+    return (objectCount > 0);
 }
 
 

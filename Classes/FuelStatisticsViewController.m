@@ -152,7 +152,6 @@ CGFloat const StatisticsHeight     = 182.0;
     if (!selectedCarID)
         return;
 
-#   if 1
     NSManagedObjectContext *parentContext = [self.selectedCar managedObjectContext];
     NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSPrivateQueueConcurrencyType];
     [sampleContext setParentContext: parentContext];
@@ -194,52 +193,6 @@ CGFloat const StatisticsHeight     = 182.0;
                            });
         }
     }];
-#else
-    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                    ^{
-                        @autoreleasepool
-                        {
-                            NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] init];
-                            [sampleContext setPersistentStoreCoordinator: [[AppDelegate sharedDelegate] persistentStoreCoordinator]];
-
-                            // Get the selected car
-                            NSError *error = nil;
-                            NSManagedObject *sampleCar = [sampleContext existingObjectWithID: selectedCarID
-                                                                                       error: &error];
-                            
-                            if (sampleCar)
-                            {
-                                // Fetch events for the selected time period
-                                NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar: sampleCar
-                                                                                              afterDate: [NSDate dateWithOffsetInMonths: -numberOfMonths fromDate: [NSDate date]]
-                                                                                            dateMatches: YES
-                                                                                 inManagedObjectContext: sampleContext];
-                                
-                                NSArray *samplingObjects = [AppDelegate objectsForFetchRequest: fetchRequest
-                                                                        inManagedObjectContext: sampleContext];
-                                
-                                
-                                // Compute statistics
-                                id sampleData = [self computeStatisticsForRecentMonths: numberOfMonths
-                                                                                forCar: sampleCar
-                                                                           withObjects: samplingObjects];
-                                
-                                
-                                // Schedule update of cache and display in main thread
-                                dispatch_async (dispatch_get_main_queue (),
-                                               ^{
-                                                   if (invalidationCounter == expectedCounter)
-                                                   {
-                                                       [contentCache setObject: sampleData forKey: @(numberOfMonths)];
-                                                       
-                                                       if (displayedNumberOfMonths == numberOfMonths)
-                                                           [self displayCachedStatisticsForRecentMonths: numberOfMonths];
-                                                   }
-                                               });
-                            }
-                        }
-                    });
-#endif
 }
 
 
