@@ -865,7 +865,7 @@
 
 - (NSString*)keyForDistance: (NSDictionary*)record unit: (KSDistance*)unit
 {
-    for (NSString *key in @[ @"KILOMETERS", @"KILOMETER" ])
+    for (NSString *key in @[ @"KILOMETERS", @"KILOMETER", @"STRECKE" ])
         if ([record objectForKey: key])
         {
             *unit = KSDistanceKilometer;
@@ -905,7 +905,7 @@
 
 - (NSString*)keyForVolume: (NSDictionary*)record unit: (KSVolume*)unit;
 {
-    for (NSString *key in @[ @"LITERS", @"LITER" ])
+    for (NSString *key in @[ @"LITERS", @"LITER", @"TANKMENGE" ])
         if ([record objectForKey: key])
         {
             *unit = KSVolumeLiter;
@@ -953,7 +953,7 @@
 
 - (NSString*)keyForPrice: (NSDictionary*)record
 {
-    for (NSString *key in @[ @"PRICEPERLITER", @"PRICEPERGALLON", @"PRICE", @"PREISPROLITER", @"PREISPROGALLONE", @"PREIS" ])
+    for (NSString *key in @[ @"PRICEPERLITER", @"PRICEPERGALLON", @"PRICE", @"PREISPROLITER", @"PREISPROGALLONE", @"PREIS", @"KOSTEN/LITER" ])
         if ([record objectForKey: key])
             return key;
 
