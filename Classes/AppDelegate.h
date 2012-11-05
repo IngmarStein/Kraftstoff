@@ -30,10 +30,13 @@ typedef enum
     KSFuelConsumptionKilometersPerLiter,
     KSFuelConsumptionMilesPerGallonUS,
     KSFuelConsumptionMilesPerGallonUK,
+    KSFuelConsumptionGP10KUS,
+    KSFuelConsumptionGP10KUK,
+
 } KSFuelConsumption;
 
 #define KSFuelConsumptionIsMetric(x)     ((x) == KSFuelConsumptionLitersPer100km || (x) == KSFuelConsumptionKilometersPerLiter)
-#define KSFuelConsumptionIsEfficiency(x) ((x) != KSFuelConsumptionLitersPer100km)
+#define KSFuelConsumptionIsEfficiency(x) ((x) == KSFuelConsumptionKilometersPerLiter || (x) == KSFuelConsumptionMilesPerGallonUS || (x) == KSFuelConsumptionMilesPerGallonUK)
 
 
 // Shadow heights used within the app
@@ -177,6 +180,11 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDecimalNumber*)litersPerImperialGallon;
 + (NSDecimalNumber*)kilometersPerStatuteMile;
 
++ (NSDecimalNumber*)kilometersPerLiterToMilesPerUSGallon;
++ (NSDecimalNumber*)kilometersPerLiterToMilesPerImperialGallon;
++ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KUSGallon;
++ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KImperialGallon;
+
 
 
 #pragma mark Conversion to/from internal Data Format
@@ -197,9 +205,6 @@ extern CGFloat const HugeStatusBarHeight;
 + (NSDecimalNumber*)consumptionForKilometers: (NSDecimalNumber*)distance
                                       Liters: (NSDecimalNumber*)volume
                                       inUnit: (KSFuelConsumption)unit;
-
-+ (NSDecimalNumber*)mpgUSFromKML: (NSDecimalNumber*)kmPerLiter;
-+ (NSDecimalNumber*)mpgImperialFromKML: (NSDecimalNumber*)kmPerLiter;
 
 
 

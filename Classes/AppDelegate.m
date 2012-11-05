@@ -1427,6 +1427,62 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
++ (NSDecimalNumber*)kilometersPerLiterToMilesPerUSGallon
+{
+    static NSDecimalNumber *mpgUSFromKML = nil;
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
+        
+        mpgUSFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2352145833 exponent: -9 isNegative: NO];
+    });
+    
+    return mpgUSFromKML;
+}
+
+
++ (NSDecimalNumber*)kilometersPerLiterToMilesPerImperialGallon
+{
+    static NSDecimalNumber *mpgImperialFromKML = nil;
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
+        
+        mpgImperialFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2737067636 exponent: -9 isNegative: NO];
+    });
+    
+    return mpgImperialFromKML;
+}
+
+
++ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KUSGallon
+{
+    static NSDecimalNumber *gp10kUsFromLP100 = nil;
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
+        
+        gp10kUsFromLP100 = [NSDecimalNumber decimalNumberWithMantissa: 425170068027 exponent: -10 isNegative: NO];
+    });
+    
+    return gp10kUsFromLP100;
+}
+
+
++ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KImperialGallon
+{
+    static NSDecimalNumber *gp10kImperialFromLP100 = nil;
+    static dispatch_once_t pred;
+    
+    dispatch_once (&pred, ^{
+        
+        gp10kImperialFromLP100 = [NSDecimalNumber decimalNumberWithMantissa: 353982300885 exponent: -10 isNegative: NO];
+    });
+    
+    return gp10kImperialFromLP100;
+}
+
+
 
 #pragma mark -
 #pragma mark Conversion to/from Internal Data Format
@@ -1507,50 +1563,39 @@ static AppDelegate *sharedDelegateObject = nil;
 {
     NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
 
-    if (unit == KSFuelConsumptionLitersPer100km)
-        return [[liters decimalNumberByMultiplyingByPowerOf10: 2] decimalNumberByDividingBy: kilometers withBehavior: handler];
 
-    NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy: liters];
-
-    switch (unit)
+    if (KSFuelConsumptionIsEfficiency (unit))
     {
-        case KSFuelConsumptionMilesPerGallonUS:
-            return [kmPerLiter decimalNumberByMultiplyingBy: [self mpgUSFromKML: kmPerLiter] withBehavior: handler];
-
-        case KSFuelConsumptionMilesPerGallonUK:
-            return [kmPerLiter decimalNumberByMultiplyingBy: [self mpgImperialFromKML: kmPerLiter] withBehavior: handler];
-
-        default:
-            return [kmPerLiter decimalNumberByRoundingAccordingToBehavior: handler];
+        NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy: liters];
+        
+        switch (unit)
+        {
+            case KSFuelConsumptionKilometersPerLiter:
+                return [kmPerLiter decimalNumberByRoundingAccordingToBehavior: handler];
+                
+            case KSFuelConsumptionMilesPerGallonUS:
+                return [kmPerLiter decimalNumberByMultiplyingBy: [self kilometersPerLiterToMilesPerUSGallon] withBehavior: handler];
+                
+            default: // KSFuelConsumptionMilesPerGallonUK:
+                return [kmPerLiter decimalNumberByMultiplyingBy: [self kilometersPerLiterToMilesPerImperialGallon] withBehavior: handler];
+        }
     }
-}
+    else
+    {
+        NSDecimalNumber *literPer100km = [[liters decimalNumberByMultiplyingByPowerOf10: 2] decimalNumberByDividingBy: kilometers];
+    
+        switch (unit)
+        {
+            case KSFuelConsumptionLitersPer100km:
+                return [literPer100km decimalNumberByRoundingAccordingToBehavior: handler];
 
+            case KSFuelConsumptionGP10KUS:
+                return [literPer100km decimalNumberByMultiplyingBy: [self litersPer100KilometersToMilesPer10KUSGallon] withBehavior: handler];
 
-+ (NSDecimalNumber*)mpgUSFromKML: (NSDecimalNumber*)kmPerLiter
-{
-    static NSDecimalNumber *mpgUSFromKML = nil;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        mpgUSFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2352145833 exponent: -9 isNegative: NO];
-    });
-
-    return mpgUSFromKML;
-}
-
-
-+ (NSDecimalNumber*)mpgImperialFromKML: (NSDecimalNumber*)kmPerLiter
-{
-    static NSDecimalNumber *mpgImperialFromKML = nil;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        mpgImperialFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2737067636 exponent: -9 isNegative: NO];
-    });
-
-    return mpgImperialFromKML;
+            default: // KSFuelConsumptionGP10KUK:
+                return [literPer100km decimalNumberByMultiplyingBy: [self litersPer100KilometersToMilesPer10KImperialGallon] withBehavior: handler];
+        }
+    }    
 }
 
 
@@ -1566,9 +1611,13 @@ static AppDelegate *sharedDelegateObject = nil;
     {
         case KSFuelConsumptionLitersPer100km:     return _I18N (@"l/100km");
         case KSFuelConsumptionKilometersPerLiter: return _I18N (@"km/l");
-        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"mpg.us");
-        default:                                  return _I18N (@"mpg.uk");
+        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"mpg");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"mpg.uk");
+        case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k");
+        case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k.uk");
     }
+
+    return @"";
 }
 
 
@@ -1579,8 +1628,12 @@ static AppDelegate *sharedDelegateObject = nil;
         case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
         case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
         case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"Miles per Gallon (US)");
-        default:                                  return _I18N (@"Miles per Gallon (UK)");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
+        case KSFuelConsumptionGP10KUS:            return _I18N (@"Gallons per 10000 Miles (US)");
+        case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles (UK)");
     }
+    
+    return @"";
 }
 
 
@@ -1590,8 +1643,13 @@ static AppDelegate *sharedDelegateObject = nil;
     {
         case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
         case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
-        default:                                  return _I18N (@"Miles per Gallon");
+        case KSFuelConsumptionMilesPerGallonUS:
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon");
+        case KSFuelConsumptionGP10KUS:
+        case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles");
     }
+    
+    return @"";
 }
 
 

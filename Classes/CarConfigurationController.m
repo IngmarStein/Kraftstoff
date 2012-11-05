@@ -269,7 +269,9 @@
     pickerLabels = @[[AppDelegate consumptionUnitDescription: KSFuelConsumptionLitersPer100km],
                      [AppDelegate consumptionUnitDescription: KSFuelConsumptionKilometersPerLiter],
                      [AppDelegate consumptionUnitDescription: KSFuelConsumptionMilesPerGallonUS],
-                     [AppDelegate consumptionUnitDescription: KSFuelConsumptionMilesPerGallonUK]];
+                     [AppDelegate consumptionUnitDescription: KSFuelConsumptionMilesPerGallonUK],
+                     [AppDelegate consumptionUnitDescription: KSFuelConsumptionGP10KUS],
+                     [AppDelegate consumptionUnitDescription: KSFuelConsumptionGP10KUK]];
 
     [self addRowAtIndex: 5
               inSection: 0

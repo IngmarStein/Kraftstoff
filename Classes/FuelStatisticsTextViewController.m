@@ -196,7 +196,7 @@ static CGFloat const GridTextHeight     =  23.0;
     }
 
     // Compute average consumption
-    if ([state->totalFuelVolume compare: @(0)] != NSOrderedAscending)
+    if ([state->totalDistance isEqualToNumber: @(0)] == NO && [state->totalFuelVolume isEqualToNumber: @(0)] == NO)
         state->avgConsumption = [AppDelegate consumptionForKilometers: state->totalDistance
                                                                Liters: state->totalFuelVolume
                                                                inUnit: consumptionUnit];

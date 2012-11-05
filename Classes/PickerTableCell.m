@@ -104,4 +104,25 @@ static CGFloat const PickerViewCellHeight =  44.0;
     return [pickerLabels objectAtIndex: row];
 }
 
+
+/*
+ FIXME: remove when labels are small enough
+- (UIView*)pickerView: (UIPickerView*)pickerView viewForRow: (NSInteger)row forComponent: (NSInteger)component reusingView: (UIView*)view
+{
+    UILabel* label = (UILabel*)view;
+
+    if (!label)
+    {
+        label = [[UILabel alloc] init];
+        label.font = [UIFont boldSystemFontOfSize:18];
+        label.frame = CGRectMake (0.0f, 0.0f, PickerViewCellWidth-20, PickerViewCellHeight);
+        label.backgroundColor = [UIColor clearColor];
+    }
+    
+    label.text = [self pickerView:pickerView titleForRow:row forComponent:component];
+
+    return label;
+}
+*/
+
 @end
