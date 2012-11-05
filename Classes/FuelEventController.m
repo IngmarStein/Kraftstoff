@@ -555,7 +555,7 @@
 
         tableCell.botRightAccessibilityLabel = [NSString stringWithFormat: @", %@ %@",
                                                     consumptionDescription,
-                                                    [AppDelegate consumptionUnitShadedTableViewCellDescription: consumptionUnit]];
+                                                    [AppDelegate consumptionUnitAccesibilityDescription: consumptionUnit]];
     }
     else
     {

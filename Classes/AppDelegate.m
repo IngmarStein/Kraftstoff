@@ -1637,7 +1637,7 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
-+ (NSString*)consumptionUnitShadedTableViewCellDescription: (KSFuelConsumption)unit
++ (NSString*)consumptionUnitAccesibilityDescription: (KSFuelConsumption)unit
 {
     switch (unit)
     {

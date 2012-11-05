@@ -212,7 +212,7 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (NSString*)consumptionUnitString: (KSFuelConsumption)unit;
 + (NSString*)consumptionUnitDescription: (KSFuelConsumption)unit;
-+ (NSString*)consumptionUnitShadedTableViewCellDescription: (KSFuelConsumption)unit;
++ (NSString*)consumptionUnitAccesibilityDescription: (KSFuelConsumption)unit;
 
 + (NSString*)fuelUnitString: (KSVolume)unit;
 + (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons pluralization: (BOOL)plural;

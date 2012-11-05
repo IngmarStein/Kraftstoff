@@ -562,7 +562,7 @@ static NSInteger maxEditHelpCounter = 1;
                                                                    inUnit: consumptionUnit]];
 
         tableCell.topRightAccessibilityLabel = avgConsumption;
-        tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitShadedTableViewCellDescription: consumptionUnit];
+        tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitAccesibilityDescription: consumptionUnit];
     }
     else
     {
