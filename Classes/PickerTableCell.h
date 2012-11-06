@@ -9,5 +9,6 @@
 
 @property (nonatomic, strong) UIPickerView *picker;
 @property (nonatomic, strong) NSArray      *pickerLabels;
+@property (nonatomic, strong) NSArray      *pickerShortLabels;
 
 @end

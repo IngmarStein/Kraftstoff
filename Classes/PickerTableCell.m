@@ -15,6 +15,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 @synthesize picker;
 @synthesize pickerLabels;
+@synthesize pickerShortLabels;
 
 
 - (void)finishConstruction
@@ -37,6 +38,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
     // Array of picker labels
     self.pickerLabels = [(NSDictionary*)dataObject objectForKey: @"labels"];
+    self.pickerShortLabels = [(NSDictionary*)dataObject objectForKey: @"shortLabels"];
     [picker reloadAllComponents];
 
     // (Re-)configure initial selected row
@@ -45,13 +47,13 @@ static CGFloat const PickerViewCellHeight =  44.0;
     [picker selectRow: initialIndex inComponent: 0 animated: NO];
     [picker reloadComponent: 0];
 
-    self.textFieldProxy.text = [self pickerView: picker titleForRow: initialIndex forComponent: 0];
+    self.textFieldProxy.text = [((pickerShortLabels) ? pickerShortLabels : pickerLabels) objectAtIndex: initialIndex];
 }
 
 
 - (void)selectRow: (NSInteger)row
 {
-    self.textFieldProxy.text = [self pickerView: picker titleForRow: row forComponent: 0];
+    self.textFieldProxy.text = [((pickerShortLabels) ? pickerShortLabels : pickerLabels) objectAtIndex: row];
 
     [self.delegate valueChanged: @((int)row) identifier: self.valueIdentifier];
 }
@@ -105,8 +107,6 @@ static CGFloat const PickerViewCellHeight =  44.0;
 }
 
 
-/*
- FIXME: remove when labels are small enough
 - (UIView*)pickerView: (UIPickerView*)pickerView viewForRow: (NSInteger)row forComponent: (NSInteger)component reusingView: (UIView*)view
 {
     UILabel* label = (UILabel*)view;
@@ -123,6 +123,5 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
     return label;
 }
-*/
 
 @end

@@ -1637,6 +1637,22 @@ static AppDelegate *sharedDelegateObject = nil;
 }
 
 
++ (NSString*)consumptionUnitShortDescription: (KSFuelConsumption)unit;
+{
+    switch (unit)
+    {
+        case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
+        case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
+        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"Miles per Gallon (US)");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
+        case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k_short_us");
+        case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k_short_uk");
+    }
+    
+    return @"";
+}
+
+
 + (NSString*)consumptionUnitAccesibilityDescription: (KSFuelConsumption)unit
 {
     switch (unit)

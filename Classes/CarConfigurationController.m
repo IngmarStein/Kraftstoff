@@ -203,7 +203,7 @@
 
 - (void)createTableContents
 {
-    NSArray *pickerLabels;
+    NSArray *pickerLabels, *pickerShortLabels;
 
     [self addSectionAtIndex: 0 withAnimation: UITableViewRowAnimationNone];
 
@@ -273,12 +273,20 @@
                      [AppDelegate consumptionUnitDescription: KSFuelConsumptionGP10KUS],
                      [AppDelegate consumptionUnitDescription: KSFuelConsumptionGP10KUK]];
 
+    pickerShortLabels = @[[AppDelegate consumptionUnitShortDescription: KSFuelConsumptionLitersPer100km],
+                          [AppDelegate consumptionUnitShortDescription: KSFuelConsumptionKilometersPerLiter],
+                          [AppDelegate consumptionUnitShortDescription: KSFuelConsumptionMilesPerGallonUS],
+                          [AppDelegate consumptionUnitShortDescription: KSFuelConsumptionMilesPerGallonUK],
+                          [AppDelegate consumptionUnitShortDescription: KSFuelConsumptionGP10KUS],
+                          [AppDelegate consumptionUnitShortDescription: KSFuelConsumptionGP10KUK]];
+
     [self addRowAtIndex: 5
               inSection: 0
               cellClass: [PickerTableCell class]
                cellData: @{@"label":           _I18N (@"Mileage"),
                            @"valueIdentifier": @"fuelConsumptionUnit",
-                           @"labels":          pickerLabels}
+                           @"labels":          pickerLabels,
+                           @"shortLabels":     pickerShortLabels}
           withAnimation: UITableViewRowAnimationNone];
 }
 
