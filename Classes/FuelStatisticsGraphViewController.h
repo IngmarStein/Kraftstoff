@@ -18,6 +18,12 @@
 @property (nonatomic)         BOOL zooming;
 @property (nonatomic, strong) UILongPressGestureRecognizer *zoomRecognizer;
 
+@property (readonly, nonatomic) CGFloat graphLeftBorder;
+@property (readonly, nonatomic) CGFloat graphRightBorder;
+@property (readonly, nonatomic) CGFloat graphTopBorder;
+@property (readonly, nonatomic) CGFloat graphBottomBorder;
+@property (readonly, nonatomic) CGFloat graphWidth;
+
 @end
 
 
