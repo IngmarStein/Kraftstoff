@@ -108,6 +108,7 @@ static demoData_t demoData [] =
     
     { "2012-10-18 18:29:GMT+0200", 6042, 2696, 1449 },
     { "2012-11-01 18:42:GMT+0100", 6060, 2655, 1419 },
+    { "2012-11-16 16:11:GMT+0100", 5728, 2652, 1449 },
 };
 
 #define DEMO_DATA_CNT ((int)(sizeof (demoData) / sizeof (demoData [0])))

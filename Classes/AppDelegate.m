@@ -172,8 +172,8 @@ static AppDelegate *sharedDelegateObject = nil;
 
 - (BOOL)application: (UIApplication*)application shouldRestoreApplicationState: (NSCoder*)coder
 {
-    NSInteger stateVersion = [[coder decodeObjectForKey: UIApplicationStateRestorationBundleVersionKey] integerValue];
     NSInteger bundleVersion = [[[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString*)kCFBundleVersionKey] integerValue];
+    NSInteger stateVersion = [[coder decodeObjectForKey: UIApplicationStateRestorationBundleVersionKey] integerValue];
 
     return (stateVersion <= bundleVersion);
 }
@@ -192,7 +192,6 @@ static AppDelegate *sharedDelegateObject = nil;
         UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake (125, 50, 30, 30)];
         [progress setActivityIndicatorViewStyle: UIActivityIndicatorViewStyleWhiteLarge];
         [progress startAnimating];
-
 
         self.importAlert = [[UIAlertView alloc] initWithTitle: _I18N (@"Importing")
                                                       message: @""

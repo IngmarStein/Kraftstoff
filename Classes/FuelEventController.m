@@ -165,6 +165,9 @@
     restoreMailComposer      = [coder decodeBoolForKey: kSRFuelEventShowComposer];
 
     [super decodeRestorableStateWithCoder: coder];
+
+    // -> openradar #13438788
+    [self.tableView reloadData];
 }
 
 
@@ -767,8 +770,8 @@
             break;
 
         case NSFetchedResultsChangeUpdate:
-            [self configureCell: [tableView cellForRowAtIndexPath: indexPath]
-                    atIndexPath: indexPath];
+            [tableView reloadRowsAtIndexPaths: @[indexPath]
+                             withRowAnimation: UITableViewRowAnimationAutomatic];
             break;
     }
 }

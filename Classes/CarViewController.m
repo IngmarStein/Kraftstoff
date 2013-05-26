@@ -103,10 +103,12 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)decodeRestorableStateWithCoder: (NSCoder*)coder
 {
-    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
-
-    self.editedObject = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRCarViewEditedObject]];
     [super decodeRestorableStateWithCoder: coder];
+
+    self.editedObject = [[AppDelegate sharedDelegate] managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRCarViewEditedObject]];
+
+    // -> openradar #13438788
+    [self.tableView reloadData];
 }
 
 
@@ -827,8 +829,8 @@ static NSInteger maxEditHelpCounter = 1;
             break;
 
         case NSFetchedResultsChangeUpdate:
-            [self configureCell: [tableView cellForRowAtIndexPath: indexPath]
-                    atIndexPath: indexPath];
+            [tableView reloadRowsAtIndexPaths: @[indexPath]
+                             withRowAnimation: UITableViewRowAnimationAutomatic];
             break;
     }
 }
