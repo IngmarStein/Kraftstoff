@@ -900,7 +900,13 @@ static AppDelegate *sharedDelegateObject = nil;
         NSManagedObjectID *objectID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation: objectURL];
 
         if (objectID)
-            return [self.managedObjectContext objectWithID: objectID];
+        {
+            NSError *error = nil;
+            NSManagedObject *object = [self.managedObjectContext existingObjectWithID: objectID
+                                                                                error: &error];
+
+            return object;
+        }
     }
 
     return nil;
