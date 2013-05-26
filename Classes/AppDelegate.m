@@ -1563,6 +1563,10 @@ static AppDelegate *sharedDelegateObject = nil;
     NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
 
 
+    if ([kilometers compare: [NSDecimalNumber zero]] != NSOrderedDescending ||
+        [liters     compare: [NSDecimalNumber zero]] != NSOrderedDescending)
+        return [NSDecimalNumber notANumber];
+
     if (KSFuelConsumptionIsEfficiency (unit))
     {
         NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy: liters];
