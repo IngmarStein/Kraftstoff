@@ -23,9 +23,6 @@ CGFloat const NavBarHeight        = 44.0;
 CGFloat const StatusBarHeight     = 20.0;
 CGFloat const HugeStatusBarHeight = 40.0;
 
-// Pointer to shared Application Delegate Object
-static AppDelegate *sharedDelegateObject = nil;
-
 
 @implementation AppDelegate
 
@@ -46,8 +43,7 @@ static AppDelegate *sharedDelegateObject = nil;
 
 + (AppDelegate*)sharedDelegate
 {
-    NSAssert (sharedDelegateObject != nil, @"AppDelegate not yet initialized");
-    return sharedDelegateObject;
+    return [[UIApplication sharedApplication] delegate];
 }
 
 
@@ -92,8 +88,6 @@ static AppDelegate *sharedDelegateObject = nil;
 
 - (void)awakeFromNib
 {
-    sharedDelegateObject = self;
-
     [[NSUserDefaults standardUserDefaults] registerDefaults:
         @{@"statisticTimeSpan":       @6,
           @"preferredStatisticsPage": @1,
