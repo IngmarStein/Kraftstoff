@@ -6,20 +6,24 @@
 #import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsGraphViewController.h"
+#import "AppDelegate.h"
 
 
 // Coordinates for statistics graph
-static CGFloat const StatisticGraphLeftBorder   =  10.0;
-static CGFloat const StatisticGraphRightBorder  = 430.0;
-static CGFloat const StatisticGraphTopBorder    =  58.0;
-static CGFloat const StatisticGraphBottomBorder = 240.0;
-static CGFloat const StatisticGraphWidth        = 420.0;
+static CGFloat const StatisticGraphLeftBorder       =  10.0;
+static CGFloat const StatisticGraphRightBorder      = 430.0;
+static CGFloat const StatisticGraphTopBorder        =  58.0;
+static CGFloat const StatisticGraphBottomBorder     = 240.0;
+static CGFloat const StatisticGraphWidth            = 420.0;
+static CGFloat const StatisticGraphHeight           = 182.0;
 
 // Coordinates for the zoom-track
-static CGFloat const StatisticTrackYPosition   =  40.0;
-static CGFloat const StatisticTrackThickness   =   4.0;
-static CGFloat const StatisticTrackInfoXMargin =   9.0;
-static CGFloat const StatisticTrackInfoYMargin =   3.0;
+static CGFloat const StatisticTrackYPosition        =  40.0;
+static CGFloat const StatisticTrackThickness        =   4.0;
+static CGFloat const StatisticTrackInfoXMargin      =   9.0;
+static CGFloat const StatisticTrackInfoYMargin      =   3.0;
+static CGFloat const StatisticTrackInfoXMarginFlat  =   4.0;
+static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 
 
@@ -125,7 +129,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 - (CGFloat)graphRightBorder
 {
-    return StatisticGraphRightBorder + ([AppDelegate isIPhone5] ? 88.0 : 0.0);
+    return StatisticGraphRightBorder + ([AppDelegate isLongPhone] ? 88.0 : 0.0);
 }
 
 - (CGFloat)graphTopBorder
@@ -140,7 +144,12 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 - (CGFloat)graphWidth
 {
-    return StatisticGraphWidth + ([AppDelegate isIPhone5] ? 88.0 : 0.0);
+    return StatisticGraphWidth + ([AppDelegate isLongPhone] ? 88.0 : 0.0);
+}
+
+- (CGFloat)graphHeight
+{
+    return StatisticGraphHeight;
 }
 
 
@@ -155,7 +164,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     [super viewDidLoad];
 
     self.zoomRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector (longPressChanged:)];
-    zoomRecognizer.minimumPressDuration    = 0.6;
+    zoomRecognizer.minimumPressDuration    = 0.4;
     zoomRecognizer.numberOfTouchesRequired = 1;
     zoomRecognizer.enabled                 = NO;
 
@@ -186,11 +195,11 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
     CGFloat valMin =  INFINITY;
     CGFloat valMax = -INFINITY;
-    CGFloat valRange;
+    CGFloat valRange, valStretchFactorForDisplay;
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--)
     {
-        NSManagedObject *object = [fetchedObjects objectAtIndex: i];
+        NSManagedObject *object = fetchedObjects[i];
 
         CGFloat value = [self valueForManagedObject: object forCar: car];
 
@@ -257,6 +266,12 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
     valRange = valMax - valMin;
 
+    // iOS7: shrink the computed graph to keep the top h-marker below the top-border
+    if ([AppDelegate systemMajorVersion] >= 7 && valRange > 0.0001)
+        valStretchFactorForDisplay = StatisticsHeight / (StatisticsHeight + 18);
+    else
+        valStretchFactorForDisplay = 1.0;
+
     // Resampling of fetched data
     CGFloat   samples      [MAX_SAMPLES];
     NSInteger samplesCount [MAX_SAMPLES];
@@ -275,7 +290,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
     for (NSInteger i = valLastIndex; i >= valFirstIndex; i--)
     {
-        NSManagedObject *managedObject = [fetchedObjects objectAtIndex: i];
+        NSManagedObject *managedObject = fetchedObjects[i];
         CGFloat value = [self valueForManagedObject: managedObject forCar: car];
 
         if (!isnan (value))
@@ -287,7 +302,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             if (valRange < 0.0001)
                 samples [sampleIndex] += 0.5;
             else
-                samples [sampleIndex] += (value - valMin) / valRange;
+                samples [sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay;
 
             // Collect lens data
             state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey: @"timestamp"] timeIntervalSince1970];
@@ -316,14 +331,18 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     // Markers for vertical axis
     NSNumberFormatter *numberFormatter = [self axisFormatterForCar: car];
 
-    state->hMarkPositions [0] = 0.0;
+    state->hMarkPositions [0] = 1.0 - (1.0  * valStretchFactorForDisplay);
     state->hMarkNames     [0] = [numberFormatter stringFromNumber: @(valMin + valRange)];
-    state->hMarkPositions [1] = 0.25;
+
+    state->hMarkPositions [1] = 1.0 - (0.75 * valStretchFactorForDisplay);
     state->hMarkNames     [1] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.75))];
-    state->hMarkPositions [2] = 0.5;
+
+    state->hMarkPositions [2] = 1.0 - (0.5  * valStretchFactorForDisplay);
     state->hMarkNames     [2] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.5))];
-    state->hMarkPositions [3] = 0.75;
+
+    state->hMarkPositions [3] = 1.0 - (0.25 * valStretchFactorForDisplay);
     state->hMarkNames     [3] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.25))];
+
     state->hMarkPositions [4] = 1.0;
     state->hMarkNames     [4] = [numberFormatter stringFromNumber: @(valMin)];
     state->hMarkCount = 5;
@@ -368,7 +387,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                                                   withObjects: (NSArray*)fetchedObjects
 {
     // No cache cell exists => resample data and compute average value
-    FuelStatisticsSamplingData *state = [contentCache objectForKey: @(numberOfMonths)];
+    FuelStatisticsSamplingData *state = contentCache[@(numberOfMonths)];
     
     if (state == nil)
     {
@@ -385,7 +404,11 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
     {
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
-            [self drawStatisticsForState: state];
+            if ([AppDelegate systemMajorVersion] < 7)
+                [self drawStatisticsForState: state];
+            else
+                [self drawFlatStatisticsForState: state];
+
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
         }
         UIGraphicsEndImageContext ();
@@ -408,9 +431,9 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
     // Background shade with rounded corners
     [[UIColor blackColor] setFill];
-    CGContextFillRect (cgContext, self.view.bounds);
+    CGContextFillRect (cgContext, CGRectMake (0.0, 0.0, StatisticsViewWidth, StatisticsViewHeight));
 
-    [[UIBezierPath bezierPathWithRoundedRect: CGRectMake (1.0, 0.0, self.view.bounds.size.width - 2.0, self.view.bounds.size.height)
+    [[UIBezierPath bezierPathWithRoundedRect: CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
                            byRoundingCorners: UIRectCornerAllCorners
                                  cornerRadii: CGSizeMake (12.0, 12.0)] addClip];
 
@@ -465,7 +488,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             for (NSInteger i = 0; i < state->dataCount; i++)
             {
                 x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
-                y = rint (self.graphTopBorder  + StatisticsHeight * state->data [i].y);
+                y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
                 [path addLineToPoint: CGPointMake (x, y)];
             }
@@ -489,7 +512,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                 for (NSInteger i = 0, y = 0.0; i < state->hMarkCount; i++)
                 {
                     lastY = y;
-                    y     = rint (self.graphTopBorder + StatisticsHeight * state->hMarkPositions [i]);
+                    y     = rint (self.graphTopBorder + self.graphHeight * state->hMarkPositions [i]);
 
                     CGContextTranslateCTM (cgContext, 0.0, y - lastY);
                     [path stroke];
@@ -512,7 +535,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                     CGSize size = [state->hMarkNames[i] sizeWithFont: font];
 
                     x = self.graphRightBorder + 6;
-                    y = floor (self.graphTopBorder + 0.5 + StatisticsHeight * state->hMarkPositions [i] - size.height - font.descender) + 0.5;
+                    y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height - font.descender) + 0.5;
 
                     [state->hMarkNames[i] drawAtPoint: CGPointMake (x, y)   withFont: font];
                 }
@@ -579,7 +602,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             for (NSInteger i = 0; i < state->dataCount; i++)
             {
                 x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
-                y = rint (self.graphTopBorder  + StatisticsHeight * state->data [i].y);
+                y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
                 [path addLineToPoint: CGPointMake (x, y)];
             }
@@ -604,10 +627,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             {
                 CGContextTranslateCTM (cgContext, 0.0, self.graphTopBorder-2);
 
-                for (NSInteger i = 0; i < (NSInteger)StatisticsHeight; i += 4)
+                for (NSInteger i = 0; i < (NSInteger)self.graphHeight; i += 4)
                 {
                     CGContextTranslateCTM (cgContext, 0.0, 4.0);
-                    [[UIColor colorWithWhite: 0.8 alpha: 0.28 - 0.20 * i/StatisticsHeight] setStroke];
+                    [[UIColor colorWithWhite: 0.8 alpha: 0.28 - 0.20 * i/self.graphHeight] setStroke];
                     [path stroke];
                 }
             }
@@ -643,12 +666,12 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
         [path removeAllPoints];
         [path moveToPoint: CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
-                                        rint (self.graphTopBorder  + StatisticsHeight * state->data [0].y))];
+                                        rint (self.graphTopBorder  + self.graphHeight * state->data [0].y))];
 
         for (NSInteger i = 1; i < state->dataCount; i++)
         {
             x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
-            y = rint (self.graphTopBorder  + StatisticsHeight * state->data [i].y);
+            y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
             [path addLineToPoint: CGPointMake (x, y)];
         }
@@ -658,11 +681,227 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 }
 
 
+- (void)drawFlatStatisticsForState: (FuelStatisticsSamplingData*)state
+{
+    CGContextRef cgContext = UIGraphicsGetCurrentContext ();
+
+
+    // Background colors
+    [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
+    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
+
+    [[UIColor blackColor] setFill];
+    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28.0));
+
+
+    // Contents if there is a valid state
+    if (state == nil)
+        return;
+
+    UIFont *font       = [UIFont fontWithName:@"HelveticaNeue-Light" size: 12.0];
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    CGFloat x, y;
+
+    if (state->dataCount == 0)
+    {
+        CGContextSaveGState (cgContext);
+        {
+            [[UIColor whiteColor] setFill];
+
+            NSString *text = _I18N (@"Not enough data to display statistics");
+            CGSize size    = [text sizeWithFont: font];
+
+            x = floor ((StatisticsViewWidth -  size.width)/2.0);
+            y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
+
+            [text drawAtPoint: CGPointMake (x, y) withFont: font];
+        }
+        CGContextRestoreGState (cgContext);
+    }
+    else
+    {
+        // Color for coordinate-axes
+        [[UIColor colorWithWhite: 0.224 alpha: 1.0] setStroke];
+
+
+        // Horizontal marker lines
+        CGContextSaveGState (cgContext);
+        {
+            CGFloat   dashDotPattern [2]   = { 0.5, 0.5 };
+            NSInteger dashDotPatternLength = 1;
+
+            // Marker lines
+            path.lineWidth = 0.5;
+            [path setLineDash: dashDotPattern count: dashDotPatternLength phase: 0.0];
+
+            [path removeAllPoints];
+            [path moveToPoint:    CGPointMake (self.graphLeftBorder,  0.25)];
+            [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, 0.25)];
+
+            CGContextSaveGState (cgContext);
+            {
+                CGFloat lastY;
+
+                for (NSInteger i = 0, y = 0.0; i < state->hMarkCount; i++)
+                {
+                    lastY = y;
+                    y     = rint (self.graphTopBorder + self.graphHeight * state->hMarkPositions [i]);
+
+                    CGContextTranslateCTM (cgContext, 0.0, y - lastY);
+                    [path stroke];
+                }
+            }
+            CGContextRestoreGState (cgContext);
+        }
+        CGContextRestoreGState (cgContext);
+
+
+        // Axis decription for horizontal marker lines markers
+        CGContextSaveGState (cgContext);
+        {
+            [[UIColor whiteColor] setFill];
+
+            for (NSInteger i = 0; i < state->hMarkCount; i++)
+                if (state->hMarkNames [i] != nil)
+                {
+                    CGSize size = [state->hMarkNames[i] sizeWithFont: font];
+
+                    x = self.graphRightBorder + 6;
+                    y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height) + 0.5;
+
+                    [state->hMarkNames[i] drawAtPoint: CGPointMake (x, y) withFont: font];
+                }
+        }
+        CGContextRestoreGState (cgContext);
+
+        
+        // Vertical marker lines
+        path.lineWidth = 0.5;
+        [path setLineDash: NULL count: 0 phase: 0.0];
+
+        [path removeAllPoints];
+        [path moveToPoint:    CGPointMake (0.25, self.graphTopBorder)];
+        [path addLineToPoint: CGPointMake (0.25, self.graphBottomBorder + 6)];
+
+        CGContextSaveGState (cgContext);
+        {
+            CGFloat lastX;
+
+            for (NSInteger i = 0, x = 0.0; i < state->vMarkCount; i++)
+            {
+                lastX = x;
+                x     = rint (self.graphLeftBorder + self.graphWidth * state->vMarkPositions [i]);
+
+                CGContextTranslateCTM (cgContext, x - lastX, 0.0);
+                [path stroke];
+            }
+        }
+        CGContextRestoreGState (cgContext);
+
+
+        // Axis description for vertical marker lines
+        CGContextSaveGState (cgContext);
+        {
+            [[UIColor colorWithWhite:0.78 alpha:1.0] setFill];
+
+            for (NSInteger i = 0; i < state->vMarkCount; i++)
+                if (state->vMarkNames [i] != nil)
+                {
+                    CGSize size = [state->vMarkNames[i] sizeWithFont: font];
+
+                    x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state->vMarkPositions [i] - size.width/2.0);
+                    y = self.graphBottomBorder + 5;
+
+                    if (x < self.graphLeftBorder)
+                        x = self.graphLeftBorder;
+
+                    if (x > self.graphRightBorder - size.width)
+                        x = self.graphRightBorder - size.width;
+
+                    [state->vMarkNames[i] drawAtPoint: CGPointMake (x, y)   withFont: font];
+                }
+        }
+        CGContextRestoreGState (cgContext);
+
+        
+        // Pattern fill below cure
+        CGContextSaveGState (cgContext);
+        {
+            [path removeAllPoints];
+            [path moveToPoint: CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
+
+            CGFloat minY = self.graphBottomBorder - 6;
+
+            for (NSInteger i = 0; i < state->dataCount; i++)
+            {
+                x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
+                y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
+
+                [path addLineToPoint: CGPointMake (x, y)];
+
+                if (y < minY)
+                    minY = y;
+            }
+
+            if (minY == self.graphBottomBorder - 6)
+                minY = self.graphTopBorder;
+
+            [path addLineToPoint: CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
+            [path closePath];
+
+            // Color gradient
+            [path addClip];
+            CGContextDrawLinearGradient (cgContext,
+                                         [self curveGradient],
+                                         CGPointMake (0, self.graphBottomBorder - 6),
+                                         CGPointMake (0, minY),
+                                         kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+
+        }
+        CGContextRestoreGState (cgContext);
+
+        
+        // Top and bottom lines
+        [[UIColor colorWithWhite:0.78 alpha:1.0] setStroke];
+        path.lineWidth = 0.5;
+
+        [path removeAllPoints];
+        [path moveToPoint:    CGPointMake (self.graphLeftBorder, self.graphTopBorder + 0.25)];
+        [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphTopBorder + 0.25)];
+        [path stroke];
+
+        [path removeAllPoints];
+        [path moveToPoint:    CGPointMake (self.graphLeftBorder, self.graphBottomBorder + 0.25)];
+        [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphBottomBorder + 0.25)];
+        [path stroke];
+
+
+        // The curve
+        path.lineWidth    = 1;
+        path.lineCapStyle = kCGLineCapRound;
+        [[UIColor whiteColor] setStroke];
+        
+        [path removeAllPoints];
+        [path moveToPoint: CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
+                                        rint (self.graphTopBorder  + self.graphHeight * state->data [0].y))];
+        
+        for (NSInteger i = 1; i < state->dataCount; i++)
+        {
+            x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
+            y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
+            
+            [path addLineToPoint: CGPointMake (x, y)];
+        }
+        
+        [path stroke];
+    }
+}
+
 
 - (BOOL)displayCachedStatisticsForRecentMonths: (NSInteger)numberOfMonths
 {
     // Cache lookup
-    FuelStatisticsSamplingData *cell = [contentCache objectForKey: @(numberOfMonths)];
+    FuelStatisticsSamplingData *cell = contentCache[@(numberOfMonths)];
     NSNumber *averageValue = cell.contentAverage;
     UIImage  *cachedImage  = cell.contentImage;
 
@@ -693,7 +932,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
-            [self drawStatisticsForState: nil];
+            if ([AppDelegate systemMajorVersion] < 7)
+                [self drawStatisticsForState: nil];
+            else
+                [self drawFlatStatisticsForState: nil];
 
             UIImageView *imageView = (UIImageView*)self.view;
             imageView.image        = UIGraphicsGetImageFromCurrentImageContext ();
@@ -738,8 +980,18 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             break;
 
         case UIGestureRecognizerStateBegan:
+        {
+            // Cancel long press gesture when located above the graph (new the radio buttons)
+            if ([zoomRecognizer locationInView: self.view].y < self.graphTopBorder)
+            {
+                zoomRecognizer.enabled = NO;
+                zoomRecognizer.enabled = YES;
+                break;
+            }
+
             self.zooming = YES;
             zoomIndex    = -1;
+        }
 
             // no break
 
@@ -758,7 +1010,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             lensLocation.x /= self.graphWidth;
 
             // Match nearest data point
-            FuelStatisticsSamplingData *cell = [contentCache objectForKey: @(displayedNumberOfMonths)];
+            FuelStatisticsSamplingData *cell = contentCache[@(displayedNumberOfMonths)];
 
             if (cell)
             {
@@ -795,7 +1047,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
                     // Knob position
                     lensLocation.x = rint (self.graphLeftBorder + self.graphWidth  * cell->data [minIndex].x);
-                    lensLocation.y = rint (self.graphTopBorder  + StatisticsHeight * cell->data [minIndex].y);
+                    lensLocation.y = rint (self.graphTopBorder  + self.graphHeight * cell->data [minIndex].y);
 
                     // Image with value information
                     UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
@@ -805,7 +1057,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
                                                         [[self averageFormatter: YES]
                                                             stringFromNumber: @(cell->lensValue [minIndex])]];
 
-                        [self drawLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
+                        if ([AppDelegate systemMajorVersion] < 7)
+                            [self drawLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
+                        else
+                            [self drawFlatLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
 
                         UIImageView *imageView = (UIImageView*)self.view;
                         imageView.image = UIGraphicsGetImageFromCurrentImageContext ();
@@ -823,6 +1078,7 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
             break;
     }
 }
+
 
 
 - (void)drawLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info
@@ -953,6 +1209,64 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 
 
+- (void)drawFlatLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info
+{
+    UIBezierPath *path = [UIBezierPath bezierPath];
+
+
+    // Graph as background
+    [background drawAtPoint: CGPointZero blendMode: kCGBlendModeCopy alpha: 1.0];
+
+    // Marker line
+    [[self.view tintColor] set];
+
+    path.lineWidth = 0.5;
+
+    [path removeAllPoints];
+    [path moveToPoint:    CGPointMake (location.x + 0.25, self.graphTopBorder + 0.5)];
+    [path addLineToPoint: CGPointMake (location.x + 0.25, self.graphBottomBorder)];
+    [path stroke];
+
+    // Marker knob
+    path = [UIBezierPath bezierPathWithArcCenter: location radius: 5.5 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+    [[UIColor blackColor] set];
+    [path fill];
+
+    path = [UIBezierPath bezierPathWithArcCenter: location radius: 5.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+    [[self.view tintColor] set];
+    [path fill];
+
+    // Layout for info box
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size: 17];
+    CGRect infoRect;
+
+    infoRect.size         = [info sizeWithFont: font];
+    infoRect.size.width  += StatisticTrackInfoXMarginFlat * 2.0;
+    infoRect.size.height += StatisticTrackInfoYMarginFlat * 2.0;
+    infoRect.origin.x     = rint (location.x - infoRect.size.width/2);
+    infoRect.origin.y     = StatisticTrackYPosition + rint ((StatisticTrackThickness - infoRect.size.height) / 2);
+
+    if (infoRect.origin.x < self.graphLeftBorder)
+        infoRect.origin.x = self.graphLeftBorder;
+
+    if (infoRect.origin.x > StatisticsViewWidth - self.graphLeftBorder - infoRect.size.width)
+        infoRect.origin.x = StatisticsViewWidth - self.graphLeftBorder - infoRect.size.width;
+
+    // Info box
+    path = [UIBezierPath bezierPathWithRoundedRect: infoRect
+                                 byRoundingCorners: UIRectCornerAllCorners
+                                       cornerRadii: CGSizeMake (4.0, 4.0)];
+
+    [[self.view tintColor] set];
+    [path fill];
+
+    // Info text
+    [[UIColor whiteColor] set];
+    [info drawAtPoint: CGPointMake (infoRect.origin.x + StatisticTrackInfoXMarginFlat, infoRect.origin.y + StatisticTrackInfoYMarginFlat) withFont: font];
+}
+
+
+
 #pragma mark -
 #pragma mark Memory Management
 
@@ -998,7 +1312,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    return [AppDelegate greenGradient];
+    if ([AppDelegate systemMajorVersion] < 7)
+        return [AppDelegate greenGradient];
+    else
+        return [AppDelegate greenFlatGradient];
 }
 
 
@@ -1065,7 +1382,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    return [AppDelegate orangeGradient];
+    if ([AppDelegate systemMajorVersion] < 7)
+        return [AppDelegate orangeGradient];
+    else
+        return [AppDelegate orangeFlatGradient];
 }
 
 
@@ -1130,7 +1450,10 @@ static CGFloat const StatisticTrackInfoYMargin =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    return [AppDelegate blueGradient];
+    if ([AppDelegate systemMajorVersion] < 7)
+        return [AppDelegate blueGradient];
+    else
+        return [AppDelegate blueFlatGradient];
 }
 
 

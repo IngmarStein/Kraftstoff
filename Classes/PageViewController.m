@@ -26,16 +26,9 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (CGRect)frameForKeyboardApprearingInRect: (CGRect)keyboardRect
 {
-    CGRect frame = [self.view viewWithTag: 1].frame;
-
-    frame.size.height = self.view.frame.size.height + TabBarHeight - keyboardRect.size.height;
+    CGRect frame = frameBeforeKeyboard;
+    frame.size.height = frame.size.height + TabBarHeight - keyboardRect.size.height;
     return frame;
-}
-
-
-- (CGRect)frameForDisappearingKeyboard
-{
-    return self.view.frame;
 }
 
 
@@ -101,24 +94,50 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)keyboardWillShow: (NSNotification*)notification
 {
-    UIView *view = [self.view viewWithTag: 1];
-    CGRect kRect = [[[notification userInfo] objectForKey: UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGRect frame = [self frameForKeyboardApprearingInRect: [self.view.window convertRect: kRect fromWindow: nil]];
+    if (keyboardIsVisible == NO)
+    {
+        frameBeforeKeyboard = self.tableView.frame;
+        bottomInsetBeforeKeyboard = self.tableView.contentInset.bottom;
+        keyboardIsVisible = YES;
+    }
 
-    [UIView animateWithDuration: [[[notification userInfo] objectForKey: UIKeyboardAnimationDurationUserInfoKey] doubleValue]
-                     animations: ^{ view.frame = frame; }];
+    [UIView animateWithDuration:[[notification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue]
+                          delay:0.1
+                        options:[[notification userInfo][UIKeyboardAnimationCurveUserInfoKey] integerValue]
+                     animations:^{
 
-    keyboardIsVisible = YES;
+                         CGRect kRect = [[notification userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
+
+                         if ([AppDelegate systemMajorVersion] < 7) {
+                             self.tableView.frame = [self frameForKeyboardApprearingInRect: [self.view.window convertRect: kRect fromWindow: nil]];
+                         } else {
+
+                             UIEdgeInsets insets = self.tableView.contentInset;
+                             insets.bottom               = kRect.size.height;
+                             self.tableView.contentInset = insets;
+                         }
+                     }
+                     completion:nil];
 }
 
 
 - (void)keyboardWillHide: (NSNotification*)notification
 {
-    UIView *view = [self.view viewWithTag: 1];
-    CGRect frame = [self frameForDisappearingKeyboard];
+    CGFloat duration = [[notification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue] - 0.08;
+    duration = MAX (duration, 0.0);
 
-    [UIView animateWithDuration: [[[notification userInfo] objectForKey: UIKeyboardAnimationDurationUserInfoKey] doubleValue]
-                     animations: ^{ view.frame = frame; }];
+    CGFloat delay = ([AppDelegate systemMajorVersion] < 7) ? 0.0 : 0.05;
+
+    [UIView animateWithDuration:duration
+                          delay:delay
+                        options:[[notification userInfo][UIKeyboardAnimationCurveUserInfoKey] integerValue]
+                     animations:^{
+
+                         if ([AppDelegate systemMajorVersion] < 7) {
+                             self.tableView.frame = frameBeforeKeyboard;
+                         }
+                     }
+                     completion:nil];
 
     keyboardIsVisible = NO;
 }
@@ -146,6 +165,10 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                              [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
                                                    atScrollPosition: UITableViewScrollPositionTop
                                                            animated: NO];
+
+                         UIEdgeInsets insets         = self.tableView.contentInset;
+                         insets.bottom               = bottomInsetBeforeKeyboard;
+                         self.tableView.contentInset = insets;
                      }
                      completion: ^(BOOL finished){
                          
@@ -166,12 +189,12 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if ([tableSections count] <= sectionIndex)
         return nil;
 
-    NSArray *section = [tableSections objectAtIndex: sectionIndex];
+    NSArray *section = tableSections[sectionIndex];
 
     if ([section count] <= rowIndex)
         return nil;
 
-    return [section objectAtIndex: rowIndex];
+    return section[rowIndex];
 }
 
 
@@ -268,7 +291,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if (sectionIndex > [tableSections count] - 1)
         sectionIndex = [tableSections count] - 1;
 
-    NSMutableArray *tableSection = [tableSections objectAtIndex: sectionIndex];
+    NSMutableArray *tableSection = tableSections[sectionIndex];
 
     // Get valid row index
     if (rowIndex > [tableSection count])
@@ -303,7 +326,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 {
     if (sectionIndex < [tableSections count])
     {
-        NSMutableArray *tableSection = [tableSections objectAtIndex: sectionIndex];
+        NSMutableArray *tableSection = tableSections[sectionIndex];
 
         if (rowIndex < [tableSection count])
         {
@@ -400,54 +423,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (UIView*)tableView: (UITableView*)aTableView viewForHeaderInSection: (NSInteger)section
 {
-    NSString *title = [self tableView: aTableView titleForHeaderInSection: section];
-
-    if ([title length] == 0)
-        return nil;
-
-    if ([headerViews count] != [tableSections count])
-    {
-        if (headerViews == nil)
-            headerViews = [[NSMutableArray alloc] initWithCapacity: [tableSections count]];
-
-        // Build Headerviews on demand
-        while ([headerViews count] <= section)
-        {
-            BOOL isGrouped = (tableView.style == UITableViewStyleGrouped);
-
-            CGRect frame = CGRectMake (0, 0,
-                                       tableView.bounds.size.width,
-                                       isGrouped ? PageViewSectionGroupHeaderHeight
-                                                 : PageViewSectionPlainHeaderHeight);
-
-            UIView *headerView = [[UIView alloc] initWithFrame: frame];
-
-            headerView.backgroundColor =
-                isGrouped ?
-                    [UIColor clearColor] :
-                    [UIColor colorWithRed:0.46 green:0.52 blue:0.56 alpha:0.5];
-
-            frame.origin.x    = isGrouped ? PageViewSectionGroupHeaderMargin : PageViewSectionPlainHeaderMargin;
-            frame.size.width -= 2.0 * frame.origin.x;
-
-            UILabel *label = [[UILabel alloc] initWithFrame: frame];
-
-            label.text                      = [self tableView: aTableView titleForHeaderInSection: [headerViews count]];
-            label.backgroundColor           = [UIColor clearColor];
-            label.textColor                 = isGrouped ? [UIColor colorWithRed:0.3 green:0.33 blue:0.43 alpha:1.0] : [UIColor whiteColor];
-            label.shadowColor               = isGrouped ? [UIColor whiteColor] : [UIColor darkGrayColor];
-            label.shadowOffset              = CGSizeMake (0, 1.0);
-            label.font                      = [UIFont boldSystemFontOfSize:[UIFont labelFontSize] + (isGrouped ? 0 : 1)];
-            label.lineBreakMode             = UILineBreakModeMiddleTruncation;
-            label.adjustsFontSizeToFitWidth = YES;
-            label.minimumFontSize           = 12.0;
-
-            [headerView addSubview: label];
-            [headerViews addObject: headerView];
-        }
-    }
-
-    return [headerViews objectAtIndex:section];
+    return nil;
 }
 
 
@@ -485,7 +461,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if (tableSections == nil)
         return 0;
 
-    return [[tableSections objectAtIndex: section] count];
+    return [tableSections[section] count];
 }
 
 

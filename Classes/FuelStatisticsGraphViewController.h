@@ -23,6 +23,7 @@
 @property (readonly, nonatomic) CGFloat graphTopBorder;
 @property (readonly, nonatomic) CGFloat graphBottomBorder;
 @property (readonly, nonatomic) CGFloat graphWidth;
+@property (readonly, nonatomic) CGFloat graphHeight;
 
 @end
 

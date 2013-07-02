@@ -66,21 +66,18 @@ typedef enum
 
     self.title = _I18N (@"Fill-Up");
 
-    
-    // Pre-iOS6: add shadow layer onto the background image view
-    if ([AppDelegate isRunningOS6] == NO)
+    // iOS7: remove tint from bavigation bar
+    if ([AppDelegate systemMajorVersion] >= 7)
+        self.navigationController.navigationBar.tintColor = nil;
+
+    // iOS6: background image on view
+    if ([AppDelegate systemMajorVersion] < 7)
     {
-        [self.view.layer
-         insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, self.view.frame.size.width, NavBarShadowHeight)
-                                           darkFactor: 0.5
-                                          lightFactor: 150.0 / 255.0
-                                        fadeDownwards: YES]
-         atIndex: 0];
+        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
+
+        self.tableView.backgroundView = [[UIImageView alloc] initWithImage: [[UIImage imageNamed:imageName] resizableImageWithCapInsets: UIEdgeInsetsZero]];
     }
 
-    self.tableView.backgroundView = nil;
-
-    
     // Fetch the cars
     self.managedObjectContext     = [[AppDelegate sharedDelegate] managedObjectContext];
     self.fetchedResultsController = [AppDelegate fetchedResultsControllerForCarsInContext: self.managedObjectContext];
@@ -113,30 +110,6 @@ typedef enum
            selector: @selector (handleShake:)
                name: kraftstoffDeviceShakeNotification
              object: nil];
-}
-
-
-- (void)viewDidAppear: (BOOL)animated
-{
-    [super viewDidAppear: animated];
-
-    NSString *imageName = [AppDelegate isIPhone5] ? @"TablePattern-568h" : @"TablePattern";
-    
-    [[AppDelegate sharedDelegate]
-        setWindowBackground: [[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsZero]
-                   animated: animated];
-}
-
-
-- (void)viewWillDisappear: (BOOL)animated
-{
-    [super viewWillDisappear: animated];
-
-    NSString *imageName = [AppDelegate isIPhone5] ? @"TableBackground-568h" : @"TableBackground";
-    
-    [[AppDelegate sharedDelegate]
-         setWindowBackground: [UIImage imageNamed: imageName]
-                    animated: animated];
 }
 
 
@@ -427,7 +400,7 @@ typedef enum
         self.car = [[AppDelegate sharedDelegate] managedObjectForModelIdentifier: [[NSUserDefaults standardUserDefaults] objectForKey: @"preferredCarID"]];
 
         if (self.car == nil)
-            self.car = [self.fetchedResultsController.fetchedObjects objectAtIndex: 0];
+            self.car = (self.fetchedResultsController.fetchedObjects)[0];
 
         if ([self.fetchedResultsController.fetchedObjects count] > 1)
             [self addRowAtIndex: 0

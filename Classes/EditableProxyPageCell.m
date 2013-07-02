@@ -18,8 +18,8 @@
     // without a flashing cursor and no Cut&Paste possibilities
     textFieldProxy = [[UILabel alloc] initWithFrame: CGRectZero];
 
-    textFieldProxy.font                   = [UIFont systemFontOfSize: [UIFont labelFontSize] - 2];
-	textFieldProxy.textAlignment          = UITextAlignmentRight;
+    textFieldProxy.font                   = self.textField.font;
+	textFieldProxy.textAlignment          = NSTextAlignmentRight;
 	textFieldProxy.backgroundColor        = [UIColor clearColor];
 	textFieldProxy.autoresizingMask       = UIViewAutoresizingFlexibleWidth;
 	textFieldProxy.userInteractionEnabled = NO;

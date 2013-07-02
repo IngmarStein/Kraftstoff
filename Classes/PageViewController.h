@@ -8,7 +8,9 @@
     NSMutableArray *tableSections;
     NSMutableArray *headerViews;
 
-    BOOL keyboardIsVisible;
+    BOOL    keyboardIsVisible;
+    CGRect  frameBeforeKeyboard;
+    CGFloat bottomInsetBeforeKeyboard;
 }
 
 @property (nonatomic, weak)   IBOutlet UITableView *tableView;
@@ -50,7 +52,6 @@
 #pragma mark Frame Computation for Keyboard Animations
 
 - (CGRect)frameForKeyboardApprearingInRect: (CGRect)keyboardRect;
-- (CGRect)frameForDisappearingKeyboard;
 
 
 #pragma mark Keyboard Support

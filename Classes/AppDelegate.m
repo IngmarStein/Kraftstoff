@@ -47,22 +47,21 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
-+ (BOOL)isRunningOS6
++ (NSInteger)systemMajorVersion
 {
-    static BOOL initialized = NO;
-    static BOOL isOS6;
+    static dispatch_once_t once;
 
-    if (! initialized)
-    {
-        initialized = YES;
-        isOS6 = ([[[UIDevice currentDevice] systemVersion] hasPrefix: @"5"] == NO);
-    }
+    static NSUInteger systemMajorVersion = -1;
+
+    dispatch_once (&once, ^{
+            systemMajorVersion = [[[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."][0] intValue];
+        });
     
-    return isOS6;
+    return systemMajorVersion;
 }
 
 
-+ (BOOL)isIPhone5
++ (BOOL)isLongPhone
 {
     if (UI_USER_INTERFACE_IDIOM () == UIUserInterfaceIdiomPhone)
         if ([UIScreen mainScreen].scale == 2.0f)
@@ -110,7 +109,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
         [window makeKeyAndVisible];
 
         // Switch once to the car view for new users
-        if ([launchOptions objectForKey: UIApplicationLaunchOptionsURLKey] == nil)
+        if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil)
         {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -166,7 +165,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 - (BOOL)application: (UIApplication*)application shouldRestoreApplicationState: (NSCoder*)coder
 {
-    NSInteger bundleVersion = [[[[NSBundle mainBundle] infoDictionary] objectForKey: (NSString*)kCFBundleVersionKey] integerValue];
+    NSInteger bundleVersion = [[[NSBundle mainBundle] infoDictionary][(NSString*)kCFBundleVersionKey] integerValue];
     NSInteger stateVersion = [[coder decodeObjectForKey: UIApplicationStateRestorationBundleVersionKey] integerValue];
 
     return (stateVersion <= bundleVersion);
@@ -338,31 +337,6 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 #pragma mark -
-#pragma mark Window Background Transitions
-
-
-
-- (void)setWindowBackground: (UIImage*)image animated: (BOOL)animated
-{
-    UIImageView *imageView = [[window subviews] objectAtIndex: 0];
-
-    imageView.image = image;
-
-    if (animated)
-    {
-        CATransition *transition  = [CATransition animation];
-
-        transition.duration       = 0.25;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseOut];
-        transition.type           = kCATransitionFade;
-
-        [imageView.layer addAnimation: transition forKey: nil];
-    }
-}
-
-
-
-#pragma mark -
 #pragma mark Application's Documents Directory
 
 
@@ -436,7 +410,25 @@ CGFloat const HugeStatusBarHeight = 40.0;
     });
 
     return blueGradient;
+}
 
+
++ (CGGradientRef)blueFlatGradient
+{
+    static CGGradientRef blueGradient = NULL;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        static CGFloat colorComponents [8] = { 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 };
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+
+        blueGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        CGColorSpaceRelease (colorSpace);
+    });
+    
+    return blueGradient;
 }
 
 
@@ -459,6 +451,25 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
++ (CGGradientRef)greenFlatGradient
+{
+    static CGGradientRef greenGradient  = NULL;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        static CGFloat colorComponents [8] = { 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 };
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+
+        greenGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        CGColorSpaceRelease (colorSpace);
+    });
+    
+    return greenGradient;
+}
+
+
 + (CGGradientRef)orangeGradient
 {
     static CGGradientRef orangeGradient = NULL;
@@ -467,6 +478,25 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         static CGFloat colorComponents [8] = { 0.988, 0.603, 0.215, 0.93,  0.988, 0.662, 0.333, 0.93 };
+
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+
+        orangeGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        CGColorSpaceRelease (colorSpace);
+    });
+
+    return orangeGradient;
+}
+
+
++ (CGGradientRef)orangeFlatGradient
+{
+    static CGGradientRef orangeGradient = NULL;
+    static dispatch_once_t pred;
+
+    dispatch_once (&pred, ^{
+
+        static CGFloat colorComponents [8] = { 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 };
 
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
 
@@ -924,7 +954,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
     // Sorting keys
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"order" ascending: YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects: sortDescriptor, nil];
+    NSArray *sortDescriptors = @[sortDescriptor];
     [fetchRequest setSortDescriptors: sortDescriptors];
 
     return fetchRequest;
@@ -965,7 +995,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
     // Sorting keys
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"timestamp" ascending: NO];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    NSArray *sortDescriptors = @[sortDescriptor];
 
     [fetchRequest setSortDescriptors: sortDescriptors];
 
@@ -1008,7 +1038,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
     // Sorting keys
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"timestamp" ascending: NO];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    NSArray *sortDescriptors = @[sortDescriptor];
 
     [fetchRequest setSortDescriptors: sortDescriptors];
 
@@ -1129,7 +1159,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
         if ([olderEvents count])
         {
-            NSManagedObject *olderEvent = [olderEvents objectAtIndex: 0];
+            NSManagedObject *olderEvent = olderEvents[0];
 
             if ([[olderEvent valueForKey: @"filledUp"] boolValue] == NO)
             {
@@ -1168,7 +1198,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
             for (NSUInteger row = [youngerEvents count]; row > 0; )
             {
-                NSManagedObject *youngerEvent = [youngerEvents objectAtIndex: --row];
+                NSManagedObject *youngerEvent = youngerEvents[--row];
 
                 [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedCost"] decimalNumberByAdding: deltaCost] max: zero]
                                 forKey: @"inheritedCost"];
@@ -1274,7 +1304,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
             {
                 while (row > 0)
                 {
-                    NSManagedObject *youngerEvent = [youngerEvents objectAtIndex: --row];
+                    NSManagedObject *youngerEvent = youngerEvents[--row];
 
                     [youngerEvent setValue: [[youngerEvent valueForKey: @"inheritedCost"] decimalNumberByAdding: inheritedCost]
                                     forKey: @"inheritedCost"];
@@ -1296,7 +1326,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
         {
             while (row > 0)
             {
-                NSManagedObject *youngerEvent = [youngerEvents objectAtIndex: --row];
+                NSManagedObject *youngerEvent = youngerEvents[--row];
                 NSDecimalNumber *cost = [[event valueForKey: @"fuelVolume"] decimalNumberByMultiplyingBy: [event valueForKey: @"price"]];
 
                 [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedCost"] decimalNumberBySubtracting: cost] max: zero]
@@ -1618,9 +1648,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
         case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"mpg.uk");
         case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k");
         case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k.uk");
+        default:                                  return @"";
     }
-
-    return @"";
 }
 
 
@@ -1634,9 +1663,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
         case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
         case KSFuelConsumptionGP10KUS:            return _I18N (@"Gallons per 10000 Miles (US)");
         case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles (UK)");
+        default:                                  return @"";
     }
-    
-    return @"";
 }
 
 
@@ -1650,9 +1678,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
         case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
         case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k_short_us");
         case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k_short_uk");
+        default:                                  return @"";
     }
-    
-    return @"";
 }
 
 
@@ -1666,9 +1693,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
         case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon");
         case KSFuelConsumptionGP10KUS:
         case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles");
+        default:                                  return @"";
     }
-    
-    return @"";
 }
 
 

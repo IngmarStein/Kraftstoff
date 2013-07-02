@@ -9,6 +9,7 @@
 // Unit Constants
 typedef enum
 {
+    KSDistanceInvalid = -1,
     KSDistanceKilometer,
     KSDistanceStatuteMile,
 } KSDistance;
@@ -17,6 +18,7 @@ typedef enum
 
 typedef enum
 {
+    KSVolumeInvalid = -1,
     KSVolumeLiter,
     KSVolumeGalUS,
     KSVolumeGalUK,
@@ -26,6 +28,7 @@ typedef enum
 
 typedef enum
 {
+    KSFuelConsumptionInvalid = -1,
     KSFuelConsumptionLitersPer100km,
     KSFuelConsumptionKilometersPerLiter,
     KSFuelConsumptionMilesPerGallonUS,
@@ -70,10 +73,8 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (AppDelegate*)sharedDelegate;
 
-+ (BOOL)isRunningOS6;
-+ (BOOL)isIPhone5;
-
-- (void)setWindowBackground: (UIImage*)image animated: (BOOL)animated;
++ (NSInteger)systemMajorVersion;
++ (BOOL)isLongPhone;
 
 
 
@@ -87,8 +88,11 @@ extern CGFloat const HugeStatusBarHeight;
 
 + (CGGradientRef)backGradient;
 + (CGGradientRef)blueGradient;
++ (CGGradientRef)blueFlatGradient;
 + (CGGradientRef)greenGradient;
++ (CGGradientRef)greenFlatGradient;
 + (CGGradientRef)orangeGradient;
++ (CGGradientRef)orangeFlatGradient;
 + (CGGradientRef)infoGradient;
 + (CGGradientRef)knobGradient;
 

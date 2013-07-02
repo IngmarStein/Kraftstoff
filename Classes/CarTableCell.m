@@ -90,7 +90,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
     // Array of possible cars
-    self.fetchedObjects = [(NSDictionary*)dataObject objectForKey: @"fetchedObjects"];
+    self.fetchedObjects = ((NSDictionary*)dataObject)[@"fetchedObjects"];
 
     // Look for index of selected car
     NSManagedObject *managedObject = [self.delegate valueForIdentifier: self.valueIdentifier];
@@ -103,7 +103,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     [carPicker reloadAllComponents];
     [carPicker selectRow: initialIndex inComponent: 0 animated: NO];
 
-    [self selectCar: [fetchedObjects objectAtIndex: initialIndex]];
+    [self selectCar: fetchedObjects[initialIndex]];
 }
 
 
@@ -146,7 +146,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 - (void)pickerView: (UIPickerView*)pickerView didSelectRow: (NSInteger)row inComponent: (NSInteger)component
 {
-    [self selectCar: [fetchedObjects objectAtIndex: row]];
+    [self selectCar: fetchedObjects[row]];
 }
 
 
@@ -196,7 +196,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 - (UIView*)pickerView: (UIPickerView*)pickerView viewForRow: (NSInteger)row forComponent: (NSInteger)component reusingView: (UIView*)view
 {
     // Strings to be displayed
-    NSManagedObject *managedObject = [fetchedObjects objectAtIndex: row];
+    NSManagedObject *managedObject = fetchedObjects[row];
     NSString *name = [managedObject valueForKey: @"name"];
     NSString *info = [managedObject valueForKey: @"numberPlate"];
 
@@ -211,10 +211,15 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
         CGContextTranslateCTM (context, 1, PickerViewCellHeight);
         CGContextScaleCTM (context, 1, -1);
 
-        CTLineRef truncatedLine = [self truncatedLineForName: name info: info shadow: YES];
-        CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition - 1);
-        CTLineDraw (truncatedLine, context);
-        CFRelease (truncatedLine);
+        CTLineRef truncatedLine;
+
+        if ([AppDelegate systemMajorVersion] < 7)
+        {
+            truncatedLine= [self truncatedLineForName: name info: info shadow: YES];
+            CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition - 1);
+            CTLineDraw (truncatedLine, context);
+            CFRelease (truncatedLine);
+        }
 
         truncatedLine = [self truncatedLineForName: name info: info shadow: NO];
         CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition);

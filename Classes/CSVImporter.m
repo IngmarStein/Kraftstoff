@@ -48,24 +48,13 @@
     NSManagedObject *newCar = [NSEntityDescription insertNewObjectForEntityForName: @"car"
                                                             inManagedObjectContext: managedObjectContext];
 
-    if (odometerUnit == -1)
-        odometerUnit = [AppDelegate distanceUnitFromLocale];
-
-    [newCar setValue: @(order)               forKey: @"order"];
-    [newCar setValue: [NSDate date]          forKey: @"timestamp"];
-    [newCar setValue: name                   forKey: @"Name"];
-    [newCar setValue: plate                  forKey: @"numberPlate"];
-    [newCar setValue: @((int)odometerUnit)   forKey: @"odometerUnit"];
-    [newCar setValue: [NSDecimalNumber zero] forKey: @"odometer"];
-
-    if (volumeUnit == -1)
-        volumeUnit = [AppDelegate volumeUnitFromLocale];
-
-    [newCar setValue: @((int)volumeUnit) forKey: @"fuelUnit"];
-
-    if (fuelConsumptionUnit == -1)
-        fuelConsumptionUnit = [AppDelegate fuelConsumptionUnitFromLocale];
-
+    [newCar setValue: @(order)                    forKey: @"order"];
+    [newCar setValue: [NSDate date]               forKey: @"timestamp"];
+    [newCar setValue: name                        forKey: @"Name"];
+    [newCar setValue: plate                       forKey: @"numberPlate"];
+    [newCar setValue: @((int)odometerUnit)        forKey: @"odometerUnit"];
+    [newCar setValue: [NSDecimalNumber zero]      forKey: @"odometer"];
+    [newCar setValue: @((int)volumeUnit)          forKey: @"fuelUnit"];
     [newCar setValue: @((int)fuelConsumptionUnit) forKey: @"fuelConsumptionUnit"];
 
     return newCar;
@@ -128,7 +117,7 @@
         // CSV file exported in new format: model is first part of filename
         if ([nameComponents count] == 2)
         {
-            NSString *part = [nameComponents objectAtIndex: 0];
+            NSString *part = nameComponents[0];
 
             if ([part length] > 0)
             {
@@ -172,12 +161,12 @@
 
 - (BOOL)importCarIDs: (NSArray*)records
 {
-    NSDictionary *first = [records objectAtIndex: 0];
+    NSDictionary *first = records[0];
 
     if ([first count] < 3)
         return NO;
 
-    if ([first objectForKey: @"ID"] == nil)
+    if (first[@"ID"] == nil)
         return NO;
 
     NSString *modelKey = [self keyForModel: first];
@@ -185,25 +174,25 @@
     if (modelKey == nil)
         return NO;
 
-    if ([first objectForKey: @"NAME"] == nil)
+    if (first[@"NAME"] == nil)
         return NO;
 
     NSInteger previousCarIDCount = [carIDs count];
 
     for (NSDictionary *record in records)
     {
-        NSNumber *ID = [self scanNumberWithString: [record objectForKey: @"ID"]];
+        NSNumber *ID = [self scanNumberWithString: record[@"ID"]];
 
         if (ID != nil && [carIDs containsObject: ID] == NO)
         {
-            NSString *model = [record objectForKey: modelKey];
-            NSString *plate = [record objectForKey: @"NAME"];
+            NSString *model = record[modelKey];
+            NSString *plate = record[@"NAME"];
 
             if (model != nil && plate != nil)
             {
                 [carIDs addObject: ID];
-                [modelForID setObject: model forKey: ID];
-                [plateForID setObject: plate forKey: ID];
+                modelForID[ID] = model;
+                plateForID[ID] = plate;
             }
         }
     }
@@ -225,7 +214,7 @@
 
     for (NSNumber *carID in carIDs)
     {
-        NSString *model = [modelForID objectForKey: carID];
+        NSString *model = modelForID[carID];
 
         if (model == nil)
             model = [NSString stringWithFormat: @"%@", _I18N (@"Imported Car")];
@@ -234,7 +223,7 @@
             model = [model substringToIndex: maximumTextFieldLength];
 
 
-        NSString *plate = [plateForID objectForKey: carID];
+        NSString *plate = plateForID[carID];
 
         if (plate == nil)
             plate = @"";
@@ -251,7 +240,7 @@
                                    fuelConsumptionUnit: [AppDelegate fuelConsumptionUnitFromLocale]
                                              inContext: managedObjectContext];
 
-        [carForID setObject: newCar forKey: carID];
+        carForID[carID] = newCar;
     }
 
 
@@ -316,11 +305,11 @@
             inContext: (NSManagedObjectContext*)managedObjectContext
 {
     // Analyse record headers
-    NSDictionary *first = [records objectAtIndex: 0];
+    NSDictionary *first = records[0];
 
-    KSDistance distanceUnit = -1;
-    KSDistance odometerUnit = -1;
-    KSVolume   volumeUnit   = -1;
+    KSDistance distanceUnit = KSDistanceInvalid;
+    KSDistance odometerUnit = KSDistanceInvalid;
+    KSVolume   volumeUnit   = KSVolumeInvalid;
 
     NSString *IDKey           = [self keyForCarID: first];
     NSString *dateKey         = [self keyForDate: first];
@@ -357,8 +346,8 @@
         {
             NSComparisonResult cmpResult = NSOrderedSame;
 
-            NSDate *date1 = [self scanDate: [obj1 objectForKey: dateKey] withOptionalTime: [obj1 objectForKey: timeKey]];
-            NSDate *date2 = [self scanDate: [obj2 objectForKey: dateKey] withOptionalTime: [obj2 objectForKey: timeKey]];
+            NSDate *date1 = [self scanDate: obj1[dateKey] withOptionalTime: obj1[timeKey]];
+            NSDate *date2 = [self scanDate: obj2[dateKey] withOptionalTime: obj2[timeKey]];
 
             if (date1 != nil && date2 != nil)
             {
@@ -367,8 +356,8 @@
 
             if (cmpResult == NSOrderedSame && odometerKey != nil)
             {
-                NSNumber *odometer1 = [self scanNumberWithString: [obj1 objectForKey: odometerKey]];
-                NSNumber *odometer2 = [self scanNumberWithString: [obj2 objectForKey: odometerKey]];
+                NSNumber *odometer1 = [self scanNumberWithString: obj1[odometerKey]];
+                NSNumber *odometer2 = [self scanNumberWithString: obj2[odometerKey]];
 
                 if (odometer1 != nil && odometer2 != nil)
                     cmpResult = [odometer1 compare: odometer2];
@@ -381,7 +370,7 @@
     // For all cars...
     for (NSNumber *carID in carIDs)
     {
-        NSManagedObject *car = [carForID objectForKey: carID];
+        NSManagedObject *car = carForID[carID];
 
 
         NSDate *lastDate         = [NSDate distantPast];
@@ -401,10 +390,10 @@
         {
             // Match car IDs when importing from Tank Pro
             if (isTankProImport)
-                if ([carID isEqualToNumber: [self scanNumberWithString: [record objectForKey: IDKey]]] == NO)
+                if ([carID isEqualToNumber: [self scanNumberWithString: record[IDKey]]] == NO)
                     continue;
 
-            NSDate *date         = [self scanDate: [record objectForKey: dateKey] withOptionalTime: [record objectForKey: timeKey]];
+            NSDate *date         = [self scanDate: record[dateKey] withOptionalTime: record[timeKey]];
             NSTimeInterval delta = [date timeIntervalSinceDate: lastDate];
 
             if (delta <= 0.0 || lastDelta > 0.0)
@@ -421,14 +410,14 @@
 
             if (distanceKey != nil)
             {
-                distance = [self scanNumberWithString: [record objectForKey: distanceKey]];
+                distance = [self scanNumberWithString: record[distanceKey]];
 
                 if (distance)
                     distance = [AppDelegate kilometersForDistance: distance withUnit: distanceUnit];
             }
             else
             {
-                NSDecimalNumber *newOdometer = [self scanNumberWithString: [record objectForKey: odometerKey]];
+                NSDecimalNumber *newOdometer = [self scanNumberWithString: record[odometerKey]];
 
                 if (newOdometer)
                 {
@@ -441,23 +430,23 @@
 
             NSDecimalNumber *volume = nil;
 
-            if (volumeUnit != -1)
+            if (volumeUnit != KSVolumeInvalid)
             {
-                volume = [self scanNumberWithString: [record objectForKey: volumeKey]];
+                volume = [self scanNumberWithString: record[volumeKey]];
 
                 if (volume)
                     volume = [AppDelegate litersForVolume: volume withUnit: volumeUnit];
             }
             else
             {
-                volume = [self scanNumberWithString: [record objectForKey: volumeAmountKey]];
+                volume = [self scanNumberWithString: record[volumeAmountKey]];
 
                 if (volume)
-                    volume = [AppDelegate litersForVolume: volume withUnit: [self scanVolumeUnitWithString: [record objectForKey: volumeUnitKey]]];
+                    volume = [AppDelegate litersForVolume: volume withUnit: [self scanVolumeUnitWithString: record[volumeUnitKey]]];
             }
 
 
-            NSDecimalNumber *price = [self scanNumberWithString: [record objectForKey: priceKey]];
+            NSDecimalNumber *price = [self scanNumberWithString: record[priceKey]];
 
             if (isTankProImport)
             {
@@ -470,14 +459,14 @@
             }
             else if (price)
             {
-                if (volumeUnit != -1)
+                if (volumeUnit != KSVolumeInvalid)
                     price = [AppDelegate pricePerLiter: price withUnit: volumeUnit];
                 else
-                    price = [AppDelegate pricePerLiter: price withUnit: [self scanVolumeUnitWithString: [record objectForKey: volumeUnitKey]]];
+                    price = [AppDelegate pricePerLiter: price withUnit: [self scanVolumeUnitWithString: record[volumeUnitKey]]];
             }
 
 
-            BOOL filledUp = [self scanBooleanWithString: [record objectForKey: fillupKey]];
+            BOOL filledUp = [self scanBooleanWithString: record[fillupKey]];
 
 
             // For TankPro ignore events until after the first full fill-up
@@ -846,7 +835,7 @@
 - (NSString*)keyForDate: (NSDictionary*)record
 {
     for (NSString *key in @[ @"JJJJMMTT", @"YYYYMMDD", @"DATE", @"DATUM" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -856,7 +845,7 @@
 - (NSString*)keyForTime: (NSDictionary*)record
 {
     for (NSString *key in @[ @"HHMM", @"TIME", @"ZEIT" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -866,14 +855,14 @@
 - (NSString*)keyForDistance: (NSDictionary*)record unit: (KSDistance*)unit
 {
     for (NSString *key in @[ @"KILOMETERS", @"KILOMETER", @"STRECKE" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSDistanceKilometer;
             return key;
         }
 
     for (NSString *key in @[ @"MILES", @"MEILEN" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSDistanceStatuteMile;
             return key;
@@ -886,14 +875,14 @@
 - (NSString*)keyForOdometer: (NSDictionary*)record unit: (KSDistance*)unit
 {
     for (NSString *key in @[ @"ODOMETER(KM)", @"KILOMETERSTAND(KM)" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSDistanceKilometer;
             return key;
         }
 
     for (NSString *key in @[ @"ODOMETER(MI)", @"KILOMETERSTAND(MI)" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSDistanceStatuteMile;
             return key;
@@ -906,21 +895,21 @@
 - (NSString*)keyForVolume: (NSDictionary*)record unit: (KSVolume*)unit;
 {
     for (NSString *key in @[ @"LITERS", @"LITER", @"TANKMENGE" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSVolumeLiter;
             return key;
         }
 
     for (NSString *key in @[ @"GALLONS(US)", @"GALLONEN(US)" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSVolumeGalUS;
             return key;
         }
 
     for (NSString *key in @[ @"GALLONS(UK)", @"GALLONEN(UK)" ])
-        if ([record objectForKey: key])
+        if (record[key])
         {
             *unit = KSVolumeGalUK;
             return key;
@@ -933,7 +922,7 @@
 - (NSString*)keyForVolume: (NSDictionary*)record
 {
     for (NSString *key in @[ @"GETANKT", @"AMOUNTFILLED" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -944,7 +933,7 @@
 {
     // 'MAFLEINHEIT' happens when Windows encoding is misinterpreted as MacRoman...
     for (NSString *key in @[ @"MASSEINHEIT", @"UNIT", @"MAFLEINHEIT" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -954,7 +943,7 @@
 - (NSString*)keyForPrice: (NSDictionary*)record
 {
     for (NSString *key in @[ @"PRICEPERLITER", @"PRICEPERGALLON", @"PRICE", @"PREISPROLITER", @"PREISPROGALLONE", @"PREIS", @"KOSTEN/LITER" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -964,7 +953,7 @@
 - (NSString*)keyForFillup: (NSDictionary*)record
 {
     for (NSString *key in @[ @"FULLFILLUP", @"VOLLGETANKT" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -974,7 +963,7 @@
 - (NSString*)keyForModel: (NSDictionary*)record
 {
     for (NSString *key in @[ @"MODEL", @"MODELL" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;
@@ -984,7 +973,7 @@
 - (NSString*)keyForCarID: (NSDictionary*)record
 {
     for (NSString *key in @[ @"CARID", @"FAHRZEUGID" ])
-        if ([record objectForKey: key])
+        if (record[key])
             return key;
 
     return nil;

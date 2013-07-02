@@ -98,6 +98,12 @@
 }
 
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+
 
 #pragma mark -
 #pragma mark View Rotation
@@ -177,7 +183,7 @@
     {
         NSInteger page = (pageControl.currentPage + i) % pageControl.numberOfPages;
 
-        FuelStatisticsViewController *controller = [self.childViewControllers objectAtIndex: page];
+        FuelStatisticsViewController *controller = (self.childViewControllers)[page];
         [controller setDisplayedNumberOfMonths: numberOfMonths];
     }
 }
@@ -243,7 +249,7 @@
 {
     for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
     {
-        FuelStatisticsViewController *controller = [self.childViewControllers objectAtIndex: page];
+        FuelStatisticsViewController *controller = (self.childViewControllers)[page];
         [controller noteStatisticsPageBecomesVisible: (page == pageControl.currentPage)];
     }
 }

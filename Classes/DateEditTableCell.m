@@ -46,9 +46,9 @@
 
     NSDate *value = [self.delegate valueForIdentifier: self.valueIdentifier];
 
-    self.valueTimestamp      = [(NSDictionary*)dataObject objectForKey: @"valueTimestamp"];
-    self.dateFormatter       = [(NSDictionary*)dataObject objectForKey: @"formatter"];
-    self.autoRefreshedDate   = [[(NSDictionary*)dataObject objectForKey: @"autorefresh"] boolValue];
+    self.valueTimestamp      = ((NSDictionary*)dataObject)[@"valueTimestamp"];
+    self.dateFormatter       = ((NSDictionary*)dataObject)[@"formatter"];
+    self.autoRefreshedDate   = [((NSDictionary*)dataObject)[@"autorefresh"] boolValue];
 
     self.textFieldProxy.text = (value) ? [self.dateFormatter stringFromDate: value] : @"";
 

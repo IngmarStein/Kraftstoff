@@ -37,8 +37,8 @@ static CGFloat const PickerViewCellHeight =  44.0;
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
     // Array of picker labels
-    self.pickerLabels = [(NSDictionary*)dataObject objectForKey: @"labels"];
-    self.pickerShortLabels = [(NSDictionary*)dataObject objectForKey: @"shortLabels"];
+    self.pickerLabels = ((NSDictionary*)dataObject)[@"labels"];
+    self.pickerShortLabels = ((NSDictionary*)dataObject)[@"shortLabels"];
     [picker reloadAllComponents];
 
     // (Re-)configure initial selected row
@@ -47,13 +47,13 @@ static CGFloat const PickerViewCellHeight =  44.0;
     [picker selectRow: initialIndex inComponent: 0 animated: NO];
     [picker reloadComponent: 0];
 
-    self.textFieldProxy.text = [((pickerShortLabels) ? pickerShortLabels : pickerLabels) objectAtIndex: initialIndex];
+    self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[initialIndex];
 }
 
 
 - (void)selectRow: (NSInteger)row
 {
-    self.textFieldProxy.text = [((pickerShortLabels) ? pickerShortLabels : pickerLabels) objectAtIndex: row];
+    self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[row];
 
     [self.delegate valueChanged: @((int)row) identifier: self.valueIdentifier];
 }
@@ -103,7 +103,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 - (NSString*)pickerView: (UIPickerView*)pickerView titleForRow: (NSInteger)row forComponent: (NSInteger)component
 {
-    return [pickerLabels objectAtIndex: row];
+    return pickerLabels[row];
 }
 
 

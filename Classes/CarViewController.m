@@ -38,16 +38,12 @@ static NSInteger maxEditHelpCounter = 1;
 
     changeIsUserDriven = NO;
 
-    // Configure root view
+    // Navigation Bar
     self.title = _I18N (@"Cars");
-
-    // Navigation bar
     self.navigationItem.leftBarButtonItem = nil;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
-                                                                               target: self
-                                                                               action: @selector (insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemAdd
+                                                                                           target: self
+                                                                                           action: @selector (insertNewObject:)];;
 
     // Gesture recognizer for touch and hold
     self.longPressRecognizer = [[UILongPressGestureRecognizer alloc]
@@ -56,8 +52,19 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.longPressRecognizer.delegate = self;
 
-    self.managedObjectContext = [[AppDelegate sharedDelegate] managedObjectContext];
+    // iOS7: reset tint color
+    if ([AppDelegate systemMajorVersion] >= 7)
+        self.navigationController.navigationBar.tintColor = nil;
 
+    // Background image
+    NSString *imageName = [NSString stringWithFormat:@"TableBackground%@%@",
+                                ([AppDelegate systemMajorVersion] >= 7 ? @"Flat"  : @""),
+                                ([AppDelegate isLongPhone]             ? @"-568h" : @"")];
+
+    self.tableView.backgroundView = [[UIImageView alloc] initWithImage: [UIImage imageNamed:imageName]];
+    self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
+
+    self.managedObjectContext = [[AppDelegate sharedDelegate] managedObjectContext];
 
     [[NSNotificationCenter defaultCenter]
         addObserver: self
@@ -170,7 +177,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (self.editing == NO && carCount == 0)
     {
-        helpImageName = @"Start";
+        helpImageName = ([AppDelegate systemMajorVersion] < 7) ? @"Start" : @"StartFlat";
         helpViewFrame = CGRectMake (0, 0, 320, 70);
 
         [defaults setObject: @0 forKey: @"editHelpCounter"];
@@ -183,7 +190,7 @@ static NSInteger maxEditHelpCounter = 1;
         {
             [defaults setObject: @(++editCounter) forKey: @"editHelpCounter"];
 
-            helpImageName = @"Edit";
+            helpImageName = ([AppDelegate systemMajorVersion] < 7) ? @"Edit" : @"EditFlat";
             helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
         }
     }
@@ -210,20 +217,28 @@ static NSInteger maxEditHelpCounter = 1;
     {
         if (helpView == nil)
         {
-            helpView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: helpImageName]];
+            UIImage *helpImage  = [UIImage imageNamed: helpImageName];
+            CGFloat targetAlpha = 0.9;
 
+            if ([AppDelegate systemMajorVersion] >= 7)
+            {
+                helpImage   = [helpImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                targetAlpha = 1.0;
+            }
+
+            helpView       = [[UIImageView alloc] initWithImage: helpImage];
             helpView.tag   = 100;
             helpView.frame = helpViewFrame;
-            helpView.alpha = (animated) ? 0.0 : 0.9;
+            helpView.alpha = (animated) ? 0.0 : targetAlpha;
 
             [self.view addSubview: helpView];
 
             if (animated)
             {
                 [UIView animateWithDuration: 0.33
-                                      delay: 0.6
+                                      delay: 0.8
                                     options: UIViewAnimationOptionCurveEaseOut
-                                 animations: ^{ helpView.alpha = 0.9; }
+                                 animations: ^{ helpView.alpha = targetAlpha; }
                                  completion: NULL];
             }
         }
@@ -265,8 +280,6 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)carConfigurationController: (CarConfigurationController*)controller didFinishWithResult: (CarConfigurationResult)result
 {
-    [self dismissModalViewControllerAnimated: (result != CarConfigurationAborted)];
-
     if (result == CarConfigurationCreateSucceded)
     {
         BOOL addDemoContents = NO;
@@ -341,6 +354,8 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.editedObject = nil;
     [self checkEnableEditButton];
+
+    [self dismissViewControllerAnimated: (result != CarConfigurationAborted) completion:nil];
 }
 
 
@@ -378,7 +393,10 @@ static NSInteger maxEditHelpCounter = 1;
     configurator.delegate = self;
     configurator.editingExistingObject = NO;
 
-    [self presentModalViewController: configurator animated: YES];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:configurator];
+    navController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 
@@ -390,15 +408,18 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (BOOL)gestureRecognizer: (UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch: (UITouch*)touch
 {
-    // Editing mode must be enabled and the touch must hit the contentview of a tableview cell
+    // Editing mode must be enabled
     if (self.editing)
     {
-        if ([touch.view.superview isKindOfClass: [UITableViewCell class]])
-        {
-            UITableViewCell *cell = (UITableViewCell*)touch.view.superview;
+        UIView *view = touch.view;
 
-            if (cell.contentView == touch.view)
-                return YES;
+        // Touch must hit the contentview of a tableview cell
+        while (view != nil)
+        {
+            if ([view isKindOfClass: [UITableViewCell class]])
+                return ([(UITableViewCell*)view contentView] == touch.view);
+
+            view = view.superview;
         }
     }
 
@@ -457,7 +478,10 @@ static NSInteger maxEditHelpCounter = 1;
             configurator.fuelUnit            = [editedObject valueForKey: @"fuelUnit"];
             configurator.fuelConsumptionUnit = [editedObject valueForKey: @"fuelConsumptionUnit"];
 
-            [self presentModalViewController: configurator animated: YES];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:configurator];
+            navController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+
+            [self presentViewController:navController animated:YES completion:nil];
 
             // Edit started => prevent edit help from now on
             [[NSUserDefaults standardUserDefaults] setObject: @(maxEditHelpCounter) forKey: @"editHelpCounter"];
@@ -590,7 +614,7 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (NSInteger)tableView: (UITableView*)tableView numberOfRowsInSection: (NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex: section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
 
     return [sectionInfo numberOfObjects];
 }

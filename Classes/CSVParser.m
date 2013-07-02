@@ -171,7 +171,7 @@ foundHeader:
 
         if (fieldNamesCount > fieldCount)
         {
-            fieldName = [fieldNames objectAtIndex: fieldCount];
+            fieldName = fieldNames[fieldCount];
         }
         else
         {
@@ -180,7 +180,7 @@ foundHeader:
             fieldNamesCount++;
         }
 
-        [record setObject: field forKey: fieldName];
+        record[fieldName] = field;
         fieldCount++;
 
         if (! [self parseSeparator])

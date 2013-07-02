@@ -44,33 +44,9 @@
 
     CGFloat shadowWidth = self.frame.size.width;
 
-    // Pre-iOS6: construct the origin shadow if needed
-    if ([AppDelegate isRunningOS6] == NO)
-    {
-        if (originShadow == nil)
-            originShadow = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, NavBarShadowHeight)
-                                             darkFactor: 0.5
-                                            lightFactor: 150.0 / 255.0
-                                          fadeDownwards: YES];
-
-        if (! [[self.layer.sublayers objectAtIndex: 0] isEqual: originShadow])
-            [self.layer insertSublayer: originShadow atIndex: 0];
-
-        // Stretch and place the origin shadow
-        [CATransaction begin];
-        [CATransaction setValue: (id)kCFBooleanTrue forKey: kCATransactionDisableActions];
-        {
-            CGRect originShadowFrame     = originShadow.frame;
-            originShadowFrame.size.width = self.frame.size.width;
-            originShadowFrame.origin.y   = self.contentOffset.y;
-            originShadow.frame           = originShadowFrame;
-        }
-        [CATransaction commit];
-    }
-
     // Computing index paths for visible cells below is expensive,
     // so skip this if the table configuration hasn't changed...
-    if (!shadowsNeedUpdate)
+    if (!shadowsNeedUpdate || [AppDelegate systemMajorVersion] >= 7)
         return;
 
     shadowsNeedUpdate = NO;
@@ -93,13 +69,13 @@
 
 
     // Add shadow before very first row
-    NSIndexPath *firstRow = [self indexPathForCell: [visibleCells objectAtIndex: 0]];
+    NSIndexPath *firstRow = [self indexPathForCell: visibleCells[0]];
     int rowDeltaIndex     = 0;
 
     // Attach shadow to the second row if the first one is currently reordered...
     if ([firstRow isEqual: reorderSourceIndexPath] && ![reorderSourceIndexPath isEqual: reorderDestinationIndexPath])
     {
-        firstRow      = [self indexPathForCell: [visibleCells objectAtIndex: 1]];
+        firstRow      = [self indexPathForCell: visibleCells[1]];
         rowDeltaIndex = 1;
     }
 
@@ -128,13 +104,13 @@
 
 
     // Another shadow below the last row of the table
-    NSIndexPath *lastRow  = [self indexPathForCell: [visibleCells objectAtIndex: visibleRowCount - 1]];
+    NSIndexPath *lastRow  = [self indexPathForCell: visibleCells[visibleRowCount - 1]];
     rowDeltaIndex         = 1;
 
     // Attach shadow to the second last row if the last one is currently reordered...
     if ([lastRow isEqual: reorderSourceIndexPath] && ![reorderSourceIndexPath isEqual: reorderDestinationIndexPath])
     {
-        lastRow       = [self indexPathForCell: [visibleCells objectAtIndex: visibleRowCount - 2]];
+        lastRow       = [self indexPathForCell: visibleCells[visibleRowCount - 2]];
         rowDeltaIndex = 2;
     }
 

@@ -4,6 +4,7 @@
 
 
 #import "ShadedTableViewCell.h"
+#import "AppDelegate.h"
 
 
 @implementation ShadedTableViewCell
@@ -25,70 +26,88 @@
 {
     if ((self = [super initWithStyle: style reuseIdentifier: reuseIdentifier]))
     {
+        BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
+
         state = UITableViewCellStateDefaultMask;
         large = enlargeTopRightLabel;
 
         topLeftLabel = [[UILabel alloc] initWithFrame: CGRectZero];
+        topLeftLabel.backgroundColor            = [UIColor clearColor];
+        topLeftLabel.textColor                  = [UIColor blackColor];
 
-        topLeftLabel.backgroundColor           = [UIColor clearColor];
-        topLeftLabel.textColor                 = [UIColor blackColor];
-        topLeftLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
-        topLeftLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
-        topLeftLabel.highlightedTextColor      = [UIColor whiteColor];
-        topLeftLabel.adjustsFontSizeToFitWidth = YES;
-        topLeftLabel.font                      = [UIFont boldSystemFontOfSize: 22.0];
-        topLeftLabel.minimumFontSize           = 12.0;
+        if (useOldStyle)
+        {
+            topLeftLabel.shadowColor            = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
+            topLeftLabel.shadowOffset           = CGSizeMake (0.0, 1.0);
+            topLeftLabel.highlightedTextColor   = [UIColor whiteColor];
+        }
+
+        topLeftLabel.adjustsFontSizeToFitWidth  = YES;
+        topLeftLabel.font                       = (useOldStyle) ? [UIFont boldSystemFontOfSize: 22.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
+        topLeftLabel.minimumScaleFactor         = 12.0/[topLeftLabel.font pointSize];
         [self.contentView addSubview: topLeftLabel];
 
 
         botLeftLabel = [[UILabel alloc] initWithFrame: CGRectZero];
+        botLeftLabel.backgroundColor            = [UIColor clearColor];
+        botLeftLabel.textColor                  = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
 
-        botLeftLabel.backgroundColor           = [UIColor clearColor];
-        botLeftLabel.textColor                 = [UIColor darkGrayColor];
-        botLeftLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
-        botLeftLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
-        botLeftLabel.highlightedTextColor      = [UIColor whiteColor];
-        botLeftLabel.adjustsFontSizeToFitWidth = YES;
-        botLeftLabel.font                      = [UIFont boldSystemFontOfSize: 15.0];
-        botLeftLabel.minimumFontSize           = 12.0;
+        if (useOldStyle)
+        {
+            botLeftLabel.shadowColor            = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
+            botLeftLabel.shadowOffset           = CGSizeMake (0.0, 1.0);
+            botLeftLabel.highlightedTextColor   = [UIColor whiteColor];
+        }
+
+        botLeftLabel.adjustsFontSizeToFitWidth  = YES;
+        botLeftLabel.font                       = (useOldStyle) ? [UIFont boldSystemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
+        botLeftLabel.minimumScaleFactor         = 12.0/[botLeftLabel.font pointSize];
         [self.contentView addSubview: botLeftLabel];
 
 
         topRightLabel = [[UILabel alloc] initWithFrame: CGRectZero];
-
         topRightLabel.backgroundColor           = [UIColor clearColor];
         topRightLabel.textColor                 = [UIColor blackColor];
-        topRightLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
-        topRightLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
-        topRightLabel.highlightedTextColor      = [UIColor whiteColor];
+
+        if (useOldStyle)
+        {
+            topRightLabel.shadowColor           = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
+            topRightLabel.shadowOffset          = CGSizeMake (0.0, 1.0);
+            topRightLabel.highlightedTextColor  = [UIColor whiteColor];
+        }
+
         topRightLabel.adjustsFontSizeToFitWidth = YES;
-        topRightLabel.font                      = [UIFont boldSystemFontOfSize: large ? 28.0 : 22];
-        topRightLabel.minimumFontSize           = 12.0;
-        topRightLabel.textAlignment             = UITextAlignmentRight;
+        topRightLabel.font                      = (useOldStyle) ? [UIFont boldSystemFontOfSize: large ? 28.0 : 22.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:large ? 28.0 : 22.0];
+        topRightLabel.minimumScaleFactor        = 12.0/[topRightLabel.font pointSize];
+        topRightLabel.textAlignment             = NSTextAlignmentRight;
         [self.contentView addSubview: topRightLabel];
 
 
         botRightLabel = [[UILabel alloc] initWithFrame: CGRectZero];
-
         botRightLabel.backgroundColor           = [UIColor clearColor];
-        botRightLabel.textColor                 = [UIColor darkGrayColor];
-        botRightLabel.shadowColor               = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
-        botRightLabel.shadowOffset              = CGSizeMake (0.0, 1.0);
-        botRightLabel.highlightedTextColor      = [UIColor whiteColor];
+        botRightLabel.textColor                 = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
+
+        if (useOldStyle)
+        {
+            botRightLabel.shadowColor           = [UIColor colorWithWhite: 1.0 alpha: (CGFloat)0.8];
+            botRightLabel.shadowOffset          = CGSizeMake (0.0, 1.0);
+            botRightLabel.highlightedTextColor  = [UIColor whiteColor];
+        }
+
         botRightLabel.adjustsFontSizeToFitWidth = YES;
-        botRightLabel.font                      = [UIFont boldSystemFontOfSize: 15.0];
-        botRightLabel.minimumFontSize           = 12.0;
-        botRightLabel.textAlignment             = UITextAlignmentRight;
+        botRightLabel.font                      = (useOldStyle) ? [UIFont boldSystemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:15.0];
+        botRightLabel.minimumScaleFactor        = 12.0/[botRightLabel.font pointSize];
+        botRightLabel.textAlignment             = NSTextAlignmentRight;
         [self.contentView addSubview: botRightLabel];
 
         UIImageView *imageView;
 
         imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed: @"CellShade"];
+        imageView.image             = [UIImage imageNamed: (useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
         self.backgroundView         = imageView;
 
         imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed: @"SelectedCellShade"];
+        imageView.image             = [UIImage imageNamed: (useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
         self.selectedBackgroundView = imageView;
 
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -133,14 +152,18 @@
 - (void)setHighlighted: (BOOL)highlighted animated: (BOOL)animated
 {
     [super setHighlighted: highlighted animated: animated];
-    [self updateLabelShadowOffset];
+
+    if ([AppDelegate systemMajorVersion] < 7)
+        [self updateLabelShadowOffset];
 }
 
 
 - (void)setSelected: (BOOL)selected animated: (BOOL)animated
 {
     [super setSelected: selected animated: animated];
-    [self updateLabelShadowOffset];
+
+    if ([AppDelegate systemMajorVersion] < 7)
+        [self updateLabelShadowOffset];
 }
 
 
@@ -162,34 +185,41 @@
 
 - (void)layoutSubviews
 {
-#   define MARGIN         10
-#   define FAR_DISTANCE  130
+    CGFloat margin = ([AppDelegate systemMajorVersion] >= 7 ? 15.0 : 10.0);
 
-    CGFloat width   = self.frame.size.width;
-    CGFloat iStart  = large ?  17.0 :  22.0;
+    // offset to compensate shift caused by editing control
+    CGFloat editOffset = (state & UITableViewCellStateShowingEditControlMask) ? 32 : 0;
+
+    // Space that can be distributed
+    CGFloat width = self.frame.size.width - 9 - margin;
+
+    // width of right labels
     CGFloat iWidth  = large ?  96.0 : 135.0;
+
+    // y position and height of top right label
+    CGFloat iYStart = large ?  17.0 :  20.0;
     CGFloat iHeight = large ?  36.0 :  30.0;
 
+    // compute label frames
+    topLeftLabel.frame  = CGRectMake (margin,                      20,       width - iWidth - 20, 30);
+    botLeftLabel.frame  = CGRectMake (margin,                      52,       width - iWidth - 20, 20);
+    topRightLabel.frame = CGRectMake (width - iWidth - editOffset, iYStart, iWidth - margin,      iHeight);
+    botRightLabel.frame = CGRectMake (width - iWidth - editOffset, 52,      iWidth - margin,      20);
 
-    if (state == UITableViewCellStateDefaultMask)
-    {
-        // Add extra space for the disclosure accessory
-        width -= 9 + MARGIN;
+    // hide right labels in editing modes
+    [UIView animateWithDuration: 0.5
+                     animations: ^{
 
-        topLeftLabel.frame  = CGRectMake (MARGIN,         20,      width - iWidth - 2*MARGIN, 30);
-        botLeftLabel.frame  = CGRectMake (MARGIN,         52,      width - iWidth - 2*MARGIN, 20);
-        topRightLabel.frame = CGRectMake (width - iWidth, iStart, iWidth - MARGIN,            iHeight);
-        botRightLabel.frame = CGRectMake (width - iWidth, 52,     iWidth - MARGIN,            20);
-    }
-    else
-    {
-        CGFloat offset = MARGIN + ((state & UITableViewCellStateShowingDeleteConfirmationMask) ? 92 : 54);
+                         CGFloat newAlpha = 1.0;
 
-        topLeftLabel.frame  = CGRectMake (MARGIN,               20,      width - offset - 2*MARGIN, 30);
-        botLeftLabel.frame  = CGRectMake (MARGIN,               52,      width - offset - 2*MARGIN, 20);
-        topRightLabel.frame = CGRectMake (width + FAR_DISTANCE, iStart, iWidth - MARGIN,            iHeight);
-        botRightLabel.frame = CGRectMake (width + FAR_DISTANCE, 52,     iWidth - MARGIN,            20);
-    }
+                         if ([AppDelegate systemMajorVersion] >= 7)
+                             newAlpha = (state & UITableViewCellStateShowingEditControlMask) ? 0.0 : 1.0;
+                         else
+                             newAlpha = (state != UITableViewCellStateDefaultMask) ? 0.0 : 1.0;
+
+                         topRightLabel.alpha  = newAlpha;
+                         botRightLabel.alpha  = newAlpha;
+                     }];
 
     [super layoutSubviews];
 }

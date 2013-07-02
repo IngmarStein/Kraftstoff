@@ -5,6 +5,7 @@
 
 #import "ConsumptionTableCell.h"
 #import "ConsumptionLabel.h"
+#import "AppDelegate.h"
 
 
 // Standard cell geometry
@@ -26,22 +27,28 @@ static CGFloat const cellVMargin          =  1.0;
 
 - (void)finishConstruction
 {
+    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
+    
 	[super finishConstruction];
 
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 
     coloredLabel = [[ConsumptionLabel alloc] initWithFrame: CGRectZero];
 
-	coloredLabel.textAlignment             = UITextAlignmentCenter;
+	coloredLabel.textAlignment             = NSTextAlignmentCenter;
     coloredLabel.adjustsFontSizeToFitWidth = YES;
-	coloredLabel.font                      = [UIFont boldSystemFontOfSize: [UIFont labelFontSize] + 2];
-	coloredLabel.minimumFontSize           = 12.0;
+	coloredLabel.font                      = (useOldStyle) ? [UIFont boldSystemFontOfSize: 19.0] : [UIFont fontWithName:@"HelveticaNeue" size: 20];
+	coloredLabel.minimumScaleFactor        = 12.0/[coloredLabel.font pointSize];
     coloredLabel.backgroundColor           = [UIColor clearColor];
-	coloredLabel.highlightedTextColor      = [UIColor colorWithWhite: 0.4 alpha: 1.0];
+	coloredLabel.highlightedTextColor      = [UIColor colorWithWhite: (useOldStyle) ? 0.4 : 0.5 alpha: 1.0];
 	coloredLabel.textColor                 = [UIColor blackColor];
-	coloredLabel.shadowColor               = [UIColor whiteColor];
-	coloredLabel.shadowOffset              = CGSizeMake (0, 1);
 
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        coloredLabel.shadowColor           = [UIColor whiteColor];
+        coloredLabel.shadowOffset          = CGSizeMake (0, 1);
+    }
+    
     [self.contentView addSubview: coloredLabel];
 }
 
@@ -50,8 +57,8 @@ static CGFloat const cellVMargin          =  1.0;
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
-    self.coloredLabel.text             = [(NSDictionary*)dataObject objectForKey: @"label"];
-    self.coloredLabel.highlightStrings = [(NSDictionary*)dataObject objectForKey: @"highlightStrings"];
+    self.coloredLabel.text             = ((NSDictionary*)dataObject)[@"label"];
+    self.coloredLabel.highlightStrings = ((NSDictionary*)dataObject)[@"highlightStrings"];
 }
 
 

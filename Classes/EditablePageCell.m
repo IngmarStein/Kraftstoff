@@ -5,6 +5,7 @@
 
 #import "EditablePageCell.h"
 #import "FuelCalculatorController.h"
+#import "AppDelegate.h"
 
 
 static CGFloat const margin = 8.0;
@@ -20,14 +21,15 @@ static CGFloat const margin = 8.0;
 
 - (void)finishConstruction
 {
-	[super finishConstruction];
+    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
 
+	[super finishConstruction];
 
     // Create textfield
     textField = [[EditablePageCellTextField alloc] initWithFrame: CGRectZero];
 
-	textField.font                     = [UIFont systemFontOfSize: [UIFont labelFontSize] - 2];
-	textField.textAlignment            = UITextAlignmentRight;
+	textField.font                     = (useOldStyle) ? [UIFont systemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size: 17.0];
+	textField.textAlignment            = NSTextAlignmentRight;
 	textField.autocapitalizationType   = UITextAutocapitalizationTypeNone;
 	textField.autocorrectionType       = UITextAutocorrectionTypeNo;
 	textField.backgroundColor          = [UIColor clearColor];
@@ -42,12 +44,16 @@ static CGFloat const margin = 8.0;
     // Configure the default textlabel
     UILabel *label = self.textLabel;
 
-	label.textAlignment        = UITextAlignmentLeft;
-	label.font                 = [UIFont boldSystemFontOfSize: [UIFont labelFontSize]];
+	label.textAlignment        = NSTextAlignmentLeft;
+	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize: 17.0] : [UIFont fontWithName:@"HelveticaNeue" size: 17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
-	label.shadowColor          = [UIColor whiteColor];
-	label.shadowOffset         = CGSizeMake (0, 1);
+
+    if (useOldStyle)
+    {
+        label.shadowColor      = [UIColor whiteColor];
+        label.shadowOffset     = CGSizeMake (0, 1);
+    }
 }
 
 
@@ -64,11 +70,11 @@ static CGFloat const margin = 8.0;
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
-	self.textLabel.text   = [(NSDictionary*)dataObject objectForKey: @"label"];
+	self.textLabel.text   = ((NSDictionary*)dataObject)[@"label"];
     self.delegate         = viewController;
-    self.valueIdentifier  = [(NSDictionary*)dataObject objectForKey: @"valueIdentifier"];
+    self.valueIdentifier  = ((NSDictionary*)dataObject)[@"valueIdentifier"];
 
-	textField.placeholder = [(NSDictionary*)dataObject objectForKey: @"placeholder"];
+	textField.placeholder = ((NSDictionary*)dataObject)[@"placeholder"];
 	textField.delegate    = self;
 }
 
@@ -76,22 +82,24 @@ static CGFloat const margin = 8.0;
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
+    
+    CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
     CGFloat labelWidth = [self.textLabel.text sizeWithFont: self.textLabel.font].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 
-    self.textLabel.frame   = CGRectMake (margin, 0.0, labelWidth,       height - 1);
-    self.textField.frame   = CGRectMake (margin, 0.0, width - 2*margin, height - 1);
-
-    // Correct frame for textField would be:
-    // CGRectMake (labelWidth + 2*margin, 0, width - labelWidth - 3*margin, height - 1);
+    self.textLabel.frame = CGRectMake (leftOffset + margin, 0.0, labelWidth,                    height - 1);
+    self.textField.frame = CGRectMake (leftOffset + margin, 0.0, width - 2*margin - leftOffset, height - 1);
 }
 
 
 - (UIColor*)invalidTextColor
 {
-    return [UIColor colorWithRed: 0.42 green: 0.0 blue: 0.0 alpha: 1.0];
+    if ([AppDelegate systemMajorVersion] < 7)
+        return [UIColor colorWithRed: 0.42 green: 0.0 blue: 0.0 alpha: 1.0];
+    else
+        // FIXME: when editing a field with inline picker, this should be black
+        return self.tintColor;    //[UIColor colorWithRed: 1.0 green: 0.4 blue: 0.4 alpha: 1.0];
 }
 
 

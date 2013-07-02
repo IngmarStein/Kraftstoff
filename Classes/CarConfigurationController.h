@@ -32,9 +32,6 @@ typedef enum
     NSIndexPath *previousSelectionIndex;
 }
 
-@property (nonatomic, weak)   IBOutlet UIImageView     *backgroundImageView;
-@property (nonatomic, weak)   IBOutlet UINavigationBar *navBar;
-
 @property (nonatomic, strong) NSString        *name;
 @property (nonatomic, strong) NSString        *plate;
 @property (nonatomic, strong) NSNumber        *odometerUnit;

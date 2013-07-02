@@ -39,7 +39,7 @@ CGFloat const StatisticsHeight     = 182.0;
 
 + (void)initialize
 {
-    if ([AppDelegate isIPhone5])
+    if ([AppDelegate isLongPhone])
         StatisticsViewWidth = 568.0;
     else
         StatisticsViewWidth = 480.0;
@@ -63,6 +63,54 @@ CGFloat const StatisticsHeight     = 182.0;
     }
 
     return self;
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    if ([AppDelegate systemMajorVersion] >= 7)
+    {
+        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size: 17];
+        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size: 14];
+        UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size: 14];
+
+        // Labels on top of view
+        self.leftLabel.font          = titleFont;
+        self.centerLabel.font        = titleFont;
+        self.rightLabel.font         = titleFont;
+        self.leftLabel.shadowColor   = nil;
+        self.centerLabel.shadowColor = nil;
+        self.rightLabel.shadowColor  = nil;
+
+        // Update selection status of all buttons
+        for (UIButton *button in [self.view subviews])
+            if ([button isKindOfClass: [UIButton class]])
+            {
+                NSAttributedString *label = [[NSAttributedString alloc]
+                                             initWithString:button.titleLabel.text
+                                             attributes:@{NSFontAttributeName:font,
+                                                          NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]}];
+
+                NSAttributedString *labelSelected = [[NSAttributedString alloc]
+                                                     initWithString:button.titleLabel.text
+                                                     attributes:@{NSFontAttributeName:fontSelected,
+                                                                  NSForegroundColorAttributeName:[UIColor whiteColor]}];
+
+                [button setAttributedTitle:label forState:UIControlStateNormal];
+                [button setAttributedTitle:label forState:UIControlStateHighlighted];
+                [button setAttributedTitle:labelSelected forState:UIControlStateSelected];
+
+                [button setBackgroundImage:nil forState:UIControlStateNormal];
+                [button setBackgroundImage:nil forState:UIControlStateHighlighted];
+                [button setBackgroundImage:nil forState:UIControlStateSelected];
+
+                [button setShowsTouchWhenHighlighted:NO];
+
+                button.titleLabel.shadowColor = nil;
+            }
+    }
 }
 
 
@@ -185,7 +233,7 @@ CGFloat const StatisticsHeight     = 182.0;
                            ^{
                                if (invalidationCounter == expectedCounter)
                                {
-                                   [contentCache setObject: sampleData forKey: @(numberOfMonths)];
+                                   contentCache[@(numberOfMonths)] = sampleData;
 
                                    if (displayedNumberOfMonths == numberOfMonths)
                                        [self displayCachedStatisticsForRecentMonths: numberOfMonths];

@@ -6,6 +6,7 @@
 #import "PageCell.h"
 #import "PageCellBackground.h"
 #import "PageViewController.h"
+#import "AppDelegate.h"
 
 
 const CGFloat PageCellDefaultRowHeight = 44.0;
@@ -54,21 +55,24 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 // (Re-)configure the cell with data
 - (void)configureForData: (id)object viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
 {
-    BOOL grouped = tableView.style == UITableViewStyleGrouped;
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        BOOL grouped = (tableView.style == UITableViewStyleGrouped);
 
-	if (self.backgroundView == nil)
-	{
-		self.backgroundView = [[PageCellBackground alloc] initSelected: NO grouped: grouped];
-		self.selectedBackgroundView = [[PageCellBackground alloc] initSelected: YES grouped: grouped];
-	}
+        if (self.backgroundView == nil)
+        {
+            self.backgroundView = [[PageCellBackground alloc] initSelected: NO grouped: grouped];
+            self.selectedBackgroundView = [[PageCellBackground alloc] initSelected: YES grouped: grouped];
+        }
 
-	if (grouped)
-	{
-		PageCellGroupPosition position = [PageCellBackground positionForIndexPath: indexPath inTableView: tableView];
+        if (grouped)
+        {
+            PageCellGroupPosition position = [PageCellBackground positionForIndexPath: indexPath inTableView: tableView];
 
-		((PageCellBackground*)self.backgroundView).position = position;
-		((PageCellBackground*)self.selectedBackgroundView).position = position;
-	}
+            ((PageCellBackground*)self.backgroundView).position = position;
+            ((PageCellBackground*)self.selectedBackgroundView).position = position;
+        }
+    }
 }
 
 
@@ -77,13 +81,16 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 {
 	[super setSelected: selected animated: animated];
 
-    UIColor *clearColor = [UIColor clearColor];
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        UIColor *clearColor = [UIColor clearColor];
 
-    if (! [self.textLabel.backgroundColor isEqual: clearColor])
-        self.textLabel.backgroundColor = [UIColor clearColor];
+        if (! [self.textLabel.backgroundColor isEqual: clearColor])
+            self.textLabel.backgroundColor = [UIColor clearColor];
 
-    if (! [self.detailTextLabel.backgroundColor isEqual: clearColor])
-        self.detailTextLabel.backgroundColor = [UIColor clearColor];
+        if (! [self.detailTextLabel.backgroundColor isEqual: clearColor])
+            self.detailTextLabel.backgroundColor = [UIColor clearColor];
+    }
 }
 
 @end

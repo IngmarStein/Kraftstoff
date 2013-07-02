@@ -4,6 +4,7 @@
 
 
 #import "SwitchTableCell.h"
+#import "AppDelegate.h"
 
 static CGFloat const margin = 8.0;
 
@@ -18,6 +19,8 @@ static CGFloat const margin = 8.0;
 
 - (void)finishConstruction
 {
+    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
+    
 	[super finishConstruction];
 
     // No highlight on touch
@@ -29,17 +32,20 @@ static CGFloat const margin = 8.0;
 
 	[self.contentView addSubview: valueSwitch];
 
-
     // Configure the alternate textlabel
     self.valueLabel = [[UILabel alloc] initWithFrame: CGRectZero];
 
-    valueLabel.font             = [UIFont systemFontOfSize: [UIFont labelFontSize] - 2];
-	valueLabel.textAlignment    = UITextAlignmentRight;
+    valueLabel.font             = (useOldStyle) ? [UIFont systemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size: 17.0];
+	valueLabel.textAlignment    = NSTextAlignmentRight;
 	valueLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	valueLabel.backgroundColor  = [UIColor clearColor];
 	valueLabel.textColor        = [UIColor blackColor];
-	valueLabel.shadowColor      = [UIColor whiteColor];
-	valueLabel.shadowOffset     = CGSizeMake (0, 1);
+
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        valueLabel.shadowColor  = [UIColor whiteColor];
+        valueLabel.shadowOffset = CGSizeMake (0, 1);
+    }
 
     valueLabel.hidden                 = YES;
 	valueLabel.userInteractionEnabled = NO;
@@ -49,12 +55,16 @@ static CGFloat const margin = 8.0;
     // Configure the default textlabel
     UILabel *label = self.textLabel;
 
-	label.textAlignment        = UITextAlignmentLeft;
-	label.font                 = [UIFont boldSystemFontOfSize: [UIFont labelFontSize]];
+	label.textAlignment        = NSTextAlignmentLeft;
+	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize: 17.0] : [UIFont fontWithName:@"HelveticaNeue" size: 17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
-	label.shadowColor          = [UIColor whiteColor];
-	label.shadowOffset         = CGSizeMake (0, 1);
+
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        label.shadowColor      = [UIColor whiteColor];
+        label.shadowOffset     = CGSizeMake (0, 1);
+    }
 }
 
 
@@ -65,9 +75,9 @@ static CGFloat const margin = 8.0;
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
-	self.textLabel.text   = [(NSDictionary*)dataObject objectForKey: @"label"];
+	self.textLabel.text   = ((NSDictionary*)dataObject)[@"label"];
     self.delegate         = viewController;
-    self.valueIdentifier  = [(NSDictionary*)dataObject objectForKey: @"valueIdentifier"];
+    self.valueIdentifier  = ((NSDictionary*)dataObject)[@"valueIdentifier"];
 
     BOOL isON = [[self.delegate valueForIdentifier: self.valueIdentifier] boolValue];
 
@@ -85,12 +95,15 @@ static CGFloat const margin = 8.0;
 {
     [super layoutSubviews];
 
+
+    CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
+
     // Text label on the left
     CGFloat labelWidth = [self.textLabel.text sizeWithFont: self.textLabel.font].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 
-    self.textLabel.frame = CGRectMake (margin, 0.0, labelWidth, height - 1);
+    self.textLabel.frame = CGRectMake (margin + leftOffset, 0.0, labelWidth, height - 1);
 
     // UISwitch
     CGRect valueFrame = self.valueSwitch.frame;

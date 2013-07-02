@@ -12,9 +12,6 @@
 
 @implementation CarConfigurationController
 
-@synthesize backgroundImageView;
-@synthesize navBar;
-
 @synthesize name;
 @synthesize plate;
 @synthesize odometerUnit;
@@ -53,50 +50,41 @@
 
     [self recreateTableContents];
 
-    // Navigation bar
-    UINavigationItem *item = navBar.topItem;
+    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
+
+    // Configure the navigation bar
+    UINavigationItem *item = self.navigationController.navigationBar.topItem;
 
     item.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemDone
                                                                             target: self
                                                                             action: @selector (handleSave:)];
 
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: UIBarButtonSystemItemStop
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem: (useOldStyle) ? UIBarButtonSystemItemStop : UIBarButtonSystemItemCancel
                                                                             target: self
                                                                             action: @selector (handleCancel:)];
 
     item.title = (editingExistingObject) ? _I18N (@"Edit Car") : _I18N (@"New Car");
-    [navBar setItems: @[item] animated: NO];
 
-    // Transparent table view
-    self.tableView.backgroundView = nil;
+    [self setToolbarItems: @[item] animated: NO];
+
+
+    // iOS7: remove tint from bavigation bar
+    if ([AppDelegate systemMajorVersion] >= 7)
+        self.navigationController.navigationBar.tintColor = nil;
+
+    // iOS6: background image on view
+    if ([AppDelegate systemMajorVersion] < 7)
+    {
+        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
+
+        self.tableView.backgroundView = [[UIImageView alloc] initWithImage: [[UIImage imageNamed:imageName] resizableImageWithCapInsets: UIEdgeInsetsZero]];
+    }
 
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
                name: NSCurrentLocaleDidChangeNotification
              object: nil];
-}
-
-
-- (void)viewWillAppear: (BOOL)animated
-{
-    [super viewWillAppear: animated];
-
-    // Pre-iOS6: add shadow layer onto the background image view
-    if ([AppDelegate isRunningOS6] == NO)
-    {
-        if (backgroundImageView.layer.sublayers.count == 0)
-            [backgroundImageView.layer
-                insertSublayer: [AppDelegate shadowWithFrame: CGRectMake (0.0, NavBarHeight, backgroundImageView.frame.size.width, NavBarShadowHeight)
-                                                  darkFactor: 0.5
-                                                 lightFactor: 150.0 / 255.0
-                                               fadeDownwards: YES]
-                       atIndex: 0];
-    }
-
-    NSString *imageName = [AppDelegate isIPhone5] ? @"TablePattern-568h" : @"TablePattern";
-    
-    backgroundImageView.image = [[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsZero];
 }
 
 
@@ -373,18 +361,8 @@
 
 - (CGRect)frameForKeyboardApprearingInRect: (CGRect)keyboardRect
 {
-    CGRect frame = [self.view viewWithTag: 1].frame;
-
-    frame.size.height = self.view.frame.size.height - NavBarHeight - keyboardRect.size.height;
-    return frame;
-}
-
-
-- (CGRect)frameForDisappearingKeyboard
-{
-    CGRect frame = [self.view viewWithTag: 1].frame;
-
-    frame.size.height = self.view.frame.size.height - NavBarHeight;
+    CGRect frame = frameBeforeKeyboard;
+    frame.size.height -= keyboardRect.size.height;
     return frame;
 }
 

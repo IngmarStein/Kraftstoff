@@ -72,6 +72,17 @@
 
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
+    // iOS7: reset tint color
+    if ([AppDelegate systemMajorVersion] >= 7)
+        self.navigationController.navigationBar.tintColor = nil;
+
+    // Background image
+    NSString *imageName = [NSString stringWithFormat:@"TableBackground%@%@",
+                                ([AppDelegate systemMajorVersion] >= 7 ? @"Flat"  : @""),
+                                ([AppDelegate isLongPhone]             ? @"-568h" : @"")];
+
+    self.tableView.backgroundView  = [[UIImageView alloc] initWithImage: [UIImage imageNamed:imageName]];
+    self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
 
     [[NSNotificationCenter defaultCenter]
         addObserver: self
@@ -79,8 +90,8 @@
                name: NSCurrentLocaleDidChangeNotification
              object: nil];
 
-    if ([self modalViewController])
-        [self dismissModalViewControllerAnimated: NO];
+    if ([self presentedViewController])
+        [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 
@@ -113,7 +124,7 @@
 {
     [super viewWillDisappear: animated];
 
-    if ([self modalViewController] == nil)
+    if ([self presentedViewController] == nil)
         [self setObserveDeviceRotation: NO];
 }
 
@@ -153,6 +164,11 @@
     [coder encodeBool: restoreExportSheet|isShowingExportSheet             forKey: kSRFuelEventExportSheet];
     [coder encodeBool: restoreExportFailedAlert|isShowingExportFailedAlert forKey: kSRFuelEventExportFailedAlert];
     [coder encodeBool: restoreMailComposer|isShowingMailComposer           forKey: kSRFuelEventShowComposer];
+
+    // don't use a snapshot image for next launch when graph is currently visible
+    if ([AppDelegate systemMajorVersion] >= 7)
+        if ([self presentedViewController] != nil)
+            [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
 
     [super encodeRestorableStateWithCoder: coder];
 }
@@ -240,7 +256,7 @@
     // Switch view controllers according rotation state
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
 
-    if (UIDeviceOrientationIsLandscape (deviceOrientation) && [self modalViewController] == nil)
+    if (UIDeviceOrientationIsLandscape (deviceOrientation) && [self presentedViewController] == nil)
     {
         self.statisticsController.selectedCar = self.selectedCar;
 
@@ -250,9 +266,10 @@
                            animated: YES
                          completion: ^{ isPerformingRotation = NO; }];
     }
-    else if (UIDeviceOrientationIsPortrait (deviceOrientation) && [self modalViewController] != nil)
+    else if (UIDeviceOrientationIsPortrait (deviceOrientation) && [self presentedViewController] != nil)
     {
         isPerformingRotation = YES;
+
         [self dismissViewControllerAnimated: YES completion: ^{ isPerformingRotation = NO; }];
     }
 }
@@ -285,12 +302,15 @@
         MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
 
         // Copy look of navigation bar to compose window
-        UINavigationBar *navBar = [mailComposer navigationBar];
-
-        if (navBar != nil)
+        if ([AppDelegate systemMajorVersion] < 7)
         {
-            navBar.barStyle  = UIBarStyleBlack;
-            navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
+            UINavigationBar *navBar = [mailComposer navigationBar];
+
+            if (navBar != nil)
+            {
+                navBar.barStyle  = UIBarStyleBlack;
+                navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
+            }
         }
 
         // Setup the message
@@ -304,9 +324,7 @@
                                               [self.selectedCar valueForKey: @"name"],
                                               [self.selectedCar valueForKey: @"numberPlate"]]];
 
-        isShowingMailComposer = YES;
-
-        [self presentModalViewController: mailComposer animated: YES];
+        [self presentViewController:mailComposer animated:YES completion: ^{ isShowingMailComposer = YES; }];
     }
 }
 
@@ -362,7 +380,7 @@
 
     for (NSUInteger i = 0; i < [fetchedObjects count]; i++)
     {
-        NSManagedObject *managedObject = [fetchedObjects objectAtIndex: i];
+        NSManagedObject *managedObject = fetchedObjects[i];
 
         NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
         NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
@@ -402,7 +420,7 @@
         NSUInteger fetchCount = [fetchedObjects count];
 
         NSString *from = [outputFormatter stringFromDate: [[fetchedObjects lastObject]       valueForKey: @"timestamp"]];
-        NSString *to   = [outputFormatter stringFromDate: [[fetchedObjects objectAtIndex: 0] valueForKey: @"timestamp"]];
+        NSString *to   = [outputFormatter stringFromDate: [fetchedObjects[0] valueForKey: @"timestamp"]];
 
         switch (fetchCount)
         {
@@ -426,11 +444,13 @@
           didFinishWithResult: (MFMailComposeResult)result
                         error: (NSError*)error
 {
-    isShowingMailComposer = NO;
-    [self dismissModalViewControllerAnimated: YES];
+    [self dismissViewControllerAnimated:YES completion: ^{
 
-    if (result == MFMailComposeResultFailed)
-        [self showExportFailedAlert: nil];
+        isShowingMailComposer = NO;
+
+        if (result == MFMailComposeResultFailed)
+            [self showExportFailedAlert: nil];
+    }];
 }
 
 
@@ -580,7 +600,7 @@
 
 - (NSInteger)tableView: (UITableView*)tableView numberOfRowsInSection: (NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex: section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
 
     return [sectionInfo numberOfObjects];
 }

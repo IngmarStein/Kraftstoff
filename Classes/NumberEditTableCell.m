@@ -38,9 +38,9 @@
 {
 	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
 
-    self.textFieldSuffix          = [(NSDictionary*)dataObject objectForKey: @"suffix"];
-    self.numberFormatter          = [(NSDictionary*)dataObject objectForKey: @"formatter"];
-    self.alternateNumberFormatter = [(NSDictionary*)dataObject objectForKey: @"alternateFormatter"];
+    self.textFieldSuffix          = ((NSDictionary*)dataObject)[@"suffix"];
+    self.numberFormatter          = ((NSDictionary*)dataObject)[@"formatter"];
+    self.alternateNumberFormatter = ((NSDictionary*)dataObject)[@"alternateFormatter"];
 
     NSDecimalNumber *value = [self.delegate valueForIdentifier: self.valueIdentifier];
 
