@@ -51,18 +51,11 @@ static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalenda
 
 + (NSInteger)numberOfCalendarDaysFrom:(NSDate *)startDate to:(NSDate *)endDate
 {
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
-    NSDate *referenceDate = [NSDate dateWithTimeIntervalSince1970: 0.0];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDate *referenceDate = [NSDate dateWithTimeIntervalSince1970:0.0];
     
-    NSInteger daysToStart = [[gregorian components:NSDayCalendarUnit
-                                          fromDate:referenceDate
-                                            toDate:startDate
-                                           options:0] day];
-    
-    NSInteger daysToEnd   = [[gregorian components:NSDayCalendarUnit
-                                          fromDate:referenceDate
-                                            toDate:endDate
-                                           options:0] day];
+    NSInteger daysToStart = [[gregorian components:NSDayCalendarUnit fromDate:referenceDate toDate:startDate options:0] day];
+    NSInteger daysToEnd   = [[gregorian components:NSDayCalendarUnit fromDate:referenceDate toDate:endDate options:0] day];
     
     return daysToEnd - daysToStart + 1;
 }

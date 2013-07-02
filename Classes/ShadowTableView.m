@@ -1,6 +1,6 @@
-//  ShadowTableView.m
+// ShadowTableView.m
 //
-//  Kraftstoff
+// Tableview that adds two shadow layers above/below the first/last row.
 
 
 #import "ShadowTableView.h"
@@ -8,19 +8,30 @@
 
 
 @implementation ShadowTableView
-
-@synthesize reorderSourceIndexPath;
-@synthesize reorderDestinationIndexPath;
-
-
-- (id)initWithFrame: (CGRect)frame style: (UITableViewStyle)style
 {
-    if ((self = [super initWithFrame: frame style: style]))
+    CAGradientLayer *cellShadowTop;
+    CAGradientLayer *cellShadowBottom;
+
+    BOOL shadowsNeedUpdate;
+}
+
+
+- (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
+{
+    if ((self = [super initWithFrame:frame style:style]))
     {
-        shadowsNeedUpdate = YES;
+        [self setNeedsShadowUpdate];
     }
 
     return self;
+}
+
+
+- (void)setNeedsShadowUpdate
+{
+    shadowsNeedUpdate = YES;
+
+    [self setNeedsLayout];
 }
 
 
@@ -30,11 +41,12 @@
 
 
 
-- (UITableViewCell*)dequeueReusableCellWithIdentifier: (NSString*)identifier
+- (UITableViewCell *)dequeueReusableCellWithIdentifier:(NSString *)identifier
 {
-    shadowsNeedUpdate = YES;
+    // Mark for update of shadows whenever new cells are dequeued
+    [self setNeedsShadowUpdate];
 
-    return [super dequeueReusableCellWithIdentifier: identifier];
+    return [super dequeueReusableCellWithIdentifier:identifier];
 }
 
 
@@ -42,15 +54,12 @@
 {
     [super layoutSubviews];
 
-    CGFloat shadowWidth = self.frame.size.width;
-
-    // Computing index paths for visible cells below is expensive,
-    // so skip this if the table configuration hasn't changed...
-    if (!shadowsNeedUpdate || [AppDelegate systemMajorVersion] >= 7)
+    
+    // Skip shadow update when contents is unchanged or iOS7 is used
+    if (shadowsNeedUpdate == NO || [AppDelegate systemMajorVersion] >= 7)
         return;
 
     shadowsNeedUpdate = NO;
-
 
     // Remove any cell shadow when table is empty
     NSArray *visibleCells     = [self visibleCells];
@@ -67,30 +76,21 @@
         return;
     }
 
-
     // Add shadow before very first row
-    NSIndexPath *firstRow = [self indexPathForCell: visibleCells[0]];
-    int rowDeltaIndex     = 0;
+    NSIndexPath *firstIndexPath = [self indexPathForCell:visibleCells[0]];
 
-    // Attach shadow to the second row if the first one is currently reordered...
-    if ([firstRow isEqual: reorderSourceIndexPath] && ![reorderSourceIndexPath isEqual: reorderDestinationIndexPath])
+    if ([firstIndexPath section] == 0 && [firstIndexPath row] == 0)
     {
-        firstRow      = [self indexPathForCell: visibleCells[1]];
-        rowDeltaIndex = 1;
-    }
-
-    if ([firstRow section] == 0 && [firstRow row] == rowDeltaIndex)
-    {
-        UIView *cell = [self cellForRowAtIndexPath: firstRow];
+        UIView *cell = [self cellForRowAtIndexPath:firstIndexPath];
 
         if (cellShadowTop == nil)
-            cellShadowTop = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, TableTopShadowHeight)
-                                              darkFactor: 0.3
-                                             lightFactor: 100.0 / 255.0
-                                           fadeDownwards: NO];
+            cellShadowTop = [AppDelegate shadowWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, TableTopShadowHeight)
+                                              darkFactor:0.3
+                                             lightFactor:100.0 / 255.0
+                                           fadeDownwards:NO];
 
-        if ([cell.layer.sublayers indexOfObjectIdenticalTo: cellShadowTop] != 0)
-            [cell.layer insertSublayer: cellShadowTop atIndex: 0];
+        if ([cell.layer.sublayers indexOfObjectIdenticalTo:cellShadowTop] == NSNotFound)
+            [cell.layer insertSublayer:cellShadowTop atIndex:0];
 
         CGRect shadowFrame     = cellShadowTop.frame;
         shadowFrame.size.width = cell.frame.size.width;
@@ -102,30 +102,21 @@
         [cellShadowTop removeFromSuperlayer];
     }
 
-
     // Another shadow below the last row of the table
-    NSIndexPath *lastRow  = [self indexPathForCell: visibleCells[visibleRowCount - 1]];
-    rowDeltaIndex         = 1;
+    NSIndexPath *lastIndexPath = [self indexPathForCell:visibleCells[visibleRowCount - 1]];
 
-    // Attach shadow to the second last row if the last one is currently reordered...
-    if ([lastRow isEqual: reorderSourceIndexPath] && ![reorderSourceIndexPath isEqual: reorderDestinationIndexPath])
+    if ([lastIndexPath section] == [self numberOfSections] - 1 && [lastIndexPath row] == [self numberOfRowsInSection:[lastIndexPath section]] - 1)
     {
-        lastRow       = [self indexPathForCell: visibleCells[visibleRowCount - 2]];
-        rowDeltaIndex = 2;
-    }
-
-    if ([lastRow section] == [self numberOfSections] - 1 && [lastRow row] == [self numberOfRowsInSection: [lastRow section]] - rowDeltaIndex)
-    {
-        UIView *cell = [self cellForRowAtIndexPath: lastRow];
+        UIView *cell = [self cellForRowAtIndexPath:lastIndexPath];
 
         if (cellShadowBottom == nil)
-            cellShadowBottom = [AppDelegate shadowWithFrame: CGRectMake (0.0, 0.0, shadowWidth, TableBotShadowHeight)
-                                                 darkFactor: 0.5
-                                                lightFactor: 100.0 / 255.0
-                                              fadeDownwards: YES];
+            cellShadowBottom = [AppDelegate shadowWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, TableBotShadowHeight)
+                                                 darkFactor:0.5
+                                                lightFactor:100.0 / 255.0
+                                              fadeDownwards:YES];
 
-        if ([cell.layer.sublayers indexOfObjectIdenticalTo: cellShadowBottom] != 0)
-            [cell.layer insertSublayer: cellShadowBottom atIndex :0];
+        if ([cell.layer.sublayers indexOfObjectIdenticalTo:cellShadowBottom] == NSNotFound)
+            [cell.layer insertSublayer:cellShadowBottom atIndex:0];
 
         CGRect shadowFrame     = cellShadowBottom.frame;
         shadowFrame.size.width = cell.frame.size.width;
@@ -145,19 +136,9 @@
 
 
 
-- (void)beginUpdates
-{
-    self.reorderSourceIndexPath = nil;
-
-    [super beginUpdates];
-}
-
-
 - (void)endUpdates
 {
-    self.reorderSourceIndexPath = nil;
-    shadowsNeedUpdate = YES;
-
+    [self setNeedsShadowUpdate];
     [super endUpdates];
 }
 
@@ -170,10 +151,8 @@
 
 - (void)dealloc
 {
-    [originShadow removeFromSuperlayer];
     [cellShadowTop removeFromSuperlayer];
     [cellShadowBottom removeFromSuperlayer];
 }
-
 
 @end

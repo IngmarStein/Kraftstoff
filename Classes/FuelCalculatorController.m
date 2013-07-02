@@ -210,6 +210,7 @@ typedef enum
 
 - (void)handleShake: (id)object
 {
+    // FIXME: anders, dann UIViewController+kraftstoff extension wegwerfen
     if ([self isCurrentVisible] == NO)
         return;
 

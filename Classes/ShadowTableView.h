@@ -1,19 +1,10 @@
 // ShadowTableView.h
 //
-// Kraftstoff
+// Tableview that adds two shadow layers above/below the first/last row.
 
 
 @interface ShadowTableView : UITableView
-{
-    CAGradientLayer *originShadow;
 
-    CAGradientLayer *cellShadowTop;
-    CAGradientLayer *cellShadowBottom;
-
-    BOOL shadowsNeedUpdate;
-}
-
-@property (nonatomic, strong) NSIndexPath *reorderSourceIndexPath;
-@property (nonatomic, strong) NSIndexPath *reorderDestinationIndexPath;
+- (void)setNeedsShadowUpdate;
 
 @end

@@ -135,12 +135,6 @@ CGFloat StatisticsHeight     = 182.0;
 
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
-{
-    return UIInterfaceOrientationIsLandscape (interfaceOrientation);
-}
-
-
 - (BOOL)shouldAutorotate
 {
     return YES;

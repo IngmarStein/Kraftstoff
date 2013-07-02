@@ -1,15 +1,11 @@
 // ShadedTableViewCell.h
 //
-// Kraftstoff
+// TableView cells with four labels for information.
 
 
 @interface ShadedTableViewCell : UITableViewCell
-{
-    UITableViewCellStateMask state;
-    BOOL large;
-}
 
-- (id)initWithStyle: (UITableViewCellStyle)style reuseIdentifier: (NSString*)reuseIdentifier enlargeTopRightLabel: (BOOL)largeRightLabel;
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)largeRightLabel;
 
 @property (nonatomic, strong, readonly) UILabel  *topLeftLabel;
 @property (nonatomic, strong)           NSString *topLeftAccessibilityLabel;

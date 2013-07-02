@@ -5,6 +5,7 @@
 
 @interface UIViewController (Kraftstoff)
 
+
 - (BOOL)isCurrentVisible;
 
 @end

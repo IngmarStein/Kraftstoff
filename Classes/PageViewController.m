@@ -38,12 +38,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
-{
-    return interfaceOrientation == UIInterfaceOrientationPortrait;
-}
-
-
 - (BOOL)shouldAutorotate
 {
     return YES;

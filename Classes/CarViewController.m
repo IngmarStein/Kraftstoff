@@ -125,12 +125,6 @@ static NSInteger maxEditHelpCounter = 1;
 
 
 
-- (BOOL)shouldAutorotateToInterfaceOrientation: (UIInterfaceOrientation)interfaceOrientation
-{
-    return interfaceOrientation == UIInterfaceOrientationPortrait;
-}
-
-
 - (BOOL)shouldAutorotate
 {
     return YES;
@@ -723,11 +717,7 @@ static NSInteger maxEditHelpCounter = 1;
 - (NSIndexPath*)tableView: (UITableView*)tableView targetIndexPathForMoveFromRowAtIndexPath: (NSIndexPath*)sourceIndexPath
                                                                         toProposedIndexPath: (NSIndexPath*)proposedDestinationIndexPath
 {
-    ShadowTableView *table = (ShadowTableView*)tableView;
-
-    [table setReorderSourceIndexPath: sourceIndexPath];
-    [table setReorderDestinationIndexPath: proposedDestinationIndexPath];
-    [table setNeedsLayout];
+    [(ShadowTableView*)tableView setNeedsShadowUpdate];
 
     return proposedDestinationIndexPath;
 }

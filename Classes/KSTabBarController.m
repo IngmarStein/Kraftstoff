@@ -13,7 +13,6 @@
     return [self.selectedViewController supportedInterfaceOrientations];
 }
 
-
 - (BOOL)shouldAutorotate
 {
     return [self.selectedViewController shouldAutorotate];

@@ -13,7 +13,6 @@
     return [self.topViewController supportedInterfaceOrientations];
 }
 
-
 - (BOOL)shouldAutorotate
 {
     return [self.topViewController shouldAutorotate];
