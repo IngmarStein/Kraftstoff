@@ -2,6 +2,7 @@
 //
 // Kraftstoff
 
+#import "FuelStatisticsScrollView.h"
 
 @interface FuelStatisticsPageController : UIViewController
 {
@@ -13,7 +14,7 @@
 
 - (IBAction)pageAction: (id)sender;
 
-@property (nonatomic, weak) IBOutlet UIScrollView  *scrollView;
+@property (nonatomic, weak) IBOutlet FuelStatisticsScrollView *scrollView;
 @property (nonatomic, weak) IBOutlet UIPageControl *pageControl;
 
 @property (nonatomic, strong) NSManagedObject *selectedCar;

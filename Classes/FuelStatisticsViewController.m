@@ -11,9 +11,9 @@
 
 
 // Coordinates for the content area
-CGFloat       StatisticsViewWidth  = 480.0;
-CGFloat const StatisticsViewHeight = 268.0;
-CGFloat const StatisticsHeight     = 182.0;
+CGFloat StatisticsViewWidth  = 480.0;
+CGFloat StatisticsViewHeight = 268.0;
+CGFloat StatisticsHeight     = 182.0;
 
 
 
@@ -33,7 +33,7 @@ CGFloat const StatisticsHeight     = 182.0;
 
 
 #pragma mark -
-#pragma mark iPhone 5 Support
+#pragma mark iPhone 5 ans iOS7 Support
 
 
 
@@ -41,8 +41,12 @@ CGFloat const StatisticsHeight     = 182.0;
 {
     if ([AppDelegate isLongPhone])
         StatisticsViewWidth = 568.0;
-    else
-        StatisticsViewWidth = 480.0;
+
+    if ([AppDelegate systemMajorVersion] >= 7)
+    {
+        StatisticsViewHeight = 300.0;
+        StatisticsHeight     = 214.0;
+    }
 }
 
 

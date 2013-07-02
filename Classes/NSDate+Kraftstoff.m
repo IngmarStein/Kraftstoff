@@ -16,53 +16,53 @@ static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalenda
 @implementation NSDate (Kraftstoff)
 
 
-+ (NSDate*)dateWithOffsetInMonths: (NSInteger)numberOfMonths fromDate: (NSDate*)date
++ (NSDate*)dateWithOffsetInMonths:(NSInteger)numberOfMonths fromDate:(NSDate *)date
 {
-    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
-    NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
+    NSDateComponents *noSecComponents = [gregorianCalendar components:noSecondsComponentMask fromDate:date];
     NSDateComponents *deltaComponents = [[NSDateComponents alloc] init];
     
-    [deltaComponents setMonth: numberOfMonths];
+    [deltaComponents setMonth:numberOfMonths];
     
-    return [gregorianCalendar dateByAddingComponents: deltaComponents
-                                              toDate: [gregorianCalendar dateFromComponents: noSecComponents]
-                                             options: 0];
+    return [gregorianCalendar dateByAddingComponents:deltaComponents
+                                              toDate:[gregorianCalendar dateFromComponents:noSecComponents]
+                                             options:0];
 }
 
 
-+ (NSDate*)dateWithoutSeconds: (NSDate*)date
++ (NSDate*)dateWithoutSeconds:(NSDate *)date
 {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *noSecComponents = [gregorianCalendar components: noSecondsComponentMask fromDate: date];
+    NSDateComponents *noSecComponents = [gregorianCalendar components:noSecondsComponentMask fromDate:date];
     
-    return [gregorianCalendar dateFromComponents: noSecComponents];
+    return [gregorianCalendar dateFromComponents:noSecComponents];
 }
 
 
-+ (NSTimeInterval)timeIntervalSinceBeginningOfDay: (NSDate*)date
++ (NSTimeInterval)timeIntervalSinceBeginningOfDay:(NSDate *)date
 {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *timeOfDayComponents = [gregorianCalendar components: timeOfDayComponentMask fromDate: date];
+    NSDateComponents *timeOfDayComponents = [gregorianCalendar components:timeOfDayComponentMask fromDate:date];
     
     return timeOfDayComponents.hour * 3600 + timeOfDayComponents.minute * 60;
 }
 
 
-+ (NSInteger)numberOfCalendarDaysFrom: (NSDate*)startDate to: (NSDate*)endDate
++ (NSInteger)numberOfCalendarDaysFrom:(NSDate *)startDate to:(NSDate *)endDate
 {
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier: NSGregorianCalendar];
     NSDate *referenceDate = [NSDate dateWithTimeIntervalSince1970: 0.0];
     
-    NSInteger daysToStart = [[gregorian components: NSDayCalendarUnit
-                                          fromDate: referenceDate
-                                            toDate: startDate
-                                           options: 0] day];
+    NSInteger daysToStart = [[gregorian components:NSDayCalendarUnit
+                                          fromDate:referenceDate
+                                            toDate:startDate
+                                           options:0] day];
     
-    NSInteger daysToEnd   = [[gregorian components: NSDayCalendarUnit
-                                          fromDate: referenceDate
-                                            toDate: endDate
-                                           options: 0] day];
+    NSInteger daysToEnd   = [[gregorian components:NSDayCalendarUnit
+                                          fromDate:referenceDate
+                                            toDate:endDate
+                                           options:0] day];
     
     return daysToEnd - daysToStart + 1;
 }

@@ -139,7 +139,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGFloat)graphBottomBorder
 {
-    return StatisticGraphBottomBorder;
+    return StatisticGraphBottomBorder + ([AppDelegate systemMajorVersion] >= 7 ? 32.0 : 0.0);
 }
 
 - (CGFloat)graphWidth
@@ -149,7 +149,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGFloat)graphHeight
 {
-    return StatisticGraphHeight;
+    return StatisticGraphHeight + ([AppDelegate systemMajorVersion] >= 7 ? 32.0 : 0.0);
 }
 
 

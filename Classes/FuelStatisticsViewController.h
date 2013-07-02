@@ -7,9 +7,9 @@
 #pragma mark Base Class for Statistics View Controller
 
 
-extern CGFloat       StatisticsViewWidth;
-extern CGFloat const StatisticsViewHeight;
-extern CGFloat const StatisticsHeight;
+extern CGFloat StatisticsViewWidth;
+extern CGFloat StatisticsViewHeight;
+extern CGFloat StatisticsHeight;
 
 
 @interface FuelStatisticsViewController : UIViewController

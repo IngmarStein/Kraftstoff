@@ -60,8 +60,15 @@
     }
 
     // Configure scroll view
-    scrollView.contentSize  = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
-    scrollView.scrollsToTop = NO;
+    scrollView.contentSize   = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
+    scrollView.scrollsToTop  = NO;
+
+    // iOS7: enlarge scrollView, hide pageControl
+    if ([AppDelegate systemMajorVersion] >= 7)
+    {
+        scrollView.frame = self.view.frame;
+        pageControl.hidden = YES;
+    }
 
     // Select preferred page
     dispatch_async (dispatch_get_main_queue (), ^{
@@ -71,7 +78,7 @@
 
         pageControlUsed = NO;
     });
-
+    
     [[NSNotificationCenter defaultCenter]
         addObserver: self
            selector: @selector (localeChanged:)
@@ -103,6 +110,14 @@
     return UIStatusBarStyleLightContent;
 }
 
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+
+    [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 
 #pragma mark -
@@ -155,6 +170,9 @@
 
 - (void)didEnterBackground: (id)object
 {
+    [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
     for (FuelStatisticsViewController *controller in self.childViewControllers)
         [controller purgeDiscardableCacheContent];
 }
@@ -197,8 +215,9 @@
 
 - (CGRect)frameForPage: (NSInteger)page
 {
-    CGRect frame   = scrollView.frame;
+    page = [self.scrollView visiblePageForPage:page];
 
+    CGRect frame   = scrollView.frame;
     frame.origin.x = frame.size.width * page;
     frame.origin.y = 0;
 
@@ -216,14 +235,15 @@
 {
     if (pageControlUsed == NO)
     {
-        NSInteger currentPage = pageControl.currentPage;
-        pageControl.currentPage = floor ((scrollView.contentOffset.x - StatisticsViewWidth / 2) / StatisticsViewWidth) + 1;
+        NSInteger newPage = floor ((scrollView.contentOffset.x - StatisticsViewWidth*0.5) / StatisticsViewWidth) + 1;
+        newPage = [self.scrollView pageForVisiblePage:newPage];
 
-        if (pageControl.currentPage != currentPage)
+        if (pageControl.currentPage != newPage)
+        {
+            pageControl.currentPage = newPage;
             [self updatePageVisibility];
+        }
     }
-
-    [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];
 }
 
 
