@@ -24,7 +24,7 @@
                 <userLayoutGuide location="133" affinity="minY"/>
             </userGuides>
             <subviews>
-                <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="33">
+                <scrollView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" showsHorizontalScrollIndicator="NO" indicatorStyle="white" id="33">
                     <rect key="frame" x="0.0" y="65" width="480" height="203"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -185,4 +185,17 @@
     <resources>
         <image name="RadioButton.png" width="36" height="32"/>
     </resources>
+    <classes>
+        <class className="FuelStatisticsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/FuelStatisticsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="buttonAction:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="activityView" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="centerLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="leftLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="rightLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
+            </relationships>
+        </class>
+    </classes>
 </document>

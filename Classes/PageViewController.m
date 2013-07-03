@@ -34,24 +34,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 #pragma mark -
-#pragma mark View Rotation
-
-
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-
-
-#pragma mark -
 #pragma mark View Resize on Keyboard Events (only when visible)
 
 

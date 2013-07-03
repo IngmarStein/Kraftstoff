@@ -67,8 +67,7 @@
 		4DA74B74176A3C300042DC79 /* StartFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B76176A3C300042DC79 /* StartFlat.png */; };
 		4DA74B77176A3C380042DC79 /* StartFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B79176A3C380042DC79 /* StartFlat@2x.png */; };
 		4DAAF49515B490D90016FAD6 /* UIViewController+Kraftstoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF49415B490D90016FAD6 /* UIViewController+Kraftstoff.m */; };
-		4DAAF49D15B4A3490016FAD6 /* KSNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF49C15B4A3490016FAD6 /* KSNavigationController.m */; };
-		4DAAF4A115B4A41B0016FAD6 /* KSTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* KSTabBarController.m */; };
+		4DAAF4A115B4A41B0016FAD6 /* PortraitOnlyTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC5627130317DD00D02BEC /* PageCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5625130317DD00D02BEC /* PageCellBackground.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
@@ -198,10 +197,8 @@
 		4DA74B7B176A3C7A0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/StartFlat@2x.png"; sourceTree = "<group>"; };
 		4DAAF49315B490D90016FAD6 /* UIViewController+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Kraftstoff.h"; sourceTree = "<group>"; };
 		4DAAF49415B490D90016FAD6 /* UIViewController+Kraftstoff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Kraftstoff.m"; sourceTree = "<group>"; };
-		4DAAF49B15B4A3490016FAD6 /* KSNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSNavigationController.h; sourceTree = "<group>"; };
-		4DAAF49C15B4A3490016FAD6 /* KSNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSNavigationController.m; sourceTree = "<group>"; };
-		4DAAF49F15B4A41B0016FAD6 /* KSTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSTabBarController.h; sourceTree = "<group>"; };
-		4DAAF4A015B4A41B0016FAD6 /* KSTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSTabBarController.m; sourceTree = "<group>"; };
+		4DAAF49F15B4A41B0016FAD6 /* PortraitOnlyTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitOnlyTabBarController.h; sourceTree = "<group>"; };
+		4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitOnlyTabBarController.m; sourceTree = "<group>"; };
 		4DAC5622130317DD00D02BEC /* PageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DAC5623130317DD00D02BEC /* PageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC5624130317DD00D02BEC /* PageCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCellBackground.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -448,10 +445,8 @@
 				4D92C9CF14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.m */,
 				4DAAF49315B490D90016FAD6 /* UIViewController+Kraftstoff.h */,
 				4DAAF49415B490D90016FAD6 /* UIViewController+Kraftstoff.m */,
-				4DAAF49B15B4A3490016FAD6 /* KSNavigationController.h */,
-				4DAAF49C15B4A3490016FAD6 /* KSNavigationController.m */,
-				4DAAF49F15B4A41B0016FAD6 /* KSTabBarController.h */,
-				4DAAF4A015B4A41B0016FAD6 /* KSTabBarController.m */,
+				4DAAF49F15B4A41B0016FAD6 /* PortraitOnlyTabBarController.h */,
+				4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */,
 			);
 			name = "Cocoa Extensions";
 			sourceTree = "<group>";
@@ -806,8 +801,7 @@
 				4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */,
 				4D0B7ACD15A9F2DF0012A62B /* NSDate+Kraftstoff.m in Sources */,
 				4DAAF49515B490D90016FAD6 /* UIViewController+Kraftstoff.m in Sources */,
-				4DAAF49D15B4A3490016FAD6 /* KSNavigationController.m in Sources */,
-				4DAAF4A115B4A41B0016FAD6 /* KSTabBarController.m in Sources */,
+				4DAAF4A115B4A41B0016FAD6 /* PortraitOnlyTabBarController.m in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

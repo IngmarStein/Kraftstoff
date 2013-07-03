@@ -189,24 +189,6 @@
 
 
 #pragma mark -
-#pragma mark View Rotation
-
-
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-
-
-#pragma mark -
 #pragma mark Device Rotation
 
 
