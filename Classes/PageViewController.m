@@ -129,7 +129,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
     
-    [UIView animateWithDuration:scrollToTop ? 0.2 : 0.1
+    [UIView animateWithDuration:scrollToTop ? 0.25 : 0.15
                      animations: ^{
                          
                          NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];

@@ -27,7 +27,6 @@
             </connections>
         </window>
         <tabBarController restorationIdentifier="Root" id="31" userLabel="TabBar Controller" customClass="PortraitOnlyTabBarController">
-            <extendedEdge key="edgesForExtendedLayout"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
@@ -52,7 +51,6 @@
                     </navigationBar>
                     <viewControllers>
                         <viewController restorationIdentifier="FuelCalculatorController" title="Tanken" nibName="FuelCalculator" id="43" customClass="FuelCalculatorController">
-                            <extendedEdge key="edgesForExtendedLayout"/>
                             <navigationItem key="navigationItem" id="44" userLabel="Navigation Item"/>
                             <nil key="simulatedStatusBarMetrics"/>
                             <nil key="simulatedTopBarMetrics"/>
@@ -75,7 +73,6 @@
                     </navigationBar>
                     <viewControllers>
                         <viewController restorationIdentifier="CarViewController" title="Fahrzeuge" nibName="CarViewController" id="13" customClass="CarViewController">
-                            <extendedEdge key="edgesForExtendedLayout"/>
                             <toolbarItems/>
                             <navigationItem key="navigationItem" id="14"/>
                             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>

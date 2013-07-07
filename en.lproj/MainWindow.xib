@@ -27,7 +27,6 @@
             </connections>
         </window>
         <tabBarController restorationIdentifier="Root" id="31" userLabel="TabBar Controller" customClass="PortraitOnlyTabBarController">
-            <extendedEdge key="edgesForExtendedLayout"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <nil key="simulatedBottomBarMetrics"/>
