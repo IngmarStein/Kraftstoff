@@ -3,7 +3,7 @@
 // Kraftstoff
 
 
-@interface DemoData : NSObject {}
+@interface DemoData : NSObject
 
 + (void)addDemoEventsForCar:(NSManagedObject *)car inContext:(NSManagedObjectContext *)context;
 

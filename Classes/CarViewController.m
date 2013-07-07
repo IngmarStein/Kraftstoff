@@ -90,7 +90,7 @@ static NSInteger maxEditHelpCounter = 1;
 
 
 #pragma mark -
-#pragma mark iOS 6 State Restoration
+#pragma mark State Restoration
 
 
 

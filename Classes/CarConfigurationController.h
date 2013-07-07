@@ -27,7 +27,6 @@ typedef enum
 @interface CarConfigurationController : PageViewController <UIViewControllerRestoration, UIActionSheetDelegate>
 {
     BOOL         isShowingCancelSheet;
-
     BOOL         dataChanged;
     NSIndexPath *previousSelectionIndex;
 }

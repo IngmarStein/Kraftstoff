@@ -28,7 +28,6 @@
 - (void)setNeedsShadowUpdate
 {
     shadowsNeedUpdate = YES;
-
     [self setNeedsLayout];
 }
 

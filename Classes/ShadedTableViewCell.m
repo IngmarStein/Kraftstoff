@@ -29,7 +29,6 @@
         _topLeftLabel.textColor                  = [UIColor blackColor];
 
         if (useOldStyle) {
-
             _topLeftLabel.shadowColor            = [UIColor colorWithWhite:1.0 alpha:0.8];
             _topLeftLabel.shadowOffset           = CGSizeMake(0.0, 1.0);
             _topLeftLabel.highlightedTextColor   = [UIColor whiteColor];
@@ -46,7 +45,6 @@
         _botLeftLabel.textColor                  = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
 
         if (useOldStyle) {
-
             _botLeftLabel.shadowColor            = [UIColor colorWithWhite:1.0 alpha:0.8];
             _botLeftLabel.shadowOffset           = CGSizeMake(0.0, 1.0);
             _botLeftLabel.highlightedTextColor   = [UIColor whiteColor];
@@ -63,7 +61,6 @@
         _topRightLabel.textColor                 = [UIColor blackColor];
 
         if (useOldStyle) {
-
             _topRightLabel.shadowColor           = [UIColor colorWithWhite:1.0 alpha:0.8];
             _topRightLabel.shadowOffset          = CGSizeMake(0.0, 1.0);
             _topRightLabel.highlightedTextColor  = [UIColor whiteColor];
@@ -81,7 +78,6 @@
         _botRightLabel.textColor                 = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
 
         if (useOldStyle) {
-
             _botRightLabel.shadowColor           = [UIColor colorWithWhite:1.0 alpha:0.8];
             _botRightLabel.shadowOffset          = CGSizeMake(0.0, 1.0);
             _botRightLabel.highlightedTextColor  = [UIColor whiteColor];
@@ -96,12 +92,12 @@
 
         UIImageView *imageView;
 
-        imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed:(useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
-        self.backgroundView         = imageView;
+        imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:(useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
+        self.backgroundView = imageView;
 
-        imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed:(useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
+        imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:(useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
         self.selectedBackgroundView = imageView;
 
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

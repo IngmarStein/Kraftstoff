@@ -82,7 +82,7 @@
 
 
 #pragma mark -
-#pragma mark iOS 6 State Restoration
+#pragma mark State Restoration
 
 
 

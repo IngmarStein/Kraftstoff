@@ -8,18 +8,6 @@
 
 
 @interface FuelEventController : UITableViewController <UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIAlertViewDelegate>
-{
-    BOOL isObservingRotationEvents;
-    BOOL isPerformingRotation;
-
-    BOOL isShowingExportSheet;
-    BOOL isShowingExportFailedAlert;
-    BOOL isShowingMailComposer;
-
-    BOOL restoreExportSheet;
-    BOOL restoreExportFailedAlert;
-    BOOL restoreMailComposer;
-}
 
 @property (nonatomic, strong) NSManagedObject              *selectedCar;
 @property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;

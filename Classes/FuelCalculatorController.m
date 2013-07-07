@@ -14,7 +14,6 @@
 #import "SwitchTableCell.h"
 
 #import "NSDate+Kraftstoff.h"
-#import "UIViewController+Kraftstoff.h"
 
 
 typedef enum
@@ -56,42 +55,32 @@ typedef enum
 
 
     // Title bar
-    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                    target:self
-                                                                    action:@selector(endEditingMode:)];
-    
-    self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave
-                                                                    target:self
-                                                                    action:@selector(saveAction:)];
-
+    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(endEditingMode:)];
+    self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction:)];
     self.title = _I18N(@"Fill-Up");
 
     // iOS7:remove tint from bavigation bar
-    if ([AppDelegate systemMajorVersion] >= 7)
+    if ([AppDelegate systemMajorVersion] >= 7) {
         self.navigationController.navigationBar.tintColor = nil;
 
     // iOS6:background image on view
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
-        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
+    } else {
 
+        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
         self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] resizableImageWithCapInsets:UIEdgeInsetsZero]];
     }
 
     // Fetch the cars
-    self.managedObjectContext     = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
     self.fetchedResultsController = [AppDelegate fetchedResultsControllerForCarsInContext:self.managedObjectContext];
     self.fetchedResultsController.delegate = self;
-
     
     // Table contents
     self.constantRowHeight = NO;
 
     [self createTableContentsWithAnimation:UITableViewRowAnimationNone];
     [self.tableView reloadData];
-
     [self updateSaveButtonState];
-
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self
@@ -104,18 +93,12 @@ typedef enum
            selector:@selector(willEnterForeground:)
                name:UIApplicationWillEnterForegroundNotification
              object:nil];
-
-    [[NSNotificationCenter defaultCenter]
-        addObserver:self
-           selector:@selector(handleShake:)
-               name:kraftstoffDeviceShakeNotification
-             object:nil];
 }
 
 
 
 #pragma mark -
-#pragma mark iOS 6 State Restoration
+#pragma mark State Restoration
 
 
 
@@ -144,18 +127,16 @@ typedef enum
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     restoredSelectionIndex = [coder decodeObjectForKey:kSRCalculatorSelectedIndex];
-    isShowingConvertSheet  = [coder decodeBoolForKey:kSRCalculatorConvertSheet];
+    isShowingConvertSheet = [coder decodeBoolForKey:kSRCalculatorConvertSheet];
     
-    if ([coder decodeBoolForKey:kSRCalculatorEditing])
-    {
+    if ([coder decodeBoolForKey:kSRCalculatorEditing]) {
+
         [self setEditing:YES animated:NO];
 
-        if (isShowingConvertSheet)
-        {
+        if (isShowingConvertSheet) {
             [self showOdometerConversionAlert];
-        }
-        else
-        {
+        } else {
+
             [self selectRowAtIndexPath:restoredSelectionIndex];
             restoredSelectionIndex = nil;
         }
@@ -173,21 +154,21 @@ typedef enum
 
 - (void)setEditing:(BOOL)enabled animated:(BOOL)animated
 {
-    if (self.editing != enabled)
-    {
+    if (self.editing != enabled) {
+
         UITableViewRowAnimation animation = (animated) ? UITableViewRowAnimationFade : UITableViewRowAnimationNone;
         
         [super setEditing:enabled animated:animated];
         
-        if (enabled)
-        {
-            self.navigationItem.leftBarButtonItem  = doneButton;
+        if (enabled) {
+
+            self.navigationItem.leftBarButtonItem = doneButton;
             self.navigationItem.rightBarButtonItem = nil;
 
             [self removeSectionAtIndex:1 withAnimation:animation];
-        }
-        else
-        {
+
+        } else {
+
             self.navigationItem.leftBarButtonItem  = nil;
             
             if ([self consumptionRowNeeded])
@@ -207,13 +188,29 @@ typedef enum
 #pragma mark Shake Events
 
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleShake:)
+                                                 name:kraftstoffDeviceShakeNotification
+                                               object:nil];
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kraftstoffDeviceShakeNotification
+                                                  object:nil];
+}
+
 
 - (void)handleShake:(id)object
 {
-    // FIXME:anders, dann UIViewController+kraftstoff extension wegwerfen
-    if ([self isCurrentVisible] == NO)
-        return;
-
     if (self.editing)
         return;
 
@@ -309,7 +306,7 @@ typedef enum
               inSection:1
               cellClass:[ConsumptionTableCell class]
                cellData:@{@"label":consumptionString,
-                           @"highlightStrings":highlightStrings}
+                        @"highlightStrings":highlightStrings}
           withAnimation:animation];
 }
 
@@ -319,22 +316,18 @@ typedef enum
     KSDistance odometerUnit;
     KSVolume fuelUnit;
 
-    if (self.car)
-    {
+    if (self.car) {
         odometerUnit = [[self.car valueForKey:@"odometerUnit"] integerValue];
         fuelUnit     = [[self.car valueForKey:@"fuelUnit"]     integerValue];
-    }
-    else
-    {
+    } else {
         odometerUnit = [AppDelegate distanceUnitFromLocale];
         fuelUnit     = [AppDelegate volumeUnitFromLocale];
     }
 
-
     int rowOffset = ([self.fetchedResultsController.fetchedObjects count] < 2) ? 1 : 2;
 
-    if (rowMask & FCDistanceRow)
-    {
+    if (rowMask & FCDistanceRow) {
+
         if (distance == nil)
             self.distance = [NSDecimalNumber decimalNumberWithDecimal:
                                 [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentDistance"]
@@ -343,15 +336,15 @@ typedef enum
         [self addRowAtIndex:0 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":           _I18N(@"Distance"),
-                               @"suffix":          [@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
-                               @"formatter":       [AppDelegate sharedDistanceFormatter],
-                               @"valueIdentifier":@"distance"}
+                   cellData:@{@"label":_I18N(@"Distance"),
+                              @"suffix":[@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
+                              @"formatter":[AppDelegate sharedDistanceFormatter],
+                              @"valueIdentifier":@"distance"}
               withAnimation:animation];
     }
 
-    if (rowMask & FCPriceRow)
-    {
+    if (rowMask & FCPriceRow) {
+
         if (price == nil)
             self.price = [NSDecimalNumber decimalNumberWithDecimal:
                             [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentPrice"]
@@ -360,15 +353,15 @@ typedef enum
         [self addRowAtIndex:1 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":              [AppDelegate fuelPriceUnitDescription:fuelUnit],
-                               @"formatter":          [AppDelegate sharedEditPreciseCurrencyFormatter],
-                               @"alternateFormatter":[AppDelegate sharedPreciseCurrencyFormatter],
-                               @"valueIdentifier":    @"price"}
+                   cellData:@{@"label":[AppDelegate fuelPriceUnitDescription:fuelUnit],
+                              @"formatter":[AppDelegate sharedEditPreciseCurrencyFormatter],
+                              @"alternateFormatter":[AppDelegate sharedPreciseCurrencyFormatter],
+                              @"valueIdentifier":@"price"}
               withAnimation:animation];
     }
 
-    if (rowMask & FCAmountRow)
-    {
+    if (rowMask & FCAmountRow) {
+
         if (fuelVolume == nil)
             self.fuelVolume = [NSDecimalNumber decimalNumberWithDecimal:
                                 [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentFuelVolume"]
@@ -377,12 +370,12 @@ typedef enum
         [self addRowAtIndex:2 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":           [AppDelegate fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
-                               @"suffix":          [@" " stringByAppendingString:[AppDelegate fuelUnitString:fuelUnit]],
-                               @"formatter":       KSVolumeIsMetric (fuelUnit)
-                                                        ? [AppDelegate sharedFuelVolumeFormatter]
-                                                        : [AppDelegate sharedPreciseFuelVolumeFormatter],
-                               @"valueIdentifier":@"fuelVolume"}
+                   cellData:@{@"label":[AppDelegate fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
+                              @"suffix":[@" " stringByAppendingString:[AppDelegate fuelUnitString:fuelUnit]],
+                              @"formatter":KSVolumeIsMetric (fuelUnit)
+                                                ? [AppDelegate sharedFuelVolumeFormatter]
+                                                : [AppDelegate sharedPreciseFuelVolumeFormatter],
+                              @"valueIdentifier":@"fuelVolume"}
               withAnimation:animation];
     }
 }
@@ -392,13 +385,13 @@ typedef enum
 {
     [self addSectionAtIndex:0 withAnimation:animation];
 
-
     // Car selector (optional)
     self.car = nil;
     
     if ([self.fetchedResultsController.fetchedObjects count] > 0)
     {
-        self.car = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:[[NSUserDefaults standardUserDefaults] objectForKey:@"preferredCarID"]];
+        self.car = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:
+                        [[NSUserDefaults standardUserDefaults] objectForKey:@"preferredCarID"]];
 
         if (self.car == nil)
             self.car = (self.fetchedResultsController.fetchedObjects)[0];
@@ -407,9 +400,9 @@ typedef enum
             [self addRowAtIndex:0
                       inSection:0
                       cellClass:[CarTableCell class]
-                       cellData:@{@"label":           _I18N(@"Car"),
-                                   @"valueIdentifier":@"car",
-                                   @"fetchedObjects":  self.fetchedResultsController.fetchedObjects}
+                       cellData:@{@"label":_I18N(@"Car"),
+                                  @"valueIdentifier":@"car",
+                                  @"fetchedObjects":self.fetchedResultsController.fetchedObjects}
                   withAnimation:animation];
     }
 
@@ -424,11 +417,11 @@ typedef enum
     [self addRowAtIndex:(self.car) ? 1 : 0
               inSection:0
               cellClass:[DateEditTableCell class]
-               cellData:@{@"label":           _I18N(@"Date"),
-                           @"formatter":       [AppDelegate sharedDateTimeFormatter],
-                           @"valueIdentifier":@"date",
-                           @"valueTimestamp":  @"lastChangeDate",
-                           @"autorefresh":     @YES}
+               cellData:@{@"label":_I18N(@"Date"),
+                          @"formatter":[AppDelegate sharedDateTimeFormatter],
+                          @"valueIdentifier":@"date",
+                          @"valueTimestamp":@"lastChangeDate",
+                          @"autorefresh":@YES}
           withAnimation:animation];
 
 
@@ -443,8 +436,8 @@ typedef enum
         [self addRowAtIndex:(self.car) ? 5 : 4
                   inSection:0
                   cellClass:[SwitchTableCell class]
-                   cellData:@{@"label":           _I18N(@"Full Fill-Up"),
-                               @"valueIdentifier":@"filledUp"}
+                   cellData:@{@"label":_I18N(@"Full Fill-Up"),
+                              @"valueIdentifier":@"filledUp"}
               withAnimation:animation];
 
 
@@ -848,16 +841,22 @@ typedef enum
 {
     if ([valueIdentifier isEqualToString:@"car"])
         return car;
+
     else if ([valueIdentifier isEqualToString:@"date"])
         return date;
+
     else if ([valueIdentifier isEqualToString:@"lastChangeDate"])
         return lastChangeDate;
+
     else if ([valueIdentifier isEqualToString:@"distance"])
         return distance;
+
     else if ([valueIdentifier isEqualToString:@"price"])
         return price;
+
     else if ([valueIdentifier isEqualToString:@"fuelVolume"])
         return fuelVolume;
+
     else if ([valueIdentifier isEqualToString:@"filledUp"])
         return @(filledUp);
 
@@ -867,68 +866,61 @@ typedef enum
 
 - (void)valueChanged:(id)newValue identifier:(NSString *)valueIdentifier
 {
-    if ([newValue isKindOfClass:[NSDate class]])
-    {
+    if ([newValue isKindOfClass:[NSDate class]]) {
+
         if ([valueIdentifier isEqualToString:@"date"])
             self.date = [NSDate dateWithoutSeconds:(NSDate *)newValue];
 
         else if ([valueIdentifier isEqualToString:@"lastChangeDate"])
             self.lastChangeDate = (NSDate *)newValue;
-    }
 
-    else if ([newValue isKindOfClass:[NSDecimalNumber class]])
-    {
+    } else if ([newValue isKindOfClass:[NSDecimalNumber class]]) {
+
         NSString *recentKey = nil;
 
-        if ([valueIdentifier isEqualToString:@"distance"])
-        {
+        if ([valueIdentifier isEqualToString:@"distance"]) {
+
             self.distance = (NSDecimalNumber *)newValue;
-            recentKey     = @"recentDistance";
-        }
+            recentKey = @"recentDistance";
 
-        else if ([valueIdentifier isEqualToString:@"fuelVolume"])
-        {
+        } else if ([valueIdentifier isEqualToString:@"fuelVolume"]) {
+
             self.fuelVolume = (NSDecimalNumber *)newValue;
-            recentKey       = @"recentFuelVolume";
-        }
+            recentKey = @"recentFuelVolume";
 
-        else if ([valueIdentifier isEqualToString:@"price"])
-        {
+        } else if ([valueIdentifier isEqualToString:@"price"]) {
+
             self.price = (NSDecimalNumber *)newValue;
-            recentKey  = @"recentPrice";
+            recentKey = @"recentPrice";
         }
 
-        if (recentKey)
-        {
+        if (recentKey) {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
             [defaults setObject:newValue forKey:recentKey];
             [defaults synchronize];
         }
-    }
 
-    else if ([valueIdentifier isEqualToString:@"filledUp"])
-    {
+    } else if ([valueIdentifier isEqualToString:@"filledUp"]) {
+
         self.filledUp = [newValue boolValue];
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
         [defaults setObject:newValue forKey:@"recentFilledUp"];
         [defaults synchronize];
-    }
 
-    else if ([valueIdentifier isEqualToString:@"car"])
-    {
-        if (! [self.car isEqual:newValue])
-        {
+    } else if ([valueIdentifier isEqualToString:@"car"]) {
+
+        if (! [self.car isEqual:newValue]) {
+
             NSManagedObject *oldCar = self.car;
-
             self.car = (NSManagedObject *)newValue;
             [self recreateDataRowsWithPreviousCar:oldCar];
         }
 
-        if ([[self.car objectID] isTemporaryID] == NO)
-        {
+        if ([[self.car objectID] isTemporaryID] == NO) {
+
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -1011,10 +1003,7 @@ typedef enum
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self activateTextFieldAtIndexPath:indexPath];
-
-    [tableView scrollToRowAtIndexPath:indexPath
-                     atScrollPosition:UITableViewScrollPositionMiddle
-                             animated:YES];
+    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
 

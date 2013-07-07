@@ -65,7 +65,7 @@
     [self setToolbarItems:@[item] animated:NO];
 
 
-    // iOS7:remove tint from bavigation bar
+    // iOS7:remove tint from navigation bar
     if ([AppDelegate systemMajorVersion] >= 7)
         self.navigationController.navigationBar.tintColor = nil;
 
@@ -97,7 +97,7 @@
 
 
 #pragma mark -
-#pragma mark iOS 6 State Restoration
+#pragma mark State Restoration
 
 
 

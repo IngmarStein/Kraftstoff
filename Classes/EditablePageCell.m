@@ -98,8 +98,7 @@ static CGFloat const margin = 8.0;
     if ([AppDelegate systemMajorVersion] < 7)
         return [UIColor colorWithRed:0.42 green:0.0 blue:0.0 alpha:1.0];
     else
-        // FIXME:when editing a field with inline picker, this should be black
-        return self.tintColor;    //[UIColor colorWithRed:1.0 green:0.4 blue:0.4 alpha:1.0];
+        return [(AppDelegate *)[[UIApplication sharedApplication] delegate] window].tintColor;
 }
 
 

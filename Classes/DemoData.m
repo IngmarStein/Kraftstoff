@@ -134,23 +134,23 @@ static demoData_t demoData [] =
     [df setLocale:[NSLocale systemLocale]];
     [df setDateFormat:@"yyyy'-'MM'-'dd' 'HH':'mm':'Z"];
 
-    @autoreleasepool
-    {
-        for (int i = 0; i < DEMO_DATA_CNT; i++)
-        {
+    @autoreleasepool {
+
+        for (int i = 0; i < DEMO_DATA_CNT; i++) {
+
             NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent" inManagedObjectContext:context];
 
-            NSDecimalNumber *distance   = [NSDecimalNumber decimalNumberWithMantissa:demoData [i].distance   exponent: -1 isNegative:NO];
+            NSDecimalNumber *distance = [NSDecimalNumber decimalNumberWithMantissa:demoData [i].distance exponent: -1 isNegative:NO];
             NSDecimalNumber *fuelVolume = [NSDecimalNumber decimalNumberWithMantissa:demoData [i].fuelVolume exponent: -2 isNegative:NO];
-            NSDecimalNumber *price      = [NSDecimalNumber decimalNumberWithMantissa:demoData [i].price      exponent: -3 isNegative:NO];
+            NSDecimalNumber *price = [NSDecimalNumber decimalNumberWithMantissa:demoData [i].price exponent: -3 isNegative:NO];
 
             [newEvent setValue:[df dateFromString:@(demoData [i].date)] forKey:@"timestamp"];
-            [newEvent setValue:car        forKey:@"car"];
-            [newEvent setValue:distance   forKey:@"distance"];
-            [newEvent setValue:price      forKey:@"price"];
+            [newEvent setValue:car forKey:@"car"];
+            [newEvent setValue:distance forKey:@"distance"];
+            [newEvent setValue:price forKey:@"price"];
             [newEvent setValue:fuelVolume forKey:@"fuelVolume"];
 
-            [car setValue:[[car valueForKey:@"distanceTotalSum"]   decimalNumberByAdding:distance]   forKey:@"distanceTotalSum"];
+            [car setValue:[[car valueForKey:@"distanceTotalSum"] decimalNumberByAdding:distance] forKey:@"distanceTotalSum"];
             [car setValue:[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberByAdding:fuelVolume] forKey:@"fuelVolumeTotalSum"];
         }
 
