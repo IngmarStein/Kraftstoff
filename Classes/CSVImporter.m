@@ -14,16 +14,22 @@
 
 
 @implementation CSVImporter
+{
+    NSMutableSet        *carIDs;
+    NSMutableDictionary *carForID;
+    NSMutableDictionary *modelForID;
+    NSMutableDictionary *plateForID;
+}
 
 
 - (id)init
 {
     if ((self = [super init]))
     {
-        carIDs     = [NSMutableSet setWithCapacity: 7];
-        carForID   = [NSMutableDictionary dictionaryWithCapacity: 7];
-        modelForID = [NSMutableDictionary dictionaryWithCapacity: 7];
-        plateForID = [NSMutableDictionary dictionaryWithCapacity: 7];
+        carIDs     = [NSMutableSet setWithCapacity:7];
+        carForID   = [NSMutableDictionary dictionaryWithCapacity:7];
+        modelForID = [NSMutableDictionary dictionaryWithCapacity:7];
+        plateForID = [NSMutableDictionary dictionaryWithCapacity:7];
     }
 
     return self;
@@ -36,67 +42,67 @@
 
 
 
-- (NSManagedObject*)addCarWithName: (NSString*)name
-                             order: (NSInteger)order
-                             plate: (NSString*)plate
-                      odometerUnit: (KSDistance)odometerUnit
-                        volumeUnit: (KSVolume)volumeUnit
-               fuelConsumptionUnit: (KSFuelConsumption)fuelConsumptionUnit
-                         inContext: (NSManagedObjectContext*)managedObjectContext
+- (NSManagedObject *)addCarWithName:(NSString *)name
+                             order:(NSInteger)order
+                             plate:(NSString *)plate
+                      odometerUnit:(KSDistance)odometerUnit
+                        volumeUnit:(KSVolume)volumeUnit
+               fuelConsumptionUnit:(KSFuelConsumption)fuelConsumptionUnit
+                         inContext:(NSManagedObjectContext *)managedObjectContext
 {
     // Create and configure new car object
-    NSManagedObject *newCar = [NSEntityDescription insertNewObjectForEntityForName: @"car"
-                                                            inManagedObjectContext: managedObjectContext];
+    NSManagedObject *newCar = [NSEntityDescription insertNewObjectForEntityForName:@"car"
+                                                            inManagedObjectContext:managedObjectContext];
 
-    [newCar setValue: @(order)                    forKey: @"order"];
-    [newCar setValue: [NSDate date]               forKey: @"timestamp"];
-    [newCar setValue: name                        forKey: @"Name"];
-    [newCar setValue: plate                       forKey: @"numberPlate"];
-    [newCar setValue: @((int)odometerUnit)        forKey: @"odometerUnit"];
-    [newCar setValue: [NSDecimalNumber zero]      forKey: @"odometer"];
-    [newCar setValue: @((int)volumeUnit)          forKey: @"fuelUnit"];
-    [newCar setValue: @((int)fuelConsumptionUnit) forKey: @"fuelConsumptionUnit"];
+    [newCar setValue:@(order)                    forKey:@"order"];
+    [newCar setValue:[NSDate date]               forKey:@"timestamp"];
+    [newCar setValue:name                        forKey:@"Name"];
+    [newCar setValue:plate                       forKey:@"numberPlate"];
+    [newCar setValue:@((int)odometerUnit)        forKey:@"odometerUnit"];
+    [newCar setValue:[NSDecimalNumber zero]      forKey:@"odometer"];
+    [newCar setValue:@((int)volumeUnit)          forKey:@"fuelUnit"];
+    [newCar setValue:@((int)fuelConsumptionUnit) forKey:@"fuelConsumptionUnit"];
 
     return newCar;
 }
 
 
-- (NSManagedObject*)addEventForCar: (NSManagedObject*)car
-                              date: (NSDate*)date
-                          distance: (NSDecimalNumber*)distance
-                             price: (NSDecimalNumber*)price
-                        fuelVolume: (NSDecimalNumber*)fuelVolume
-                     inheritedCost: (NSDecimalNumber*)inheritedCost
-                 inheritedDistance: (NSDecimalNumber*)inheritedDistance
-               inheritedFuelVolume: (NSDecimalNumber*)inheritedFuelVolume
-                          filledUp: (BOOL)filledUp
-                         inContext: (NSManagedObjectContext*)managedObjectContext
+- (NSManagedObject *)addEventForCar:(NSManagedObject *)car
+                              date:(NSDate *)date
+                          distance:(NSDecimalNumber *)distance
+                             price:(NSDecimalNumber *)price
+                        fuelVolume:(NSDecimalNumber *)fuelVolume
+                     inheritedCost:(NSDecimalNumber *)inheritedCost
+                 inheritedDistance:(NSDecimalNumber *)inheritedDistance
+               inheritedFuelVolume:(NSDecimalNumber *)inheritedFuelVolume
+                          filledUp:(BOOL)filledUp
+                         inContext:(NSManagedObjectContext *)managedObjectContext
 {
-    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName: @"fuelEvent"
-                                                              inManagedObjectContext: managedObjectContext];
+    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent"
+                                                              inManagedObjectContext:managedObjectContext];
 
-    [newEvent setValue: car        forKey: @"car"];
-    [newEvent setValue: date       forKey: @"timestamp"];
-    [newEvent setValue: distance   forKey: @"distance"];
-    [newEvent setValue: price      forKey: @"price"];
-    [newEvent setValue: fuelVolume forKey: @"fuelVolume"];
+    [newEvent setValue:car        forKey:@"car"];
+    [newEvent setValue:date       forKey:@"timestamp"];
+    [newEvent setValue:distance   forKey:@"distance"];
+    [newEvent setValue:price      forKey:@"price"];
+    [newEvent setValue:fuelVolume forKey:@"fuelVolume"];
 
     if (filledUp == NO)
-        [newEvent setValue: @(filledUp) forKey: @"filledUp"];
+        [newEvent setValue:@(filledUp) forKey:@"filledUp"];
 
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-    if ([inheritedCost isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedCost forKey: @"inheritedCost"];
+    if ([inheritedCost isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedCost forKey:@"inheritedCost"];
 
-    if ([inheritedDistance isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedDistance forKey: @"inheritedDistance"];
+    if ([inheritedDistance isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedDistance forKey:@"inheritedDistance"];
 
-    if ([inheritedFuelVolume isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedFuelVolume forKey: @"inheritedFuelVolume"];
+    if ([inheritedFuelVolume isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedFuelVolume forKey:@"inheritedFuelVolume"];
 
-    [car setValue: [[car valueForKey: @"distanceTotalSum"]   decimalNumberByAdding: distance]   forKey: @"distanceTotalSum"];
-    [car setValue: [[car valueForKey: @"fuelVolumeTotalSum"] decimalNumberByAdding: fuelVolume] forKey: @"fuelVolumeTotalSum"];
+    [car setValue:[[car valueForKey:@"distanceTotalSum"]   decimalNumberByAdding:distance]   forKey:@"distanceTotalSum"];
+    [car setValue:[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberByAdding:fuelVolume] forKey:@"fuelVolumeTotalSum"];
 
     return newEvent;
 }
@@ -108,11 +114,11 @@
 
 
 
-- (NSString*)guessModelFromURL: (NSURL*) sourceURL
+- (NSString *)guessModelFromURL:(NSURL *) sourceURL
 {
     if ([sourceURL isFileURL])
     {
-        NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString: @"__"];
+        NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString:@"__"];
 
         // CSV file exported in new format: model is first part of filename
         if ([nameComponents count] == 2)
@@ -122,7 +128,7 @@
             if ([part length] > 0)
             {
                 if ([part length] > maximumTextFieldLength)
-                    part = [part substringToIndex: maximumTextFieldLength];
+                    part = [part substringToIndex:maximumTextFieldLength];
 
                 return part;
             }
@@ -133,11 +139,11 @@
 }
 
 
-- (NSString*)guessPlateFromURL: (NSURL*) sourceURL
+- (NSString *)guessPlateFromURL:(NSURL *) sourceURL
 {
     if ([sourceURL isFileURL])
     {
-        NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString: @"__"];
+        NSArray *nameComponents = [[[[sourceURL path] lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString:@"__"];
 
         // CSV file in new format: plate is second part of filename
         //     for unknown format: use the whole filename if it is a single component
@@ -148,7 +154,7 @@
             if ([part length] > 0)
             {
                 if ([part length] > maximumTextFieldLength)
-                    part = [part substringToIndex: maximumTextFieldLength];
+                    part = [part substringToIndex:maximumTextFieldLength];
 
                 return part;
             }
@@ -159,7 +165,7 @@
 }
 
 
-- (BOOL)importCarIDs: (NSArray*)records
+- (BOOL)importCarIDs:(NSArray *)records
 {
     NSDictionary *first = records[0];
 
@@ -169,7 +175,7 @@
     if (first[@"ID"] == nil)
         return NO;
 
-    NSString *modelKey = [self keyForModel: first];
+    NSString *modelKey = [self keyForModel:first];
 
     if (modelKey == nil)
         return NO;
@@ -181,16 +187,16 @@
 
     for (NSDictionary *record in records)
     {
-        NSNumber *ID = [self scanNumberWithString: record[@"ID"]];
+        NSNumber *ID = [self scanNumberWithString:record[@"ID"]];
 
-        if (ID != nil && [carIDs containsObject: ID] == NO)
+        if (ID != nil && [carIDs containsObject:ID] == NO)
         {
             NSString *model = record[modelKey];
             NSString *plate = record[@"NAME"];
 
             if (model != nil && plate != nil)
             {
-                [carIDs addObject: ID];
+                [carIDs addObject:ID];
                 modelForID[ID] = model;
                 plateForID[ID] = plate;
             }
@@ -201,12 +207,12 @@
 }
 
 
-- (NSInteger)createCarObjectsInContext: (NSManagedObjectContext*)managedObjectContext
+- (NSInteger)createCarObjectsInContext:(NSManagedObjectContext *)managedObjectContext
 {
     // Fetch already existing cars for later update of order attribute
-    NSFetchRequest *carRequest = [AppDelegate fetchRequestForCarsInManagedObjectContext: managedObjectContext];
-    NSArray *fetchedCarObjects = [AppDelegate objectsForFetchRequest: carRequest
-                                              inManagedObjectContext: managedObjectContext];
+    NSFetchRequest *carRequest = [AppDelegate fetchRequestForCarsInManagedObjectContext:managedObjectContext];
+    NSArray *fetchedCarObjects = [AppDelegate objectsForFetchRequest:carRequest
+                                              inManagedObjectContext:managedObjectContext];
 
 
     // Create car objects
@@ -217,10 +223,10 @@
         NSString *model = modelForID[carID];
 
         if (model == nil)
-            model = [NSString stringWithFormat: @"%@", _I18N (@"Imported Car")];
+            model = [NSString stringWithFormat:@"%@", _I18N(@"Imported Car")];
 
         if ([model length] > maximumTextFieldLength)
-            model = [model substringToIndex: maximumTextFieldLength];
+            model = [model substringToIndex:maximumTextFieldLength];
 
 
         NSString *plate = plateForID[carID];
@@ -229,16 +235,16 @@
             plate = @"";
 
         if ([plate length] > maximumTextFieldLength)
-            plate = [plate substringToIndex: maximumTextFieldLength];
+            plate = [plate substringToIndex:maximumTextFieldLength];
 
 
-        NSManagedObject *newCar = [self addCarWithName: model
-                                                 order: [carForID count]
-                                                 plate: plate
-                                          odometerUnit: [AppDelegate distanceUnitFromLocale]
-                                            volumeUnit: [AppDelegate volumeUnitFromLocale]
-                                   fuelConsumptionUnit: [AppDelegate fuelConsumptionUnitFromLocale]
-                                             inContext: managedObjectContext];
+        NSManagedObject *newCar = [self addCarWithName:model
+                                                 order:[carForID count]
+                                                 plate:plate
+                                          odometerUnit:[AppDelegate distanceUnitFromLocale]
+                                            volumeUnit:[AppDelegate volumeUnitFromLocale]
+                                   fuelConsumptionUnit:[AppDelegate fuelConsumptionUnitFromLocale]
+                                             inContext:managedObjectContext];
 
         carForID[carID] = newCar;
     }
@@ -247,8 +253,8 @@
     // Now update order attribute of old car objects
     for (NSManagedObject *oldCar in fetchedCarObjects)
     {
-        NSInteger order = [[oldCar valueForKey: @"order"] integerValue];
-        [oldCar setValue: @(order+[carForID count]) forKey: @"order"];
+        NSInteger order = [[oldCar valueForKey:@"order"] integerValue];
+        [oldCar setValue:@(order+[carForID count]) forKey:@"order"];
     }
 
     return [carForID count];
@@ -256,41 +262,41 @@
 
 
 
-- (NSDecimalNumber*)guessDistanceForParsedDistance: (NSDecimalNumber*)distance
-                                     andFuelVolume: (NSDecimalNumber*)liters
+- (NSDecimalNumber *)guessDistanceForParsedDistance:(NSDecimalNumber *)distance
+                                     andFuelVolume:(NSDecimalNumber *)liters
 {
-    NSDecimalNumber *convDistance = [distance decimalNumberByMultiplyingByPowerOf10: 3];
+    NSDecimalNumber *convDistance = [distance decimalNumberByMultiplyingByPowerOf10:3];
     
     
-    if ([[NSDecimalNumber zero] compare: liters] != NSOrderedAscending)
+    if ([[NSDecimalNumber zero] compare:liters] != NSOrderedAscending)
         return distance;
     
     // consumption with parsed distance
-    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers: distance
-                                                                      Liters: liters
-                                                                      inUnit: KSFuelConsumptionLitersPer100km];
+    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers:distance
+                                                                      Liters:liters
+                                                                      inUnit:KSFuelConsumptionLitersPer100km];
     
-    if ([rawConsumption isEqual: [NSDecimalNumber notANumber]])
+    if ([rawConsumption isEqual:[NSDecimalNumber notANumber]])
         return distance;
     
     // consumption with increased distance
-    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers: convDistance
-                                                                      Liters: liters
-                                                                      inUnit: KSFuelConsumptionLitersPer100km];
+    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers:convDistance
+                                                                      Liters:liters
+                                                                      inUnit:KSFuelConsumptionLitersPer100km];
     
-    if ([convConsumption isEqual: [NSDecimalNumber notANumber]])
+    if ([convConsumption isEqual:[NSDecimalNumber notANumber]])
         return distance;
     
     // consistency checks
-    NSDecimalNumber *loBound = [NSDecimalNumber decimalNumberWithMantissa:  2 exponent: 0 isNegative: NO];
-    NSDecimalNumber *hiBound = [NSDecimalNumber decimalNumberWithMantissa: 20 exponent: 0 isNegative: NO];
+    NSDecimalNumber *loBound = [NSDecimalNumber decimalNumberWithMantissa:  2 exponent:0 isNegative:NO];
+    NSDecimalNumber *hiBound = [NSDecimalNumber decimalNumberWithMantissa:20 exponent:0 isNegative:NO];
     
     // conversion only when unconverted >= lowerBound
-    if ([rawConsumption compare: hiBound] == NSOrderedAscending)
+    if ([rawConsumption compare:hiBound] == NSOrderedAscending)
         return distance;
     
     // conversion only when lowerBound <= convConversion <= highBound
-    if ([convConsumption compare: loBound] == NSOrderedAscending || [convConsumption compare: hiBound] == NSOrderedDescending)
+    if ([convConsumption compare:loBound] == NSOrderedAscending || [convConsumption compare:hiBound] == NSOrderedDescending)
         return distance;
     
     // converted distance is more logical
@@ -299,10 +305,10 @@
 
 
 
-- (BOOL)importRecords: (NSArray*)records
-      formatIsTankPro: (BOOL)isTankProImport
-       detectedEvents: (NSInteger*)numEvents
-            inContext: (NSManagedObjectContext*)managedObjectContext
+- (BOOL)importRecords:(NSArray *)records
+      formatIsTankPro:(BOOL)isTankProImport
+       detectedEvents:(NSInteger*)numEvents
+            inContext:(NSManagedObjectContext *)managedObjectContext
 {
     // Analyse record headers
     NSDictionary *first = records[0];
@@ -311,16 +317,16 @@
     KSDistance odometerUnit = KSDistanceInvalid;
     KSVolume   volumeUnit   = KSVolumeInvalid;
 
-    NSString *IDKey           = [self keyForCarID: first];
-    NSString *dateKey         = [self keyForDate: first];
-    NSString *timeKey         = [self keyForTime: first];
-    NSString *distanceKey     = [self keyForDistance: first unit: &distanceUnit];
-    NSString *odometerKey     = [self keyForOdometer: first unit: &odometerUnit];
-    NSString *volumeKey       = [self keyForVolume: first unit: &volumeUnit];
-    NSString *volumeAmountKey = [self keyForVolume: first];
-    NSString *volumeUnitKey   = [self keyForVolumeUnit: first];
-    NSString *priceKey        = [self keyForPrice: first];
-    NSString *fillupKey       = [self keyForFillup: first];
+    NSString *IDKey           = [self keyForCarID:first];
+    NSString *dateKey         = [self keyForDate:first];
+    NSString *timeKey         = [self keyForTime:first];
+    NSString *distanceKey     = [self keyForDistance:first unit:&distanceUnit];
+    NSString *odometerKey     = [self keyForOdometer:first unit:&odometerUnit];
+    NSString *volumeKey       = [self keyForVolume:first unit:&volumeUnit];
+    NSString *volumeAmountKey = [self keyForVolume:first];
+    NSString *volumeUnitKey   = [self keyForVolumeUnit:first];
+    NSString *priceKey        = [self keyForPrice:first];
+    NSString *fillupKey       = [self keyForFillup:first];
 
 
     // Common consistency check for CSV headers
@@ -338,29 +344,29 @@
 
 
     // Sort records according time and odometer
-    NSMutableArray *sortedRecords = [NSMutableArray arrayWithCapacity: [records count]];
+    NSMutableArray *sortedRecords = [NSMutableArray arrayWithCapacity:[records count]];
 
-    [sortedRecords addObjectsFromArray: records];
+    [sortedRecords addObjectsFromArray:records];
     [sortedRecords sortUsingComparator:
         ^NSComparisonResult (id obj1, id obj2)
         {
             NSComparisonResult cmpResult = NSOrderedSame;
 
-            NSDate *date1 = [self scanDate: obj1[dateKey] withOptionalTime: obj1[timeKey]];
-            NSDate *date2 = [self scanDate: obj2[dateKey] withOptionalTime: obj2[timeKey]];
+            NSDate *date1 = [self scanDate:obj1[dateKey] withOptionalTime:obj1[timeKey]];
+            NSDate *date2 = [self scanDate:obj2[dateKey] withOptionalTime:obj2[timeKey]];
 
             if (date1 != nil && date2 != nil)
             {
-                cmpResult = [date1 compare: date2];
+                cmpResult = [date1 compare:date2];
             }
 
             if (cmpResult == NSOrderedSame && odometerKey != nil)
             {
-                NSNumber *odometer1 = [self scanNumberWithString: obj1[odometerKey]];
-                NSNumber *odometer2 = [self scanNumberWithString: obj2[odometerKey]];
+                NSNumber *odometer1 = [self scanNumberWithString:obj1[odometerKey]];
+                NSNumber *odometer2 = [self scanNumberWithString:obj2[odometerKey]];
 
                 if (odometer1 != nil && odometer2 != nil)
-                    cmpResult = [odometer1 compare: odometer2];
+                    cmpResult = [odometer1 compare:odometer2];
             }
 
             return cmpResult;
@@ -390,19 +396,19 @@
         {
             // Match car IDs when importing from Tank Pro
             if (isTankProImport)
-                if ([carID isEqualToNumber: [self scanNumberWithString: record[IDKey]]] == NO)
+                if ([carID isEqualToNumber:[self scanNumberWithString:record[IDKey]]] == NO)
                     continue;
 
-            NSDate *date         = [self scanDate: record[dateKey] withOptionalTime: record[timeKey]];
-            NSTimeInterval delta = [date timeIntervalSinceDate: lastDate];
+            NSDate *date         = [self scanDate:record[dateKey] withOptionalTime:record[timeKey]];
+            NSTimeInterval delta = [date timeIntervalSinceDate:lastDate];
 
             if (delta <= 0.0 || lastDelta > 0.0)
             {
                 lastDelta = (delta > 0.0) ? 0.0 : ceilf (fabs (delta) + 60.0);
-                date      = [date dateByAddingTimeInterval: lastDelta];
+                date      = [date dateByAddingTimeInterval:lastDelta];
             }
 
-            if ([date timeIntervalSinceDate: lastDate] <= 0.0)
+            if ([date timeIntervalSinceDate:lastDate] <= 0.0)
                 continue;
 
 
@@ -410,19 +416,19 @@
 
             if (distanceKey != nil)
             {
-                distance = [self scanNumberWithString: record[distanceKey]];
+                distance = [self scanNumberWithString:record[distanceKey]];
 
                 if (distance)
-                    distance = [AppDelegate kilometersForDistance: distance withUnit: distanceUnit];
+                    distance = [AppDelegate kilometersForDistance:distance withUnit:distanceUnit];
             }
             else
             {
-                NSDecimalNumber *newOdometer = [self scanNumberWithString: record[odometerKey]];
+                NSDecimalNumber *newOdometer = [self scanNumberWithString:record[odometerKey]];
 
                 if (newOdometer)
                 {
-                    newOdometer = [AppDelegate kilometersForDistance: newOdometer withUnit: odometerUnit];
-                    distance    = [newOdometer decimalNumberBySubtracting: odometer];
+                    newOdometer = [AppDelegate kilometersForDistance:newOdometer withUnit:odometerUnit];
+                    distance    = [newOdometer decimalNumberBySubtracting:odometer];
                     odometer    = newOdometer;
                 }
             }
@@ -432,41 +438,41 @@
 
             if (volumeUnit != KSVolumeInvalid)
             {
-                volume = [self scanNumberWithString: record[volumeKey]];
+                volume = [self scanNumberWithString:record[volumeKey]];
 
                 if (volume)
-                    volume = [AppDelegate litersForVolume: volume withUnit: volumeUnit];
+                    volume = [AppDelegate litersForVolume:volume withUnit:volumeUnit];
             }
             else
             {
-                volume = [self scanNumberWithString: record[volumeAmountKey]];
+                volume = [self scanNumberWithString:record[volumeAmountKey]];
 
                 if (volume)
-                    volume = [AppDelegate litersForVolume: volume withUnit: [self scanVolumeUnitWithString: record[volumeUnitKey]]];
+                    volume = [AppDelegate litersForVolume:volume withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
             }
 
 
-            NSDecimalNumber *price = [self scanNumberWithString: record[priceKey]];
+            NSDecimalNumber *price = [self scanNumberWithString:record[priceKey]];
 
             if (isTankProImport)
             {
                 // TankPro stores total costs not the price per unit...
-                if (volume == nil || [volume isEqualToNumber: [NSDecimalNumber zero]])
+                if (volume == nil || [volume isEqualToNumber:[NSDecimalNumber zero]])
                     price = [NSDecimalNumber zero];
                 else
-                    price = [price decimalNumberByDividingBy: volume
-                                                withBehavior: [AppDelegate sharedPriceRoundingHandler]];
+                    price = [price decimalNumberByDividingBy:volume
+                                                withBehavior:[AppDelegate sharedPriceRoundingHandler]];
             }
             else if (price)
             {
                 if (volumeUnit != KSVolumeInvalid)
-                    price = [AppDelegate pricePerLiter: price withUnit: volumeUnit];
+                    price = [AppDelegate pricePerLiter:price withUnit:volumeUnit];
                 else
-                    price = [AppDelegate pricePerLiter: price withUnit: [self scanVolumeUnitWithString: record[volumeUnitKey]]];
+                    price = [AppDelegate pricePerLiter:price withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
             }
 
 
-            BOOL filledUp = [self scanBooleanWithString: record[fillupKey]];
+            BOOL filledUp = [self scanBooleanWithString:record[fillupKey]];
 
 
             // For TankPro ignore events until after the first full fill-up
@@ -478,21 +484,21 @@
 
 
             // Consistency check and import
-            if ([distance compare: zero] == NSOrderedDescending && [volume compare: zero] == NSOrderedDescending)
+            if ([distance compare:zero] == NSOrderedDescending && [volume compare:zero] == NSOrderedDescending)
             {
-                distance = [self guessDistanceForParsedDistance: distance andFuelVolume: volume];
+                distance = [self guessDistanceForParsedDistance:distance andFuelVolume:volume];
                 
                 // Add event for car
-                [self addEventForCar: car
-                                date: date
-                            distance: distance
-                               price: price
-                          fuelVolume: volume
-                       inheritedCost: inheritedCost
-                   inheritedDistance: inheritedDistance
-                 inheritedFuelVolume: inheritedFuelVolume
-                            filledUp: filledUp
-                           inContext: managedObjectContext];
+                [self addEventForCar:car
+                                date:date
+                            distance:distance
+                               price:price
+                          fuelVolume:volume
+                       inheritedCost:inheritedCost
+                   inheritedDistance:inheritedDistance
+                 inheritedFuelVolume:inheritedFuelVolume
+                            filledUp:filledUp
+                           inContext:managedObjectContext];
 
                 if (filledUp)
                 {
@@ -502,9 +508,9 @@
                 }
                 else
                 {
-                    inheritedCost       = [inheritedCost       decimalNumberByAdding: [volume decimalNumberByMultiplyingBy: price]];
-                    inheritedDistance   = [inheritedDistance   decimalNumberByAdding: distance];
-                    inheritedFuelVolume = [inheritedFuelVolume decimalNumberByAdding: volume];
+                    inheritedCost       = [inheritedCost       decimalNumberByAdding:[volume decimalNumberByMultiplyingBy:price]];
+                    inheritedDistance   = [inheritedDistance   decimalNumberByAdding:distance];
+                    inheritedFuelVolume = [inheritedFuelVolume decimalNumberByAdding:volume];
                 }
 
                 *numEvents     = *numEvents + 1;
@@ -515,7 +521,7 @@
 
         // Fixup car odometer
         if (detectedEvents)
-            [car setValue: [odometer max: [car valueForKey: @"distanceTotalSum"]] forKey: @"odometer"];
+            [car setValue:[odometer max:[car valueForKey:@"distanceTotalSum"]] forKey:@"odometer"];
     }
 
     return YES;
@@ -528,20 +534,19 @@
 
 
 
-- (BOOL)importFromCSVString: (NSString*)CSVString
-               detectedCars: (NSInteger*)numCars
-             detectedEvents: (NSInteger*)numEvents
-                  sourceURL: (NSURL*)sourceURL
-                  inContext: (NSManagedObjectContext*)managedObjectContext
+- (BOOL)importFromCSVString:(NSString *)CSVString
+               detectedCars:(NSInteger*)numCars
+             detectedEvents:(NSInteger*)numEvents
+                  sourceURL:(NSURL *)sourceURL
+                  inContext:(NSManagedObjectContext *)managedObjectContext
 {
-    CSVParser *parser = [[CSVParser alloc] initWithString: CSVString];
+    CSVParser *parser = [[CSVParser alloc] initWithString:CSVString];
 
 
-    // Check for TankPro import: search for tables containing car definitions
+    // Check for TankPro import:search for tables containing car definitions
     BOOL importFromTankPro = YES;
 
-    while (1)
-    {
+    while (YES) {
         NSArray *CSVTable = [parser parseTable];
 
         if (CSVTable == nil)
@@ -550,25 +555,24 @@
         if ([CSVTable count] == 0)
             continue;
 
-        [self importCarIDs: CSVTable];
+        [self importCarIDs:CSVTable];
     }
 
 
-    // Not a TankPro import: create a dummy car definition
-    if ([carIDs count] == 0)
-    {
+    // Not a TankPro import:create a dummy car definition
+    if ([carIDs count] == 0) {
         id dummyID = [NSNull null];
 
-        [carIDs addObject: dummyID];
-        [modelForID setValue: [self guessModelFromURL: sourceURL] forKey: dummyID];
-        [plateForID setValue: [self guessPlateFromURL: sourceURL] forKey: dummyID];
+        [carIDs addObject:dummyID];
+        [modelForID setValue:[self guessModelFromURL:sourceURL] forKey:dummyID];
+        [plateForID setValue:[self guessPlateFromURL:sourceURL] forKey:dummyID];
 
         importFromTankPro = NO;
     }
 
 
     // Create objects for detected cars
-    *numCars = [self createCarObjectsInContext: managedObjectContext];
+    *numCars = [self createCarObjectsInContext:managedObjectContext];
 
     if (*numCars == 0)
         return NO;
@@ -578,8 +582,7 @@
 
     *numEvents = 0;
 
-    while (1)
-    {
+    while (YES) {
         NSArray *CSVTable = [parser parseTable];
 
         if (CSVTable == nil)
@@ -588,10 +591,10 @@
         if ([CSVTable count] == 0)
             continue;
 
-        [self importRecords: CSVTable
-            formatIsTankPro: importFromTankPro
-             detectedEvents: numEvents
-                  inContext: managedObjectContext];
+        [self importRecords:CSVTable
+            formatIsTankPro:importFromTankPro
+             detectedEvents:numEvents
+                  inContext:managedObjectContext];
     }
 
     return (*numEvents > 0);
@@ -604,26 +607,26 @@
 
 
 
-- (NSDecimalNumber*)scanNumberWithString: (NSString*)string
+- (NSDecimalNumber *)scanNumberWithString:(NSString *)string
 {
     if (string == nil)
         return nil;
 
     // Scan via NSScanner (fast, strict)
-    NSScanner *scanner = [NSScanner scannerWithString: string];
+    NSScanner *scanner = [NSScanner scannerWithString:string];
     NSDecimal d;
 
-    [scanner setLocale: [NSLocale currentLocale]];
-    [scanner setScanLocation: 0];
+    [scanner setLocale:[NSLocale currentLocale]];
+    [scanner setScanLocation:0];
 
-    if ([scanner scanDecimal: &d] && [scanner isAtEnd])
-        return [NSDecimalNumber decimalNumberWithDecimal: d];
+    if ([scanner scanDecimal:&d] && [scanner isAtEnd])
+        return [NSDecimalNumber decimalNumberWithDecimal:d];
 
-    [scanner setLocale: [NSLocale systemLocale]];
-    [scanner setScanLocation: 0];
+    [scanner setLocale:[NSLocale systemLocale]];
+    [scanner setScanLocation:0];
 
-    if ([scanner scanDecimal: &d] && [scanner isAtEnd])
-        return [NSDecimalNumber decimalNumberWithDecimal: d];
+    if ([scanner scanDecimal:&d] && [scanner isAtEnd])
+        return [NSDecimalNumber decimalNumberWithDecimal:d];
 
 
     // Scan with localized numberformatter (sloppy, catches grouping separators)
@@ -635,52 +638,52 @@
 
         nf_current = [[NSNumberFormatter alloc] init];
 
-        [nf_current setGeneratesDecimalNumbers: YES];
-        [nf_current setUsesGroupingSeparator: YES];
-        [nf_current setNumberStyle: NSNumberFormatterDecimalStyle];
-        [nf_current setLenient: YES];
-        [nf_current setLocale: [NSLocale currentLocale]];
+        [nf_current setGeneratesDecimalNumbers:YES];
+        [nf_current setUsesGroupingSeparator:YES];
+        [nf_current setNumberStyle:NSNumberFormatterDecimalStyle];
+        [nf_current setLenient:YES];
+        [nf_current setLocale:[NSLocale currentLocale]];
 
         nf_system = [[NSNumberFormatter alloc] init];
 
-        [nf_system setGeneratesDecimalNumbers: YES];
-        [nf_system setUsesGroupingSeparator: YES];
-        [nf_system setNumberStyle: NSNumberFormatterDecimalStyle];
-        [nf_system setLenient: YES];
-        [nf_system setLocale: [NSLocale systemLocale]];
+        [nf_system setGeneratesDecimalNumbers:YES];
+        [nf_system setUsesGroupingSeparator:YES];
+        [nf_system setNumberStyle:NSNumberFormatterDecimalStyle];
+        [nf_system setLenient:YES];
+        [nf_system setLocale:[NSLocale systemLocale]];
     });
 
     NSNumber *dn;
 
-    if ((dn = [nf_current numberFromString: string]))
-        return (NSDecimalNumber*)dn;
+    if ((dn = [nf_current numberFromString:string]))
+        return (NSDecimalNumber *)dn;
 
-    if ((dn = [nf_system numberFromString: string]))
-        return (NSDecimalNumber*)dn;
+    if ((dn = [nf_system numberFromString:string]))
+        return (NSDecimalNumber *)dn;
 
     return nil;
 }
 
 
-- (NSDate*)scanDate: (NSString*)dateString withOptionalTime: (NSString*)timeString
+- (NSDate *)scanDate:(NSString *)dateString withOptionalTime:(NSString *)timeString
 {
-    NSDate *date = [self scanDateWithString: dateString];
+    NSDate *date = [self scanDateWithString:dateString];
     NSDate *time = nil;
 
     if (date == nil)
         return nil;
 
     if (timeString != nil)
-        time = [self scanTimeWithString: timeString];
+        time = [self scanTimeWithString:timeString];
     
     if (time != nil)
-        return [date dateByAddingTimeInterval: [NSDate timeIntervalSinceBeginningOfDay: time]];
+        return [date dateByAddingTimeInterval:[NSDate timeIntervalSinceBeginningOfDay:time]];
     else
-        return [date dateByAddingTimeInterval: 43200];
+        return [date dateByAddingTimeInterval:43200];
 }
 
 
-- (NSDate*)scanDateWithString: (NSString*)string
+- (NSDate *)scanDateWithString:(NSString *)string
 {
     static NSDateFormatter *df_system  = nil;
     static NSDateFormatter *df_current = nil;
@@ -689,15 +692,15 @@
     dispatch_once (&pred, ^{
 
         df_system = [[NSDateFormatter alloc] init];
-        [df_system setLocale: [NSLocale systemLocale]];
-        [df_system setDateFormat: @"yyyy-MM-dd"];
-        [df_system setLenient: NO];
+        [df_system setLocale:[NSLocale systemLocale]];
+        [df_system setDateFormat:@"yyyy-MM-dd"];
+        [df_system setLenient:NO];
 
         df_current = [[NSDateFormatter alloc] init];
-        [df_current setLocale: [NSLocale currentLocale]];
-        [df_current setDateStyle: NSDateFormatterShortStyle];
-        [df_current setTimeStyle: NSDateFormatterNoStyle];
-        [df_current setLenient: YES];
+        [df_current setLocale:[NSLocale currentLocale]];
+        [df_current setDateStyle:NSDateFormatterShortStyle];
+        [df_current setTimeStyle:NSDateFormatterNoStyle];
+        [df_current setLenient:YES];
 
     });
 
@@ -707,18 +710,18 @@
         return nil;
 
     // Strictly scan own format in system locale
-    if ((d = [df_system dateFromString: string]))
+    if ((d = [df_system dateFromString:string]))
         return d;
 
     // Alternatively scan date in short local style
-    if ((d = [df_current dateFromString: string]))
+    if ((d = [df_current dateFromString:string]))
         return d;
 
     return nil;
 }
 
 
-- (NSDate*)scanTimeWithString: (NSString*)string
+- (NSDate *)scanTimeWithString:(NSString *)string
 {
     static NSDateFormatter *df_system  = nil;
     static NSDateFormatter *df_current = nil;
@@ -727,17 +730,17 @@
     dispatch_once (&pred, ^{
 
         df_system = [[NSDateFormatter alloc] init];
-        [df_system setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
-        [df_system setLocale: [NSLocale systemLocale]];
-        [df_system setDateFormat: @"HH:mm"];
-        [df_system setLenient: NO];
+        [df_system setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [df_system setLocale:[NSLocale systemLocale]];
+        [df_system setDateFormat:@"HH:mm"];
+        [df_system setLenient:NO];
 
         df_current = [[NSDateFormatter alloc] init];
-        [df_current setTimeZone: [NSTimeZone timeZoneForSecondsFromGMT: 0]];
-        [df_current setLocale: [NSLocale currentLocale]];
-        [df_current setTimeStyle: NSDateFormatterShortStyle];
-        [df_current setDateStyle: NSDateFormatterNoStyle];
-        [df_current setLenient: YES];
+        [df_current setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [df_current setLocale:[NSLocale currentLocale]];
+        [df_current setTimeStyle:NSDateFormatterShortStyle];
+        [df_current setDateStyle:NSDateFormatterNoStyle];
+        [df_current setLenient:YES];
 
     });
 
@@ -747,50 +750,46 @@
         return nil;
 
     // Strictly scan own format in system locale
-    if ((d = [df_system dateFromString: string]))
+    if ((d = [df_system dateFromString:string]))
         return d;
 
     // Alternatively scan date in short local style
-    if ((d = [df_current dateFromString: string]))
+    if ((d = [df_current dateFromString:string]))
         return d;
 
     return nil;
 }
 
 
-- (BOOL)scanBooleanWithString: (NSString*)string
+- (BOOL)scanBooleanWithString:(NSString *)string
 {
     if (string == nil)
         return YES;
 
-    NSNumber *n = [self scanNumberWithString: string];
+    NSNumber *n = [self scanNumberWithString:string];
 
-    if (n != nil)
-    {
+    if (n != nil) {
         return ([n integerValue] != 0);
-    }
-    else
-    {
+    } else {
         string = [string uppercaseString];
-        return (![string isEqualToString: @"NO"] && ![string isEqualToString: @"NEIN"]);
+        return (![string isEqualToString:@"NO"] && ![string isEqualToString:@"NEIN"]);
     }
 }
 
 
-- (KSVolume)scanVolumeUnitWithString: (NSString*)string
+- (KSVolume)scanVolumeUnitWithString:(NSString *)string
 {
     if (string == nil)
         return KSVolumeLiter;
 
-    string = [CSVParser simplifyCSVHeaderName: string];
+    string = [CSVParser simplifyCSVHeaderName:string];
 
 
     // Catch Tank Pro exports
-    if ([string isEqualToString: @"L"])
+    if ([string isEqualToString:@"L"])
         return KSVolumeLiter;
 
-    if ([string isEqualToString: @"G"])
-    {
+    if ([string isEqualToString:@"G"]) {
         // TankPro seems to export both gallons simply as "G" => search locale for feasible guess
         if ([AppDelegate volumeUnitFromLocale] == KSVolumeGalUS)
             return KSVolumeGalUS;
@@ -800,16 +799,15 @@
 
 
     // Catch some other forms of gallons
-    NSRange range = [string rangeOfString: @"GAL"];
+    NSRange range = [string rangeOfString:@"GAL"];
 
-    if (range.location != NSNotFound)
-    {
-        range = [string rangeOfString: @"US"];
+    if (range.location != NSNotFound) {
+        range = [string rangeOfString:@"US"];
 
         if (range.location != NSNotFound)
             return KSVolumeGalUS;
 
-        range = [string rangeOfString: @"UK"];
+        range = [string rangeOfString:@"UK"];
 
         if (range.location != NSNotFound)
             return KSVolumeGalUK;
@@ -832,7 +830,7 @@
 
 
 
-- (NSString*)keyForDate: (NSDictionary*)record
+- (NSString *)keyForDate:(NSDictionary *)record
 {
     for (NSString *key in @[ @"JJJJMMTT", @"YYYYMMDD", @"DATE", @"DATUM" ])
         if (record[key])
@@ -842,7 +840,7 @@
 }
 
 
-- (NSString*)keyForTime: (NSDictionary*)record
+- (NSString *)keyForTime:(NSDictionary *)record
 {
     for (NSString *key in @[ @"HHMM", @"TIME", @"ZEIT" ])
         if (record[key])
@@ -852,18 +850,16 @@
 }
 
 
-- (NSString*)keyForDistance: (NSDictionary*)record unit: (KSDistance*)unit
+- (NSString *)keyForDistance:(NSDictionary *)record unit:(KSDistance*)unit
 {
     for (NSString *key in @[ @"KILOMETERS", @"KILOMETER", @"STRECKE" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSDistanceKilometer;
             return key;
         }
 
     for (NSString *key in @[ @"MILES", @"MEILEN" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSDistanceStatuteMile;
             return key;
         }
@@ -872,18 +868,16 @@
 }
 
 
-- (NSString*)keyForOdometer: (NSDictionary*)record unit: (KSDistance*)unit
+- (NSString *)keyForOdometer:(NSDictionary *)record unit:(KSDistance*)unit
 {
     for (NSString *key in @[ @"ODOMETER(KM)", @"KILOMETERSTAND(KM)" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSDistanceKilometer;
             return key;
         }
 
     for (NSString *key in @[ @"ODOMETER(MI)", @"KILOMETERSTAND(MI)" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSDistanceStatuteMile;
             return key;
         }
@@ -892,25 +886,22 @@
 }
 
 
-- (NSString*)keyForVolume: (NSDictionary*)record unit: (KSVolume*)unit;
+- (NSString *)keyForVolume:(NSDictionary *)record unit:(KSVolume*)unit;
 {
     for (NSString *key in @[ @"LITERS", @"LITER", @"TANKMENGE" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSVolumeLiter;
             return key;
         }
 
     for (NSString *key in @[ @"GALLONS(US)", @"GALLONEN(US)" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSVolumeGalUS;
             return key;
         }
 
     for (NSString *key in @[ @"GALLONS(UK)", @"GALLONEN(UK)" ])
-        if (record[key])
-        {
+        if (record[key]) {
             *unit = KSVolumeGalUK;
             return key;
         }
@@ -919,7 +910,7 @@
 }
 
 
-- (NSString*)keyForVolume: (NSDictionary*)record
+- (NSString *)keyForVolume:(NSDictionary *)record
 {
     for (NSString *key in @[ @"GETANKT", @"AMOUNTFILLED" ])
         if (record[key])
@@ -929,7 +920,7 @@
 }
 
 
-- (NSString*)keyForVolumeUnit: (NSDictionary*)record
+- (NSString *)keyForVolumeUnit:(NSDictionary *)record
 {
     // 'MAFLEINHEIT' happens when Windows encoding is misinterpreted as MacRoman...
     for (NSString *key in @[ @"MASSEINHEIT", @"UNIT", @"MAFLEINHEIT" ])
@@ -940,7 +931,7 @@
 }
 
 
-- (NSString*)keyForPrice: (NSDictionary*)record
+- (NSString *)keyForPrice:(NSDictionary *)record
 {
     for (NSString *key in @[ @"PRICEPERLITER", @"PRICEPERGALLON", @"PRICE", @"PREISPROLITER", @"PREISPROGALLONE", @"PREIS", @"KOSTEN/LITER" ])
         if (record[key])
@@ -950,7 +941,7 @@
 }
 
 
-- (NSString*)keyForFillup: (NSDictionary*)record
+- (NSString *)keyForFillup:(NSDictionary *)record
 {
     for (NSString *key in @[ @"FULLFILLUP", @"VOLLGETANKT" ])
         if (record[key])
@@ -960,7 +951,7 @@
 }
 
 
-- (NSString*)keyForModel: (NSDictionary*)record
+- (NSString *)keyForModel:(NSDictionary *)record
 {
     for (NSString *key in @[ @"MODEL", @"MODELL" ])
         if (record[key])
@@ -970,7 +961,7 @@
 }
 
 
-- (NSString*)keyForCarID: (NSDictionary*)record
+- (NSString *)keyForCarID:(NSDictionary *)record
 {
     for (NSString *key in @[ @"CARID", @"FAHRZEUGID" ])
         if (record[key])

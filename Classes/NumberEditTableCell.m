@@ -22,42 +22,42 @@
 }
 
 
-- (void)updateTextFieldColorForValue: (id)value
+- (void)updateTextFieldColorForValue:(id)value
 {
     BOOL valid = YES;
 
-    if ([(id)self.delegate respondsToSelector: @selector(valueValid:identifier:)])
-        if (! [self.delegate valueValid:value identifier: self.valueIdentifier])
+    if ([(id)self.delegate respondsToSelector:@selector(valueValid:identifier:)])
+        if (! [self.delegate valueValid:value identifier:self.valueIdentifier])
             valid = NO;
 
     self.textField.textColor = (valid) ? [UIColor blackColor] : [self invalidTextColor];
 }
 
 
-- (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject viewController:(id)viewController tableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
-    self.textFieldSuffix          = ((NSDictionary*)dataObject)[@"suffix"];
-    self.numberFormatter          = ((NSDictionary*)dataObject)[@"formatter"];
-    self.alternateNumberFormatter = ((NSDictionary*)dataObject)[@"alternateFormatter"];
+    self.textFieldSuffix          = ((NSDictionary *)dataObject)[@"suffix"];
+    self.numberFormatter          = ((NSDictionary *)dataObject)[@"formatter"];
+    self.alternateNumberFormatter = ((NSDictionary *)dataObject)[@"alternateFormatter"];
 
-    NSDecimalNumber *value = [self.delegate valueForIdentifier: self.valueIdentifier];
+    NSDecimalNumber *value = [self.delegate valueForIdentifier:self.valueIdentifier];
 
     if (value)
     {
         if (self.alternateNumberFormatter)
-            self.textField.text = [self.alternateNumberFormatter stringFromNumber: value];
+            self.textField.text = [self.alternateNumberFormatter stringFromNumber:value];
         else
-            self.textField.text = [self.numberFormatter stringFromNumber: value];
+            self.textField.text = [self.numberFormatter stringFromNumber:value];
 
         if (self.textFieldSuffix)
-            self.textField.text = [self.textField.text stringByAppendingString: self.textFieldSuffix];
+            self.textField.text = [self.textField.text stringByAppendingString:self.textFieldSuffix];
     }
     else
         self.textField.text = @"";
 
-    [self updateTextFieldColorForValue: value];
+    [self updateTextFieldColorForValue:value];
 }
 
 
@@ -68,140 +68,140 @@
 
 
 // Implement special behavior for newly added characters
-- (BOOL)textField: (UITextField*)aTextField shouldChangeCharactersInRange: (NSRange)range replacementString: (NSString*)string
+- (BOOL)textField:(UITextField *)aTextField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     // Modify text
     NSString *text         = [aTextField text];
-    NSDecimalNumber *value = (NSDecimalNumber*)[self.numberFormatter numberFromString: text];
-    NSDecimalNumber *ten   = [NSDecimalNumber decimalNumberWithMantissa: 1 exponent: 1 isNegative: NO];
-    NSDecimalNumber *scale = [NSDecimalNumber decimalNumberWithMantissa: 1 exponent: [self.numberFormatter maximumFractionDigits] isNegative: NO];
+    NSDecimalNumber *value = (NSDecimalNumber *)[self.numberFormatter numberFromString:text];
+    NSDecimalNumber *ten   = [NSDecimalNumber decimalNumberWithMantissa:1 exponent:1 isNegative:NO];
+    NSDecimalNumber *scale = [NSDecimalNumber decimalNumberWithMantissa:1 exponent:[self.numberFormatter maximumFractionDigits] isNegative:NO];
 
     if (range.length == 0)
     {
         if (range.location == [text length] && [string length] == 1)
         {
             // New character must be a digit
-            NSDecimalNumber *digit = [NSDecimalNumber decimalNumberWithString: string];
+            NSDecimalNumber *digit = [NSDecimalNumber decimalNumberWithString:string];
 
-            if ([digit isEqual: [NSDecimalNumber notANumber]])
+            if ([digit isEqual:[NSDecimalNumber notANumber]])
                 return NO;
 
             // Special shift semantics when appending at end of string
-            value = [value decimalNumberByMultiplyingBy: ten];
-            value = [value decimalNumberByAdding: [digit decimalNumberByDividingBy: scale]];
+            value = [value decimalNumberByMultiplyingBy:ten];
+            value = [value decimalNumberByAdding:[digit decimalNumberByDividingBy:scale]];
         }
         else
         {
             // Normal insert otherwise
-            text  = [text stringByReplacingCharactersInRange: range withString: string];
-            text  = [text stringByReplacingOccurrencesOfString: [self.numberFormatter groupingSeparator] withString: @""];
-            value = (NSDecimalNumber*)[self.numberFormatter numberFromString: text];
+            text  = [text stringByReplacingCharactersInRange:range withString:string];
+            text  = [text stringByReplacingOccurrencesOfString:[self.numberFormatter groupingSeparator] withString:@""];
+            value = (NSDecimalNumber *)[self.numberFormatter numberFromString:text];
         }
 
         // Don't append when the result gets too large or below zero
-        if ([value compare: [NSDecimalNumber decimalNumberWithMantissa: 1 exponent: 6 isNegative: NO]] != NSOrderedAscending)
+        if ([value compare:[NSDecimalNumber decimalNumberWithMantissa:1 exponent:6 isNegative:NO]] != NSOrderedAscending)
             return NO;
 
-        if ([value compare: [NSDecimalNumber zero]] == NSOrderedAscending)
+        if ([value compare:[NSDecimalNumber zero]] == NSOrderedAscending)
             return NO;
     }
 
     else if (range.location >= [text length] - 1)
     {
-        NSDecimalNumberHandler *handler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundDown
-                                                                                                 scale: (short)[self.numberFormatter maximumFractionDigits]
-                                                                                      raiseOnExactness: NO
-                                                                                       raiseOnOverflow: NO
-                                                                                      raiseOnUnderflow: NO
-                                                                                   raiseOnDivideByZero: NO];
+        NSDecimalNumberHandler *handler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown
+                                                                                                 scale:(short)[self.numberFormatter maximumFractionDigits]
+                                                                                      raiseOnExactness:NO
+                                                                                       raiseOnOverflow:NO
+                                                                                      raiseOnUnderflow:NO
+                                                                                   raiseOnDivideByZero:NO];
 
         // Delete only the last digit
-        value = [value decimalNumberByDividingBy: ten withBehavior: handler];
+        value = [value decimalNumberByDividingBy:ten withBehavior:handler];
         value = [value decimalNumberByRoundingAccordingToBehavior:  handler];
     }
 
-    [aTextField setText: [self.numberFormatter stringFromNumber: value]];
+    [aTextField setText:[self.numberFormatter stringFromNumber:value]];
 
     // Tell delegate about new value
-    [self.delegate valueChanged: value identifier: self.valueIdentifier];
-    [self updateTextFieldColorForValue: value];
+    [self.delegate valueChanged:value identifier:self.valueIdentifier];
+    [self updateTextFieldColorForValue:value];
 
     return NO;
 }
 
 
 // Reset to zero value on clear
-- (BOOL)textFieldShouldClear: (UITextField*)aTextField
+- (BOOL)textFieldShouldClear:(UITextField *)aTextField
 {
     NSNumber *clearedValue = [NSDecimalNumber zero];
 
 
     if (aTextField.editing)
     {
-        aTextField.text = [self.numberFormatter stringFromNumber: clearedValue];
+        aTextField.text = [self.numberFormatter stringFromNumber:clearedValue];
     }
     else
     {
         if (self.alternateNumberFormatter)
-            aTextField.text = [self.alternateNumberFormatter stringFromNumber: clearedValue];
+            aTextField.text = [self.alternateNumberFormatter stringFromNumber:clearedValue];
         else
-            aTextField.text = [self.numberFormatter stringFromNumber: clearedValue];
+            aTextField.text = [self.numberFormatter stringFromNumber:clearedValue];
 
         if (self.textFieldSuffix)
-            aTextField.text = [aTextField.text stringByAppendingString: self.textFieldSuffix];
+            aTextField.text = [aTextField.text stringByAppendingString:self.textFieldSuffix];
     }
 
     // Tell delegate about new value
-    [self.delegate valueChanged: clearedValue identifier: self.valueIdentifier];
-    [self updateTextFieldColorForValue: clearedValue];
+    [self.delegate valueChanged:clearedValue identifier:self.valueIdentifier];
+    [self updateTextFieldColorForValue:clearedValue];
 
     return NO;
 }
 
 
 // Editing starts, remove suffix and switch to normal formatter
-- (void)textFieldDidBeginEditing: (UITextField*)aTextField
+- (void)textFieldDidBeginEditing:(UITextField *)aTextField
 {
     if (self.textFieldSuffix)
     {
-        if ([aTextField.text hasSuffix: self.textFieldSuffix])
-            aTextField.text = [aTextField.text substringToIndex: [aTextField.text length] - [self.textFieldSuffix length]];
+        if ([aTextField.text hasSuffix:self.textFieldSuffix])
+            aTextField.text = [aTextField.text substringToIndex:[aTextField.text length] - [self.textFieldSuffix length]];
     }
 
     if (self.alternateNumberFormatter)
     {
-        NSDecimalNumber *value = (NSDecimalNumber*)[self.alternateNumberFormatter numberFromString: aTextField.text];
+        NSDecimalNumber *value = (NSDecimalNumber *)[self.alternateNumberFormatter numberFromString:aTextField.text];
 
         if (value == nil)
             value = [NSDecimalNumber zero];
 
-        aTextField.text = [self.numberFormatter stringFromNumber: value];
-        [self.delegate valueChanged: value identifier: self.valueIdentifier];
+        aTextField.text = [self.numberFormatter stringFromNumber:value];
+        [self.delegate valueChanged:value identifier:self.valueIdentifier];
     }
 }
 
 
 // Editing ends, switch back to alternate formatter and append specified suffix
-- (void)textFieldDidEndEditing: (UITextField*)aTextField
+- (void)textFieldDidEndEditing:(UITextField *)aTextField
 {
     if (self.alternateNumberFormatter)
     {
-        NSDecimalNumber *value = (NSDecimalNumber*)[self.numberFormatter numberFromString: aTextField.text];
+        NSDecimalNumber *value = (NSDecimalNumber *)[self.numberFormatter numberFromString:aTextField.text];
 
         if (value == nil)
             value = [NSDecimalNumber zero];
 
-        aTextField.text = [self.alternateNumberFormatter stringFromNumber: value];
-        [self.delegate valueChanged: value identifier: self.valueIdentifier];
+        aTextField.text = [self.alternateNumberFormatter stringFromNumber:value];
+        [self.delegate valueChanged:value identifier:self.valueIdentifier];
     }
 
     if (self.textFieldSuffix)
     {
-        if (! [aTextField.text hasSuffix: self.textFieldSuffix])
-            aTextField.text = [aTextField.text stringByAppendingString: self.textFieldSuffix];
+        if (! [aTextField.text hasSuffix:self.textFieldSuffix])
+            aTextField.text = [aTextField.text stringByAppendingString:self.textFieldSuffix];
     }
 
-    [super textFieldDidEndEditing: aTextField];
+    [super textFieldDidEndEditing:aTextField];
 }
 
 @end

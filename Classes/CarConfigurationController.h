@@ -19,7 +19,7 @@ typedef enum
 
 @protocol CarConfigurationControllerDelegate
 
-- (void)carConfigurationController: (CarConfigurationController*)controller didFinishWithResult: (CarConfigurationResult)result;
+- (void)carConfigurationController:(CarConfigurationController*)controller didFinishWithResult:(CarConfigurationResult)result;
 
 @end
 
@@ -43,7 +43,7 @@ typedef enum
 
 @property (nonatomic, weak) id<CarConfigurationControllerDelegate> delegate;
 
-- (IBAction)handleCancel: (id)sender;
-- (IBAction)handleSave: (id)sender;
+- (IBAction)handleCancel:(id)sender;
+- (IBAction)handleSave:(id)sender;
 
 @end

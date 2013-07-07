@@ -38,11 +38,11 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     {
         CTFontRef helvetica24 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 24, NULL);
 
-        prefixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica24,
-                                 (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor blackColor] CGColor]};
+        prefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
+                                 (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor blackColor] CGColor]};
 
-        shadowPrefixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica24,
-                                       (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor whiteColor] CGColor]};
+        shadowPrefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
+                                       (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor whiteColor] CGColor]};
 
         CFRelease (helvetica24);
     }
@@ -51,11 +51,11 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
     {
         CTFontRef helvetica18 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 18, NULL);
 
-        suffixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica18,
-                                 (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor darkGrayColor] CGColor]};
+        suffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
+                                 (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor darkGrayColor] CGColor]};
 
-        shadowSuffixAttributesDict = @{(NSString*)kCTFontAttributeName: (__bridge id)helvetica18,
-                                       (NSString*)kCTForegroundColorAttributeName: (id)[[UIColor whiteColor] CGColor]};
+        shadowSuffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
+                                       (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor whiteColor] CGColor]};
 
         CFRelease (helvetica18);
     }
@@ -85,44 +85,44 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-- (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject viewController:(id)viewController tableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
     // Array of possible cars
-    self.fetchedObjects = ((NSDictionary*)dataObject)[@"fetchedObjects"];
+    self.fetchedObjects = ((NSDictionary *)dataObject)[@"fetchedObjects"];
 
     // Look for index of selected car
-    NSManagedObject *managedObject = [self.delegate valueForIdentifier: self.valueIdentifier];
-    NSUInteger initialIndex = [self.fetchedObjects indexOfObject: managedObject];
+    NSManagedObject *managedObject = [self.delegate valueForIdentifier:self.valueIdentifier];
+    NSUInteger initialIndex = [self.fetchedObjects indexOfObject:managedObject];
 
     if (initialIndex == NSNotFound)
         initialIndex = 0;
 
     // (Re-)configure car picker and select the initial item
     [carPicker reloadAllComponents];
-    [carPicker selectRow: initialIndex inComponent: 0 animated: NO];
+    [carPicker selectRow:initialIndex inComponent:0 animated:NO];
 
-    [self selectCar: fetchedObjects[initialIndex]];
+    [self selectCar:fetchedObjects[initialIndex]];
 }
 
 
-- (void)selectCar: (NSManagedObject*)managedObject
+- (void)selectCar:(NSManagedObject *)managedObject
 {
     // Update textfield in cell
-    NSString *description = [NSString stringWithFormat: @"%@ %@",
-                                [managedObject valueForKey: @"name"],
-                                [managedObject valueForKey: @"numberPlate"]];
+    NSString *description = [NSString stringWithFormat:@"%@ %@",
+                                [managedObject valueForKey:@"name"],
+                                [managedObject valueForKey:@"numberPlate"]];
 
     if ([description length] > maximumDescriptionLength)
-        description = [NSString stringWithFormat: @"%@%C",
-                        [description substringToIndex: maximumDescriptionLength],
+        description = [NSString stringWithFormat:@"%@%C",
+                        [description substringToIndex:maximumDescriptionLength],
                         (unsigned short)0x2026];
 
     self.textFieldProxy.text = description;
 
     // Store selected car in delegate
-    [self.delegate valueChanged: managedObject identifier: self.valueIdentifier];
+    [self.delegate valueChanged:managedObject identifier:self.valueIdentifier];
 }
 
 
@@ -132,21 +132,21 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
 
-- (NSInteger)numberOfComponentsInPickerView: (UIPickerView*)pickerView
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
     return 1;
 }
 
 
-- (NSInteger)pickerView: (UIPickerView*)pickerView numberOfRowsInComponent: (NSInteger)component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     return [self.fetchedObjects count];
 }
 
 
-- (void)pickerView: (UIPickerView*)pickerView didSelectRow: (NSInteger)row inComponent: (NSInteger)component
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    [self selectCar: fetchedObjects[row]];
+    [self selectCar:fetchedObjects[row]];
 }
 
 
@@ -156,30 +156,30 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
 
-- (CGFloat)pickerView: (UIPickerView*)pickerView rowHeightForComponent: (NSInteger)component
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
     return PickerViewCellHeight;
 }
 
 
-- (CGFloat)pickerView: (UIPickerView*)pickerView widthForComponent: (NSInteger)component
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
     return PickerViewCellWidth;
 }
 
 
-- (CTLineRef)truncatedLineForName: (NSString*)name info: (NSString*)info shadow: (BOOL)shadow
+- (CTLineRef)truncatedLineForName:(NSString *)name info:(NSString *)info shadow:(BOOL)shadow
 {
     NSAttributedString *truncationString = [[NSAttributedString alloc]
-                                                initWithString: [NSString stringWithFormat: @"%C", (unsigned short)0x2026]
-                                                    attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
+                                                initWithString:[NSString stringWithFormat:@"%C", (unsigned short)0x2026]
+                                                    attributes:(shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]
-                                                        initWithString: [NSString stringWithFormat: @"%@  %@", name, info]
-                                                            attributes: (shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
+                                                        initWithString:[NSString stringWithFormat:@"%@  %@", name, info]
+                                                            attributes:(shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
 
-    [attributedString setAttributes: (shadow) ? shadowPrefixAttributesDict : prefixAttributesDict
-                              range: NSMakeRange (0, [name length])];
+    [attributedString setAttributes:(shadow) ? shadowPrefixAttributesDict : prefixAttributesDict
+                              range:NSMakeRange (0, [name length])];
 
     CTLineRef line            = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) attributedString);
     CTLineRef truncationToken = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) truncationString);
@@ -193,12 +193,12 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-- (UIView*)pickerView: (UIPickerView*)pickerView viewForRow: (NSInteger)row forComponent: (NSInteger)component reusingView: (UIView*)view
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     // Strings to be displayed
     NSManagedObject *managedObject = fetchedObjects[row];
-    NSString *name = [managedObject valueForKey: @"name"];
-    NSString *info = [managedObject valueForKey: @"numberPlate"];
+    NSString *name = [managedObject valueForKey:@"name"];
+    NSString *info = [managedObject valueForKey:@"numberPlate"];
 
 
     // Draw strings with attributes into image
@@ -206,7 +206,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
     UIGraphicsBeginImageContextWithOptions (CGSizeMake (PickerViewCellWidth, PickerViewCellHeight), NO, 0.0);
     {
-        CGContextRef context = UIGraphicsGetCurrentContext ();
+        CGContextRef context = UIGraphicsGetCurrentContext();
 
         CGContextTranslateCTM (context, 1, PickerViewCellHeight);
         CGContextScaleCTM (context, 1, -1);
@@ -215,33 +215,33 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
         if ([AppDelegate systemMajorVersion] < 7)
         {
-            truncatedLine= [self truncatedLineForName: name info: info shadow: YES];
+            truncatedLine= [self truncatedLineForName:name info:info shadow:YES];
             CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition - 1);
             CTLineDraw (truncatedLine, context);
             CFRelease (truncatedLine);
         }
 
-        truncatedLine = [self truncatedLineForName: name info: info shadow: NO];
+        truncatedLine = [self truncatedLineForName:name info:info shadow:NO];
         CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition);
         CTLineDraw (truncatedLine, context);
         CFRelease (truncatedLine);
 
-        image = UIGraphicsGetImageFromCurrentImageContext ();
+        image = UIGraphicsGetImageFromCurrentImageContext();
     }
-    UIGraphicsEndImageContext ();
+    UIGraphicsEndImageContext();
 
 
     // Wrap with imageview
     PickerImageView *imageView;
 
-    if (view != nil && [view isKindOfClass: [PickerImageView class]])
+    if (view != nil && [view isKindOfClass:[PickerImageView class]])
     {
         imageView       = (PickerImageView*)view;
         imageView.image = image;
     }
     else
     {
-        imageView = [[PickerImageView alloc] initWithImage: image];
+        imageView = [[PickerImageView alloc] initWithImage:image];
     }
 
     imageView.userInteractionEnabled = YES;
@@ -250,7 +250,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
     // Description for accessibility
-    imageView.textualDescription = [NSString stringWithFormat: @"%@ %@", name, info];
+    imageView.textualDescription = [NSString stringWithFormat:@"%@ %@", name, info];
 
     return imageView;
 }

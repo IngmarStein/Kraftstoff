@@ -2,7 +2,6 @@
 //
 // Kraftstoff
 
-
 @interface AppWindow : UIWindow {}
 
 @end

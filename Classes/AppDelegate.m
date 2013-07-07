@@ -13,38 +13,30 @@
 
 
 // Shadow heights used within the app
-CGFloat const NavBarShadowHeight   = 4.0;  // old: 16
-CGFloat const TableBotShadowHeight = 4.0;  // old: 12
-CGFloat const TableTopShadowHeight = 4.0;  // old: 10
+CGFloat const TableBotShadowHeight = 4.0;
+CGFloat const TableTopShadowHeight = 4.0;
 
 // Standard heights for UI elements
 CGFloat const TabBarHeight        = 49.0;
-CGFloat const NavBarHeight        = 44.0;
 CGFloat const StatusBarHeight     = 20.0;
-CGFloat const HugeStatusBarHeight = 40.0;
+
 
 
 @implementation AppDelegate
+{
+    NSString    *errorDescription;
+    UIAlertView *importAlert;
+}
 
-@synthesize importAlert;
-@synthesize window;
-@synthesize tabBarController;
-@synthesize background;
-@synthesize managedObjectContext;
-@synthesize managedObjectModel;
-@synthesize persistentStoreCoordinator;
+@synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectModel = _managedObjectModel;
+@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
 
 
 #pragma mark -
-#pragma mark Application Support
+#pragma mark Hardware/Software Version Check
 
-
-
-+ (AppDelegate*)sharedDelegate
-{
-    return [[UIApplication sharedApplication] delegate];
-}
 
 
 + (NSInteger)systemMajorVersion
@@ -63,7 +55,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 + (BOOL)isLongPhone
 {
-    if (UI_USER_INTERFACE_IDIOM () == UIUserInterfaceIdiomPhone)
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         if ([UIScreen mainScreen].scale == 2.0f)
         {
             CGSize result = [[UIScreen mainScreen] bounds].size;
@@ -71,7 +63,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
             result = CGSizeMake(result.width * scale, result.height * scale);
             
-            if(result.height == 1136)
+            if (result.height == 1136)
                 return YES;
         }
     
@@ -100,54 +92,54 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
-- (void)commonLaunchInitialization: (NSDictionary*)launchOptions
+- (void)commonLaunchInitialization:(NSDictionary *)launchOptions
 {
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        [window makeKeyAndVisible];
+        [_window makeKeyAndVisible];
 
         // Switch once to the car view for new users
         if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil)
         {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-            if ([defaults boolForKey: @"firstStartup"])
+            if ([defaults boolForKey:@"firstStartup"])
             {
-                if ([[defaults stringForKey: @"preferredCarID"] isEqualToString: @""])
-                    tabBarController.selectedIndex = 1;
+                if ([[defaults stringForKey:@"preferredCarID"] isEqualToString:@""])
+                    _tabBarController.selectedIndex = 1;
 
-                [defaults setObject: @NO forKey: @"firstStartup"];
+                [defaults setObject:@NO forKey:@"firstStartup"];
             }
         }
     });
 }
 
 
-- (BOOL)application: (UIApplication*)application willFinishLaunchingWithOptions: (NSDictionary*)launchOptions
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self commonLaunchInitialization: launchOptions];
+    [self commonLaunchInitialization:launchOptions];
     return YES;
 }
 
 
-- (BOOL)application: (UIApplication*)application didFinishLaunchingWithOptions: (NSDictionary*)launchOptions
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self commonLaunchInitialization: launchOptions];
+    [self commonLaunchInitialization:launchOptions];
     return YES;
 }
 
 
-- (void)applicationDidEnterBackground: (UIApplication*)application
+- (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    [self saveContext: managedObjectContext];
+    [self saveContext:_managedObjectContext];
 }
 
 
-- (void)applicationWillTerminate: (UIApplication*)application
+- (void)applicationWillTerminate:(UIApplication *)application
 {
-    [self saveContext: managedObjectContext];
+    [self saveContext:_managedObjectContext];
 }
 
 
@@ -157,16 +149,16 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-- (BOOL)application: (UIApplication*)application shouldSaveApplicationState: (NSCoder*)coder
+- (BOOL)application:(UIApplication *)application shouldSaveApplicationState:(NSCoder *)coder
 {
     return YES;
 }
 
 
-- (BOOL)application: (UIApplication*)application shouldRestoreApplicationState: (NSCoder*)coder
+- (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
-    NSInteger bundleVersion = [[[NSBundle mainBundle] infoDictionary][(NSString*)kCFBundleVersionKey] integerValue];
-    NSInteger stateVersion = [[coder decodeObjectForKey: UIApplicationStateRestorationBundleVersionKey] integerValue];
+    NSInteger bundleVersion = [[[NSBundle mainBundle] infoDictionary][(NSString *)kCFBundleVersionKey] integerValue];
+    NSInteger stateVersion = [[coder decodeObjectForKey:UIApplicationStateRestorationBundleVersionKey] integerValue];
 
     return (stateVersion <= bundleVersion);
 }
@@ -180,19 +172,19 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 - (void)showImportAlert
 {
-    if (self.importAlert == nil)
+    if (importAlert == nil)
     {
-        UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame: CGRectMake (125, 50, 30, 30)];
-        [progress setActivityIndicatorViewStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake (125, 50, 30, 30)];
+        [progress setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [progress startAnimating];
 
-        self.importAlert = [[UIAlertView alloc] initWithTitle: _I18N (@"Importing")
-                                                      message: @""
-                                                     delegate: nil
-                                            cancelButtonTitle: nil
-                                            otherButtonTitles: nil];
+        importAlert = [[UIAlertView alloc] initWithTitle:_I18N(@"Importing")
+                                                 message:@""
+                                                delegate:nil
+                                       cancelButtonTitle:nil
+                                       otherButtonTitles:nil];
 
-        [importAlert addSubview: progress];
+        [importAlert addSubview:progress];
         [importAlert show];
     }
 }
@@ -200,23 +192,23 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 - (void)hideImportAlert
 {
-    [self.importAlert dismissWithClickedButtonIndex: 0 animated: YES];
-    self.importAlert = nil;
+    [importAlert dismissWithClickedButtonIndex:0 animated:YES];
+    importAlert = nil;
 }
 
 
 // Read file contents from given URL, guess file encoding
-- (NSString*)contentsOfURL: (NSURL*)url
+- (NSString *)contentsOfURL:(NSURL *)url
 {
     NSStringEncoding enc;
 
     NSError  *error  = nil;
-    NSString *string = [NSString stringWithContentsOfURL: url usedEncoding: &enc error: &error];
+    NSString *string = [NSString stringWithContentsOfURL:url usedEncoding:&enc error:&error];
 
     if (string == nil || error != nil)
     {
         error  = nil;
-        string = [NSString stringWithContentsOfURL: url encoding: NSMacOSRomanStringEncoding error: &error];
+        string = [NSString stringWithContentsOfURL:url encoding:NSMacOSRomanStringEncoding error:&error];
     }
 
     return string;
@@ -224,13 +216,13 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 // Removes files from the inbox
-- (void)removeFileItemAtURL: (NSURL*)url
+- (void)removeFileItemAtURL:(NSURL *)url
 {
     if ([url isFileURL])
     {
         NSError *error = nil;
 
-        [[NSFileManager defaultManager] removeItemAtURL: url error: &error];
+        [[NSFileManager defaultManager] removeItemAtURL:url error:&error];
 
         if (error != nil)
             NSLog (@"%@", [error localizedDescription]);
@@ -238,25 +230,25 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
-- (NSString*)pluralizedImportMessageForCarCount: (NSInteger)carCount eventCount: (NSInteger)eventCount
+- (NSString *)pluralizedImportMessageForCarCount:(NSInteger)carCount eventCount:(NSInteger)eventCount
 {
     NSString *format;
     
     if (carCount == 1)
-        format = _I18N (((eventCount == 1) ? @"Imported %d car with %d fuel event."  : @"Imported %d car with %d fuel events."));
+        format = _I18N(((eventCount == 1) ? @"Imported %d car with %d fuel event."  : @"Imported %d car with %d fuel events."));
     else
-        format = _I18N (((eventCount == 1) ? @"Imported %d cars with %d fuel event." : @"Imported %d cars with %d fuel events."));
+        format = _I18N(((eventCount == 1) ? @"Imported %d cars with %d fuel event." : @"Imported %d cars with %d fuel events."));
 
     return [NSString stringWithFormat:format, carCount, eventCount];
 }
 
 
-- (BOOL)application: (UIApplication*)application openURL: (NSURL*)url sourceApplication: (NSString*)sourceApplication annotation: (id)annotation
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     // Ugly, but don't allow nested imports
-    if (self.importAlert)
+    if (importAlert)
     {
-        [self removeFileItemAtURL: url];
+        [self removeFileItemAtURL:url];
         return NO;
     }
 
@@ -265,14 +257,14 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
     // Import in context with private queue
     NSManagedObjectContext *parentContext = self.managedObjectContext;
-    NSManagedObjectContext *importContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSPrivateQueueConcurrencyType];
-    [importContext setParentContext: parentContext];
+    NSManagedObjectContext *importContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [importContext setParentContext:parentContext];
 
     [importContext performBlock: ^{
 
         // Read file contents from given URL, guess file encoding
-        NSString *CSVString = [self contentsOfURL: url];
-        [self removeFileItemAtURL: url];
+        NSString *CSVString = [self contentsOfURL:url];
+        [self removeFileItemAtURL:url];
 
         if (CSVString)
         {
@@ -282,55 +274,55 @@ CGFloat const HugeStatusBarHeight = 40.0;
             NSInteger numCars   = 0;
             NSInteger numEvents = 0;
 
-            BOOL success = [importer importFromCSVString: CSVString
-                                            detectedCars: &numCars
-                                          detectedEvents: &numEvents
-                                               sourceURL: url
-                                              inContext: importContext];
+            BOOL success = [importer importFromCSVString:CSVString
+                                            detectedCars:&numCars
+                                          detectedEvents:&numEvents
+                                               sourceURL:url
+                                              inContext:importContext];
 
             // On success propagate changes to parent context
             if (success)
             {
-                [self saveContext: importContext];
-                [parentContext performBlock: ^{ [self saveContext: parentContext]; }];
+                [self saveContext:importContext];
+                [parentContext performBlock: ^{ [self saveContext:parentContext]; }];
             }
 
-            dispatch_async (dispatch_get_main_queue (),
+            dispatch_async (dispatch_get_main_queue(),
                             ^{
                                [self hideImportAlert];
 
                                 NSString *title = (success)
-                                                     ? _I18N (@"Import Finished")
-                                                     : _I18N (@"Import Failed");
+                                                     ? _I18N(@"Import Finished")
+                                                     : _I18N(@"Import Failed");
 
                                 NSString *message = (success)
-                                                     ? [self pluralizedImportMessageForCarCount: numCars eventCount: numEvents]
-                                                     : _I18N (@"No valid CSV-data could be found.");
+                                                     ? [self pluralizedImportMessageForCarCount:numCars eventCount:numEvents]
+                                                     : _I18N(@"No valid CSV-data could be found.");
 
-                                [[[UIAlertView alloc] initWithTitle: title
-                                                            message: message
-                                                           delegate: nil
-                                                  cancelButtonTitle: _I18N (@"OK")
-                                                  otherButtonTitles: nil] show];
+                                [[[UIAlertView alloc] initWithTitle:title
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:_I18N(@"OK")
+                                                  otherButtonTitles:nil] show];
                             });
         }
         else
         {
-            dispatch_async (dispatch_get_main_queue (),
+            dispatch_async (dispatch_get_main_queue(),
                             ^{
                                 [self hideImportAlert];
 
-                                [[[UIAlertView alloc] initWithTitle: _I18N (@"Import Failed")
-                                                            message: _I18N (@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
-                                                           delegate: nil
-                                                  cancelButtonTitle: _I18N (@"OK")
-                                                  otherButtonTitles: nil] show];
+                                [[[UIAlertView alloc] initWithTitle:_I18N(@"Import Failed")
+                                                            message:_I18N(@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
+                                                           delegate:nil
+                                                  cancelButtonTitle:_I18N(@"OK")
+                                                  otherButtonTitles:nil] show];
                             });
         }
     }];
 
     // Treat imports as successfull first startups
-    [[NSUserDefaults standardUserDefaults] setObject: @NO forKey: @"firstStartup"];
+    [[NSUserDefaults standardUserDefaults] setObject:@NO forKey:@"firstStartup"];
     return YES;
 }
 
@@ -341,7 +333,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-- (NSString*)applicationDocumentsDirectory
+- (NSString *)applicationDocumentsDirectory
 {
     return [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 }
@@ -353,22 +345,21 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-// Create gray gradient layers used as drop shadows in table views
-+ (CAGradientLayer*)shadowWithFrame: (CGRect)frame
-                         darkFactor: (CGFloat)darkFactor
-                        lightFactor: (CGFloat)lightFactor
-                      fadeDownwards: (BOOL)downwards
++ (CAGradientLayer*)shadowWithFrame:(CGRect)frame
+                         darkFactor:(CGFloat)darkFactor
+                        lightFactor:(CGFloat)lightFactor
+                      fadeDownwards:(BOOL)downwards
 {
     CAGradientLayer *newShadow = [[CAGradientLayer alloc] init];
 
-    UIColor *darkColor  = [UIColor colorWithWhite: 0.0         alpha: darkFactor];
-    UIColor *lightColor = [UIColor colorWithWhite: lightFactor alpha: 0.0       ];
+    UIColor *darkColor  = [UIColor colorWithWhite:0.0 alpha:darkFactor];
+    UIColor *lightColor = [UIColor colorWithWhite:lightFactor alpha:0.0];
 
     newShadow.frame           = frame;
     newShadow.backgroundColor = [UIColor clearColor].CGColor;
     newShadow.colors          = downwards
-                                    ? @[(id)[darkColor  CGColor], (id)[lightColor CGColor]]
-                                    : @[(id)[lightColor CGColor], (id)[darkColor  CGColor]];
+                                    ? @[(id)[darkColor CGColor], (id)[lightColor CGColor]]
+                                    : @[(id)[lightColor CGColor], (id)[darkColor CGColor]];
     return newShadow;
 }
 
@@ -383,9 +374,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
         static CGFloat colorComponents [8] = { 25.0/255.0, 1.0,  25.0/255.0, 1.0,  40.0/255.0, 1.0,  117.0/255.0, 1.0 };
         static CGFloat colorLocations  [4] = { 0.0, 0.5, 0.5, 1.0 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 
-        backGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, colorLocations, 4);
+        backGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, colorLocations, 4);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -402,32 +393,14 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         static CGFloat colorComponents [8] = { 0.360, 0.682, 0.870, 0.93,  0.466, 0.721, 0.870, 0.93 };
+        static CGFloat colorComponentsFlat [8] = { 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        blueGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        blueGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
-    return blueGradient;
-}
-
-
-+ (CGGradientRef)blueFlatGradient
-{
-    static CGGradientRef blueGradient = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
-
-        blueGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
-        CGColorSpaceRelease (colorSpace);
-    });
-    
     return blueGradient;
 }
 
@@ -440,32 +413,14 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         static CGFloat colorComponents [8] = { 0.615, 0.815, 0.404, 0.93,  0.662, 0.815, 0.502, 0.93 };
+        static CGFloat colorComponentsFlat [8] = { 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        greenGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        greenGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
-    return greenGradient;
-}
-
-
-+ (CGGradientRef)greenFlatGradient
-{
-    static CGGradientRef greenGradient  = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
-
-        greenGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
-        CGColorSpaceRelease (colorSpace);
-    });
-    
     return greenGradient;
 }
 
@@ -478,29 +433,11 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         static CGFloat colorComponents [8] = { 0.988, 0.603, 0.215, 0.93,  0.988, 0.662, 0.333, 0.93 };
+        static CGFloat colorComponentsFlat [8] = { 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        orangeGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
-        CGColorSpaceRelease (colorSpace);
-    });
-
-    return orangeGradient;
-}
-
-
-+ (CGGradientRef)orangeFlatGradient
-{
-    static CGGradientRef orangeGradient = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
-
-        orangeGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        orangeGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -517,9 +454,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
         static CGFloat colorComponents [8] = { 0.97, 0.97, 0.97, 1.0,  0.80, 0.80, 0.80, 1.0 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        infoGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        infoGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -536,9 +473,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
         static CGFloat colorComponents [8] = { 1.0, 0.964, 0.078, 1.0,  1.0, 0.756, 0.188, 1.0 };
 
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        knobGradient = CGGradientCreateWithColorComponents (colorSpace, colorComponents, NULL, 2);
+        knobGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -560,8 +497,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setTimeStyle: NSDateFormatterShortStyle];
-        [dateFormatter setDateStyle: NSDateFormatterLongStyle];
+        [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [dateFormatter setDateStyle:NSDateFormatterLongStyle];
     });
 
     return dateFormatter;
@@ -576,8 +513,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setTimeStyle: NSDateFormatterNoStyle];
-        [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
+        [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     });
 
     return dateFormatter;
@@ -592,8 +529,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         dateTimeFormatter = [[NSDateFormatter alloc] init];
-        [dateTimeFormatter setTimeStyle: NSDateFormatterShortStyle];
-        [dateTimeFormatter setDateStyle: NSDateFormatterMediumStyle];
+        [dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [dateTimeFormatter setDateStyle:NSDateFormatterMediumStyle];
     });
 
     return dateTimeFormatter;
@@ -608,10 +545,10 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         distanceFormatter = [[NSNumberFormatter alloc] init];
-        [distanceFormatter setGeneratesDecimalNumbers: YES];
-        [distanceFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
-        [distanceFormatter setMinimumFractionDigits: 1];
-        [distanceFormatter setMaximumFractionDigits: 1];
+        [distanceFormatter setGeneratesDecimalNumbers:YES];
+        [distanceFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [distanceFormatter setMinimumFractionDigits:1];
+        [distanceFormatter setMaximumFractionDigits:1];
     });
 
     return distanceFormatter;
@@ -626,10 +563,10 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         fuelVolumeFormatter = [[NSNumberFormatter alloc] init];
-        [fuelVolumeFormatter setGeneratesDecimalNumbers: YES];
-        [fuelVolumeFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
-        [fuelVolumeFormatter setMinimumFractionDigits: 2];
-        [fuelVolumeFormatter setMaximumFractionDigits: 2];
+        [fuelVolumeFormatter setGeneratesDecimalNumbers:YES];
+        [fuelVolumeFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [fuelVolumeFormatter setMinimumFractionDigits:2];
+        [fuelVolumeFormatter setMaximumFractionDigits:2];
     });
 
     return fuelVolumeFormatter;
@@ -644,10 +581,10 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
         
         preciseFuelVolumeFormatter = [[NSNumberFormatter alloc] init];
-        [preciseFuelVolumeFormatter setGeneratesDecimalNumbers: YES];
-        [preciseFuelVolumeFormatter setNumberStyle: NSNumberFormatterDecimalStyle];
-        [preciseFuelVolumeFormatter setMinimumFractionDigits: 3];
-        [preciseFuelVolumeFormatter setMaximumFractionDigits: 3];
+        [preciseFuelVolumeFormatter setGeneratesDecimalNumbers:YES];
+        [preciseFuelVolumeFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [preciseFuelVolumeFormatter setMinimumFractionDigits:3];
+        [preciseFuelVolumeFormatter setMaximumFractionDigits:3];
     });
     
     return preciseFuelVolumeFormatter;
@@ -663,8 +600,8 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         currencyFormatter = [[NSNumberFormatter alloc] init];
-        [currencyFormatter setGeneratesDecimalNumbers: YES];
-        [currencyFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
+        [currencyFormatter setGeneratesDecimalNumbers:YES];
+        [currencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     });
 
     return currencyFormatter;
@@ -680,9 +617,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         axisCurrencyFormatter = [[NSNumberFormatter alloc] init];
-        [axisCurrencyFormatter setGeneratesDecimalNumbers: YES];
-        [axisCurrencyFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
-        [axisCurrencyFormatter setCurrencySymbol: @""];
+        [axisCurrencyFormatter setGeneratesDecimalNumbers:YES];
+        [axisCurrencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [axisCurrencyFormatter setCurrencySymbol:@""];
     });
 
     return axisCurrencyFormatter;
@@ -704,17 +641,17 @@ CGFloat const HugeStatusBarHeight = 40.0;
             fractionDigits += 1;
 
         editPreciseCurrencyFormatter = [[NSNumberFormatter alloc] init];
-        [editPreciseCurrencyFormatter setGeneratesDecimalNumbers: YES];
-        [editPreciseCurrencyFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
-        [editPreciseCurrencyFormatter setMinimumFractionDigits: fractionDigits];
-        [editPreciseCurrencyFormatter setMaximumFractionDigits: fractionDigits];
-        [editPreciseCurrencyFormatter setCurrencySymbol: @""];
+        [editPreciseCurrencyFormatter setGeneratesDecimalNumbers:YES];
+        [editPreciseCurrencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [editPreciseCurrencyFormatter setMinimumFractionDigits:fractionDigits];
+        [editPreciseCurrencyFormatter setMaximumFractionDigits:fractionDigits];
+        [editPreciseCurrencyFormatter setCurrencySymbol:@""];
 
         // Needed e.g. for CHF
-        [editPreciseCurrencyFormatter setRoundingIncrement: @0];
+        [editPreciseCurrencyFormatter setRoundingIncrement:@0];
 
         // Needed since NSNumberFormatters can't parse their own € output
-        [editPreciseCurrencyFormatter setLenient: YES];
+        [editPreciseCurrencyFormatter setLenient:YES];
     });
 
     return editPreciseCurrencyFormatter;
@@ -736,16 +673,16 @@ CGFloat const HugeStatusBarHeight = 40.0;
             fractionDigits += 1;
 
         preciseCurrencyFormatter = [[NSNumberFormatter alloc] init];
-        [preciseCurrencyFormatter setGeneratesDecimalNumbers: YES];
-        [preciseCurrencyFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
-        [preciseCurrencyFormatter setMinimumFractionDigits: fractionDigits];
-        [preciseCurrencyFormatter setMaximumFractionDigits: fractionDigits];
+        [preciseCurrencyFormatter setGeneratesDecimalNumbers:YES];
+        [preciseCurrencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [preciseCurrencyFormatter setMinimumFractionDigits:fractionDigits];
+        [preciseCurrencyFormatter setMaximumFractionDigits:fractionDigits];
 
         // Needed e.g. for CHF
-        [preciseCurrencyFormatter setRoundingIncrement: @0];
+        [preciseCurrencyFormatter setRoundingIncrement:@0];
 
         // Needed since NSNumberFormatters can't parse their own € output
-        [preciseCurrencyFormatter setLenient: YES];
+        [preciseCurrencyFormatter setLenient:YES];
     });
 
     return preciseCurrencyFormatter;
@@ -761,12 +698,12 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         short fractionDigits = (short)[[self sharedFuelVolumeFormatter] maximumFractionDigits];
-        consumptionRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundPlain
-                                                                                            scale: fractionDigits
-                                                                                 raiseOnExactness: NO
-                                                                                  raiseOnOverflow: NO
-                                                                                 raiseOnUnderflow: NO
-                                                                              raiseOnDivideByZero: NO];
+        consumptionRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundPlain
+                                                                                            scale:fractionDigits
+                                                                                 raiseOnExactness:NO
+                                                                                  raiseOnOverflow:NO
+                                                                                 raiseOnUnderflow:NO
+                                                                              raiseOnDivideByZero:NO];
     });
 
     return consumptionRoundingHandler;
@@ -782,12 +719,12 @@ CGFloat const HugeStatusBarHeight = 40.0;
     dispatch_once (&pred, ^{
 
         short fractionDigits = (short)[[self sharedEditPreciseCurrencyFormatter] maximumFractionDigits];
-        priceRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode: NSRoundUp
-                                                                                      scale: fractionDigits
-                                                                           raiseOnExactness: NO
-                                                                            raiseOnOverflow: NO
-                                                                           raiseOnUnderflow: NO
-                                                                        raiseOnDivideByZero: NO];
+        priceRoundingHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundUp
+                                                                                      scale:fractionDigits
+                                                                           raiseOnExactness:NO
+                                                                            raiseOnOverflow:NO
+                                                                           raiseOnUnderflow:NO
+                                                                        raiseOnDivideByZero:NO];
     });
 
     return priceRoundingHandler;
@@ -800,91 +737,91 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-- (void)alertView: (UIAlertView*)alertView didDismissWithButtonIndex: (NSInteger)buttonIndex
+- (void)alertView:(UIAlertView*)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    [NSException raise: NSGenericException format: @"%@", errorDescription];
-    abort ();
+    [NSException raise:NSGenericException format:@"%@", errorDescription];
+    abort();
 }
 
 
-- (NSManagedObjectContext*)managedObjectContext
+- (NSManagedObjectContext *)managedObjectContext
 {
-    if (managedObjectContext == nil)
+    if (_managedObjectContext == nil)
     {
-        NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+        NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
 
         if (coordinator != nil)
         {
-            managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSMainQueueConcurrencyType];
-            [managedObjectContext setPersistentStoreCoordinator: coordinator];
-            [managedObjectContext setMergePolicy: NSMergeByPropertyObjectTrumpMergePolicy];
+            _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+            [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+            [_managedObjectContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
         }
     }
 
-    return managedObjectContext;
+    return _managedObjectContext;
 }
 
 
 - (NSManagedObjectModel*)managedObjectModel
 {
-    if (managedObjectModel == nil)
+    if (_managedObjectModel == nil)
     {
-        NSString *modelPath = [[NSBundle mainBundle] pathForResource: @"Kraftstoffrechner" ofType: @"momd"];
-        managedObjectModel  = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: modelPath]];
+        NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"Kraftstoffrechner" ofType:@"momd"];
+        _managedObjectModel  = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:modelPath]];
     }
 
-    return managedObjectModel;
+    return _managedObjectModel;
 }
 
 
 - (NSPersistentStoreCoordinator*)persistentStoreCoordinator
 {
-    if (persistentStoreCoordinator == nil)
+    if (_persistentStoreCoordinator == nil)
     {
-        NSURL *storeURL = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"Kraftstoffrechner.sqlite"]];
+        NSURL *storeURL = [NSURL fileURLWithPath:[[self applicationDocumentsDirectory] stringByAppendingPathComponent:@"Kraftstoffrechner.sqlite"]];
 
-        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES,
-                                  NSInferMappingModelAutomaticallyOption:       @YES};
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES,
+                                  NSInferMappingModelAutomaticallyOption:@YES};
 
-        persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
 
         NSError *error = nil;
 
-        if (! [persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType
-                                                       configuration: nil
-                                                                 URL: storeURL
-                                                             options: options
-                                                               error: &error])
+        if (! [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                       configuration:nil
+                                                                 URL:storeURL
+                                                             options:options
+                                                               error:&error])
         {
             errorDescription = [error localizedDescription];
 
-            [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Open Database")
-                                        message: _I18N (@"Sorry, the application database cannot be opened. Please quit the application with the Home button.")
-                                       delegate: self
-                              cancelButtonTitle: nil
-                              otherButtonTitles: @"Ok", nil] show];
+            [[[UIAlertView alloc] initWithTitle:_I18N(@"Can't Open Database")
+                                        message:_I18N(@"Sorry, the application database cannot be opened. Please quit the application with the Home button.")
+                                       delegate:self
+                              cancelButtonTitle:nil
+                              otherButtonTitles:@"Ok", nil] show];
         }
     }
 
-    return persistentStoreCoordinator;
+    return _persistentStoreCoordinator;
 }
 
 
-- (BOOL)saveContext: (NSManagedObjectContext*)context
+- (BOOL)saveContext:(NSManagedObjectContext *)context
 {
     if (context != nil && [context hasChanges])
     {
         NSError *error = nil;
 
-        if (![context save: &error])
+        if (![context save:&error])
         {
             errorDescription = [error localizedDescription];
 
-            [[[UIAlertView alloc] initWithTitle: _I18N (@"Can't Save Database")
-                                        message: _I18N (@"Sorry, the application database cannot be saved. Please quit the application with the Home button.")
-                                       delegate: self
-                              cancelButtonTitle: nil
-                              otherButtonTitles: @"Ok", nil] show];
+            [[[UIAlertView alloc] initWithTitle:_I18N(@"Can't Save Database")
+                                        message:_I18N(@"Sorry, the application database cannot be saved. Please quit the application with the Home button.")
+                                       delegate:self
+                              cancelButtonTitle:nil
+                              otherButtonTitles:@"Ok", nil] show];
         }
 
         return YES;
@@ -896,15 +833,15 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 // Returns a unique cache-name for fetch requests which must rely on 'parent == object' properties.
 // The name is derived from the parents object ID.
-- (NSString*)cacheNameForFuelEventFetchWithParent: (NSManagedObject*)parent
+- (NSString *)cacheNameForFuelEventFetchWithParent:(NSManagedObject *)parent
 {
-    NSString *URL = [self modelIdentifierForManagedObject: parent];
+    NSString *URL = [self modelIdentifierForManagedObject:parent];
 
-    return [URL stringByReplacingOccurrencesOfString: @"/" withString: @"_"];
+    return [URL stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
 }
 
 
-- (NSString*)modelIdentifierForManagedObject: (NSManagedObject*)object
+- (NSString *)modelIdentifierForManagedObject:(NSManagedObject *)object
 {
     NSManagedObjectID *objectID = object.objectID;
 
@@ -915,19 +852,18 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
-- (NSManagedObject*)managedObjectForModelIdentifier: (NSString*)identifier
+- (NSManagedObject *)managedObjectForModelIdentifier:(NSString *)identifier
 {
-    NSURL *objectURL = [NSURL URLWithString: identifier];
+    NSURL *objectURL = [NSURL URLWithString:identifier];
 
-    if ([[objectURL scheme] isEqualToString: @"x-coredata"])
+    if ([[objectURL scheme] isEqualToString:@"x-coredata"])
     {
-        NSManagedObjectID *objectID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation: objectURL];
+        NSManagedObjectID *objectID = [self.persistentStoreCoordinator managedObjectIDForURIRepresentation:objectURL];
 
         if (objectID)
         {
             NSError *error = nil;
-            NSManagedObject *object = [self.managedObjectContext existingObjectWithID: objectID
-                                                                                error: &error];
+            NSManagedObject *object = [self.managedObjectContext existingObjectWithID:objectID error:&error];
 
             return object;
         }
@@ -943,48 +879,48 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSFetchRequest*)fetchRequestForCarsInManagedObjectContext: (NSManagedObjectContext*)moc
++ (NSFetchRequest*)fetchRequestForCarsInManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName: @"car" inManagedObjectContext: moc];
-    [fetchRequest setEntity: entity];
-    [fetchRequest setFetchBatchSize: 32];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"car" inManagedObjectContext:moc];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:32];
 
     // Sorting keys
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"order" ascending: YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
     NSArray *sortDescriptors = @[sortDescriptor];
-    [fetchRequest setSortDescriptors: sortDescriptors];
+    [fetchRequest setSortDescriptors:sortDescriptors];
 
     return fetchRequest;
 }
 
 
-+ (NSFetchRequest*)fetchRequestForEventsForCar: (NSManagedObject*)car
-                                     afterDate: (NSDate*)date
-                                   dateMatches: (BOOL)dateMatches
-                        inManagedObjectContext: (NSManagedObjectContext*)moc
++ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
+                                     afterDate:(NSDate *)date
+                                   dateMatches:(BOOL)dateMatches
+                        inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent" inManagedObjectContext: moc];
-    [fetchRequest setEntity: entity];
-    [fetchRequest setFetchBatchSize: 128];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"fuelEvent" inManagedObjectContext:moc];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:128];
 
     // Predicates
-    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat: @"car == %@", car];
+    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat:@"car == %@", car];
 
     if (date == nil)
     {
-        [fetchRequest setPredicate: parentPredicate];
+        [fetchRequest setPredicate:parentPredicate];
     }
     else
     {
-        NSString *dateDescription  = [[NSExpression expressionForConstantValue: date] description];
+        NSString *dateDescription  = [[NSExpression expressionForConstantValue:date] description];
         NSPredicate *datePredicate = [NSPredicate predicateWithFormat:
-                                        [NSString stringWithFormat: @"timestamp %@ %@",
+                                        [NSString stringWithFormat:@"timestamp %@ %@",
                                             (dateMatches) ? @">=" : @">",
                                             dateDescription]];
 
@@ -994,40 +930,40 @@ CGFloat const HugeStatusBarHeight = 40.0;
     }
 
     // Sorting keys
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"timestamp" ascending: NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timestamp" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
 
-    [fetchRequest setSortDescriptors: sortDescriptors];
+    [fetchRequest setSortDescriptors:sortDescriptors];
 
 
     return fetchRequest;
 }
 
 
-+ (NSFetchRequest*)fetchRequestForEventsForCar: (NSManagedObject*)car
-                                    beforeDate: (NSDate*)date
-                                   dateMatches: (BOOL)dateMatches
-                        inManagedObjectContext: (NSManagedObjectContext*)moc
++ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
+                                    beforeDate:(NSDate *)date
+                                   dateMatches:(BOOL)dateMatches
+                        inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent" inManagedObjectContext: moc];
-    [fetchRequest setEntity: entity];
-    [fetchRequest setFetchBatchSize: 8];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"fuelEvent" inManagedObjectContext:moc];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:8];
 
     // Predicates
-    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat: @"car == %@", car];
+    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat:@"car == %@", car];
 
     if (date == nil)
     {
-        [fetchRequest setPredicate: parentPredicate];
+        [fetchRequest setPredicate:parentPredicate];
     }
     else
     {
-        NSString *dateDescription = [[NSExpression expressionForConstantValue: date] description];
+        NSString *dateDescription = [[NSExpression expressionForConstantValue:date] description];
         NSPredicate *datePredicate = [NSPredicate predicateWithFormat:
-                                        [NSString stringWithFormat: @"timestamp %@ %@",
+                                        [NSString stringWithFormat:@"timestamp %@ %@",
                                             (dateMatches) ? @"<=" : @"<",
                                             dateDescription]];
 
@@ -1037,70 +973,70 @@ CGFloat const HugeStatusBarHeight = 40.0;
     }
 
     // Sorting keys
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: @"timestamp" ascending: NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timestamp" ascending:NO];
     NSArray *sortDescriptors = @[sortDescriptor];
 
-    [fetchRequest setSortDescriptors: sortDescriptors];
+    [fetchRequest setSortDescriptors:sortDescriptors];
 
     return fetchRequest;
 }
 
 
-+ (NSFetchedResultsController*)fetchedResultsControllerForCarsInContext: (NSManagedObjectContext*)moc
++ (NSFetchedResultsController *)fetchedResultsControllerForCarsInContext:(NSManagedObjectContext *)moc
 {
-    NSFetchRequest *fetchRequest = [self fetchRequestForCarsInManagedObjectContext: moc];
+    NSFetchRequest *fetchRequest = [self fetchRequestForCarsInManagedObjectContext:moc];
 
     // No section names; perform fetch without cache
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest: fetchRequest
-                                                                                               managedObjectContext: moc
-                                                                                                 sectionNameKeyPath: nil
-                                                                                                          cacheName: nil];
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                               managedObjectContext:moc
+                                                                                                 sectionNameKeyPath:nil
+                                                                                                          cacheName:nil];
 
 
     // Perform the Core Data fetch
     NSError *error = nil;
 
-    if (! [fetchedResultsController performFetch: &error])
+    if (! [fetchedResultsController performFetch:&error])
     {
-        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+        [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
     }
 
     return fetchedResultsController;
 }
 
 
-+ (NSArray*)objectsForFetchRequest: (NSFetchRequest*)fetchRequest
-            inManagedObjectContext: (NSManagedObjectContext*)moc
++ (NSArray *)objectsForFetchRequest:(NSFetchRequest*)fetchRequest
+            inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSError *error = nil;
-    NSArray *fetchedObjects = [moc executeFetchRequest: fetchRequest error: &error];
+    NSArray *fetchedObjects = [moc executeFetchRequest:fetchRequest error:&error];
 
     if (error != nil)
     {
-        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+        [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
     }
 
     return fetchedObjects;
 }
 
 
-+ (BOOL)managedObjectContext: (NSManagedObjectContext*)moc
-        containsEventWithCar: (NSManagedObject*)car
-                     andDate: (NSDate*)date;
++ (BOOL)managedObjectContext:(NSManagedObjectContext *)moc
+        containsEventWithCar:(NSManagedObject *)car
+                     andDate:(NSDate *)date;
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName: @"fuelEvent"
-                                              inManagedObjectContext: moc];
-    [fetchRequest setEntity: entity];
-    [fetchRequest setFetchBatchSize: 2];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"fuelEvent"
+                                              inManagedObjectContext:moc];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:2];
 
     // Predicates
-    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat: @"car == %@", car];
+    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat:@"car == %@", car];
 
-    NSString *dateDescription = [[NSExpression expressionForConstantValue: date] description];
-    NSPredicate *datePredicate = [NSPredicate predicateWithFormat: [NSString stringWithFormat: @"timestamp == %@", dateDescription]];
+    NSString *dateDescription = [[NSExpression expressionForConstantValue:date] description];
+    NSPredicate *datePredicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"timestamp == %@", dateDescription]];
 
     [fetchRequest setPredicate:
         [NSCompoundPredicate andPredicateWithSubpredicates:
@@ -1111,7 +1047,7 @@ CGFloat const HugeStatusBarHeight = 40.0;
     NSUInteger objectCount = [moc countForFetchRequest:fetchRequest error:&error];
 
     if (error != nil)
-        [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
+        [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
 
     return (objectCount > 0);
 }
@@ -1123,25 +1059,25 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSManagedObject*)addToArchiveWithCar: (NSManagedObject*)car
-                                   date: (NSDate*)date
-                               distance: (NSDecimalNumber*)distance
-                                  price: (NSDecimalNumber*)price
-                             fuelVolume: (NSDecimalNumber*)fuelVolume
-                               filledUp: (BOOL)filledUp
-                 inManagedObjectContext: (NSManagedObjectContext*)moc
-                    forceOdometerUpdate: (BOOL)forceOdometerUpdate
++ (NSManagedObject *)addToArchiveWithCar:(NSManagedObject *)car
+                                    date:(NSDate *)date
+                                distance:(NSDecimalNumber *)distance
+                                   price:(NSDecimalNumber *)price
+                              fuelVolume:(NSDecimalNumber *)fuelVolume
+                                filledUp:(BOOL)filledUp
+                  inManagedObjectContext:(NSManagedObjectContext *)moc
+                     forceOdometerUpdate:(BOOL)forceOdometerUpdate
 {
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
 
     // Convert distance and fuelvolume to SI units
-    KSVolume fuelUnit       = [[car valueForKey: @"fuelUnit"]     integerValue];
-    KSDistance odometerUnit = [[car valueForKey: @"odometerUnit"] integerValue];
+    KSVolume fuelUnit       = [[car valueForKey:@"fuelUnit"]     integerValue];
+    KSDistance odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
 
-    NSDecimalNumber *liters        = [AppDelegate litersForVolume: fuelVolume withUnit: fuelUnit];
-    NSDecimalNumber *kilometers    = [AppDelegate kilometersForDistance: distance withUnit: odometerUnit];
-    NSDecimalNumber *pricePerLiter = [AppDelegate pricePerLiter: price withUnit: fuelUnit];
+    NSDecimalNumber *liters        = [AppDelegate litersForVolume:fuelVolume withUnit:fuelUnit];
+    NSDecimalNumber *kilometers    = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
+    NSDecimalNumber *pricePerLiter = [AppDelegate pricePerLiter:price withUnit:fuelUnit];
 
     NSDecimalNumber *inheritedCost       = zero;
     NSDecimalNumber *inheritedDistance   = zero;
@@ -1151,23 +1087,23 @@ CGFloat const HugeStatusBarHeight = 40.0;
     // Compute inherited data from older element
     {
         // Fetch older events
-        NSArray *olderEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
-                                                                                    beforeDate: date
-                                                                                   dateMatches: NO
-                                                                        inManagedObjectContext: moc]
-                                     inManagedObjectContext: moc];
+        NSArray *olderEvents = [self objectsForFetchRequest:[self fetchRequestForEventsForCar:car
+                                                                                    beforeDate:date
+                                                                                   dateMatches:NO
+                                                                        inManagedObjectContext:moc]
+                                     inManagedObjectContext:moc];
 
         if ([olderEvents count])
         {
             NSManagedObject *olderEvent = olderEvents[0];
 
-            if ([[olderEvent valueForKey: @"filledUp"] boolValue] == NO)
+            if ([[olderEvent valueForKey:@"filledUp"] boolValue] == NO)
             {
-                NSDecimalNumber *cost = [[olderEvent valueForKey: @"fuelVolume"] decimalNumberByMultiplyingBy: [olderEvent valueForKey: @"price"]];
+                NSDecimalNumber *cost = [[olderEvent valueForKey:@"fuelVolume"] decimalNumberByMultiplyingBy:[olderEvent valueForKey:@"price"]];
 
-                inheritedCost       = [cost decimalNumberByAdding: [olderEvent valueForKey: @"inheritedCost"]];
-                inheritedDistance   = [[olderEvent valueForKey: @"distance"]   decimalNumberByAdding: [olderEvent valueForKey: @"inheritedDistance"]];
-                inheritedFuelVolume = [[olderEvent valueForKey: @"fuelVolume"] decimalNumberByAdding: [olderEvent valueForKey: @"inheritedFuelVolume"]];
+                inheritedCost       = [cost decimalNumberByAdding:[olderEvent valueForKey:@"inheritedCost"]];
+                inheritedDistance   = [[olderEvent valueForKey:@"distance"]   decimalNumberByAdding:[olderEvent valueForKey:@"inheritedDistance"]];
+                inheritedFuelVolume = [[olderEvent valueForKey:@"fuelVolume"] decimalNumberByAdding:[olderEvent valueForKey:@"inheritedFuelVolume"]];
             }
         }
     }
@@ -1176,40 +1112,40 @@ CGFloat const HugeStatusBarHeight = 40.0;
     // Update inherited distance/volume for younger events, probably mark the car odometer for an update
     {
         // Fetch younger events
-        NSArray *youngerEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
-                                                                                       afterDate: date
-                                                                                     dateMatches: NO
-                                                                          inManagedObjectContext: moc]
-                                       inManagedObjectContext: moc];
+        NSArray *youngerEvents = [self objectsForFetchRequest:[self fetchRequestForEventsForCar:car
+                                                                                       afterDate:date
+                                                                                     dateMatches:NO
+                                                                          inManagedObjectContext:moc]
+                                       inManagedObjectContext:moc];
 
         if ([youngerEvents count])
         {
             NSDecimalNumber *deltaCost = (filledUp)
-                ? [[NSDecimalNumber zero] decimalNumberBySubtracting: inheritedCost]
-                : [liters decimalNumberByMultiplyingBy: pricePerLiter];
+                ? [[NSDecimalNumber zero] decimalNumberBySubtracting:inheritedCost]
+                : [liters decimalNumberByMultiplyingBy:pricePerLiter];
 
             NSDecimalNumber *deltaDistance = (filledUp)
-                ? [[NSDecimalNumber zero] decimalNumberBySubtracting: inheritedDistance]
+                ? [[NSDecimalNumber zero] decimalNumberBySubtracting:inheritedDistance]
                 : kilometers;
 
             NSDecimalNumber *deltaFuelVolume = (filledUp)
-                ? [[NSDecimalNumber zero] decimalNumberBySubtracting: inheritedFuelVolume]
+                ? [[NSDecimalNumber zero] decimalNumberBySubtracting:inheritedFuelVolume]
                 : liters;
 
             for (NSUInteger row = [youngerEvents count]; row > 0; )
             {
                 NSManagedObject *youngerEvent = youngerEvents[--row];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedCost"] decimalNumberByAdding: deltaCost] max: zero]
-                                forKey: @"inheritedCost"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberByAdding:deltaCost] max:zero]
+                                forKey:@"inheritedCost"];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedDistance"] decimalNumberByAdding: deltaDistance] max: zero]
-                                forKey: @"inheritedDistance"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedDistance"] decimalNumberByAdding:deltaDistance] max:zero]
+                                forKey:@"inheritedDistance"];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedFuelVolume"] decimalNumberByAdding: deltaFuelVolume] max: zero]
-                                forKey: @"inheritedFuelVolume"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberByAdding:deltaFuelVolume] max:zero]
+                                forKey:@"inheritedFuelVolume"];
 
-                if ([[youngerEvent valueForKey: @"filledUp"] boolValue] == YES)
+                if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
                     break;
             }
         }
@@ -1221,26 +1157,26 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
     // Create new managed object for this event
-    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName: @"fuelEvent"
-                                                              inManagedObjectContext: moc];
+    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent"
+                                                              inManagedObjectContext:moc];
 
-    [newEvent setValue: car           forKey: @"car"];
-    [newEvent setValue: date          forKey: @"timestamp"];
-    [newEvent setValue: kilometers    forKey: @"distance"];
-    [newEvent setValue: pricePerLiter forKey: @"price"];
-    [newEvent setValue: liters        forKey: @"fuelVolume"];
+    [newEvent setValue:car           forKey:@"car"];
+    [newEvent setValue:date          forKey:@"timestamp"];
+    [newEvent setValue:kilometers    forKey:@"distance"];
+    [newEvent setValue:pricePerLiter forKey:@"price"];
+    [newEvent setValue:liters        forKey:@"fuelVolume"];
 
     if (filledUp == NO)
-        [newEvent setValue: @(filledUp) forKey: @"filledUp"];
+        [newEvent setValue:@(filledUp) forKey:@"filledUp"];
 
-    if ([inheritedCost isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedCost forKey: @"inheritedCost"];
+    if ([inheritedCost isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedCost forKey:@"inheritedCost"];
 
-    if ([inheritedDistance isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedDistance forKey: @"inheritedDistance"];
+    if ([inheritedDistance isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedDistance forKey:@"inheritedDistance"];
 
-    if ([inheritedFuelVolume isEqualToNumber: zero] == NO)
-        [newEvent setValue: inheritedFuelVolume forKey: @"inheritedFuelVolume"];
+    if ([inheritedFuelVolume isEqualToNumber:zero] == NO)
+        [newEvent setValue:inheritedFuelVolume forKey:@"inheritedFuelVolume"];
 
 
     // Conditions for update of global odometer:
@@ -1248,74 +1184,74 @@ CGFloat const HugeStatusBarHeight = 40.0;
     // - when sum of all events equals the odometer value
     // - when forced to do so
     if (!forceOdometerUpdate)
-        if ([[car valueForKey: @"odometer"] compare: [car valueForKey: @"distanceTotalSum"]] != NSOrderedDescending)
+        if ([[car valueForKey:@"odometer"] compare:[car valueForKey:@"distanceTotalSum"]] != NSOrderedDescending)
             forceOdometerUpdate = YES;
 
     // Update total car statistics
-    [car setValue: [[car valueForKey: @"distanceTotalSum"]   decimalNumberByAdding: kilometers] forKey: @"distanceTotalSum"];
-    [car setValue: [[car valueForKey: @"fuelVolumeTotalSum"] decimalNumberByAdding: liters]     forKey: @"fuelVolumeTotalSum"];
+    [car setValue:[[car valueForKey:@"distanceTotalSum"]   decimalNumberByAdding:kilometers] forKey:@"distanceTotalSum"];
+    [car setValue:[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberByAdding:liters]     forKey:@"fuelVolumeTotalSum"];
 
     // Update global odometer
-    NSDecimalNumber *newOdometer = [car valueForKey: @"odometer"];
+    NSDecimalNumber *newOdometer = [car valueForKey:@"odometer"];
 
     if (forceOdometerUpdate)
-        newOdometer = [newOdometer decimalNumberByAdding: kilometers];
+        newOdometer = [newOdometer decimalNumberByAdding:kilometers];
 
-    newOdometer = [newOdometer max: [car valueForKey: @"distanceTotalSum"]];
+    newOdometer = [newOdometer max:[car valueForKey:@"distanceTotalSum"]];
 
-    [car setValue: newOdometer forKey: @"odometer"];
+    [car setValue:newOdometer forKey:@"odometer"];
 
     return newEvent;
 }
 
 
-+ (void)removeEventFromArchive: (NSManagedObject*)event
-        inManagedObjectContext: (NSManagedObjectContext*)moc
-           forceOdometerUpdate: (BOOL)forceOdometerUpdate
++ (void)removeEventFromArchive:(NSManagedObject *)event
+        inManagedObjectContext:(NSManagedObjectContext *)moc
+           forceOdometerUpdate:(BOOL)forceOdometerUpdate
 {
-    NSManagedObject *car        = [event valueForKey: @"car"];
-    NSDecimalNumber *distance   = [event valueForKey: @"distance"];
-    NSDecimalNumber *fuelVolume = [event valueForKey: @"fuelVolume"];
+    NSManagedObject *car        = [event valueForKey:@"car"];
+    NSDecimalNumber *distance   = [event valueForKey:@"distance"];
+    NSDecimalNumber *fuelVolume = [event valueForKey:@"fuelVolume"];
     NSDecimalNumber *zero       = [NSDecimalNumber zero];
 
 
-    // Event will be deleted: update inherited distance/fuelVolume for younger events
-    NSArray *youngerEvents = [self objectsForFetchRequest: [self fetchRequestForEventsForCar: car
-                                                                                   afterDate: [event valueForKey: @"timestamp"]
-                                                                                 dateMatches: NO
-                                                                      inManagedObjectContext: moc]
-                                   inManagedObjectContext: moc];
+    // Event will be deleted:update inherited distance/fuelVolume for younger events
+    NSArray *youngerEvents = [self objectsForFetchRequest:[self fetchRequestForEventsForCar:car
+                                                                                   afterDate:[event valueForKey:@"timestamp"]
+                                                                                 dateMatches:NO
+                                                                      inManagedObjectContext:moc]
+                                   inManagedObjectContext:moc];
 
     NSUInteger row = [youngerEvents count];
 
     if (row > 0)
     {
         // Fill-up event deleted => propagate its inherited distance/volume
-        if ([[event valueForKey: @"filledUp"] boolValue])
+        if ([[event valueForKey:@"filledUp"] boolValue])
         {
-            NSDecimalNumber *inheritedCost       = [event valueForKey: @"inheritedCost"];
-            NSDecimalNumber *inheritedDistance   = [event valueForKey: @"inheritedDistance"];
-            NSDecimalNumber *inheritedFuelVolume = [event valueForKey: @"inheritedFuelVolume"];
+            NSDecimalNumber *inheritedCost       = [event valueForKey:@"inheritedCost"];
+            NSDecimalNumber *inheritedDistance   = [event valueForKey:@"inheritedDistance"];
+            NSDecimalNumber *inheritedFuelVolume = [event valueForKey:@"inheritedFuelVolume"];
             NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-            if ([inheritedCost       compare: zero] == NSOrderedDescending ||
-                [inheritedDistance   compare: zero] == NSOrderedDescending ||
-                [inheritedFuelVolume compare: zero] == NSOrderedDescending)
+            if ([inheritedCost       compare:zero] == NSOrderedDescending ||
+                [inheritedDistance   compare:zero] == NSOrderedDescending ||
+                [inheritedFuelVolume compare:zero] == NSOrderedDescending)
             {
                 while (row > 0)
                 {
                     NSManagedObject *youngerEvent = youngerEvents[--row];
 
-                    [youngerEvent setValue: [[youngerEvent valueForKey: @"inheritedCost"] decimalNumberByAdding: inheritedCost]
-                                    forKey: @"inheritedCost"];
+                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberByAdding:inheritedCost]
+                                    forKey:@"inheritedCost"];
 
-                    [youngerEvent setValue: [[youngerEvent valueForKey: @"inheritedDistance"] decimalNumberByAdding: inheritedDistance]
-                                    forKey: @"inheritedDistance"];
+                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedDistance"] decimalNumberByAdding:inheritedDistance]
+                                    forKey:@"inheritedDistance"];
 
-                    [youngerEvent setValue: [[youngerEvent valueForKey: @"inheritedFuelVolume"] decimalNumberByAdding: inheritedFuelVolume]
-                                    forKey: @"inheritedFuelVolume"];
+                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberByAdding:inheritedFuelVolume]
+                                    forKey:@"inheritedFuelVolume"];
 
-                    if ([[youngerEvent valueForKey: @"filledUp"] boolValue] == YES)
+                    if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
                         break;
                 }
             }
@@ -1327,18 +1263,18 @@ CGFloat const HugeStatusBarHeight = 40.0;
             while (row > 0)
             {
                 NSManagedObject *youngerEvent = youngerEvents[--row];
-                NSDecimalNumber *cost = [[event valueForKey: @"fuelVolume"] decimalNumberByMultiplyingBy: [event valueForKey: @"price"]];
+                NSDecimalNumber *cost = [[event valueForKey:@"fuelVolume"] decimalNumberByMultiplyingBy:[event valueForKey:@"price"]];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedCost"] decimalNumberBySubtracting: cost] max: zero]
-                                forKey: @"inheritedCost"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberBySubtracting:cost] max:zero]
+                                forKey:@"inheritedCost"];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedDistance"]   decimalNumberBySubtracting: distance] max: zero]
-                                forKey: @"inheritedDistance"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedDistance"]   decimalNumberBySubtracting:distance] max:zero]
+                                forKey:@"inheritedDistance"];
 
-                [youngerEvent setValue: [[[youngerEvent valueForKey: @"inheritedFuelVolume"] decimalNumberBySubtracting: fuelVolume] max: zero]
-                                forKey: @"inheritedFuelVolume"];
+                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberBySubtracting:fuelVolume] max:zero]
+                                forKey:@"inheritedFuelVolume"];
 
-                if ([[youngerEvent valueForKey: @"filledUp"] boolValue] == YES)
+                if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
                     break;
             }
         }
@@ -1352,19 +1288,19 @@ CGFloat const HugeStatusBarHeight = 40.0;
     // - when sum of all events equals the odometer value
     // - when forced to do so
     if (!forceOdometerUpdate)
-        if ([[car valueForKey: @"odometer"] compare: [car valueForKey: @"distanceTotalSum"]] != NSOrderedDescending)
+        if ([[car valueForKey:@"odometer"] compare:[car valueForKey:@"distanceTotalSum"]] != NSOrderedDescending)
             forceOdometerUpdate = YES;
 
     // Update total car statistics
-    [car setValue: [[[car valueForKey: @"distanceTotalSum"]   decimalNumberBySubtracting: distance]   max: zero] forKey: @"distanceTotalSum"];
-    [car setValue: [[[car valueForKey: @"fuelVolumeTotalSum"] decimalNumberBySubtracting: fuelVolume] max: zero] forKey: @"fuelVolumeTotalSum"];
+    [car setValue:[[[car valueForKey:@"distanceTotalSum"]   decimalNumberBySubtracting:distance]   max:zero] forKey:@"distanceTotalSum"];
+    [car setValue:[[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberBySubtracting:fuelVolume] max:zero] forKey:@"fuelVolumeTotalSum"];
 
     // Update global odometer
     if (forceOdometerUpdate)
-        [car setValue: [[[car valueForKey: @"odometer"] decimalNumberBySubtracting: distance] max: zero] forKey: @"odometer"];
+        [car setValue:[[[car valueForKey:@"odometer"] decimalNumberBySubtracting:distance] max:zero] forKey:@"odometer"];
 
     // Delete the managed event object
-    [moc deleteObject: event];
+    [moc deleteObject:event];
 }
 
 
@@ -1377,9 +1313,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
 + (KSVolume)volumeUnitFromLocale
 {
     NSLocale *locale  = [NSLocale autoupdatingCurrentLocale];
-    NSString *country = [locale objectForKey: NSLocaleCountryCode];
+    NSString *country = [locale objectForKey:NSLocaleCountryCode];
 
-    if ([country isEqualToString: @"US"])
+    if ([country isEqualToString:@"US"])
         return KSVolumeGalUS;
     else
         return KSVolumeLiter;
@@ -1388,9 +1324,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 + (KSFuelConsumption)fuelConsumptionUnitFromLocale
 {
-    NSString *country = [[NSLocale autoupdatingCurrentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *country = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
 
-    if ([country isEqualToString: @"US"])
+    if ([country isEqualToString:@"US"])
         return KSFuelConsumptionMilesPerGallonUS;
     else
         return KSFuelConsumptionLitersPer100km;
@@ -1399,9 +1335,9 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 + (KSDistance)distanceUnitFromLocale
 {
-    NSString *country = [[NSLocale autoupdatingCurrentLocale] objectForKey: NSLocaleCountryCode];
+    NSString *country = [[NSLocale autoupdatingCurrentLocale] objectForKey:NSLocaleCountryCode];
 
-    if ([country isEqualToString: @"US"])
+    if ([country isEqualToString:@"US"])
         return KSDistanceStatuteMile;
     else
         return KSDistanceKilometer;
@@ -1414,98 +1350,98 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSDecimalNumber*)litersPerUSGallon
++ (NSDecimalNumber *)litersPerUSGallon
 {
     static NSDecimalNumber *litersPerUSGallon = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        litersPerUSGallon = [NSDecimalNumber decimalNumberWithMantissa: 3785411784 exponent: -9 isNegative: NO];
+        litersPerUSGallon = [NSDecimalNumber decimalNumberWithMantissa:3785411784 exponent: -9 isNegative:NO];
     });
 
     return litersPerUSGallon;
 }
 
 
-+ (NSDecimalNumber*)litersPerImperialGallon
++ (NSDecimalNumber *)litersPerImperialGallon
 {
     static NSDecimalNumber *litersPerImperialGallon = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        litersPerImperialGallon = [NSDecimalNumber decimalNumberWithMantissa: 454609 exponent: -5 isNegative: NO];
+        litersPerImperialGallon = [NSDecimalNumber decimalNumberWithMantissa:454609 exponent: -5 isNegative:NO];
     });
 
     return litersPerImperialGallon;
 }
 
 
-+ (NSDecimalNumber*)kilometersPerStatuteMile
++ (NSDecimalNumber *)kilometersPerStatuteMile
 {
     static NSDecimalNumber *kilometersPerStatuteMile = nil;
     static dispatch_once_t pred;
 
     dispatch_once (&pred, ^{
 
-        kilometersPerStatuteMile = [NSDecimalNumber decimalNumberWithMantissa: 1609344 exponent: -6 isNegative: NO];
+        kilometersPerStatuteMile = [NSDecimalNumber decimalNumberWithMantissa:1609344 exponent: -6 isNegative:NO];
     });
 
     return kilometersPerStatuteMile;
 }
 
 
-+ (NSDecimalNumber*)kilometersPerLiterToMilesPerUSGallon
++ (NSDecimalNumber *)kilometersPerLiterToMilesPerUSGallon
 {
     static NSDecimalNumber *mpgUSFromKML = nil;
     static dispatch_once_t pred;
     
     dispatch_once (&pred, ^{
         
-        mpgUSFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2352145833 exponent: -9 isNegative: NO];
+        mpgUSFromKML = [NSDecimalNumber decimalNumberWithMantissa:2352145833 exponent: -9 isNegative:NO];
     });
     
     return mpgUSFromKML;
 }
 
 
-+ (NSDecimalNumber*)kilometersPerLiterToMilesPerImperialGallon
++ (NSDecimalNumber *)kilometersPerLiterToMilesPerImperialGallon
 {
     static NSDecimalNumber *mpgImperialFromKML = nil;
     static dispatch_once_t pred;
     
     dispatch_once (&pred, ^{
         
-        mpgImperialFromKML = [NSDecimalNumber decimalNumberWithMantissa: 2737067636 exponent: -9 isNegative: NO];
+        mpgImperialFromKML = [NSDecimalNumber decimalNumberWithMantissa:2737067636 exponent: -9 isNegative:NO];
     });
     
     return mpgImperialFromKML;
 }
 
 
-+ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KUSGallon
++ (NSDecimalNumber *)litersPer100KilometersToMilesPer10KUSGallon
 {
     static NSDecimalNumber *gp10kUsFromLP100 = nil;
     static dispatch_once_t pred;
     
     dispatch_once (&pred, ^{
         
-        gp10kUsFromLP100 = [NSDecimalNumber decimalNumberWithMantissa: 425170068027 exponent: -10 isNegative: NO];
+        gp10kUsFromLP100 = [NSDecimalNumber decimalNumberWithMantissa:425170068027 exponent: -10 isNegative:NO];
     });
     
     return gp10kUsFromLP100;
 }
 
 
-+ (NSDecimalNumber*)litersPer100KilometersToMilesPer10KImperialGallon
++ (NSDecimalNumber *)litersPer100KilometersToMilesPer10KImperialGallon
 {
     static NSDecimalNumber *gp10kImperialFromLP100 = nil;
     static dispatch_once_t pred;
     
     dispatch_once (&pred, ^{
         
-        gp10kImperialFromLP100 = [NSDecimalNumber decimalNumberWithMantissa: 353982300885 exponent: -10 isNegative: NO];
+        gp10kImperialFromLP100 = [NSDecimalNumber decimalNumberWithMantissa:353982300885 exponent: -10 isNegative:NO];
     });
     
     return gp10kImperialFromLP100;
@@ -1518,63 +1454,63 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSDecimalNumber*)litersForVolume: (NSDecimalNumber*)volume withUnit: (KSVolume)unit
++ (NSDecimalNumber *)litersForVolume:(NSDecimalNumber *)volume withUnit:(KSVolume)unit
 {
     switch (unit)
     {
-        case KSVolumeGalUS: return [volume decimalNumberByMultiplyingBy: [self litersPerUSGallon]];
-        case KSVolumeGalUK: return [volume decimalNumberByMultiplyingBy: [self litersPerImperialGallon]];
+        case KSVolumeGalUS: return [volume decimalNumberByMultiplyingBy:[self litersPerUSGallon]];
+        case KSVolumeGalUK: return [volume decimalNumberByMultiplyingBy:[self litersPerImperialGallon]];
         default:            return volume;
     }
 }
 
 
-+ (NSDecimalNumber*)volumeForLiters: (NSDecimalNumber*)liters withUnit: (KSVolume)unit
++ (NSDecimalNumber *)volumeForLiters:(NSDecimalNumber *)liters withUnit:(KSVolume)unit
 {
     switch (unit)
     {
-        case KSVolumeGalUS: return [liters decimalNumberByDividingBy: [self litersPerUSGallon]];
-        case KSVolumeGalUK: return [liters decimalNumberByDividingBy: [self litersPerImperialGallon]];
+        case KSVolumeGalUS: return [liters decimalNumberByDividingBy:[self litersPerUSGallon]];
+        case KSVolumeGalUK: return [liters decimalNumberByDividingBy:[self litersPerImperialGallon]];
         default:            return liters;
     }
 }
 
 
-+ (NSDecimalNumber*)kilometersForDistance: (NSDecimalNumber*)distance withUnit: (KSDistance)unit
++ (NSDecimalNumber *)kilometersForDistance:(NSDecimalNumber *)distance withUnit:(KSDistance)unit
 {
     if (unit == KSDistanceStatuteMile)
-        return [distance decimalNumberByMultiplyingBy: [self kilometersPerStatuteMile]];
+        return [distance decimalNumberByMultiplyingBy:[self kilometersPerStatuteMile]];
     else
         return distance;
 }
 
 
-+ (NSDecimalNumber*)distanceForKilometers: (NSDecimalNumber*)kilometers withUnit: (KSDistance)unit
++ (NSDecimalNumber *)distanceForKilometers:(NSDecimalNumber *)kilometers withUnit:(KSDistance)unit
 {
     if (unit == KSDistanceStatuteMile)
-        return [kilometers decimalNumberByDividingBy: [self kilometersPerStatuteMile]];
+        return [kilometers decimalNumberByDividingBy:[self kilometersPerStatuteMile]];
     else
         return kilometers;
 }
 
 
-+ (NSDecimalNumber*)pricePerLiter: (NSDecimalNumber*)price withUnit: (KSVolume)unit
++ (NSDecimalNumber *)pricePerLiter:(NSDecimalNumber *)price withUnit:(KSVolume)unit
 {
     switch (unit)
     {
-        case KSVolumeGalUS: return [price decimalNumberByDividingBy: [self litersPerUSGallon]];
-        case KSVolumeGalUK: return [price decimalNumberByDividingBy: [self litersPerImperialGallon]];
+        case KSVolumeGalUS: return [price decimalNumberByDividingBy:[self litersPerUSGallon]];
+        case KSVolumeGalUK: return [price decimalNumberByDividingBy:[self litersPerImperialGallon]];
         default:            return price;
     }
 }
 
 
-+ (NSDecimalNumber*)pricePerUnit: (NSDecimalNumber*)literPrice withUnit: (KSVolume)unit
++ (NSDecimalNumber *)pricePerUnit:(NSDecimalNumber *)literPrice withUnit:(KSVolume)unit
 {
     switch (unit)
     {
-        case KSVolumeGalUS: return [literPrice decimalNumberByMultiplyingBy: [self litersPerUSGallon]];
-        case KSVolumeGalUK: return [literPrice decimalNumberByMultiplyingBy: [self litersPerImperialGallon]];
+        case KSVolumeGalUS: return [literPrice decimalNumberByMultiplyingBy:[self litersPerUSGallon]];
+        case KSVolumeGalUK: return [literPrice decimalNumberByMultiplyingBy:[self litersPerImperialGallon]];
         default:            return literPrice;
     }
 }
@@ -1586,47 +1522,49 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSDecimalNumber*)consumptionForKilometers: (NSDecimalNumber*)kilometers
-                                      Liters: (NSDecimalNumber*)liters
-                                      inUnit: (KSFuelConsumption)unit
++ (NSDecimalNumber *)consumptionForKilometers:(NSDecimalNumber *)kilometers
+                                      Liters:(NSDecimalNumber *)liters
+                                      inUnit:(KSFuelConsumption)unit
 {
     NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
 
 
-    if ([kilometers compare: [NSDecimalNumber zero]] != NSOrderedDescending ||
-        [liters     compare: [NSDecimalNumber zero]] != NSOrderedDescending)
+    if ([kilometers compare:[NSDecimalNumber zero]] != NSOrderedDescending)
+       return [NSDecimalNumber notANumber];
+
+    if ([liters compare:[NSDecimalNumber zero]] != NSOrderedDescending)
         return [NSDecimalNumber notANumber];
 
     if (KSFuelConsumptionIsEfficiency (unit))
     {
-        NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy: liters];
+        NSDecimalNumber *kmPerLiter = [kilometers decimalNumberByDividingBy:liters];
         
         switch (unit)
         {
             case KSFuelConsumptionKilometersPerLiter:
-                return [kmPerLiter decimalNumberByRoundingAccordingToBehavior: handler];
+                return [kmPerLiter decimalNumberByRoundingAccordingToBehavior:handler];
                 
             case KSFuelConsumptionMilesPerGallonUS:
-                return [kmPerLiter decimalNumberByMultiplyingBy: [self kilometersPerLiterToMilesPerUSGallon] withBehavior: handler];
+                return [kmPerLiter decimalNumberByMultiplyingBy:[self kilometersPerLiterToMilesPerUSGallon] withBehavior:handler];
                 
             default: // KSFuelConsumptionMilesPerGallonUK:
-                return [kmPerLiter decimalNumberByMultiplyingBy: [self kilometersPerLiterToMilesPerImperialGallon] withBehavior: handler];
+                return [kmPerLiter decimalNumberByMultiplyingBy:[self kilometersPerLiterToMilesPerImperialGallon] withBehavior:handler];
         }
     }
     else
     {
-        NSDecimalNumber *literPer100km = [[liters decimalNumberByMultiplyingByPowerOf10: 2] decimalNumberByDividingBy: kilometers];
+        NSDecimalNumber *literPer100km = [[liters decimalNumberByMultiplyingByPowerOf10:2] decimalNumberByDividingBy:kilometers];
     
         switch (unit)
         {
             case KSFuelConsumptionLitersPer100km:
-                return [literPer100km decimalNumberByRoundingAccordingToBehavior: handler];
+                return [literPer100km decimalNumberByRoundingAccordingToBehavior:handler];
 
             case KSFuelConsumptionGP10KUS:
-                return [literPer100km decimalNumberByMultiplyingBy: [self litersPer100KilometersToMilesPer10KUSGallon] withBehavior: handler];
+                return [literPer100km decimalNumberByMultiplyingBy:[self litersPer100KilometersToMilesPer10KUSGallon] withBehavior:handler];
 
             default: // KSFuelConsumptionGP10KUK:
-                return [literPer100km decimalNumberByMultiplyingBy: [self litersPer100KilometersToMilesPer10KImperialGallon] withBehavior: handler];
+                return [literPer100km decimalNumberByMultiplyingBy:[self litersPer100KilometersToMilesPer10KImperialGallon] withBehavior:handler];
         }
     }    
 }
@@ -1638,67 +1576,67 @@ CGFloat const HugeStatusBarHeight = 40.0;
 
 
 
-+ (NSString*)consumptionUnitString: (KSFuelConsumption)unit
++ (NSString *)consumptionUnitString:(KSFuelConsumption)unit
 {
     switch (unit)
     {
-        case KSFuelConsumptionLitersPer100km:     return _I18N (@"l/100km");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N (@"km/l");
-        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"mpg");
-        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"mpg.uk");
-        case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k");
-        case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k.uk");
+        case KSFuelConsumptionLitersPer100km:     return _I18N(@"l/100km");
+        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"km/l");
+        case KSFuelConsumptionMilesPerGallonUS:   return _I18N(@"mpg");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N(@"mpg.uk");
+        case KSFuelConsumptionGP10KUS:            return _I18N(@"gp10k");
+        case KSFuelConsumptionGP10KUK:            return _I18N(@"gp10k.uk");
         default:                                  return @"";
     }
 }
 
 
-+ (NSString*)consumptionUnitDescription: (KSFuelConsumption)unit
++ (NSString *)consumptionUnitDescription:(KSFuelConsumption)unit
 {
     switch (unit)
     {
-        case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
-        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"Miles per Gallon (US)");
-        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
-        case KSFuelConsumptionGP10KUS:            return _I18N (@"Gallons per 10000 Miles (US)");
-        case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles (UK)");
+        case KSFuelConsumptionLitersPer100km:     return _I18N(@"Liters per 100 Kilometers");
+        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
+        case KSFuelConsumptionMilesPerGallonUS:   return _I18N(@"Miles per Gallon (US)");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N(@"Miles per Gallon (UK)");
+        case KSFuelConsumptionGP10KUS:            return _I18N(@"Gallons per 10000 Miles (US)");
+        case KSFuelConsumptionGP10KUK:            return _I18N(@"Gallons per 10000 Miles (UK)");
         default:                                  return @"";
     }
 }
 
 
-+ (NSString*)consumptionUnitShortDescription: (KSFuelConsumption)unit;
++ (NSString *)consumptionUnitShortDescription:(KSFuelConsumption)unit;
 {
     switch (unit)
     {
-        case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
-        case KSFuelConsumptionMilesPerGallonUS:   return _I18N (@"Miles per Gallon (US)");
-        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon (UK)");
-        case KSFuelConsumptionGP10KUS:            return _I18N (@"gp10k_short_us");
-        case KSFuelConsumptionGP10KUK:            return _I18N (@"gp10k_short_uk");
+        case KSFuelConsumptionLitersPer100km:     return _I18N(@"Liters per 100 Kilometers");
+        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
+        case KSFuelConsumptionMilesPerGallonUS:   return _I18N(@"Miles per Gallon (US)");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N(@"Miles per Gallon (UK)");
+        case KSFuelConsumptionGP10KUS:            return _I18N(@"gp10k_short_us");
+        case KSFuelConsumptionGP10KUK:            return _I18N(@"gp10k_short_uk");
         default:                                  return @"";
     }
 }
 
 
-+ (NSString*)consumptionUnitAccesibilityDescription: (KSFuelConsumption)unit
++ (NSString *)consumptionUnitAccesibilityDescription:(KSFuelConsumption)unit
 {
     switch (unit)
     {
-        case KSFuelConsumptionLitersPer100km:     return _I18N (@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N (@"Kilometers per Liter");
+        case KSFuelConsumptionLitersPer100km:     return _I18N(@"Liters per 100 Kilometers");
+        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
         case KSFuelConsumptionMilesPerGallonUS:
-        case KSFuelConsumptionMilesPerGallonUK:   return _I18N (@"Miles per Gallon");
+        case KSFuelConsumptionMilesPerGallonUK:   return _I18N(@"Miles per Gallon");
         case KSFuelConsumptionGP10KUS:
-        case KSFuelConsumptionGP10KUK:            return _I18N (@"Gallons per 10000 Miles");
+        case KSFuelConsumptionGP10KUK:            return _I18N(@"Gallons per 10000 Miles");
         default:                                  return @"";
     }
 }
 
 
-+ (NSString*)fuelUnitString: (KSVolume)unit
++ (NSString *)fuelUnitString:(KSVolume)unit
 {
     if (unit == KSVolumeLiter)
         return @"l";
@@ -1707,53 +1645,53 @@ CGFloat const HugeStatusBarHeight = 40.0;
 }
 
 
-+ (NSString*)fuelUnitDescription: (KSVolume)unit discernGallons: (BOOL)discernGallons pluralization: (BOOL)plural
++ (NSString *)fuelUnitDescription:(KSVolume)unit discernGallons:(BOOL)discernGallons pluralization:(BOOL)plural
 {
     if (plural)
     {
         switch (unit)
         {
-            case KSVolumeLiter: return _I18N (@"Liters");
-            case KSVolumeGalUS: return (discernGallons) ? _I18N (@"Gallons (US)") : _I18N (@"Gallons");
-            default:            return (discernGallons) ? _I18N (@"Gallons (UK)") : _I18N (@"Gallons");
+            case KSVolumeLiter:return _I18N(@"Liters");
+            case KSVolumeGalUS:return (discernGallons) ? _I18N(@"Gallons (US)") : _I18N(@"Gallons");
+            default:           return (discernGallons) ? _I18N(@"Gallons (UK)") : _I18N(@"Gallons");
         }
     }
     else
     {
         switch (unit)
         {
-            case KSVolumeLiter: return _I18N (@"Liter");
-            case KSVolumeGalUS: return (discernGallons) ? _I18N (@"Gallon (US)") : _I18N (@"Gallon");
-            default:            return (discernGallons) ? _I18N (@"Gallon (UK)") : _I18N (@"Gallon");
+            case KSVolumeLiter:return _I18N(@"Liter");
+            case KSVolumeGalUS:return (discernGallons) ? _I18N(@"Gallon (US)") : _I18N(@"Gallon");
+            default:           return (discernGallons) ? _I18N(@"Gallon (UK)") : _I18N(@"Gallon");
         }
     }
 }
 
 
-+ (NSString*)fuelPriceUnitDescription: (KSVolume)unit
++ (NSString *)fuelPriceUnitDescription:(KSVolume)unit
 {
-    if (KSVolumeIsMetric (unit))
-        return _I18N (@"Price per Liter");
+    if (KSVolumeIsMetric(unit))
+        return _I18N(@"Price per Liter");
     else
-        return _I18N (@"Price per Gallon");
+        return _I18N(@"Price per Gallon");
 }
 
 
-+ (NSString*)odometerUnitString: (KSDistance)unit
++ (NSString *)odometerUnitString:(KSDistance)unit
 {
-    if (KSDistanceIsMetric (unit))
+    if (KSDistanceIsMetric(unit))
         return @"km";
     else
         return @"mi";
 }
 
 
-+ (NSString*)odometerUnitDescription: (KSDistance)unit pluralization: (BOOL)plural
++ (NSString *)odometerUnitDescription:(KSDistance)unit pluralization:(BOOL)plural
 {
     if (plural)
-        return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometers") : _I18N (@"Miles");
+        return (KSDistanceIsMetric(unit)) ? _I18N(@"Kilometers") : _I18N(@"Miles");
     else
-        return (KSDistanceIsMetric (unit)) ? _I18N (@"Kilometer")  : _I18N (@"Mile");
+        return (KSDistanceIsMetric(unit)) ? _I18N(@"Kilometer")  : _I18N(@"Mile");
 }
 
 @end

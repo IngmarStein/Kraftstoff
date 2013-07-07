@@ -56,9 +56,9 @@ CGFloat StatisticsHeight     = 182.0;
 
 
 
-- (id)initWithNibName: (NSString*)nibNameOrNil bundle: (NSBundle*)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if ((self = [super initWithNibName: nibNameOrNil bundle: nibBundleOrNil]))
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
     {
         contentCache            = [[NSMutableDictionary alloc] init];
         displayedNumberOfMonths = 0;
@@ -76,9 +76,9 @@ CGFloat StatisticsHeight     = 182.0;
 
     if ([AppDelegate systemMajorVersion] >= 7)
     {
-        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size: 17];
-        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size: 14];
-        UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size: 14];
+        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
+        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+        UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
 
         // Labels on top of view
         self.leftLabel.font          = titleFont;
@@ -90,7 +90,7 @@ CGFloat StatisticsHeight     = 182.0;
 
         // Update selection status of all buttons
         for (UIButton *button in [self.view subviews])
-            if ([button isKindOfClass: [UIButton class]])
+            if ([button isKindOfClass:[UIButton class]])
             {
                 NSAttributedString *label = [[NSAttributedString alloc]
                                              initWithString:button.titleLabel.text
@@ -118,14 +118,14 @@ CGFloat StatisticsHeight     = 182.0;
 }
 
 
-- (void)viewWillAppear: (BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
 
-    leftLabel.text  = [NSString stringWithFormat: @"%@", [selectedCar valueForKey: @"name"]];
+    leftLabel.text  = [NSString stringWithFormat:@"%@", [selectedCar valueForKey:@"name"]];
     rightLabel.text = @"";
 
-    [self setDisplayedNumberOfMonths: [[NSUserDefaults standardUserDefaults] integerForKey: @"statisticTimeSpan"]];
+    [self setDisplayedNumberOfMonths:[[NSUserDefaults standardUserDefaults] integerForKey:@"statisticTimeSpan"]];
 }
 
 
@@ -147,7 +147,7 @@ CGFloat StatisticsHeight     = 182.0;
 }
 
 
-- (void)noteStatisticsPageBecomesVisible: (BOOL)visible
+- (void)noteStatisticsPageBecomesVisible:(BOOL)visible
 {
 }
 
@@ -181,14 +181,14 @@ CGFloat StatisticsHeight     = 182.0;
 
 
 
-- (void)displayStatisticsForRecentMonths: (NSInteger)numberOfMonths
+- (void)displayStatisticsForRecentMonths:(NSInteger)numberOfMonths
 {
     displayedNumberOfMonths = numberOfMonths;
     expectedCounter         = invalidationCounter;
 
 
     // First try to display cached data
-    if ([self displayCachedStatisticsForRecentMonths: numberOfMonths])
+    if ([self displayCachedStatisticsForRecentMonths:numberOfMonths])
         return;
 
 
@@ -199,42 +199,42 @@ CGFloat StatisticsHeight     = 182.0;
         return;
 
     NSManagedObjectContext *parentContext = [self.selectedCar managedObjectContext];
-    NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] initWithConcurrencyType: NSPrivateQueueConcurrencyType];
-    [sampleContext setParentContext: parentContext];
+    NSManagedObjectContext *sampleContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [sampleContext setParentContext:parentContext];
     [sampleContext performBlock: ^{
 
         // Get the selected car
         NSError *error = nil;
-        NSManagedObject *sampleCar = [sampleContext existingObjectWithID: selectedCarID
-                                                                   error: &error];
+        NSManagedObject *sampleCar = [sampleContext existingObjectWithID:selectedCarID
+                                                                   error:&error];
 
         if (sampleCar)
         {
             // Fetch events for the selected time period
-            NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar: sampleCar
-                                                                          afterDate: [NSDate dateWithOffsetInMonths: -numberOfMonths fromDate: [NSDate date]]
-                                                                        dateMatches: YES
-                                                             inManagedObjectContext: sampleContext];
+            NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar:sampleCar
+                                                                          afterDate:[NSDate dateWithOffsetInMonths: -numberOfMonths fromDate:[NSDate date]]
+                                                                        dateMatches:YES
+                                                             inManagedObjectContext:sampleContext];
 
-            NSArray *samplingObjects = [AppDelegate objectsForFetchRequest: fetchRequest
-                                                    inManagedObjectContext: sampleContext];
+            NSArray *samplingObjects = [AppDelegate objectsForFetchRequest:fetchRequest
+                                                    inManagedObjectContext:sampleContext];
 
 
             // Compute statistics
-            id sampleData = [self computeStatisticsForRecentMonths: numberOfMonths
-                                                            forCar: sampleCar
-                                                       withObjects: samplingObjects];
+            id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths
+                                                            forCar:sampleCar
+                                                       withObjects:samplingObjects];
 
 
             // Schedule update of cache and display in main thread
-            dispatch_async (dispatch_get_main_queue (),
+            dispatch_async (dispatch_get_main_queue(),
                            ^{
                                if (invalidationCounter == expectedCounter)
                                {
                                    contentCache[@(numberOfMonths)] = sampleData;
 
                                    if (displayedNumberOfMonths == numberOfMonths)
-                                       [self displayCachedStatisticsForRecentMonths: numberOfMonths];
+                                       [self displayCachedStatisticsForRecentMonths:numberOfMonths];
                                }
                            });
         }
@@ -248,23 +248,23 @@ CGFloat StatisticsHeight     = 182.0;
 
 
 
-- (IBAction)buttonAction: (UIButton*)sender
+- (IBAction)buttonAction:(UIButton *)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName: @"numberOfMonthsSelected"
-                                                        object: self
-                                                      userInfo: @{@"span": @([sender tag])}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"numberOfMonthsSelected"
+                                                        object:self
+                                                      userInfo:@{@"span":@([sender tag])}];
 }
 
 
-- (void)setDisplayedNumberOfMonths: (NSInteger)numberOfMonths
+- (void)setDisplayedNumberOfMonths:(NSInteger)numberOfMonths
 {
     // Update selection status of all buttons
     for (UIButton *button in [self.view subviews])
-        if ([button isKindOfClass: [UIButton class]])
-            [button setSelected: [button tag] == numberOfMonths];
+        if ([button isKindOfClass:[UIButton class]])
+            [button setSelected:[button tag] == numberOfMonths];
 
     // Switch dataset to be shown
-    [self displayStatisticsForRecentMonths: numberOfMonths];
+    [self displayStatisticsForRecentMonths:numberOfMonths];
 
 }
 

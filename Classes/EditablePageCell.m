@@ -26,9 +26,9 @@ static CGFloat const margin = 8.0;
 	[super finishConstruction];
 
     // Create textfield
-    textField = [[EditablePageCellTextField alloc] initWithFrame: CGRectZero];
+    textField = [[EditablePageCellTextField alloc] initWithFrame:CGRectZero];
 
-	textField.font                     = (useOldStyle) ? [UIFont systemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size: 17.0];
+	textField.font                     = (useOldStyle) ? [UIFont systemFontOfSize:15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
 	textField.textAlignment            = NSTextAlignmentRight;
 	textField.autocapitalizationType   = UITextAutocapitalizationTypeNone;
 	textField.autocorrectionType       = UITextAutocorrectionTypeNo;
@@ -38,14 +38,14 @@ static CGFloat const margin = 8.0;
 	textField.autoresizingMask         = UIViewAutoresizingFlexibleWidth;
 	textField.userInteractionEnabled   = NO;
 
-	[self.contentView addSubview: textField];
+	[self.contentView addSubview:textField];
 
 
     // Configure the default textlabel
     UILabel *label = self.textLabel;
 
 	label.textAlignment        = NSTextAlignmentLeft;
-	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize: 17.0] : [UIFont fontWithName:@"HelveticaNeue" size: 17.0];
+	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize:17.0] : [UIFont fontWithName:@"HelveticaNeue" size:17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
 
@@ -57,24 +57,24 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (NSString*)accessibilityLabel
+- (NSString *)accessibilityLabel
 {
-	return [NSString stringWithFormat: @"%@ %@", self.textLabel.text, textField.text];
+	return [NSString stringWithFormat:@"%@ %@", self.textLabel.text, textField.text];
 }
 
 
-- (void)configureForData: (id)dataObject
-          viewController: (id)viewController
-               tableView: (UITableView*)tableView
-               indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject
+          viewController:(id)viewController
+               tableView:(UITableView *)tableView
+               indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
-	self.textLabel.text   = ((NSDictionary*)dataObject)[@"label"];
+	self.textLabel.text   = ((NSDictionary *)dataObject)[@"label"];
     self.delegate         = viewController;
-    self.valueIdentifier  = ((NSDictionary*)dataObject)[@"valueIdentifier"];
+    self.valueIdentifier  = ((NSDictionary *)dataObject)[@"valueIdentifier"];
 
-	textField.placeholder = ((NSDictionary*)dataObject)[@"placeholder"];
+	textField.placeholder = ((NSDictionary *)dataObject)[@"placeholder"];
 	textField.delegate    = self;
 }
 
@@ -84,7 +84,7 @@ static CGFloat const margin = 8.0;
     [super layoutSubviews];
     
     CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
-    CGFloat labelWidth = [self.textLabel.text sizeWithFont: self.textLabel.font].width;
+    CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 
@@ -93,13 +93,13 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (UIColor*)invalidTextColor
+- (UIColor *)invalidTextColor
 {
     if ([AppDelegate systemMajorVersion] < 7)
-        return [UIColor colorWithRed: 0.42 green: 0.0 blue: 0.0 alpha: 1.0];
+        return [UIColor colorWithRed:0.42 green:0.0 blue:0.0 alpha:1.0];
     else
-        // FIXME: when editing a field with inline picker, this should be black
-        return self.tintColor;    //[UIColor colorWithRed: 1.0 green: 0.4 blue: 0.4 alpha: 1.0];
+        // FIXME:when editing a field with inline picker, this should be black
+        return self.tintColor;    //[UIColor colorWithRed:1.0 green:0.4 blue:0.4 alpha:1.0];
 }
 
 
@@ -109,7 +109,7 @@ static CGFloat const margin = 8.0;
 
 
 
-- (void)textFieldDidEndEditing: (UITextField*)aTextField
+- (void)textFieldDidEndEditing:(UITextField *)aTextField
 {
     aTextField.userInteractionEnabled = NO;
 }

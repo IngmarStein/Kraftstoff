@@ -32,30 +32,30 @@ static CGFloat const PickerViewCellHeight =  44.0;
 }
 
 
-- (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject viewController:(id)viewController tableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
     // Array of picker labels
-    self.pickerLabels = ((NSDictionary*)dataObject)[@"labels"];
-    self.pickerShortLabels = ((NSDictionary*)dataObject)[@"shortLabels"];
+    self.pickerLabels = ((NSDictionary *)dataObject)[@"labels"];
+    self.pickerShortLabels = ((NSDictionary *)dataObject)[@"shortLabels"];
     [picker reloadAllComponents];
 
     // (Re-)configure initial selected row
-    NSInteger initialIndex = [[self.delegate valueForIdentifier: self.valueIdentifier] integerValue];
+    NSInteger initialIndex = [[self.delegate valueForIdentifier:self.valueIdentifier] integerValue];
 
-    [picker selectRow: initialIndex inComponent: 0 animated: NO];
-    [picker reloadComponent: 0];
+    [picker selectRow:initialIndex inComponent:0 animated:NO];
+    [picker reloadComponent:0];
 
     self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[initialIndex];
 }
 
 
-- (void)selectRow: (NSInteger)row
+- (void)selectRow:(NSInteger)row
 {
     self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[row];
 
-    [self.delegate valueChanged: @((int)row) identifier: self.valueIdentifier];
+    [self.delegate valueChanged:@((int)row) identifier:self.valueIdentifier];
 }
 
 
@@ -65,21 +65,21 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 
 
-- (NSInteger)numberOfComponentsInPickerView: (UIPickerView*)pickerView
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
     return 1;
 }
 
 
-- (NSInteger)pickerView: (UIPickerView*)pickerView numberOfRowsInComponent: (NSInteger)component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     return [pickerLabels count];
 }
 
 
-- (void)pickerView: (UIPickerView*)pickerView didSelectRow: (NSInteger)row inComponent: (NSInteger)component
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    [self selectRow: row];
+    [self selectRow:row];
 }
 
 
@@ -89,25 +89,25 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 
 
-- (CGFloat)pickerView: (UIPickerView*)pickerView rowHeightForComponent: (NSInteger)component
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
 {
     return PickerViewCellHeight;
 }
 
 
-- (CGFloat)pickerView: (UIPickerView*)pickerView widthForComponent: (NSInteger)component
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
 {
     return PickerViewCellWidth;
 }
 
 
-- (NSString*)pickerView: (UIPickerView*)pickerView titleForRow: (NSInteger)row forComponent: (NSInteger)component
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
     return pickerLabels[row];
 }
 
 
-- (UIView*)pickerView: (UIPickerView*)pickerView viewForRow: (NSInteger)row forComponent: (NSInteger)component reusingView: (UIView*)view
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     UILabel* label = (UILabel*)view;
 

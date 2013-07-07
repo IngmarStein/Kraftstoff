@@ -19,9 +19,7 @@
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
 {
     if ((self = [super initWithFrame:frame style:style]))
-    {
         [self setNeedsShadowUpdate];
-    }
 
     return self;
 }
@@ -65,8 +63,8 @@
     NSArray *visibleCells     = [self visibleCells];
     NSInteger visibleRowCount = [visibleCells count];
 
-    if (visibleRowCount == 0)
-    {
+    if (visibleRowCount == 0) {
+
         [cellShadowTop removeFromSuperlayer];
         cellShadowTop = nil;
 
@@ -79,8 +77,8 @@
     // Add shadow before very first row
     NSIndexPath *firstIndexPath = [self indexPathForCell:visibleCells[0]];
 
-    if ([firstIndexPath section] == 0 && [firstIndexPath row] == 0)
-    {
+    if ([firstIndexPath section] == 0 && [firstIndexPath row] == 0) {
+
         UIView *cell = [self cellForRowAtIndexPath:firstIndexPath];
 
         if (cellShadowTop == nil)
@@ -96,17 +94,17 @@
         shadowFrame.size.width = cell.frame.size.width;
         shadowFrame.origin.y   = -TableTopShadowHeight;
         cellShadowTop.frame    = shadowFrame;
-    }
-    else
-    {
+
+    } else {
+
         [cellShadowTop removeFromSuperlayer];
     }
 
     // Another shadow below the last row of the table
     NSIndexPath *lastIndexPath = [self indexPathForCell:visibleCells[visibleRowCount - 1]];
 
-    if ([lastIndexPath section] == [self numberOfSections] - 1 && [lastIndexPath row] == [self numberOfRowsInSection:[lastIndexPath section]] - 1)
-    {
+    if ([lastIndexPath section] == [self numberOfSections] - 1 && [lastIndexPath row] == [self numberOfRowsInSection:[lastIndexPath section]] - 1) {
+
         UIView *cell = [self cellForRowAtIndexPath:lastIndexPath];
 
         if (cellShadowBottom == nil)
@@ -122,9 +120,9 @@
         shadowFrame.size.width = cell.frame.size.width;
         shadowFrame.origin.y   = cell.frame.size.height;
         cellShadowBottom.frame = shadowFrame;
-    }
-    else
-    {
+
+    } else {
+
         [cellShadowBottom removeFromSuperlayer];
     }
 }

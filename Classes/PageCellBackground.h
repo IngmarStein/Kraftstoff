@@ -22,8 +22,8 @@ typedef enum
 @property (nonatomic) PageCellGroupPosition position;
 @property (nonatomic, strong) UIColor *strokeColor;
 
-+ (PageCellGroupPosition)positionForIndexPath: (NSIndexPath*)indexPath inTableView: (UITableView*)tableView;
++ (PageCellGroupPosition)positionForIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView;
 
-- (id)initSelected: (BOOL)isSelected grouped: (BOOL)isGrouped;
+- (id)initSelected:(BOOL)isSelected grouped:(BOOL)isGrouped;
 
 @end

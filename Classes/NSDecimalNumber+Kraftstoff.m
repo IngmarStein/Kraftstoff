@@ -8,7 +8,7 @@
 
 @implementation NSDecimalNumber (Kraftstoff)
 
-- (NSDecimalNumber*)min:(NSDecimalNumber *)other
+- (NSDecimalNumber *)min:(NSDecimalNumber *)other
 {
     if (other != nil && [self compare:other] != NSOrderedAscending)
         return other;
@@ -16,7 +16,7 @@
         return self;
 }
 
-- (NSDecimalNumber*)max:(NSDecimalNumber *)other
+- (NSDecimalNumber *)max:(NSDecimalNumber *)other
 {
     if (other != nil && [self compare:other] != NSOrderedDescending)
         return other;

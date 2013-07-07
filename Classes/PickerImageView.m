@@ -20,7 +20,7 @@
 }
 
 
-- (NSString*)accessibilityLabel
+- (NSString *)accessibilityLabel
 {
     return textualDescription;
 }

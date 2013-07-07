@@ -5,7 +5,7 @@
 
 @interface NSDecimalNumber (Kraftstoff)
 
-- (NSDecimalNumber*)min:(NSDecimalNumber *)other;
-- (NSDecimalNumber*)max:(NSDecimalNumber *)other;
+- (NSDecimalNumber *)min:(NSDecimalNumber *)other;
+- (NSDecimalNumber *)max:(NSDecimalNumber *)other;
 
 @end

@@ -22,9 +22,9 @@
 
 
 
-- (id)initWithNibName: (NSString*)nibName bundle: (NSBundle*)nibBundle
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
-    if ((self = [super initWithNibName: nibName bundle: nibBundle]))
+    if ((self = [super initWithNibName:nibName bundle:nibBundle]))
     {
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
@@ -44,26 +44,26 @@
 
         switch (page)
         {
-            case 0: controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
-            case 1: controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
-            case 2: controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
-            case 3: controller = [FuelStatisticsTextViewController alloc]; break;
+            case 0:controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
+            case 1:controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
+            case 2:controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
+            case 3:controller = [FuelStatisticsTextViewController alloc]; break;
         }
 
-        controller = [controller initWithNibName: @"FuelStatisticsViewController" bundle: nil];
+        controller = [controller initWithNibName:@"FuelStatisticsViewController" bundle:nil];
         controller.selectedCar = self.selectedCar;
 
-        [self addChildViewController: controller];
-        controller.view.frame = [self frameForPage: page];
+        [self addChildViewController:controller];
+        controller.view.frame = [self frameForPage:page];
 
-        [scrollView addSubview: controller.view];
+        [scrollView addSubview:controller.view];
     }
 
     // Configure scroll view
     scrollView.contentSize   = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
     scrollView.scrollsToTop  = NO;
 
-    // iOS7: enlarge scrollView, hide pageControl
+    // iOS7:enlarge scrollView, hide pageControl
     if ([AppDelegate systemMajorVersion] >= 7)
     {
         scrollView.frame = self.view.frame;
@@ -71,37 +71,37 @@
     }
 
     // Select preferred page
-    dispatch_async (dispatch_get_main_queue (), ^{
+    dispatch_async (dispatch_get_main_queue(), ^{
 
-        pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"preferredStatisticsPage"];
-        [self scrollToPage: pageControl.currentPage animated: NO];
+        pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey:@"preferredStatisticsPage"];
+        [self scrollToPage:pageControl.currentPage animated:NO];
 
         pageControlUsed = NO;
     });
     
     [[NSNotificationCenter defaultCenter]
-        addObserver: self
-           selector: @selector (localeChanged:)
-               name: NSCurrentLocaleDidChangeNotification
-             object: nil];
+        addObserver:self
+           selector:@selector(localeChanged:)
+               name:NSCurrentLocaleDidChangeNotification
+             object:nil];
 
     [[NSNotificationCenter defaultCenter]
-        addObserver: self
-           selector: @selector (didEnterBackground:)
-               name: UIApplicationDidEnterBackgroundNotification
-             object: nil];
+        addObserver:self
+           selector:@selector(didEnterBackground:)
+               name:UIApplicationDidEnterBackgroundNotification
+             object:nil];
 
     [[NSNotificationCenter defaultCenter]
-        addObserver: self
-           selector: @selector (didBecomeActive:)
-               name: UIApplicationDidBecomeActiveNotification
-             object: nil];
+        addObserver:self
+           selector:@selector(didBecomeActive:)
+               name:UIApplicationDidBecomeActiveNotification
+             object:nil];
 
     [[NSNotificationCenter defaultCenter]
-        addObserver: self
-           selector: @selector (numberOfMonthsSelected:)
-               name: @"numberOfMonthsSelected"
-             object: nil];
+        addObserver:self
+           selector:@selector(numberOfMonthsSelected:)
+               name:@"numberOfMonthsSelected"
+             object:nil];
 }
 
 
@@ -115,7 +115,7 @@
 {
     [super viewWillDisappear:animated];
 
-    [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] setInteger:pageControl.currentPage forKey:@"preferredStatisticsPage"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -156,15 +156,15 @@
 
 
 
-- (void)localeChanged: (id)object
+- (void)localeChanged:(id)object
 {
     [self invalidateCaches];
 }
 
 
-- (void)didEnterBackground: (id)object
+- (void)didEnterBackground:(id)object
 {
-    [[NSUserDefaults standardUserDefaults] setInteger: pageControl.currentPage forKey: @"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] setInteger:pageControl.currentPage forKey:@"preferredStatisticsPage"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     for (FuelStatisticsViewController *controller in self.childViewControllers)
@@ -172,7 +172,7 @@
 }
 
 
-- (void)didBecomeActive: (id)object
+- (void)didBecomeActive:(id)object
 {
     [self updatePageVisibility];
 }
@@ -184,11 +184,11 @@
 
 
 
-- (void)numberOfMonthsSelected: (NSNotification*)notification
+- (void)numberOfMonthsSelected:(NSNotification*)notification
 {
     // Remeber selection in preferences
-    NSInteger numberOfMonths = [[[notification userInfo] valueForKey: @"span"] integerValue];
-    [[NSUserDefaults standardUserDefaults] setInteger: numberOfMonths forKey: @"statisticTimeSpan"];
+    NSInteger numberOfMonths = [[[notification userInfo] valueForKey:@"span"] integerValue];
+    [[NSUserDefaults standardUserDefaults] setInteger:numberOfMonths forKey:@"statisticTimeSpan"];
 
     // Update all statistics controllers
     for (NSInteger i = 0; i < pageControl.numberOfPages; i++)
@@ -196,7 +196,7 @@
         NSInteger page = (pageControl.currentPage + i) % pageControl.numberOfPages;
 
         FuelStatisticsViewController *controller = (self.childViewControllers)[page];
-        [controller setDisplayedNumberOfMonths: numberOfMonths];
+        [controller setDisplayedNumberOfMonths:numberOfMonths];
     }
 }
 
@@ -207,7 +207,7 @@
 
 
 
-- (CGRect)frameForPage: (NSInteger)page
+- (CGRect)frameForPage:(NSInteger)page
 {
     page = [self.scrollView visiblePageForPage:page];
 
@@ -225,7 +225,7 @@
 
 
 
-- (void)scrollViewDidScroll: (UIScrollView*)sender
+- (void)scrollViewDidScroll:(UIScrollView*)sender
 {
     if (pageControlUsed == NO)
     {
@@ -241,13 +241,13 @@
 }
 
 
-- (void)scrollViewWillBeginDragging: (UIScrollView*)scrollView
+- (void)scrollViewWillBeginDragging:(UIScrollView*)scrollView
 {
     pageControlUsed = NO;
 }
 
 
-- (void)scrollViewDidEndDecelerating: (UIScrollView*)view
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)view
 {
     pageControlUsed = NO;
 }
@@ -264,23 +264,23 @@
     for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
     {
         FuelStatisticsViewController *controller = (self.childViewControllers)[page];
-        [controller noteStatisticsPageBecomesVisible: (page == pageControl.currentPage)];
+        [controller noteStatisticsPageBecomesVisible:(page == pageControl.currentPage)];
     }
 }
 
 
-- (void)scrollToPage: (NSInteger)page animated: (BOOL)animated;
+- (void)scrollToPage:(NSInteger)page animated:(BOOL)animated;
 {
     pageControlUsed = YES;
 
-    [scrollView scrollRectToVisible: [self frameForPage: page] animated: animated];
+    [scrollView scrollRectToVisible:[self frameForPage:page] animated:animated];
     [self updatePageVisibility];
 }
 
 
-- (IBAction)pageAction: (id)sender
+- (IBAction)pageAction:(id)sender
 {
-    [self scrollToPage: pageControl.currentPage animated: YES];
+    [self scrollToPage:pageControl.currentPage animated:YES];
 }
 
 
@@ -294,13 +294,13 @@
 {
     [super didReceiveMemoryWarning];
 
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

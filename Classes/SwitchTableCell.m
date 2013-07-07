@@ -27,15 +27,15 @@ static CGFloat const margin = 8.0;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 
     // Create switch
-    self.valueSwitch = [[UISwitch alloc] initWithFrame: CGRectZero];
-    [valueSwitch addTarget: self action: @selector (switchToggledAction:) forControlEvents: UIControlEventValueChanged];
+    self.valueSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+    [valueSwitch addTarget:self action:@selector(switchToggledAction:) forControlEvents:UIControlEventValueChanged];
 
-	[self.contentView addSubview: valueSwitch];
+	[self.contentView addSubview:valueSwitch];
 
     // Configure the alternate textlabel
-    self.valueLabel = [[UILabel alloc] initWithFrame: CGRectZero];
+    self.valueLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 
-    valueLabel.font             = (useOldStyle) ? [UIFont systemFontOfSize: 15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size: 17.0];
+    valueLabel.font             = (useOldStyle) ? [UIFont systemFontOfSize:15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
 	valueLabel.textAlignment    = NSTextAlignmentRight;
 	valueLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	valueLabel.backgroundColor  = [UIColor clearColor];
@@ -50,13 +50,13 @@ static CGFloat const margin = 8.0;
     valueLabel.hidden                 = YES;
 	valueLabel.userInteractionEnabled = NO;
 
-    [self.contentView addSubview: valueLabel];
+    [self.contentView addSubview:valueLabel];
 
     // Configure the default textlabel
     UILabel *label = self.textLabel;
 
 	label.textAlignment        = NSTextAlignmentLeft;
-	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize: 17.0] : [UIFont fontWithName:@"HelveticaNeue" size: 17.0];
+	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize:17.0] : [UIFont fontWithName:@"HelveticaNeue" size:17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
 
@@ -68,23 +68,23 @@ static CGFloat const margin = 8.0;
 }
 
 
-- (void)configureForData: (id)dataObject
-          viewController: (id)viewController
-               tableView: (UITableView*)tableView
-               indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject
+          viewController:(id)viewController
+               tableView:(UITableView *)tableView
+               indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
-	self.textLabel.text   = ((NSDictionary*)dataObject)[@"label"];
+	self.textLabel.text   = ((NSDictionary *)dataObject)[@"label"];
     self.delegate         = viewController;
-    self.valueIdentifier  = ((NSDictionary*)dataObject)[@"valueIdentifier"];
+    self.valueIdentifier  = ((NSDictionary *)dataObject)[@"valueIdentifier"];
 
-    BOOL isON = [[self.delegate valueForIdentifier: self.valueIdentifier] boolValue];
+    BOOL isON = [[self.delegate valueForIdentifier:self.valueIdentifier] boolValue];
 
-    [self.valueSwitch setOn: isON];
-    [self.valueLabel setText: _I18N (isON ? @"Yes" : @"No")];
+    [self.valueSwitch setOn:isON];
+    [self.valueLabel setText:_I18N(isON ? @"Yes" : @"No")];
 
-    BOOL showAlternate = [[self.delegate valueForIdentifier: @"showValueLabel"] boolValue];
+    BOOL showAlternate = [[self.delegate valueForIdentifier:@"showValueLabel"] boolValue];
 
     self.valueSwitch.hidden =  showAlternate;
     self.valueLabel.hidden  = !showAlternate;
@@ -99,7 +99,7 @@ static CGFloat const margin = 8.0;
     CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
 
     // Text label on the left
-    CGFloat labelWidth = [self.textLabel.text sizeWithFont: self.textLabel.font].width;
+    CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 
@@ -113,17 +113,17 @@ static CGFloat const margin = 8.0;
                                          valueFrame.size.height);
 
     // Alternate for UISwitch
-    CGFloat alternateHeight = [self.valueLabel.text sizeWithFont: self.valueLabel.font].height;
+    CGFloat alternateHeight = [self.valueLabel.text sizeWithFont:self.valueLabel.font].height;
     self.valueLabel.frame = CGRectMake (width - margin - 100.0, floor ((height - alternateHeight)/2), 100.0, alternateHeight);
 }
 
 
-- (void)switchToggledAction: (UISwitch*)sender
+- (void)switchToggledAction:(UISwitch*)sender
 {
     BOOL isON = [sender isOn];
 
-    [self.delegate valueChanged: @(isON) identifier: self.valueIdentifier];
-    [self.valueLabel setText: _I18N (isON ? @"Yes" : @"No")];
+    [self.delegate valueChanged:@(isON) identifier:self.valueIdentifier];
+    [self.valueLabel setText:_I18N(isON ? @"Yes" : @"No")];
 }
 
 @end

@@ -8,15 +8,12 @@
 
 
 @interface CarViewController : UITableViewController <UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
-{
-    BOOL changeIsUserDriven;
-}
 
-@property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;
-@property (nonatomic, strong) NSManagedObject              *editedObject;
-@property (nonatomic, strong) NSFetchedResultsController   *fetchedResultsController;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSManagedObject *editedObject;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressRecognizer;
 
-@property (nonatomic, strong) FuelEventController          *fuelEventController;
+@property (nonatomic, strong) FuelEventController *fuelEventController;
 
 @end

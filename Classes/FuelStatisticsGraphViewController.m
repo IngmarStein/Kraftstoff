@@ -106,12 +106,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGGradientRef)curveGradient;
 
-- (NSNumberFormatter*)averageFormatter: (BOOL)precise;
-- (NSString*)averageFormatString: (BOOL)avgPrefix;
-- (NSString*)noAverageString;
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise;
+- (NSString *)averageFormatString:(BOOL)avgPrefix;
+- (NSString *)noAverageString;
 
-- (NSNumberFormatter*)axisFormatterForCar: (NSManagedObject*)car;
-- (CGFloat)valueForManagedObject: (NSManagedObject*)managedObject forCar: (NSManagedObject*)car;
+- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car;
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car;
 
 @end
 
@@ -163,12 +163,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 {
     [super viewDidLoad];
 
-    self.zoomRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget: self action: @selector (longPressChanged:)];
+    self.zoomRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressChanged:)];
     zoomRecognizer.minimumPressDuration    = 0.4;
     zoomRecognizer.numberOfTouchesRequired = 1;
     zoomRecognizer.enabled                 = NO;
 
-    [self.view addGestureRecognizer: zoomRecognizer];
+    [self.view addGestureRecognizer:zoomRecognizer];
 }
 
 
@@ -178,9 +178,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 
 
-- (CGFloat)resampleFetchedObjects: (NSArray*)fetchedObjects
-                           forCar: (NSManagedObject*)car
-                         andState: (FuelStatisticsSamplingData*)state;
+- (CGFloat)resampleFetchedObjects:(NSArray *)fetchedObjects
+                           forCar:(NSManagedObject *)car
+                         andState:(FuelStatisticsSamplingData*)state;
 {
     NSDate *firstDate = nil;
     NSDate *midDate   = nil;
@@ -201,7 +201,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     {
         NSManagedObject *object = fetchedObjects[i];
 
-        CGFloat value = [self valueForManagedObject: object forCar: car];
+        CGFloat value = [self valueForManagedObject:object forCar:car];
 
         if (!isnan (value))
         {
@@ -217,12 +217,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             if (valLastIndex < 0)
             {
                 valLastIndex = i;
-                lastDate     = [object valueForKey: @"timestamp"];
+                lastDate     = [object valueForKey:@"timestamp"];
             }
             else
             {
                 valFirstIndex = i;
-                firstDate     = [object valueForKey: @"timestamp"];
+                firstDate     = [object valueForKey:@"timestamp"];
             }
         }
     }
@@ -266,7 +266,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
     valRange = valMax - valMin;
 
-    // iOS7: shrink the computed graph to keep the top h-marker below the top-border
+    // iOS7:shrink the computed graph to keep the top h-marker below the top-border
     if ([AppDelegate systemMajorVersion] >= 7 && valRange > 0.0001)
         valStretchFactorForDisplay = StatisticsHeight / (StatisticsHeight + 18);
     else
@@ -286,17 +286,17 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         state->lensValue [i]    = 0.0;
     }
 
-    NSTimeInterval rangeInterval = [firstDate timeIntervalSinceDate: lastDate];
+    NSTimeInterval rangeInterval = [firstDate timeIntervalSinceDate:lastDate];
 
     for (NSInteger i = valLastIndex; i >= valFirstIndex; i--)
     {
         NSManagedObject *managedObject = fetchedObjects[i];
-        CGFloat value = [self valueForManagedObject: managedObject forCar: car];
+        CGFloat value = [self valueForManagedObject:managedObject forCar:car];
 
         if (!isnan (value))
         {
             // Collect sample data
-            NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate: [managedObject valueForKey: @"timestamp"]];
+            NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate:[managedObject valueForKey:@"timestamp"]];
             NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
 
             if (valRange < 0.0001)
@@ -305,7 +305,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                 samples [sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay;
 
             // Collect lens data
-            state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey: @"timestamp"] timeIntervalSince1970];
+            state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey:@"timestamp"] timeIntervalSince1970];
             state->lensValue [sampleIndex] += value;
 
             samplesCount [sampleIndex] += 1;
@@ -329,29 +329,29 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         }
 
     // Markers for vertical axis
-    NSNumberFormatter *numberFormatter = [self axisFormatterForCar: car];
+    NSNumberFormatter *numberFormatter = [self axisFormatterForCar:car];
 
     state->hMarkPositions [0] = 1.0 - (1.0  * valStretchFactorForDisplay);
-    state->hMarkNames     [0] = [numberFormatter stringFromNumber: @(valMin + valRange)];
+    state->hMarkNames     [0] = [numberFormatter stringFromNumber:@(valMin + valRange)];
 
     state->hMarkPositions [1] = 1.0 - (0.75 * valStretchFactorForDisplay);
-    state->hMarkNames     [1] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.75))];
+    state->hMarkNames     [1] = [numberFormatter stringFromNumber:@((float)(valMin + valRange*0.75))];
 
     state->hMarkPositions [2] = 1.0 - (0.5  * valStretchFactorForDisplay);
-    state->hMarkNames     [2] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.5))];
+    state->hMarkNames     [2] = [numberFormatter stringFromNumber:@((float)(valMin + valRange*0.5))];
 
     state->hMarkPositions [3] = 1.0 - (0.25 * valStretchFactorForDisplay);
-    state->hMarkNames     [3] = [numberFormatter stringFromNumber: @((float)(valMin + valRange*0.25))];
+    state->hMarkNames     [3] = [numberFormatter stringFromNumber:@((float)(valMin + valRange*0.25))];
 
     state->hMarkPositions [4] = 1.0;
-    state->hMarkNames     [4] = [numberFormatter stringFromNumber: @(valMin)];
+    state->hMarkNames     [4] = [numberFormatter stringFromNumber:@(valMin)];
     state->hMarkCount = 5;
 
 
     // Markers for horizontal axis
     NSDateFormatter *dateFormatter = nil;
 
-    if (state->dataCount < 3 || [firstDate timeIntervalSinceDate: lastDate] < 604800)
+    if (state->dataCount < 3 || [firstDate timeIntervalSinceDate:lastDate] < 604800)
     {
         dateFormatter = [AppDelegate sharedDateTimeFormatter];
         midDate       = nil;
@@ -359,32 +359,32 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     else
     {
         dateFormatter = [AppDelegate sharedDateFormatter];
-        midDate       = [NSDate dateWithTimeInterval: [firstDate timeIntervalSinceDate: lastDate]/2.0 sinceDate: lastDate];
+        midDate       = [NSDate dateWithTimeInterval:[firstDate timeIntervalSinceDate:lastDate]/2.0 sinceDate:lastDate];
     }
 
     state->vMarkCount = 0;
     state->vMarkPositions [state->vMarkCount] = 0.0;
-    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: lastDate];
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue:lastDate];
     state->vMarkCount++;
 
     if (midDate)
     {
         state->vMarkPositions [state->vMarkCount] = 0.5;
-        state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: midDate];
+        state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue:midDate];
         state->vMarkCount++;
     }
 
     state->vMarkPositions [state->vMarkCount] = 1.0;
-    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue: firstDate];
+    state->vMarkNames     [state->vMarkCount] = [dateFormatter stringForObjectValue:firstDate];
     state->vMarkCount++;
 
     return valAverage;
 }
 
 
-- (id<DiscardableDataObject>)computeStatisticsForRecentMonths: (NSInteger)numberOfMonths
-                                                       forCar: (NSManagedObject*)car
-                                                  withObjects: (NSArray*)fetchedObjects
+- (id<DiscardableDataObject>)computeStatisticsForRecentMonths:(NSInteger)numberOfMonths
+                                                       forCar:(NSManagedObject *)car
+                                                  withObjects:(NSArray *)fetchedObjects
 {
     // No cache cell exists => resample data and compute average value
     FuelStatisticsSamplingData *state = contentCache[@(numberOfMonths)];
@@ -393,9 +393,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     {
         state = [[FuelStatisticsSamplingData alloc] init];
         
-        state.contentAverage = @([self resampleFetchedObjects: fetchedObjects
-                                                       forCar: car
-                                                     andState: state]);
+        state.contentAverage = @([self resampleFetchedObjects:fetchedObjects
+                                                       forCar:car
+                                                     andState:state]);
     }
     
     
@@ -405,13 +405,13 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             if ([AppDelegate systemMajorVersion] < 7)
-                [self drawStatisticsForState: state];
+                [self drawStatisticsForState:state];
             else
-                [self drawFlatStatisticsForState: state];
+                [self drawFlatStatisticsForState:state];
 
-            state.contentImage = UIGraphicsGetImageFromCurrentImageContext ();
+            state.contentImage = UIGraphicsGetImageFromCurrentImageContext();
         }
-        UIGraphicsEndImageContext ();
+        UIGraphicsEndImageContext();
     }
     
     return state;
@@ -424,18 +424,18 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 
 
-- (void)drawStatisticsForState: (FuelStatisticsSamplingData*)state
+- (void)drawStatisticsForState:(FuelStatisticsSamplingData*)state
 {
-    CGContextRef cgContext = UIGraphicsGetCurrentContext ();
+    CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
 
     // Background shade with rounded corners
     [[UIColor blackColor] setFill];
     CGContextFillRect (cgContext, CGRectMake (0.0, 0.0, StatisticsViewWidth, StatisticsViewHeight));
 
-    [[UIBezierPath bezierPathWithRoundedRect: CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
-                           byRoundingCorners: UIRectCornerAllCorners
-                                 cornerRadii: CGSizeMake (12.0, 12.0)] addClip];
+    [[UIBezierPath bezierPathWithRoundedRect:CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
+                           byRoundingCorners:UIRectCornerAllCorners
+                                 cornerRadii:CGSizeMake (12.0, 12.0)] addClip];
 
     CGContextDrawLinearGradient (cgContext,
                                  [AppDelegate backGradient],
@@ -448,7 +448,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     if (state == nil)
         return;
 
-    UIFont *font       = [UIFont boldSystemFontOfSize: 14];
+    UIFont *font       = [UIFont boldSystemFontOfSize:14];
     UIBezierPath *path = [UIBezierPath bezierPath];
     CGFloat x, y;
 
@@ -459,20 +459,20 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, -1.0), 0.0, [[UIColor blackColor] CGColor]);
             [[UIColor whiteColor] setFill];
 
-            NSString *text = _I18N (@"Not enough data to display statistics");
-            CGSize size    = [text sizeWithFont: font];
+            NSString *text = _I18N(@"Not enough data to display statistics");
+            CGSize size    = [text sizeWithFont:font];
 
             x = floor ((StatisticsViewWidth -  size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
 
-            [text drawAtPoint: CGPointMake (x, y)   withFont: font];
+            [text drawAtPoint:CGPointMake (x, y)   withFont:font];
         }
         CGContextRestoreGState (cgContext);
     }
     else
     {
         // Color for coordinate-axes
-        [[UIColor colorWithWhite: 0.45 alpha: 1.0] setStroke];
+        [[UIColor colorWithWhite:0.45 alpha:1.0] setStroke];
 
 
         // Horizontal marker lines (clipped away below the curve)
@@ -483,27 +483,27 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
             // Clipping
             [path removeAllPoints];
-            [path moveToPoint: CGPointMake (self.graphLeftBorder, self.graphTopBorder)];
+            [path moveToPoint:CGPointMake (self.graphLeftBorder, self.graphTopBorder)];
 
             for (NSInteger i = 0; i < state->dataCount; i++)
             {
                 x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
                 y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
-                [path addLineToPoint: CGPointMake (x, y)];
+                [path addLineToPoint:CGPointMake (x, y)];
             }
 
-            [path addLineToPoint: CGPointMake (self.graphRightBorder, self.graphTopBorder)];
+            [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphTopBorder)];
             [path closePath];
             [path addClip];
 
             // Marker lines
             path.lineWidth = 1;
-            [path setLineDash: dashDotPattern count: dashDotPatternLength phase: 0.0];
+            [path setLineDash:dashDotPattern count:dashDotPatternLength phase:0.0];
 
             [path removeAllPoints];
             [path moveToPoint:    CGPointMake (self.graphLeftBorder,  0.5)];
-            [path addLineToPoint: CGPointMake (self.graphRightBorder, 0.5)];
+            [path addLineToPoint:CGPointMake (self.graphRightBorder, 0.5)];
 
             CGContextSaveGState (cgContext);
             {
@@ -532,12 +532,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             for (NSInteger i = 0; i < state->hMarkCount; i++)
                 if (state->hMarkNames [i] != nil)
                 {
-                    CGSize size = [state->hMarkNames[i] sizeWithFont: font];
+                    CGSize size = [state->hMarkNames[i] sizeWithFont:font];
 
                     x = self.graphRightBorder + 6;
                     y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height - font.descender) + 0.5;
 
-                    [state->hMarkNames[i] drawAtPoint: CGPointMake (x, y)   withFont: font];
+                    [state->hMarkNames[i] drawAtPoint:CGPointMake (x, y)   withFont:font];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -545,11 +545,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
         // Vertical marker lines
         path.lineWidth = 2;
-        [path setLineDash: NULL count: 0 phase: 0.0];
+        [path setLineDash:NULL count:0 phase:0.0];
 
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (0, self.graphTopBorder)];
-        [path addLineToPoint: CGPointMake (0, self.graphBottomBorder)];
+        [path addLineToPoint:CGPointMake (0, self.graphBottomBorder)];
 
         CGContextSaveGState (cgContext);
         {
@@ -576,7 +576,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             for (NSInteger i = 0; i < state->vMarkCount; i++)
                 if (state->vMarkNames [i] != nil)
                 {
-                    CGSize size = [state->vMarkNames[i] sizeWithFont: font];
+                    CGSize size = [state->vMarkNames[i] sizeWithFont:font];
 
                     x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state->vMarkPositions [i] - size.width/2.0);
                     y = self.graphBottomBorder + 5;
@@ -587,7 +587,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                     if (x > self.graphRightBorder - size.width)
                         x = self.graphRightBorder - size.width;
 
-                    [state->vMarkNames[i] drawAtPoint: CGPointMake (x, y)   withFont: font];
+                    [state->vMarkNames[i] drawAtPoint:CGPointMake (x, y)   withFont:font];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -597,17 +597,17 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint: CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
+            [path moveToPoint:CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
 
             for (NSInteger i = 0; i < state->dataCount; i++)
             {
                 x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
                 y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
-                [path addLineToPoint: CGPointMake (x, y)];
+                [path addLineToPoint:CGPointMake (x, y)];
             }
 
-            [path addLineToPoint: CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
+            [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
             [path closePath];
 
             // Color gradient
@@ -621,7 +621,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             // Stripe pattern
             [path removeAllPoints];
             [path moveToPoint:    CGPointMake (self.graphLeftBorder,  0)];
-            [path addLineToPoint: CGPointMake (self.graphRightBorder, 0)];
+            [path addLineToPoint:CGPointMake (self.graphRightBorder, 0)];
 
             CGContextSaveGState (cgContext);
             {
@@ -630,7 +630,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                 for (NSInteger i = 0; i < (NSInteger)self.graphHeight; i += 4)
                 {
                     CGContextTranslateCTM (cgContext, 0.0, 4.0);
-                    [[UIColor colorWithWhite: 0.8 alpha: 0.28 - 0.20 * i/self.graphHeight] setStroke];
+                    [[UIColor colorWithWhite:0.8 alpha:0.28 - 0.20 * i/self.graphHeight] setStroke];
                     [path stroke];
                 }
             }
@@ -643,19 +643,19 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         path.lineWidth = 2;
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (self.graphLeftBorder  - 1, self.graphBottomBorder)];
-        [path addLineToPoint: CGPointMake (self.graphRightBorder + 1, self.graphBottomBorder)];
+        [path addLineToPoint:CGPointMake (self.graphRightBorder + 1, self.graphBottomBorder)];
         [path stroke];
 
         // Left line
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (self.graphLeftBorder, self.graphTopBorder)];
-        [path addLineToPoint: CGPointMake (self.graphLeftBorder, self.graphBottomBorder)];
+        [path addLineToPoint:CGPointMake (self.graphLeftBorder, self.graphBottomBorder)];
         [path stroke];
 
         // Right line
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (self.graphRightBorder, self.graphTopBorder)];
-        [path addLineToPoint: CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
+        [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
         [path stroke];
 
 
@@ -665,7 +665,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         [[UIColor whiteColor] setStroke];
 
         [path removeAllPoints];
-        [path moveToPoint: CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
+        [path moveToPoint:CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
                                         rint (self.graphTopBorder  + self.graphHeight * state->data [0].y))];
 
         for (NSInteger i = 1; i < state->dataCount; i++)
@@ -673,7 +673,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
             y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
-            [path addLineToPoint: CGPointMake (x, y)];
+            [path addLineToPoint:CGPointMake (x, y)];
         }
 
         [path stroke];
@@ -681,9 +681,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 }
 
 
-- (void)drawFlatStatisticsForState: (FuelStatisticsSamplingData*)state
+- (void)drawFlatStatisticsForState:(FuelStatisticsSamplingData*)state
 {
-    CGContextRef cgContext = UIGraphicsGetCurrentContext ();
+    CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
 
     // Background colors
@@ -698,7 +698,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     if (state == nil)
         return;
 
-    UIFont *font       = [UIFont fontWithName:@"HelveticaNeue-Light" size: 12.0];
+    UIFont *font       = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0];
     UIBezierPath *path = [UIBezierPath bezierPath];
     CGFloat x, y;
 
@@ -708,20 +708,20 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         {
             [[UIColor whiteColor] setFill];
 
-            NSString *text = _I18N (@"Not enough data to display statistics");
-            CGSize size    = [text sizeWithFont: font];
+            NSString *text = _I18N(@"Not enough data to display statistics");
+            CGSize size    = [text sizeWithFont:font];
 
             x = floor ((StatisticsViewWidth -  size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
 
-            [text drawAtPoint: CGPointMake (x, y) withFont: font];
+            [text drawAtPoint:CGPointMake (x, y) withFont:font];
         }
         CGContextRestoreGState (cgContext);
     }
     else
     {
         // Color for coordinate-axes
-        [[UIColor colorWithWhite: 0.224 alpha: 1.0] setStroke];
+        [[UIColor colorWithWhite:0.224 alpha:1.0] setStroke];
 
 
         // Horizontal marker lines
@@ -732,11 +732,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
             // Marker lines
             path.lineWidth = 0.5;
-            [path setLineDash: dashDotPattern count: dashDotPatternLength phase: 0.0];
+            [path setLineDash:dashDotPattern count:dashDotPatternLength phase:0.0];
 
             [path removeAllPoints];
             [path moveToPoint:    CGPointMake (self.graphLeftBorder,  0.25)];
-            [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, 0.25)];
+            [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, 0.25)];
 
             CGContextSaveGState (cgContext);
             {
@@ -764,12 +764,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             for (NSInteger i = 0; i < state->hMarkCount; i++)
                 if (state->hMarkNames [i] != nil)
                 {
-                    CGSize size = [state->hMarkNames[i] sizeWithFont: font];
+                    CGSize size = [state->hMarkNames[i] sizeWithFont:font];
 
                     x = self.graphRightBorder + 6;
                     y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height) + 0.5;
 
-                    [state->hMarkNames[i] drawAtPoint: CGPointMake (x, y) withFont: font];
+                    [state->hMarkNames[i] drawAtPoint:CGPointMake (x, y) withFont:font];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -777,11 +777,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         
         // Vertical marker lines
         path.lineWidth = 0.5;
-        [path setLineDash: NULL count: 0 phase: 0.0];
+        [path setLineDash:NULL count:0 phase:0.0];
 
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (0.25, self.graphTopBorder)];
-        [path addLineToPoint: CGPointMake (0.25, self.graphBottomBorder + 6)];
+        [path addLineToPoint:CGPointMake (0.25, self.graphBottomBorder + 6)];
 
         CGContextSaveGState (cgContext);
         {
@@ -807,7 +807,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             for (NSInteger i = 0; i < state->vMarkCount; i++)
                 if (state->vMarkNames [i] != nil)
                 {
-                    CGSize size = [state->vMarkNames[i] sizeWithFont: font];
+                    CGSize size = [state->vMarkNames[i] sizeWithFont:font];
 
                     x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state->vMarkPositions [i] - size.width/2.0);
                     y = self.graphBottomBorder + 5;
@@ -818,7 +818,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                     if (x > self.graphRightBorder - size.width)
                         x = self.graphRightBorder - size.width;
 
-                    [state->vMarkNames[i] drawAtPoint: CGPointMake (x, y)   withFont: font];
+                    [state->vMarkNames[i] drawAtPoint:CGPointMake (x, y)   withFont:font];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -828,7 +828,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint: CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
+            [path moveToPoint:CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
 
             CGFloat minY = self.graphBottomBorder - 6;
 
@@ -837,7 +837,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                 x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
                 y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
 
-                [path addLineToPoint: CGPointMake (x, y)];
+                [path addLineToPoint:CGPointMake (x, y)];
 
                 if (y < minY)
                     minY = y;
@@ -846,7 +846,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             if (minY == self.graphBottomBorder - 6)
                 minY = self.graphTopBorder;
 
-            [path addLineToPoint: CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
+            [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
             [path closePath];
 
             // Color gradient
@@ -867,12 +867,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (self.graphLeftBorder, self.graphTopBorder + 0.25)];
-        [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphTopBorder + 0.25)];
+        [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphTopBorder + 0.25)];
         [path stroke];
 
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (self.graphLeftBorder, self.graphBottomBorder + 0.25)];
-        [path addLineToPoint: CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphBottomBorder + 0.25)];
+        [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphBottomBorder + 0.25)];
         [path stroke];
 
 
@@ -882,7 +882,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         [[UIColor whiteColor] setStroke];
         
         [path removeAllPoints];
-        [path moveToPoint: CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
+        [path moveToPoint:CGPointMake (rint (self.graphLeftBorder + self.graphWidth  * state->data [0].x),
                                         rint (self.graphTopBorder  + self.graphHeight * state->data [0].y))];
         
         for (NSInteger i = 1; i < state->dataCount; i++)
@@ -890,7 +890,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
             y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
             
-            [path addLineToPoint: CGPointMake (x, y)];
+            [path addLineToPoint:CGPointMake (x, y)];
         }
         
         [path stroke];
@@ -898,7 +898,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 }
 
 
-- (BOOL)displayCachedStatisticsForRecentMonths: (NSInteger)numberOfMonths
+- (BOOL)displayCachedStatisticsForRecentMonths:(NSInteger)numberOfMonths
 {
     // Cache lookup
     FuelStatisticsSamplingData *cell = contentCache[@(numberOfMonths)];
@@ -908,8 +908,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     // Update summary in top right of view
     if (averageValue != nil && !isnan ([averageValue floatValue]))
         self.rightLabel.text = [NSString stringWithFormat:
-                                    [self averageFormatString: YES],
-                                        [[self averageFormatter: NO] stringFromNumber: averageValue]];
+                                    [self averageFormatString:YES],
+                                        [[self averageFormatter:NO] stringFromNumber:averageValue]];
     else
         self.rightLabel.text = [self noAverageString];
 
@@ -933,14 +933,14 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             if ([AppDelegate systemMajorVersion] < 7)
-                [self drawStatisticsForState: nil];
+                [self drawStatisticsForState:nil];
             else
-                [self drawFlatStatisticsForState: nil];
+                [self drawFlatStatisticsForState:nil];
 
             UIImageView *imageView = (UIImageView*)self.view;
-            imageView.image        = UIGraphicsGetImageFromCurrentImageContext ();
+            imageView.image        = UIGraphicsGetImageFromCurrentImageContext();
         }
-        UIGraphicsEndImageContext ();
+        UIGraphicsEndImageContext();
 
         zoomRecognizer.enabled = NO;
         return NO;
@@ -956,7 +956,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 @synthesize zooming;
 
-- (void)setZooming: (BOOL)flag
+- (void)setZooming:(BOOL)flag
 {
     for (UIView *subview in [self.view subviews])
         if (subview.tag > 0)
@@ -968,11 +968,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         }
 
     if (!flag)
-        [self displayStatisticsForRecentMonths: displayedNumberOfMonths];
+        [self displayStatisticsForRecentMonths:displayedNumberOfMonths];
 }
 
 
-- (void)longPressChanged: (id)sender
+- (void)longPressChanged:(id)sender
 {
     switch ([zoomRecognizer state])
     {
@@ -982,7 +982,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         case UIGestureRecognizerStateBegan:
         {
             // Cancel long press gesture when located above the graph (new the radio buttons)
-            if ([zoomRecognizer locationInView: self.view].y < self.graphTopBorder)
+            if ([zoomRecognizer locationInView:self.view].y < self.graphTopBorder)
             {
                 zoomRecognizer.enabled = NO;
                 zoomRecognizer.enabled = YES;
@@ -997,7 +997,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
         case UIGestureRecognizerStateChanged:
         {
-            CGPoint lensLocation = [zoomRecognizer locationInView: self.view];
+            CGPoint lensLocation = [zoomRecognizer locationInView:self.view];
 
             // Keep horizontal position above graphics
             if (lensLocation.x < self.graphLeftBorder)
@@ -1039,11 +1039,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                     NSDateFormatter *df = [AppDelegate sharedLongDateFormatter];
 
                     if (cell->lensDate [minIndex][0] == cell->lensDate [minIndex][1])
-                        self.centerLabel.text = [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][0]]];
+                        self.centerLabel.text = [df stringFromDate:[NSDate dateWithTimeIntervalSince1970:cell->lensDate [minIndex][0]]];
                     else
-                        self.centerLabel.text = [NSString stringWithFormat: @"%@  ➡  %@",
-                                                    [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][0]]],
-                                                    [df stringFromDate: [NSDate dateWithTimeIntervalSince1970: cell->lensDate [minIndex][1]]]];
+                        self.centerLabel.text = [NSString stringWithFormat:@"%@  ➡  %@",
+                                                    [df stringFromDate:[NSDate dateWithTimeIntervalSince1970:cell->lensDate [minIndex][0]]],
+                                                    [df stringFromDate:[NSDate dateWithTimeIntervalSince1970:cell->lensDate [minIndex][1]]]];
 
                     // Knob position
                     lensLocation.x = rint (self.graphLeftBorder + self.graphWidth  * cell->data [minIndex].x);
@@ -1053,19 +1053,19 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
                     UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
                     {
                         NSString *valueString = [NSString stringWithFormat:
-                                                    [self averageFormatString: NO],
-                                                        [[self averageFormatter: YES]
-                                                            stringFromNumber: @(cell->lensValue [minIndex])]];
+                                                    [self averageFormatString:NO],
+                                                        [[self averageFormatter:YES]
+                                                            stringFromNumber:@(cell->lensValue [minIndex])]];
 
                         if ([AppDelegate systemMajorVersion] < 7)
-                            [self drawLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
+                            [self drawLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
                         else
-                            [self drawFlatLensWithBGImage: cell.contentImage lensLocation: lensLocation info: valueString];
+                            [self drawFlatLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
 
                         UIImageView *imageView = (UIImageView*)self.view;
-                        imageView.image = UIGraphicsGetImageFromCurrentImageContext ();
+                        imageView.image = UIGraphicsGetImageFromCurrentImageContext();
                     }
-                    UIGraphicsEndImageContext ();
+                    UIGraphicsEndImageContext();
                 }
             }
         }
@@ -1081,23 +1081,23 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 
 
-- (void)drawLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info
+- (void)drawLensWithBGImage:(UIImage*)background lensLocation:(CGPoint)location info:(NSString *)info
 {
-    CGContextRef cgContext = UIGraphicsGetCurrentContext ();
+    CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
     UIBezierPath *path;
 
 
     // Graph as background
-    [background drawAtPoint: CGPointZero blendMode: kCGBlendModeCopy alpha: 1.0];
+    [background drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:1.0];
 
 
     // Slider track
     CGContextSaveGState (cgContext);
     {
-        path = [UIBezierPath bezierPathWithRoundedRect: CGRectMake (self.graphLeftBorder, StatisticTrackYPosition, self.graphWidth, StatisticTrackThickness)
-                                     byRoundingCorners: UIRectCornerAllCorners
-                                           cornerRadii: CGSizeMake (2.0, 2.0)];
+        path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake (self.graphLeftBorder, StatisticTrackYPosition, self.graphWidth, StatisticTrackThickness)
+                                     byRoundingCorners:UIRectCornerAllCorners
+                                           cornerRadii:CGSizeMake (2.0, 2.0)];
 
         CGFloat scale = [[UIScreen mainScreen] scale];
 
@@ -1106,11 +1106,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         [path fill];
 
         CGContextTranslateCTM (cgContext, 0.0, +2.0 / scale);
-        [[UIColor colorWithWhite: 0.5 alpha: 1.0] setFill];
+        [[UIColor colorWithWhite:0.5 alpha:1.0] setFill];
         [path fill];
 
         CGContextTranslateCTM (cgContext, 0.0, -1.0 / scale);
-        [[UIColor colorWithWhite: 0.28 alpha: 1.0] setFill];
+        [[UIColor colorWithWhite:0.28 alpha:1.0] setFill];
         [path fill];
     }
     CGContextRestoreGState (cgContext);
@@ -1119,13 +1119,13 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     // Marker line
     CGContextSaveGState (cgContext);
     {
-        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +2.0), 2.0, [[UIColor colorWithWhite: 0.0 alpha: 0.6] CGColor]);
+        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +2.0), 2.0, [[UIColor colorWithWhite:0.0 alpha:0.6] CGColor]);
 
-        [[UIColor colorWithRed: 1.0 green: 0.756 blue: 0.188 alpha: 1.0] set];
+        [[UIColor colorWithRed:1.0 green:0.756 blue:0.188 alpha:1.0] set];
 
         // Knob shadow
         [path removeAllPoints];
-        [path addArcWithCenter: location radius: 8.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+        [path addArcWithCenter:location radius:8.0 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO];
         [path fill];
 
         // Marker line
@@ -1133,7 +1133,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
         [path removeAllPoints];
         [path moveToPoint:    CGPointMake (location.x, StatisticTrackYPosition + StatisticTrackThickness)];
-        [path addLineToPoint: CGPointMake (location.x, self.graphBottomBorder)];
+        [path addLineToPoint:CGPointMake (location.x, self.graphBottomBorder)];
         [path stroke];
     }
     CGContextRestoreGState (cgContext);
@@ -1142,7 +1142,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     // Marker knob
     CGContextSaveGState (cgContext);
     {
-        [[UIBezierPath bezierPathWithArcCenter: location radius: 8.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO] addClip];
+        [[UIBezierPath bezierPathWithArcCenter:location radius:8.0 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO] addClip];
 
         CGContextDrawRadialGradient (cgContext,
                                      [AppDelegate knobGradient],
@@ -1156,10 +1156,10 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 
     // Layout for info box
-    UIFont *font = [UIFont boldSystemFontOfSize: 14];
+    UIFont *font = [UIFont boldSystemFontOfSize:14];
     CGRect infoRect;
 
-    infoRect.size         = [info sizeWithFont: font];
+    infoRect.size         = [info sizeWithFont:font];
     infoRect.size.width  += StatisticTrackInfoXMargin * 2.0;
     infoRect.size.height += StatisticTrackInfoYMargin * 2.0;
     infoRect.origin.x     = rint (location.x - infoRect.size.width/2);
@@ -1172,14 +1172,14 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         infoRect.origin.x = self.graphRightBorder - infoRect.size.width + 1;
 
     // Info box
-    path = [UIBezierPath bezierPathWithRoundedRect: infoRect
-                                 byRoundingCorners: UIRectCornerAllCorners
-                                       cornerRadii: CGSizeMake (6.0, 6.0)];
+    path = [UIBezierPath bezierPathWithRoundedRect:infoRect
+                                 byRoundingCorners:UIRectCornerAllCorners
+                                       cornerRadii:CGSizeMake (6.0, 6.0)];
 
     // Box background
     CGContextSaveGState (cgContext);
     {
-        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 2.0, [[UIColor colorWithWhite: 0.0 alpha: 0.6] CGColor]);
+        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 2.0, [[UIColor colorWithWhite:0.0 alpha:0.6] CGColor]);
 
         [[UIColor blackColor] set];
         [path fill];
@@ -1204,18 +1204,18 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 0.0, [[UIColor whiteColor] CGColor]);
 
     [[UIColor darkGrayColor] set];
-    [info drawAtPoint: CGPointMake (infoRect.origin.x + StatisticTrackInfoXMargin, infoRect.origin.y + StatisticTrackInfoYMargin) withFont: font];
+    [info drawAtPoint:CGPointMake (infoRect.origin.x + StatisticTrackInfoXMargin, infoRect.origin.y + StatisticTrackInfoYMargin) withFont:font];
 }
 
 
 
-- (void)drawFlatLensWithBGImage: (UIImage*)background lensLocation: (CGPoint)location info: (NSString*)info
+- (void)drawFlatLensWithBGImage:(UIImage*)background lensLocation:(CGPoint)location info:(NSString *)info
 {
     UIBezierPath *path = [UIBezierPath bezierPath];
 
 
     // Graph as background
-    [background drawAtPoint: CGPointZero blendMode: kCGBlendModeCopy alpha: 1.0];
+    [background drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:1.0];
 
     // Marker line
     [[self.view tintColor] set];
@@ -1224,23 +1224,23 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
     [path removeAllPoints];
     [path moveToPoint:    CGPointMake (location.x + 0.25, self.graphTopBorder + 0.5)];
-    [path addLineToPoint: CGPointMake (location.x + 0.25, self.graphBottomBorder)];
+    [path addLineToPoint:CGPointMake (location.x + 0.25, self.graphBottomBorder)];
     [path stroke];
 
     // Marker knob
-    path = [UIBezierPath bezierPathWithArcCenter: location radius: 5.5 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+    path = [UIBezierPath bezierPathWithArcCenter:location radius:5.5 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO];
     [[UIColor blackColor] set];
     [path fill];
 
-    path = [UIBezierPath bezierPathWithArcCenter: location radius: 5.0 startAngle: 0.0 endAngle: M_PI*2.0 clockwise: NO];
+    path = [UIBezierPath bezierPathWithArcCenter:location radius:5.0 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO];
     [[self.view tintColor] set];
     [path fill];
 
     // Layout for info box
-    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size: 17];
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
     CGRect infoRect;
 
-    infoRect.size         = [info sizeWithFont: font];
+    infoRect.size         = [info sizeWithFont:font];
     infoRect.size.width  += StatisticTrackInfoXMarginFlat * 2.0;
     infoRect.size.height += StatisticTrackInfoYMarginFlat * 2.0;
     infoRect.origin.x     = rint (location.x - infoRect.size.width/2);
@@ -1253,16 +1253,16 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
         infoRect.origin.x = StatisticsViewWidth - self.graphLeftBorder - infoRect.size.width;
 
     // Info box
-    path = [UIBezierPath bezierPathWithRoundedRect: infoRect
-                                 byRoundingCorners: UIRectCornerAllCorners
-                                       cornerRadii: CGSizeMake (4.0, 4.0)];
+    path = [UIBezierPath bezierPathWithRoundedRect:infoRect
+                                 byRoundingCorners:UIRectCornerAllCorners
+                                       cornerRadii:CGSizeMake (4.0, 4.0)];
 
     [[self.view tintColor] set];
     [path fill];
 
     // Info text
     [[UIColor whiteColor] set];
-    [info drawAtPoint: CGPointMake (infoRect.origin.x + StatisticTrackInfoXMarginFlat, infoRect.origin.y + StatisticTrackInfoYMarginFlat) withFont: font];
+    [info drawAtPoint:CGPointMake (infoRect.origin.x + StatisticTrackInfoXMarginFlat, infoRect.origin.y + StatisticTrackInfoYMarginFlat) withFont:font];
 }
 
 
@@ -1295,7 +1295,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGFloat)graphRightBorder
 {
-    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
     
     return [super graphRightBorder] - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
 }
@@ -1304,7 +1304,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGFloat)graphWidth
 {
-    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
     
     return [super graphWidth] - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
 }
@@ -1312,55 +1312,52 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    if ([AppDelegate systemMajorVersion] < 7)
-        return [AppDelegate greenGradient];
-    else
-        return [AppDelegate greenFlatGradient];
+    return [AppDelegate greenGradient];
 }
 
 
-- (NSNumberFormatter*)averageFormatter: (BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise
 {
     return [AppDelegate sharedFuelVolumeFormatter];
 }
 
 
-- (NSString*)averageFormatString: (BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix
 {
-    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
 
-    return [NSString stringWithFormat: @"%@%%@ %@", avgPrefix ? @"∅ " : @"", [AppDelegate consumptionUnitString: consumptionUnit]];
+    return [NSString stringWithFormat:@"%@%%@ %@", avgPrefix ? @"∅ " : @"", [AppDelegate consumptionUnitString:consumptionUnit]];
 }
 
 
-- (NSString*)noAverageString
+- (NSString *)noAverageString
 {
-    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = [[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
 
-    return [AppDelegate consumptionUnitString: consumptionUnit];
+    return [AppDelegate consumptionUnitString:consumptionUnit];
 }
 
 
-- (NSNumberFormatter*)axisFormatterForCar: (NSManagedObject*)car
+- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
     return [AppDelegate sharedFuelVolumeFormatter];
 }
 
 
-- (CGFloat)valueForManagedObject: (NSManagedObject*)managedObject forCar: (NSManagedObject*)car
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
     @try
     {
-        if ([[managedObject valueForKey: @"filledUp"] boolValue] == NO)
+        if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
             return NAN;
 
-        NSInteger consumptionUnit   = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
-        NSDecimalNumber *distance   = [[managedObject valueForKey: @"distance"]   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
-        NSDecimalNumber *fuelVolume = [[managedObject valueForKey: @"fuelVolume"] decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
+        NSInteger consumptionUnit   = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+        NSDecimalNumber *distance   = [[managedObject valueForKey:@"distance"]   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
+        NSDecimalNumber *fuelVolume = [[managedObject valueForKey:@"fuelVolume"] decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
 
-        return [[AppDelegate consumptionForKilometers: distance
-                                               Liters: fuelVolume
-                                               inUnit: consumptionUnit] floatValue];
+        return [[AppDelegate consumptionForKilometers:distance
+                                               Liters:fuelVolume
+                                               inUnit:consumptionUnit] floatValue];
     }
     @catch (NSException *e)
     {
@@ -1382,53 +1379,50 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    if ([AppDelegate systemMajorVersion] < 7)
-        return [AppDelegate orangeGradient];
-    else
-        return [AppDelegate orangeFlatGradient];
+    return [AppDelegate orangeGradient];
 }
 
 
-- (NSNumberFormatter*)averageFormatter: (BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise
 {
     return (precise) ? [AppDelegate sharedPreciseCurrencyFormatter] : [AppDelegate sharedCurrencyFormatter];
 }
 
 
-- (NSString*)averageFormatString: (BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix
 {
-    NSInteger fuelUnit = [[self.selectedCar valueForKey: @"fuelUnit"] integerValue];
+    NSInteger fuelUnit = [[self.selectedCar valueForKey:@"fuelUnit"] integerValue];
 
-    return [NSString stringWithFormat: @"%@%%@/%@", avgPrefix ? @"∅ " : @"", [AppDelegate fuelUnitString: fuelUnit]];
+    return [NSString stringWithFormat:@"%@%%@/%@", avgPrefix ? @"∅ " : @"", [AppDelegate fuelUnitString:fuelUnit]];
 }
 
 
-- (NSString*)noAverageString
+- (NSString *)noAverageString
 {
-    NSInteger fuelUnit = [[self.selectedCar valueForKey: @"fuelUnit"] integerValue];
+    NSInteger fuelUnit = [[self.selectedCar valueForKey:@"fuelUnit"] integerValue];
 
-    return [NSString stringWithFormat: @"%@/%@",
+    return [NSString stringWithFormat:@"%@/%@",
             [[AppDelegate sharedCurrencyFormatter] currencySymbol],
-            [AppDelegate fuelUnitString: fuelUnit]];
+            [AppDelegate fuelUnitString:fuelUnit]];
 }
 
 
-- (NSNumberFormatter*)axisFormatterForCar: (NSManagedObject*)car
+- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
     return [AppDelegate sharedAxisCurrencyFormatter];
 }
 
 
-- (CGFloat)valueForManagedObject: (NSManagedObject*)managedObject forCar: (NSManagedObject*)car
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
     @try
     {
-        NSDecimalNumber *price = [managedObject valueForKey: @"price"];
+        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
 
-        if ([price compare: [NSDecimalNumber zero]] == NSOrderedSame)
+        if ([price compare:[NSDecimalNumber zero]] == NSOrderedSame)
             return NAN;
 
-        return [[AppDelegate pricePerUnit: price withUnit: [[car valueForKey: @"fuelUnit"] integerValue]] floatValue];
+        return [[AppDelegate pricePerUnit:price withUnit:[[car valueForKey:@"fuelUnit"] integerValue]] floatValue];
     }
     @catch (NSException *e)
     {
@@ -1450,16 +1444,13 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (CGGradientRef)curveGradient
 {
-    if ([AppDelegate systemMajorVersion] < 7)
-        return [AppDelegate blueGradient];
-    else
-        return [AppDelegate blueFlatGradient];
+    return [AppDelegate blueGradient];
 }
 
 
-- (NSNumberFormatter*)averageFormatter: (BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise
 {
-    KSDistance distanceUnit = [[self.selectedCar valueForKey: @"odometerUnit"] integerValue];
+    KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
         return [AppDelegate sharedCurrencyFormatter];
@@ -1468,31 +1459,31 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 }
 
 
-- (NSString*)averageFormatString: (BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix
 {
-    KSDistance distanceUnit = [[self.selectedCar valueForKey: @"odometerUnit"] integerValue];
+    KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
-        return [NSString stringWithFormat: @"%@%%@/100km", avgPrefix ? @"∅ " : @""];
+        return [NSString stringWithFormat:@"%@%%@/100km", avgPrefix ? @"∅ " : @""];
     else
-        return [NSString stringWithFormat: @"%@%%@ mi/%@", avgPrefix ? @"∅ " : @"", [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
+        return [NSString stringWithFormat:@"%@%%@ mi/%@", avgPrefix ? @"∅ " : @"", [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
 }
 
 
-- (NSString*)noAverageString
+- (NSString *)noAverageString
 {
-    KSDistance distanceUnit = [[self.selectedCar valueForKey: @"odometerUnit"] integerValue];
+    KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
 
-    return [NSString stringWithFormat: KSDistanceIsMetric (distanceUnit)
+    return [NSString stringWithFormat:KSDistanceIsMetric (distanceUnit)
                                             ? @"%@/100km"
                                             : @"mi/%@",
             [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
 }
 
 
-- (NSNumberFormatter*)axisFormatterForCar: (NSManagedObject*)car
+- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
-    KSDistance distanceUnit = [[self.selectedCar valueForKey: @"odometerUnit"] integerValue];
+    KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
         return [AppDelegate sharedAxisCurrencyFormatter];
@@ -1501,36 +1492,36 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 }
 
 
-- (CGFloat)valueForManagedObject: (NSManagedObject*)managedObject forCar: (NSManagedObject*)car
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
     @try
     {
-        if ([[managedObject valueForKey: @"filledUp"] boolValue] == NO)
+        if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
             return NAN;
 
         NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
-        KSDistance distanceUnit = [[self.selectedCar valueForKey: @"odometerUnit"] integerValue];
+        KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
 
-        NSDecimalNumber *price = [managedObject valueForKey: @"price"];
+        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
 
-        NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
-        NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
-        NSDecimalNumber *cost       = [fuelVolume decimalNumberByMultiplyingBy: price];
+        NSDecimalNumber *distance   = [managedObject valueForKey:@"distance"];
+        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+        NSDecimalNumber *cost       = [fuelVolume decimalNumberByMultiplyingBy:price];
 
-        distance = [distance decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
-        cost     = [cost     decimalNumberByAdding: [managedObject valueForKey: @"inheritedCost"]];
+        distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
+        cost     = [cost     decimalNumberByAdding:[managedObject valueForKey:@"inheritedCost"]];
 
-        if ([cost compare: [NSDecimalNumber zero]] == NSOrderedSame)
+        if ([cost compare:[NSDecimalNumber zero]] == NSOrderedSame)
             return NAN;
 
         if (KSDistanceIsMetric (distanceUnit))
-            return [[[cost decimalNumberByMultiplyingByPowerOf10: 2]
-                        decimalNumberByDividingBy: distance
-                                     withBehavior: handler] floatValue];
+            return [[[cost decimalNumberByMultiplyingByPowerOf10:2]
+                        decimalNumberByDividingBy:distance
+                                     withBehavior:handler] floatValue];
         else
-            return [[[distance decimalNumberByDividingBy: [AppDelegate kilometersPerStatuteMile]]
-                        decimalNumberByDividingBy: cost
-                                     withBehavior: handler] floatValue];
+            return [[[distance decimalNumberByDividingBy:[AppDelegate kilometersPerStatuteMile]]
+                        decimalNumberByDividingBy:cost
+                                     withBehavior:handler] floatValue];
     }
     @catch (NSException *e)
     {

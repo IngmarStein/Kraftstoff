@@ -9,20 +9,20 @@
 
 @protocol EditablePageCellDelegate
 
-- (id)valueForIdentifier: (NSString*)valueIdentifier;
-- (void)valueChanged: (id)newValue identifier: (NSString*)valueIdentifier;
+- (id)valueForIdentifier:(NSString *)valueIdentifier;
+- (void)valueChanged:(id)newValue identifier:(NSString *)valueIdentifier;
 
 @optional
 
-- (BOOL)valueValid: (id)newValue identifier: (NSString*)valueIdentifier;
-- (void)focusNextFieldForValueIdentifier: (NSString*)valueIdentifier;
+- (BOOL)valueValid:(id)newValue identifier:(NSString *)valueIdentifier;
+- (void)focusNextFieldForValueIdentifier:(NSString *)valueIdentifier;
 
 @end
 
 
 @interface EditablePageCell : PageCell <UITextFieldDelegate> {}
 
-- (UIColor*)invalidTextColor;
+- (UIColor *)invalidTextColor;
 
 @property (nonatomic, strong) EditablePageCellTextField *textField;
 @property (nonatomic, strong) NSString                  *valueIdentifier;

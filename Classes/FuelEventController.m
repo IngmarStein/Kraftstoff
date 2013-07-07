@@ -26,20 +26,17 @@
 
 
 
-- (id)initWithNibName: (NSString*)nibName bundle: (NSBundle*)nibBundle
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
-    if ((self = [super initWithNibName: nibName bundle: nibBundle]))
+    if ((self = [super initWithNibName:nibName bundle:nibBundle]))
     {
-        if ([self respondsToSelector: @selector (restorationIdentifier)])
-        {
-            self.restorationIdentifier = @"FuelEventController";
-            self.restorationClass = [self class];
-        }
+        self.restorationIdentifier = @"FuelEventController";
+        self.restorationClass = [self class];
 
         // Alternate view controller for statistics
         self.statisticsController = [[FuelStatisticsPageController alloc]
-                                           initWithNibName: @"FuelStatisticsPageController"
-                                                    bundle: nil];
+                                           initWithNibName:@"FuelStatisticsPageController"
+                                                    bundle:nil];
     }
 
     return self;
@@ -62,17 +59,17 @@
     restoreMailComposer        = NO;
 
     // Configure root view
-    self.title = [self.selectedCar valueForKey: @"name"];
+    self.title = [self.selectedCar valueForKey:@"name"];
 
     // Export button in navigation bar
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                                initWithBarButtonSystemItem: UIBarButtonSystemItemAction
-                                                                     target: self
-                                                                     action: @selector (showExportSheet:)];
+                                                initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                     target:self
+                                                                     action:@selector(showExportSheet:)];
 
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    // iOS7: reset tint color
+    // iOS7:reset tint color
     if ([AppDelegate systemMajorVersion] >= 7)
         self.navigationController.navigationBar.tintColor = nil;
 
@@ -81,51 +78,51 @@
                                 ([AppDelegate systemMajorVersion] >= 7 ? @"Flat"  : @""),
                                 ([AppDelegate isLongPhone]             ? @"-568h" : @"")];
 
-    self.tableView.backgroundView  = [[UIImageView alloc] initWithImage: [UIImage imageNamed:imageName]];
+    self.tableView.backgroundView  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
     self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
 
     [[NSNotificationCenter defaultCenter]
-        addObserver: self
-           selector: @selector (localeChanged:)
-               name: NSCurrentLocaleDidChangeNotification
-             object: nil];
+        addObserver:self
+           selector:@selector(localeChanged:)
+               name:NSCurrentLocaleDidChangeNotification
+             object:nil];
 
     if ([self presentedViewController])
         [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 
-- (void)viewWillAppear: (BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
 
     [self validateExport];
 }
 
 
-- (void)viewDidAppear: (BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear: animated];
+    [super viewDidAppear:animated];
 
-    [self setObserveDeviceRotation: YES];
+    [self setObserveDeviceRotation:YES];
 
     if (restoreExportSheet)
-        [self showExportSheet: nil];
+        [self showExportSheet:nil];
 
     else if (restoreExportFailedAlert)
-        [self showExportFailedAlert: nil];
+        [self showExportFailedAlert:nil];
 
     else if (restoreMailComposer)
-        [self showMailComposer: nil];
+        [self showMailComposer:nil];
 }
 
 
-- (void)viewWillDisappear: (BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear: animated];
+    [super viewWillDisappear:animated];
 
     if ([self presentedViewController] == nil)
-        [self setObserveDeviceRotation: NO];
+        [self setObserveDeviceRotation:NO];
 }
 
 
@@ -141,13 +138,13 @@
 #define kSRFuelEventShowComposer      @"FuelEventShowMailComposer"
 
 
-+ (UIViewController*) viewControllerWithRestorationIdentifierPath: (NSArray *)identifierComponents coder: (NSCoder*)coder
++ (UIViewController*) viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    FuelEventController *controller = [[self alloc] initWithNibName: @"FuelEventController" bundle: nil];
+    FuelEventController *controller = [[self alloc] initWithNibName:@"FuelEventController" bundle:nil];
     controller.managedObjectContext = [appDelegate managedObjectContext];
-    controller.selectedCar          = [appDelegate managedObjectForModelIdentifier: [coder decodeObjectForKey: kSRFuelEventSelectedCarID]];
+    controller.selectedCar          = [appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventSelectedCarID]];
 
     if (controller.selectedCar == nil)
         return nil;
@@ -156,31 +153,31 @@
 }
 
 
-- (void)encodeRestorableStateWithCoder: (NSCoder*)coder
+- (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    AppDelegate *appDelegate = [AppDelegate sharedDelegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    [coder encodeObject: [appDelegate modelIdentifierForManagedObject: self.selectedCar] forKey: kSRFuelEventSelectedCarID];
-    [coder encodeBool: restoreExportSheet|isShowingExportSheet             forKey: kSRFuelEventExportSheet];
-    [coder encodeBool: restoreExportFailedAlert|isShowingExportFailedAlert forKey: kSRFuelEventExportFailedAlert];
-    [coder encodeBool: restoreMailComposer|isShowingMailComposer           forKey: kSRFuelEventShowComposer];
+    [coder encodeObject:[appDelegate modelIdentifierForManagedObject:self.selectedCar] forKey:kSRFuelEventSelectedCarID];
+    [coder encodeBool:restoreExportSheet|isShowingExportSheet             forKey:kSRFuelEventExportSheet];
+    [coder encodeBool:restoreExportFailedAlert|isShowingExportFailedAlert forKey:kSRFuelEventExportFailedAlert];
+    [coder encodeBool:restoreMailComposer|isShowingMailComposer           forKey:kSRFuelEventShowComposer];
 
     // don't use a snapshot image for next launch when graph is currently visible
     if ([AppDelegate systemMajorVersion] >= 7)
         if ([self presentedViewController] != nil)
             [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
 
-    [super encodeRestorableStateWithCoder: coder];
+    [super encodeRestorableStateWithCoder:coder];
 }
 
 
-- (void)decodeRestorableStateWithCoder: (NSCoder*)coder
+- (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    restoreExportSheet       = [coder decodeBoolForKey: kSRFuelEventExportSheet];
-    restoreExportFailedAlert = [coder decodeBoolForKey: kSRFuelEventExportFailedAlert];
-    restoreMailComposer      = [coder decodeBoolForKey: kSRFuelEventShowComposer];
+    restoreExportSheet       = [coder decodeBoolForKey:kSRFuelEventExportSheet];
+    restoreExportFailedAlert = [coder decodeBoolForKey:kSRFuelEventExportFailedAlert];
+    restoreMailComposer      = [coder decodeBoolForKey:kSRFuelEventShowComposer];
 
-    [super decodeRestorableStateWithCoder: coder];
+    [super decodeRestorableStateWithCoder:coder];
 
     // -> openradar #13438788
     [self.tableView reloadData];
@@ -193,25 +190,25 @@
 
 
 
-- (void)setObserveDeviceRotation: (BOOL)observeRotation
+- (void)setObserveDeviceRotation:(BOOL)observeRotation
 {
     if (observeRotation == YES && isObservingRotationEvents == NO)
     {
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
         [[NSNotificationCenter defaultCenter]
-            addObserver: self
-               selector: @selector (orientationChanged:)
-                   name: UIDeviceOrientationDidChangeNotification
-                 object: [UIDevice currentDevice]];
+            addObserver:self
+               selector:@selector(orientationChanged:)
+                   name:UIDeviceOrientationDidChangeNotification
+                 object:[UIDevice currentDevice]];
     }
 
     else if (observeRotation == NO && isObservingRotationEvents == YES)
     {
         [[NSNotificationCenter defaultCenter]
-            removeObserver: self
-                      name: UIDeviceOrientationDidChangeNotification
-                    object: [UIDevice currentDevice]];
+            removeObserver:self
+                      name:UIDeviceOrientationDidChangeNotification
+                    object:[UIDevice currentDevice]];
 
         [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     }
@@ -220,7 +217,7 @@
 }
 
 
-- (void)orientationChanged: (NSNotification*)aNotification
+- (void)orientationChanged:(NSNotification*)aNotification
 {
     // Ignore rotation when:
     //  - showing the export sheets or the mail composer
@@ -238,15 +235,15 @@
 
         isPerformingRotation = YES;
 
-        [self presentViewController: self.statisticsController
-                           animated: YES
+        [self presentViewController:self.statisticsController
+                           animated:YES
                          completion: ^{ isPerformingRotation = NO; }];
     }
     else if (UIDeviceOrientationIsPortrait (deviceOrientation) && [self presentedViewController] != nil)
     {
         isPerformingRotation = YES;
 
-        [self dismissViewControllerAnimated: YES completion: ^{ isPerformingRotation = NO; }];
+        [self dismissViewControllerAnimated:YES completion: ^{ isPerformingRotation = NO; }];
     }
 }
 
@@ -257,7 +254,7 @@
 
 
 
-- (void)localeChanged: (id)object
+- (void)localeChanged:(id)object
 {
     [self.tableView reloadData];
 }
@@ -269,7 +266,7 @@
 
 
 
-- (void)showMailComposer: (id)sender
+- (void)showMailComposer:(id)sender
 {
     restoreMailComposer   = NO;
 
@@ -290,15 +287,15 @@
         }
 
         // Setup the message
-        [mailComposer setMailComposeDelegate: self];
-        [mailComposer setSubject: [NSString stringWithFormat: _I18N (@"Your fuel data for %@"), [self.selectedCar valueForKey: @"numberPlate"]]];
-        [mailComposer setMessageBody: [self exportTextDescription] isHTML: NO];
+        [mailComposer setMailComposeDelegate:self];
+        [mailComposer setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [self.selectedCar valueForKey:@"numberPlate"]]];
+        [mailComposer setMessageBody:[self exportTextDescription] isHTML:NO];
 
-        [mailComposer addAttachmentData: [self exportTextData]
-                               mimeType: @"text"
-                               fileName: [NSString stringWithFormat: @"%@__%@.csv",
-                                              [self.selectedCar valueForKey: @"name"],
-                                              [self.selectedCar valueForKey: @"numberPlate"]]];
+        [mailComposer addAttachmentData:[self exportTextData]
+                               mimeType:@"text"
+                               fileName:[NSString stringWithFormat:@"%@__%@.csv",
+                                              [self.selectedCar valueForKey:@"name"],
+                                              [self.selectedCar valueForKey:@"numberPlate"]]];
 
         [self presentViewController:mailComposer animated:YES completion: ^{ isShowingMailComposer = YES; }];
     }
@@ -314,43 +311,43 @@
 
 - (NSData*)exportTextData
 {
-    KSDistance        odometerUnit    = [[selectedCar valueForKey: @"odometerUnit"]        integerValue];
-    KSVolume          fuelUnit        = [[selectedCar valueForKey: @"fuelUnit"]            integerValue];
-    KSFuelConsumption consumptionUnit = [[selectedCar valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSDistance        odometerUnit    = [[selectedCar valueForKey:@"odometerUnit"]        integerValue];
+    KSVolume          fuelUnit        = [[selectedCar valueForKey:@"fuelUnit"]            integerValue];
+    KSFuelConsumption consumptionUnit = [[selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
 
-    NSMutableString *dataString = [NSMutableString stringWithCapacity: 4096];
+    NSMutableString *dataString = [NSMutableString stringWithCapacity:4096];
 
-    [dataString appendString: _I18N (@"yyyy-MM-dd")];
-    [dataString appendString: @";"];
+    [dataString appendString:_I18N(@"yyyy-MM-dd")];
+    [dataString appendString:@";"];
 
-    [dataString appendString: _I18N (@"HH:mm")];
-    [dataString appendString: @";"];
+    [dataString appendString:_I18N(@"HH:mm")];
+    [dataString appendString:@";"];
 
-    [dataString appendString: [AppDelegate odometerUnitDescription: odometerUnit pluralization: YES]];
-    [dataString appendString: @";"];
+    [dataString appendString:[AppDelegate odometerUnitDescription:odometerUnit pluralization:YES]];
+    [dataString appendString:@";"];
 
-    [dataString appendString: [AppDelegate fuelUnitDescription: fuelUnit discernGallons: YES pluralization: YES]];
-    [dataString appendString: @";"];
+    [dataString appendString:[AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:YES]];
+    [dataString appendString:@";"];
 
-    [dataString appendString: _I18N (@"Full Fill-Up")];
-    [dataString appendString: @";"];
+    [dataString appendString:_I18N(@"Full Fill-Up")];
+    [dataString appendString:@";"];
 
-    [dataString appendString: [AppDelegate fuelPriceUnitDescription: fuelUnit]];
-    [dataString appendString: @";"];
+    [dataString appendString:[AppDelegate fuelPriceUnitDescription:fuelUnit]];
+    [dataString appendString:@";"];
 
-    [dataString appendString: [AppDelegate consumptionUnitDescription: consumptionUnit]];
-    [dataString appendString: @"\n"];
+    [dataString appendString:[AppDelegate consumptionUnitDescription:consumptionUnit]];
+    [dataString appendString:@"\n"];
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat: @"yyyy-MM-dd';'HH:mm"];
-    [dateFormatter setLocale: [NSLocale systemLocale]];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd';'HH:mm"];
+    [dateFormatter setLocale:[NSLocale systemLocale]];
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle: kCFNumberFormatterDecimalStyle];
-    [numberFormatter setLocale: [NSLocale currentLocale]];
-    [numberFormatter setUsesGroupingSeparator: NO];
-    [numberFormatter setAlwaysShowsDecimalSeparator: YES];
-    [numberFormatter setMinimumFractionDigits: 2];
+    [numberFormatter setNumberStyle:kCFNumberFormatterDecimalStyle];
+    [numberFormatter setLocale:[NSLocale currentLocale]];
+    [numberFormatter setUsesGroupingSeparator:NO];
+    [numberFormatter setAlwaysShowsDecimalSeparator:YES];
+    [numberFormatter setMinimumFractionDigits:2];
 
     NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
 
@@ -358,22 +355,22 @@
     {
         NSManagedObject *managedObject = fetchedObjects[i];
 
-        NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
-        NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
-        NSDecimalNumber *price      = [managedObject valueForKey: @"price"];
+        NSDecimalNumber *distance   = [managedObject valueForKey:@"distance"];
+        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+        NSDecimalNumber *price      = [managedObject valueForKey:@"price"];
 
-        [dataString appendFormat: @"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
-            [dateFormatter stringFromDate: [managedObject valueForKey: @"timestamp"]],
-            [numberFormatter stringFromNumber: [AppDelegate distanceForKilometers: distance withUnit: odometerUnit]],
-            [numberFormatter stringFromNumber: [AppDelegate volumeForLiters: fuelVolume withUnit: fuelUnit]],
-            [[managedObject valueForKey: @"filledUp"] boolValue] ? _I18N (@"Yes") : _I18N (@"No"),
-            [numberFormatter stringFromNumber: [AppDelegate pricePerUnit: price withUnit: fuelUnit]],
+        [dataString appendFormat:@"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
+            [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
+            [numberFormatter stringFromNumber:[AppDelegate distanceForKilometers:distance withUnit:odometerUnit]],
+            [numberFormatter stringFromNumber:[AppDelegate volumeForLiters:fuelVolume withUnit:fuelUnit]],
+            [[managedObject valueForKey:@"filledUp"] boolValue] ? _I18N(@"Yes") : _I18N(@"No"),
+            [numberFormatter stringFromNumber:[AppDelegate pricePerUnit:price withUnit:fuelUnit]],
 
-            [[managedObject valueForKey: @"filledUp"] boolValue]
+            [[managedObject valueForKey:@"filledUp"] boolValue]
                 ? [numberFormatter stringFromNumber:
-                      [AppDelegate consumptionForKilometers: [distance   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]]
-                                                     Liters: [fuelVolume decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]]
-                                                     inUnit: consumptionUnit]]
+                      [AppDelegate consumptionForKilometers:[distance   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
+                                                     Liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
+                                                     inUnit:consumptionUnit]]
                 : @" "
          ];
     }
@@ -383,49 +380,49 @@
 }
 
 
-- (NSString*)exportTextDescription
+- (NSString *)exportTextDescription
 {
     NSString *period, *count;
 
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     {
-        [outputFormatter setDateStyle: kCFDateFormatterMediumStyle];
-        [outputFormatter setTimeStyle: kCFDateFormatterNoStyle];
+        [outputFormatter setDateStyle:kCFDateFormatterMediumStyle];
+        [outputFormatter setTimeStyle:kCFDateFormatterNoStyle];
 
         NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
         NSUInteger fetchCount = [fetchedObjects count];
 
-        NSString *from = [outputFormatter stringFromDate: [[fetchedObjects lastObject]       valueForKey: @"timestamp"]];
-        NSString *to   = [outputFormatter stringFromDate: [fetchedObjects[0] valueForKey: @"timestamp"]];
+        NSString *from = [outputFormatter stringFromDate:[[fetchedObjects lastObject]       valueForKey:@"timestamp"]];
+        NSString *to   = [outputFormatter stringFromDate:[fetchedObjects[0] valueForKey:@"timestamp"]];
 
         switch (fetchCount)
         {
-            case 0:  period = _I18N (@""); break;
-            case 1:  period = [NSString stringWithFormat: _I18N (@"on %@"), from]; break;
-            default: period = [NSString stringWithFormat: _I18N (@"in the period from %@ to %@"), from, to]; break;
+            case 0:  period = _I18N(@""); break;
+            case 1:  period = [NSString stringWithFormat:_I18N(@"on %@"), from]; break;
+            default:period = [NSString stringWithFormat:_I18N(@"in the period from %@ to %@"), from, to]; break;
         }
 
-        count = [NSString stringWithFormat: _I18N (((fetchCount == 1) ? @"%d item" : @"%d items")), fetchCount];
+        count = [NSString stringWithFormat:_I18N(((fetchCount == 1) ? @"%d item" : @"%d items")), fetchCount];
     }
 
-    return [NSString stringWithFormat: _I18N (@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n"),
-                [self.selectedCar valueForKey: @"name"],
-                [self.selectedCar valueForKey: @"numberPlate"],
+    return [NSString stringWithFormat:_I18N(@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n"),
+                [self.selectedCar valueForKey:@"name"],
+                [self.selectedCar valueForKey:@"numberPlate"],
                 period,
                 count];
 }
 
 
-- (void)mailComposeController: (MFMailComposeViewController*)mailComposer
-          didFinishWithResult: (MFMailComposeResult)result
-                        error: (NSError*)error
+- (void)mailComposeController:(MFMailComposeViewController*)mailComposer
+          didFinishWithResult:(MFMailComposeResult)result
+                        error:(NSError*)error
 {
     [self dismissViewControllerAnimated:YES completion: ^{
 
         isShowingMailComposer = NO;
 
         if (result == MFMailComposeResultFailed)
-            [self showExportFailedAlert: nil];
+            [self showExportFailedAlert:nil];
     }];
 }
 
@@ -436,30 +433,30 @@
 
 
 
-- (void)showExportSheet: (id)sender
+- (void)showExportSheet:(id)sender
 {
     isShowingExportSheet = YES;
     restoreExportSheet   = NO;
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle: _I18N (@"Export Fuel Data as CSV via Mail?")
-                                                       delegate: self
-                                              cancelButtonTitle: _I18N (@"Cancel")
-                                         destructiveButtonTitle: nil
-                                              otherButtonTitles: _I18N (@"Export"), nil];
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Export Fuel Data as CSV via Mail?")
+                                                       delegate:self
+                                              cancelButtonTitle:_I18N(@"Cancel")
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:_I18N(@"Export"), nil];
 
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
-    [sheet showFromTabBar: self.tabBarController.tabBar];
+    [sheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 
-- (void)actionSheet: (UIActionSheet*)actionSheet clickedButtonAtIndex: (NSInteger)buttonIndex
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     isShowingExportSheet = NO;
 
     if (buttonIndex != actionSheet.cancelButtonIndex)
     {
-        [self showMailComposer: nil];
+        [self showMailComposer:nil];
     }
 }
 
@@ -470,16 +467,16 @@
 
 
 
-- (void)showExportFailedAlert: (id)sender
+- (void)showExportFailedAlert:(id)sender
 {
     isShowingExportFailedAlert = YES;
     restoreExportFailedAlert   = NO;
 
-    [[[UIAlertView alloc] initWithTitle: _I18N (@"Sending Failed")
-                                message: _I18N (@"The exported fuel data could not be sent.")
-                               delegate: self
-                      cancelButtonTitle: _I18N (@"OK")
-                      otherButtonTitles: nil] show];
+    [[[UIAlertView alloc] initWithTitle:_I18N(@"Sending Failed")
+                                message:_I18N(@"The exported fuel data could not be sent.")
+                               delegate:self
+                      cancelButtonTitle:_I18N(@"OK")
+                      otherButtonTitles:nil] show];
 }
 
 
@@ -495,25 +492,25 @@
 
 
 
-- (void)configureCell: (UITableViewCell*)cell atIndexPath: (NSIndexPath*)indexPath
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
     ShadedTableViewCell *tableCell = (ShadedTableViewCell*)cell;
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath: indexPath];
+    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSManagedObject *car        = [managedObject valueForKey: @"car"];
-    NSDecimalNumber *distance   = [managedObject valueForKey: @"distance"];
-    NSDecimalNumber *fuelVolume = [managedObject valueForKey: @"fuelVolume"];
-    NSDecimalNumber *price      = [managedObject valueForKey: @"price"];
+    NSManagedObject *car        = [managedObject valueForKey:@"car"];
+    NSDecimalNumber *distance   = [managedObject valueForKey:@"distance"];
+    NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+    NSDecimalNumber *price      = [managedObject valueForKey:@"price"];
 
-    KSDistance        odometerUnit    = [[car valueForKey: @"odometerUnit"]        integerValue];
-    KSFuelConsumption consumptionUnit = [[car valueForKey: @"fuelConsumptionUnit"] integerValue];
+    KSDistance        odometerUnit    = [[car valueForKey:@"odometerUnit"]        integerValue];
+    KSFuelConsumption consumptionUnit = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     UILabel *label;
 
 
     // Timestamp
     label      = [tableCell topLeftLabel];
-    label.text = [[AppDelegate sharedDateFormatter] stringForObjectValue: [managedObject valueForKey: @"timestamp"]];
+    label.text = [[AppDelegate sharedDateFormatter] stringForObjectValue:[managedObject valueForKey:@"timestamp"]];
     tableCell.topLeftAccessibilityLabel = nil;
 
 
@@ -523,58 +520,58 @@
     if (odometerUnit == KSDistanceKilometer)
         convertedDistance = distance;
     else
-        convertedDistance = [distance decimalNumberByDividingBy: [AppDelegate kilometersPerStatuteMile]];
+        convertedDistance = [distance decimalNumberByDividingBy:[AppDelegate kilometersPerStatuteMile]];
 
     label      = [tableCell botLeftLabel];
-    label.text = [NSString stringWithFormat: @"%@ %@",
-                    [[AppDelegate sharedDistanceFormatter] stringFromNumber: convertedDistance],
-                    [AppDelegate odometerUnitString: odometerUnit]];
+    label.text = [NSString stringWithFormat:@"%@ %@",
+                    [[AppDelegate sharedDistanceFormatter] stringFromNumber:convertedDistance],
+                    [AppDelegate odometerUnitString:odometerUnit]];
     tableCell.botLeftAccessibilityLabel = nil;
 
     
     // Price
     label      = [tableCell topRightLabel];
-    label.text = [[AppDelegate sharedCurrencyFormatter] stringFromNumber: [fuelVolume decimalNumberByMultiplyingBy: price]];
+    label.text = [[AppDelegate sharedCurrencyFormatter] stringFromNumber:[fuelVolume decimalNumberByMultiplyingBy:price]];
     tableCell.topRightAccessibilityLabel = label.text;
 
 
     // Consumption combined with inherited data from earlier events
     NSString *consumptionDescription;
 
-    if ([[managedObject valueForKey: @"filledUp"] boolValue])
+    if ([[managedObject valueForKey:@"filledUp"] boolValue])
     {
-        distance   = [distance   decimalNumberByAdding: [managedObject valueForKey: @"inheritedDistance"]];
-        fuelVolume = [fuelVolume decimalNumberByAdding: [managedObject valueForKey: @"inheritedFuelVolume"]];
+        distance   = [distance   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
+        fuelVolume = [fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
 
-        NSDecimalNumber *avg = [AppDelegate consumptionForKilometers: distance
-                                                              Liters: fuelVolume
-                                                              inUnit: consumptionUnit];
+        NSDecimalNumber *avg = [AppDelegate consumptionForKilometers:distance
+                                                              Liters:fuelVolume
+                                                              inUnit:consumptionUnit];
 
-        consumptionDescription = [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber: avg];
+        consumptionDescription = [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:avg];
 
-        tableCell.botRightAccessibilityLabel = [NSString stringWithFormat: @", %@ %@",
+        tableCell.botRightAccessibilityLabel = [NSString stringWithFormat:@", %@ %@",
                                                     consumptionDescription,
-                                                    [AppDelegate consumptionUnitAccesibilityDescription: consumptionUnit]];
+                                                    [AppDelegate consumptionUnitAccesibilityDescription:consumptionUnit]];
     }
     else
     {
-        consumptionDescription = _I18N (@"-");
+        consumptionDescription = _I18N(@"-");
 
-        tableCell.botRightAccessibilityLabel = _I18N (@"fuel mileage not available");
+        tableCell.botRightAccessibilityLabel = _I18N(@"fuel mileage not available");
     }
 
     label = [tableCell botRightLabel];
-    label.text = [NSString stringWithFormat: @"%@ %@", consumptionDescription, [AppDelegate consumptionUnitString: consumptionUnit]];
+    label.text = [NSString stringWithFormat:@"%@ %@", consumptionDescription, [AppDelegate consumptionUnitString:consumptionUnit]];
 }
 
 
-- (NSInteger)numberOfSectionsInTableView: (UITableView*)tableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
 }
 
 
-- (NSInteger)tableView: (UITableView*)tableView numberOfRowsInSection: (NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
 
@@ -582,31 +579,31 @@
 }
 
 
-- (UITableViewCell*)tableView: (UITableView*)tableView cellForRowAtIndexPath: (NSIndexPath*)indexPath
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"FuelCell";
 
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     if (cell == nil)
-        cell = [[ShadedTableViewCell alloc] initWithStyle: UITableViewCellStyleDefault
-                                           reuseIdentifier: CellIdentifier
-                                      enlargeTopRightLabel: NO];
+        cell = [[ShadedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                           reuseIdentifier:CellIdentifier
+                                      enlargeTopRightLabel:NO];
 
-    [self configureCell: cell atIndexPath: indexPath];
+    [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
 
 
-- (void)tableView: (UITableView*)tableView commitEditingStyle: (UITableViewCellEditingStyle)editingStyle forRowAtIndexPath: (NSIndexPath*)indexPath
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        [AppDelegate removeEventFromArchive: [self.fetchedResultsController objectAtIndexPath: indexPath]
-                     inManagedObjectContext: self.managedObjectContext
-                        forceOdometerUpdate: NO];
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
 
-        [[AppDelegate sharedDelegate] saveContext: self.managedObjectContext];
+        [AppDelegate removeEventFromArchive:[self.fetchedResultsController objectAtIndexPath:indexPath]
+                     inManagedObjectContext:self.managedObjectContext
+                        forceOdometerUpdate:NO];
+
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext:self.managedObjectContext];
     }
 }
 
@@ -617,19 +614,19 @@
 
 
 
-- (NSIndexPath*)indexPathForElementWithModelIdentifier: (NSString*)identifier inView: (UIView*)view
+- (NSIndexPath *)indexPathForElementWithModelIdentifier:(NSString *)identifier inView:(UIView *)view
 {
-    NSManagedObject *object = [[AppDelegate sharedDelegate] managedObjectForModelIdentifier: identifier];
+    NSManagedObject *object = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:identifier];
 
-    return [self.fetchedResultsController indexPathForObject: object];
+    return [self.fetchedResultsController indexPathForObject:object];
 }
 
 
-- (NSString*)modelIdentifierForElementAtIndexPath: (NSIndexPath *)idx inView: (UIView*)view
+- (NSString *)modelIdentifierForElementAtIndexPath:(NSIndexPath *)idx inView:(UIView *)view
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath: idx];
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:idx];
 
-    return [[AppDelegate sharedDelegate] modelIdentifierForManagedObject: object];
+    return [(AppDelegate *)[[UIApplication sharedApplication] delegate] modelIdentifierForManagedObject:object];
 }
 
 
@@ -639,14 +636,14 @@
 
 
 
-- (void)tableView: (UITableView*)tableView didSelectRowAtIndexPath: (NSIndexPath*)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FuelEventEditorController *editController = [[FuelEventEditorController alloc] initWithNibName: @"FuelEventEditor" bundle: nil];
+    FuelEventEditorController *editController = [[FuelEventEditorController alloc] initWithNibName:@"FuelEventEditor" bundle:nil];
 
     editController.managedObjectContext =  self.managedObjectContext;
-    editController.event                = [self.fetchedResultsController objectAtIndexPath: indexPath];
+    editController.event = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    [self.navigationController pushViewController: editController animated: YES];
+    [self.navigationController pushViewController:editController animated:YES];
 }
 
 
@@ -659,12 +656,10 @@
 - (NSFetchRequest*)fetchRequest
 {
     if (fetchRequest == nil)
-    {
-        self.fetchRequest = [AppDelegate fetchRequestForEventsForCar: self.selectedCar
-                                                           afterDate: nil
-                                                         dateMatches: YES
-                                              inManagedObjectContext: self.managedObjectContext];
-    }
+        self.fetchRequest = [AppDelegate fetchRequestForEventsForCar:self.selectedCar
+                                                           afterDate:nil
+                                                         dateMatches:YES
+                                              inManagedObjectContext:self.managedObjectContext];
 
     return fetchRequest;
 }
@@ -676,17 +671,17 @@
 
 
 
-- (NSFetchedResultsController*)fetchedResultsController
+- (NSFetchedResultsController *)fetchedResultsController
 {
     if (fetchedResultsController == nil)
     {
-        AppDelegate *appDelegate = [AppDelegate sharedDelegate];
-        NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent: self.selectedCar];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent:self.selectedCar];
 
-        NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest: self.fetchRequest
-                                                                                          managedObjectContext: self.managedObjectContext
-                                                                                            sectionNameKeyPath: nil
-                                                                                                     cacheName: cacheName];
+        NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
+                                                                                          managedObjectContext:self.managedObjectContext
+                                                                                            sectionNameKeyPath:nil
+                                                                                                     cacheName:cacheName];
 
         fetchController.delegate = self;
         self.fetchedResultsController = fetchController;
@@ -695,10 +690,8 @@
         // Perform the data fetch
         NSError *error = nil;
 
-        if (! [fetchedResultsController performFetch: &error])
-        {
-            [NSException raise: NSGenericException format: @"%@", [error localizedDescription]];
-        }
+        if (! [fetchedResultsController performFetch:&error])
+            [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
     }
 
     return fetchedResultsController;
@@ -711,69 +704,69 @@
 
 
 
-- (void)controllerWillChangeContent: (NSFetchedResultsController*)controller
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
 }
 
 
-- (void)controller: (NSFetchedResultsController*)controller
-  didChangeSection: (id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex: (NSUInteger)sectionIndex
-     forChangeType: (NSFetchedResultsChangeType)type
+- (void)controller:(NSFetchedResultsController *)controller
+  didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex
+     forChangeType:(NSFetchedResultsChangeType)type
 {
-    switch (type)
-    {
+    switch (type) {
+
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex]
-                          withRowAnimation: UITableViewRowAnimationFade];
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections: [NSIndexSet indexSetWithIndex: sectionIndex]
-                          withRowAnimation: UITableViewRowAnimationFade];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+                          withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
 
 
-- (void)controller: (NSFetchedResultsController*)controller
-   didChangeObject: (id)object
-       atIndexPath: (NSIndexPath*)indexPath
-     forChangeType: (NSFetchedResultsChangeType)type
-      newIndexPath: (NSIndexPath*)newIndexPath
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)object
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
 {
     UITableView *tableView = self.tableView;
 
-    switch (type)
-    {
+    switch (type) {
+
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths: @[newIndexPath]
-                             withRowAnimation: UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths: @[indexPath]
-                             withRowAnimation: UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths: @[indexPath]
-                             withRowAnimation: UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
 
-            [tableView insertRowsAtIndexPaths: @[newIndexPath]
-                             withRowAnimation: UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeUpdate:
-            [tableView reloadRowsAtIndexPaths: @[indexPath]
-                             withRowAnimation: UITableViewRowAnimationAutomatic];
+            [tableView reloadRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
     }
 }
 
 
-- (void)controllerDidChangeContent: (NSFetchedResultsController*)controller
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 
@@ -791,14 +784,13 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

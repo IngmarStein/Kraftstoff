@@ -6,10 +6,10 @@
 @interface NSDate (Kraftstoff)
 
 // Adding a month offset to dates, also removes the second component
-+ (NSDate*)dateWithOffsetInMonths:(NSInteger)numberOfMonths fromDate:(NSDate *)startDate;
++ (NSDate *)dateWithOffsetInMonths:(NSInteger)numberOfMonths fromDate:(NSDate *)startDate;
 
 // Removes the second component from a date
-+ (NSDate*)dateWithoutSeconds:(NSDate *)date;
++ (NSDate *)dateWithoutSeconds:(NSDate *)date;
 
 // Timeinterval for hours/minutes ellapsed in the given day
 + (NSTimeInterval)timeIntervalSinceBeginningOfDay:(NSDate *)date;

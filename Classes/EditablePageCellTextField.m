@@ -12,7 +12,7 @@
 @synthesize allowPaste;
 
 
-- (id)initWithFrame: (CGRect)frame
+- (id)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame]))
     {
@@ -25,15 +25,15 @@
 
 
 // Disable Cut&Paste functionality to properly handle special text inputs methods for our textfields
-- (BOOL)canPerformAction: (SEL)action withSender: (id)sender
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
-    if (action == @selector (cut:) && allowCut == NO)
+    if (action == @selector(cut:) && allowCut == NO)
         return NO;
 
-    if (action == @selector (paste:) && allowPaste == NO)
+    if (action == @selector(paste:) && allowPaste == NO)
         return NO;
 
-    return [super canPerformAction: action withSender: sender];
+    return [super canPerformAction:action withSender:sender];
 }
 
 @end

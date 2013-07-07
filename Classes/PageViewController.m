@@ -24,7 +24,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (CGRect)frameForKeyboardApprearingInRect: (CGRect)keyboardRect
+- (CGRect)frameForKeyboardApprearingInRect:(CGRect)keyboardRect
 {
     CGRect frame = frameBeforeKeyboard;
     frame.size.height = frame.size.height + TabBarHeight - keyboardRect.size.height;
@@ -38,37 +38,37 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (void)viewWillAppear: (BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
 
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector (keyboardWillShow:)
-                                                 name: UIKeyboardWillShowNotification
-                                               object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver: self
-                                             selector: @selector (keyboardWillHide:)
-                                                 name: UIKeyboardWillHideNotification
-                                               object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 
-- (void)viewWillDisappear: (BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear: animated];
+    [super viewWillDisappear:animated];
 
-    [[NSNotificationCenter defaultCenter] removeObserver: self
-                                                    name: UIKeyboardWillShowNotification
-                                                  object: nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillShowNotification
+                                                  object:nil];
 
-    [[NSNotificationCenter defaultCenter] removeObserver: self
-                                                    name: UIKeyboardWillHideNotification
-                                                  object: nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIKeyboardWillHideNotification
+                                                  object:nil];
 }
 
 
-- (void)keyboardWillShow: (NSNotification*)notification
+- (void)keyboardWillShow:(NSNotification*)notification
 {
     if (keyboardIsVisible == NO)
     {
@@ -85,7 +85,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                          CGRect kRect = [[notification userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
 
                          if ([AppDelegate systemMajorVersion] < 7) {
-                             self.tableView.frame = [self frameForKeyboardApprearingInRect: [self.view.window convertRect: kRect fromWindow: nil]];
+                             self.tableView.frame = [self frameForKeyboardApprearingInRect:[self.view.window convertRect:kRect fromWindow:nil]];
                          } else {
 
                              UIEdgeInsets insets = self.tableView.contentInset;
@@ -97,7 +97,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (void)keyboardWillHide: (NSNotification*)notification
+- (void)keyboardWillHide:(NSNotification*)notification
 {
     CGFloat duration = [[notification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue] - 0.08;
     duration = MAX (duration, 0.0);
@@ -125,22 +125,22 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (void)dismissKeyboardWithCompletion: (void (^)(void))completion
+- (void)dismissKeyboardWithCompletion:(void (^)(void))completion
 {
     BOOL scrollToTop = (self.tableView.contentOffset.y > 0.0);
     
-    [UIView animateWithDuration: scrollToTop ? 0.2 : 0.1
+    [UIView animateWithDuration:scrollToTop ? 0.2 : 0.1
                      animations: ^{
                          
                          NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
                          
                          if (indexPath)
-                             [self.tableView deselectRowAtIndexPath: indexPath animated: NO];
+                             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
                          
                          if (scrollToTop)
-                             [self.tableView scrollToRowAtIndexPath: [NSIndexPath indexPathForRow: 0 inSection: 0]
-                                                   atScrollPosition: UITableViewScrollPositionTop
-                                                           animated: NO];
+                             [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                                   atScrollPosition:UITableViewScrollPositionTop
+                                                           animated:NO];
 
                          UIEdgeInsets insets         = self.tableView.contentInset;
                          insets.bottom               = bottomInsetBeforeKeyboard;
@@ -148,8 +148,8 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                      }
                      completion: ^(BOOL finished){
                          
-                         [self.view endEditing: YES];
-                         completion ();
+                         [self.view endEditing:YES];
+                         completion();
                      }];
 }
 
@@ -160,7 +160,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (PageCellDescription*)cellDescriptionForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex
+- (PageCellDescription*)cellDescriptionForRow:(NSInteger)rowIndex inSection:(NSInteger)sectionIndex
 {
     if ([tableSections count] <= sectionIndex)
         return nil;
@@ -174,26 +174,26 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (Class)classForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex
+- (Class)classForRow:(NSInteger)rowIndex inSection:(NSInteger)sectionIndex
 {
-    return [[self cellDescriptionForRow: rowIndex inSection: sectionIndex] cellClass];
+    return [[self cellDescriptionForRow:rowIndex inSection:sectionIndex] cellClass];
 }
 
 
-- (id)dataForRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex
+- (id)dataForRow:(NSInteger)rowIndex inSection:(NSInteger)sectionIndex
 {
-    return [[self cellDescriptionForRow: rowIndex inSection: sectionIndex] cellData];
+    return [[self cellDescriptionForRow:rowIndex inSection:sectionIndex] cellData];
 }
 
 
-- (void)setData: (id)object forRow: (NSInteger)rowIndex inSection: (NSInteger)sectionIndex
+- (void)setData:(id)object forRow:(NSInteger)rowIndex inSection:(NSInteger)sectionIndex
 {
-    [[self cellDescriptionForRow: rowIndex inSection: sectionIndex] setCellData: object];
+    [[self cellDescriptionForRow:rowIndex inSection:sectionIndex] setCellData:object];
 
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow: rowIndex inSection: sectionIndex];
-    PageCell *cell = (PageCell*)[self.tableView cellForRowAtIndexPath: indexPath];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:sectionIndex];
+    PageCell *cell = (PageCell*)[self.tableView cellForRowAtIndexPath:indexPath];
 
-    [cell configureForData: object viewController: self tableView: self.tableView indexPath: indexPath];
+    [cell configureForData:object viewController:self tableView:self.tableView indexPath:indexPath];
 }
 
 
@@ -203,7 +203,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (void)addSectionAtIndex: (NSInteger)sectionIndex withAnimation: (UITableViewRowAnimation)animation
+- (void)addSectionAtIndex:(NSInteger)sectionIndex withAnimation:(UITableViewRowAnimation)animation
 {
     if (tableSections == nil)
         tableSections = [[NSMutableArray alloc] init];
@@ -211,37 +211,37 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if (sectionIndex > [tableSections count])
         sectionIndex = [tableSections count];
 
-    [tableSections insertObject: [[NSMutableArray alloc] init] atIndex: sectionIndex];
+    [tableSections insertObject:[[NSMutableArray alloc] init] atIndex:sectionIndex];
 
     if (animation != UITableViewRowAnimationNone)
-        [self.tableView insertSections: [NSIndexSet indexSetWithIndex: sectionIndex] withRowAnimation: animation];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:animation];
 
     [self headerSectionsReordered];
 }
 
 
-- (void)removeSectionAtIndex: (NSInteger)sectionIndex withAnimation: (UITableViewRowAnimation)animation
+- (void)removeSectionAtIndex:(NSInteger)sectionIndex withAnimation:(UITableViewRowAnimation)animation
 {
     if (sectionIndex < [tableSections count])
     {
-        [tableSections removeObjectAtIndex: sectionIndex];
+        [tableSections removeObjectAtIndex:sectionIndex];
         [self headerSectionsReordered];
 
         if (animation != UITableViewRowAnimationNone)
-            [self.tableView deleteSections: [NSIndexSet indexSetWithIndex: sectionIndex] withRowAnimation: animation];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:animation];
     }
 }
 
 
-- (void)removeAllSectionsWithAnimation: (UITableViewRowAnimation)animation
+- (void)removeAllSectionsWithAnimation:(UITableViewRowAnimation)animation
 {
-    NSIndexSet *allSections = [NSIndexSet indexSetWithIndexesInRange: NSMakeRange (0, [tableSections count])];
+    NSIndexSet *allSections = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange (0, [tableSections count])];
 
     [tableSections removeAllObjects];
     [self headerSectionsReordered];
 
     if (animation != UITableViewRowAnimationNone)
-        [self.tableView deleteSections: allSections withRowAnimation: animation];
+        [self.tableView deleteSections:allSections withRowAnimation:animation];
 }
 
 
@@ -251,18 +251,18 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (void)addRowAtIndex: (NSInteger)rowIndex
-            inSection: (NSInteger)sectionIndex
-            cellClass: (Class)class
-             cellData: (id)data
-        withAnimation: (UITableViewRowAnimation)animation
+- (void)addRowAtIndex:(NSInteger)rowIndex
+            inSection:(NSInteger)sectionIndex
+            cellClass:(Class)class
+             cellData:(id)data
+        withAnimation:(UITableViewRowAnimation)animation
 {
     // Get valid section index and section
     if (tableSections == nil)
         tableSections = [[NSMutableArray alloc] init];
 
     if ([tableSections count] == 0)
-        [self addSectionAtIndex: 0 withAnimation: animation];
+        [self addSectionAtIndex:0 withAnimation:animation];
 
     if (sectionIndex > [tableSections count] - 1)
         sectionIndex = [tableSections count] - 1;
@@ -274,9 +274,9 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
         rowIndex = [tableSection count];
 
     // Store cell description
-    PageCellDescription *description = [[PageCellDescription alloc] initWithCellClass: class andData: data];
+    PageCellDescription *description = [[PageCellDescription alloc] initWithCellClass:class andData:data];
     {
-        [tableSection insertObject: description atIndex: rowIndex];
+        [tableSection insertObject:description atIndex:rowIndex];
     }
 
     if (animation != UITableViewRowAnimationNone)
@@ -284,21 +284,21 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
         // If necessary update position for former bottom row of the section
         if (tableView.style == UITableViewStyleGrouped)
             if (rowIndex == [tableSection count] - 1 && rowIndex > 0)
-                [self setData: [self dataForRow: rowIndex-1 inSection: sectionIndex]
-                       forRow: rowIndex-1
-                    inSection: sectionIndex];
+                [self setData:[self dataForRow:rowIndex-1 inSection:sectionIndex]
+                       forRow:rowIndex-1
+                    inSection:sectionIndex];
 
         // Add row to table
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow: rowIndex inSection: sectionIndex];
-        [self.tableView insertRowsAtIndexPaths: @[indexPath] withRowAnimation: animation];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:sectionIndex];
+        [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:animation];
     }
 }
 
 
 
-- (void)removeRowAtIndex: (NSInteger)rowIndex
-               inSection: (NSInteger)sectionIndex
-           withAnimation: (UITableViewRowAnimation)animation
+- (void)removeRowAtIndex:(NSInteger)rowIndex
+               inSection:(NSInteger)sectionIndex
+           withAnimation:(UITableViewRowAnimation)animation
 {
     if (sectionIndex < [tableSections count])
     {
@@ -306,12 +306,12 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
         if (rowIndex < [tableSection count])
         {
-            [tableSection removeObjectAtIndex: rowIndex];
+            [tableSection removeObjectAtIndex:rowIndex];
 
             if (animation != UITableViewRowAnimationNone)
             {
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow: rowIndex inSection: sectionIndex];
-                [self.tableView deleteRowsAtIndexPaths: @[indexPath] withRowAnimation: animation];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:sectionIndex];
+                [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:animation];
             }
         }
     }
@@ -326,18 +326,18 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 @synthesize tableView;
 
-- (UITableView*)tableView
+- (UITableView *)tableView
 {
     return tableView;
 }
 
 
-- (void)setTableView: (UITableView*)newTableView
+- (void)setTableView:(UITableView *)newTableView
 {
     tableView = newTableView;
 
-    [tableView setDelegate: self];
-    [tableView setDataSource: self];
+    [tableView setDelegate:self];
+    [tableView setDataSource:self];
 
     if (!self.nibName && !self.view)
     {
@@ -348,7 +348,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 @synthesize constantRowHeight;
 
-- (void)setConstantRowHeight: (BOOL)newValue
+- (void)setConstantRowHeight:(BOOL)newValue
 {
     constantRowHeight = newValue;
 
@@ -360,7 +360,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 @synthesize useCustomHeaders;
 
-- (void)setUseCustomHeaders: (BOOL)newValue
+- (void)setUseCustomHeaders:(BOOL)newValue
 {
     useCustomHeaders = newValue;
 
@@ -370,18 +370,18 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (BOOL)respondsToSelector: (SEL)aSelector
+- (BOOL)respondsToSelector:(SEL)aSelector
 {
-    if (aSelector == @selector (tableView:heightForRowAtIndexPath:))
+    if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
         return !constantRowHeight;
 
-    if (aSelector == @selector (tableView:viewForHeaderInSection:) ||
-        aSelector == @selector (tableView:heightForHeaderInSection:))
+    if (aSelector == @selector(tableView:viewForHeaderInSection:) ||
+        aSelector == @selector(tableView:heightForHeaderInSection:))
     {
         return useCustomHeaders;
     }
 
-    return [super respondsToSelector: aSelector];
+    return [super respondsToSelector:aSelector];
 }
 
 
@@ -397,26 +397,26 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (UIView*)tableView: (UITableView*)aTableView viewForHeaderInSection: (NSInteger)section
+- (UIView *)tableView:(UITableView *)aTableView viewForHeaderInSection:(NSInteger)section
 {
     return nil;
 }
 
 
-- (CGFloat)tableView: (UITableView*)aTableView heightForHeaderInSection: (NSInteger)section
+- (CGFloat)tableView:(UITableView *)aTableView heightForHeaderInSection:(NSInteger)section
 {
-    NSString *title = [self tableView: aTableView titleForHeaderInSection: section];
+    NSString *title = [self tableView:aTableView titleForHeaderInSection:section];
 
     if ([title length] == 0)
         return 0;
 
-    return [[self tableView: aTableView viewForHeaderInSection: section] bounds].size.height;
+    return [[self tableView:aTableView viewForHeaderInSection:section] bounds].size.height;
 }
 
 
-- (CGFloat)tableView: (UITableView*)aTableView heightForRowAtIndexPath: (NSIndexPath*)indexPath
+- (CGFloat)tableView:(UITableView *)aTableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [[self classForRow: indexPath.row inSection: indexPath.section] rowHeight];
+    return [[self classForRow:indexPath.row inSection:indexPath.section] rowHeight];
 }
 
 
@@ -426,13 +426,13 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 
-- (NSInteger)numberOfSectionsInTableView: (UITableView*)aTableView
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView
 {
     return [tableSections count];
 }
 
 
-- (NSInteger)tableView: (UITableView*)aTableView numberOfRowsInSection: (NSInteger)section
+- (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
 {
     if (tableSections == nil)
         return 0;
@@ -441,25 +441,25 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 }
 
 
-- (NSString*)tableView: (UITableView*)aTableView titleForHeaderInSection: (NSInteger)section
+- (NSString *)tableView:(UITableView *)aTableView titleForHeaderInSection:(NSInteger)section
 {
     return nil;
 }
 
 
-- (UITableViewCell*)tableView: (UITableView*)aTableView cellForRowAtIndexPath: (NSIndexPath*)indexPath
+- (UITableViewCell*)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PageCellDescription *description = [self cellDescriptionForRow: indexPath.row inSection: indexPath.section];
+    PageCellDescription *description = [self cellDescriptionForRow:indexPath.row inSection:indexPath.section];
 
-    PageCell *cell = (PageCell*)[tableView dequeueReusableCellWithIdentifier: [description.cellClass reuseIdentifier]];
+    PageCell *cell = (PageCell*)[tableView dequeueReusableCellWithIdentifier:[description.cellClass reuseIdentifier]];
 
     if (cell == nil)
         cell = [[description.cellClass alloc] init];
 
-    [cell configureForData: description.cellData
-            viewController: self
-                 tableView: aTableView
-                 indexPath: indexPath];
+    [cell configureForData:description.cellData
+            viewController:self
+                 tableView:aTableView
+                 indexPath:indexPath];
 
     return cell;
 }
@@ -475,13 +475,13 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 {
     [super didReceiveMemoryWarning];
 
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

@@ -16,7 +16,7 @@
 
     // Create a proxy overlay for the textfield that is used to display the textField contents
     // without a flashing cursor and no Cut&Paste possibilities
-    textFieldProxy = [[UILabel alloc] initWithFrame: CGRectZero];
+    textFieldProxy = [[UILabel alloc] initWithFrame:CGRectZero];
 
     textFieldProxy.font                   = self.textField.font;
 	textFieldProxy.textAlignment          = NSTextAlignmentRight;
@@ -25,7 +25,7 @@
 	textFieldProxy.userInteractionEnabled = NO;
     textFieldProxy.isAccessibilityElement = NO;
 
-	[self.contentView addSubview: textFieldProxy];
+	[self.contentView addSubview:textFieldProxy];
 
     // Hide the textfield used for keyboard interaction
     self.textField.hidden = YES;
@@ -40,9 +40,9 @@
 }
 
 
-- (NSString*)accessibilityLabel
+- (NSString *)accessibilityLabel
 {
-    return [NSString stringWithFormat: @"%@ %@", self.textLabel.text, self.textFieldProxy.text];
+    return [NSString stringWithFormat:@"%@ %@", self.textLabel.text, self.textFieldProxy.text];
 }
 
 @end

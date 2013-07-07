@@ -18,8 +18,8 @@
 {
     BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
 
-    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]))
-    {
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+
         cellState = UITableViewCellStateDefaultMask;
         large     = enlargeTopRightLabel;
 
@@ -28,8 +28,8 @@
         _topLeftLabel.backgroundColor            = [UIColor clearColor];
         _topLeftLabel.textColor                  = [UIColor blackColor];
 
-        if (useOldStyle)
-        {
+        if (useOldStyle) {
+
             _topLeftLabel.shadowColor            = [UIColor colorWithWhite:1.0 alpha:0.8];
             _topLeftLabel.shadowOffset           = CGSizeMake(0.0, 1.0);
             _topLeftLabel.highlightedTextColor   = [UIColor whiteColor];
@@ -45,8 +45,8 @@
         _botLeftLabel.backgroundColor            = [UIColor clearColor];
         _botLeftLabel.textColor                  = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
 
-        if (useOldStyle)
-        {
+        if (useOldStyle) {
+
             _botLeftLabel.shadowColor            = [UIColor colorWithWhite:1.0 alpha:0.8];
             _botLeftLabel.shadowOffset           = CGSizeMake(0.0, 1.0);
             _botLeftLabel.highlightedTextColor   = [UIColor whiteColor];
@@ -62,8 +62,8 @@
         _topRightLabel.backgroundColor           = [UIColor clearColor];
         _topRightLabel.textColor                 = [UIColor blackColor];
 
-        if (useOldStyle)
-        {
+        if (useOldStyle) {
+
             _topRightLabel.shadowColor           = [UIColor colorWithWhite:1.0 alpha:0.8];
             _topRightLabel.shadowOffset          = CGSizeMake(0.0, 1.0);
             _topRightLabel.highlightedTextColor  = [UIColor whiteColor];
@@ -80,8 +80,8 @@
         _botRightLabel.backgroundColor           = [UIColor clearColor];
         _botRightLabel.textColor                 = (useOldStyle) ? [UIColor darkGrayColor] : [UIColor colorWithWhite:0.5 alpha:1.0];
 
-        if (useOldStyle)
-        {
+        if (useOldStyle) {
+
             _botRightLabel.shadowColor           = [UIColor colorWithWhite:1.0 alpha:0.8];
             _botRightLabel.shadowOffset          = CGSizeMake(0.0, 1.0);
             _botRightLabel.highlightedTextColor  = [UIColor whiteColor];
@@ -97,11 +97,11 @@
         UIImageView *imageView;
 
         imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed: (useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
+        imageView.image             = [UIImage imageNamed:(useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
         self.backgroundView         = imageView;
 
         imageView                   = [[UIImageView alloc] init];
-        imageView.image             = [UIImage imageNamed: (useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
+        imageView.image             = [UIImage imageNamed:(useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
         self.selectedBackgroundView = imageView;
 
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -117,8 +117,8 @@
                             (_topLeftAccessibilityLabel) ? _topLeftAccessibilityLabel : _topLeftLabel.text,
                             (_botLeftAccessibilityLabel) ? _botLeftAccessibilityLabel : _botLeftLabel.text];
 
-    if (cellState == UITableViewCellStateDefaultMask)
-    {
+    if (cellState == UITableViewCellStateDefaultMask) {
+
         if (_topRightAccessibilityLabel)
             label = [label stringByAppendingFormat:@", %@", _topRightAccessibilityLabel];
 
@@ -134,8 +134,8 @@
 // Disable text shadow in highlighted and selected states
 - (void)updateLabelShadowOffset
 {
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
+    if ([AppDelegate systemMajorVersion] < 7) {
+
         CGSize offset = ([self isHighlighted] || [self isSelected]) ? CGSizeZero : CGSizeMake(0.0, 1.0);
 
         _topLeftLabel.shadowOffset  = offset;

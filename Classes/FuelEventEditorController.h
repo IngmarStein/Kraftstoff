@@ -8,13 +8,6 @@
 
 
 @interface FuelEventEditorController : PageViewController <UIViewControllerRestoration, EditablePageCellDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate>
-{
-    BOOL         isShowingCancelSheet;
-    
-    BOOL         dataChanged;
-    NSIndexPath *restoredSelectionIndex;
-}
-
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 

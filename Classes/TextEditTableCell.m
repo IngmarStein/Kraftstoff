@@ -21,16 +21,16 @@ NSUInteger const maximumTextFieldLength = 15;
 }
 
 
-- (void)configureForData: (id)dataObject viewController: (id)viewController tableView: (UITableView*)tableView indexPath: (NSIndexPath*)indexPath
+- (void)configureForData:(id)dataObject viewController:(id)viewController tableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-	[super configureForData: dataObject viewController: viewController tableView: tableView indexPath: indexPath];
+	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
-    if ([[(NSDictionary*)dataObject valueForKey: @"autocapitalizeAll"] boolValue])
+    if ([[(NSDictionary *)dataObject valueForKey:@"autocapitalizeAll"] boolValue])
         self.textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
     else
         self.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
 
-    self.textField.text = [self.delegate valueForIdentifier: self.valueIdentifier];
+    self.textField.text = [self.delegate valueForIdentifier:self.valueIdentifier];
 }
 
 
@@ -40,30 +40,30 @@ NSUInteger const maximumTextFieldLength = 15;
 
 
 
-- (BOOL)textFieldShouldReturn: (UITextField*)aTextField
+- (BOOL)textFieldShouldReturn:(UITextField *)aTextField
 {
     // Let delegate handle switching to next textfield
-    if ([(id)self.delegate respondsToSelector: @selector(focusNextFieldForValueIdentifier:)])
+    if ([(id)self.delegate respondsToSelector:@selector(focusNextFieldForValueIdentifier:)])
     {
-        [self.delegate focusNextFieldForValueIdentifier: self.valueIdentifier];
+        [self.delegate focusNextFieldForValueIdentifier:self.valueIdentifier];
     }
 
     return NO;
 }
 
 
-- (BOOL)textFieldShouldClear: (UITextField*)aTextField
+- (BOOL)textFieldShouldClear:(UITextField *)aTextField
 {
     // Propagate cleared value to the delegate
-    [self.delegate valueChanged: @"" identifier: self.valueIdentifier];
+    [self.delegate valueChanged:@"" identifier:self.valueIdentifier];
 
     return YES;
 }
 
 
-- (BOOL)textField: (UITextField*)aTextField shouldChangeCharactersInRange: (NSRange)range replacementString: (NSString*)string
+- (BOOL)textField:(UITextField *)aTextField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    NSString *newValue = [aTextField.text stringByReplacingCharactersInRange: range withString: string];
+    NSString *newValue = [aTextField.text stringByReplacingCharactersInRange:range withString:string];
 
     // Don't allow to large strings
     if ([newValue length] > maximumTextFieldLength)
@@ -72,7 +72,7 @@ NSUInteger const maximumTextFieldLength = 15;
     // Do the update here and propagate the new value back to the delegate
     aTextField.text = newValue;
 
-    [self.delegate valueChanged: newValue identifier: self.valueIdentifier];
+    [self.delegate valueChanged:newValue identifier:self.valueIdentifier];
     return NO;
 }
 

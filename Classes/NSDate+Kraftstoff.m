@@ -16,7 +16,7 @@ static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalenda
 @implementation NSDate (Kraftstoff)
 
 
-+ (NSDate*)dateWithOffsetInMonths:(NSInteger)numberOfMonths fromDate:(NSDate *)date
++ (NSDate *)dateWithOffsetInMonths:(NSInteger)numberOfMonths fromDate:(NSDate *)date
 {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
@@ -31,7 +31,7 @@ static NSUInteger timeOfDayComponentMask = (NSHourCalendarUnit | NSMinuteCalenda
 }
 
 
-+ (NSDate*)dateWithoutSeconds:(NSDate *)date
++ (NSDate *)dateWithoutSeconds:(NSDate *)date
 {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *noSecComponents = [gregorianCalendar components:noSecondsComponentMask fromDate:date];

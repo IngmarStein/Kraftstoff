@@ -16,7 +16,7 @@ static CGGradientRef PageCellBackgroundGradient (BOOL selected)
     
     dispatch_once (&pred, ^{
 
-        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB ();
+        CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
 
         for (int gradientType = 0; gradientType < 2; gradientType++)
         {
@@ -25,13 +25,13 @@ static CGGradientRef PageCellBackgroundGradient (BOOL selected)
 
             if (gradientType)
             {
-                colorTop = [UIColor colorWithRed: 0.818 green: 0.818 blue: 0.827 alpha: 1.00];
-                colorBot = [UIColor colorWithRed: 0.746 green: 0.746 blue: 0.762 alpha: 1.00];
+                colorTop = [UIColor colorWithRed:0.818 green:0.818 blue:0.827 alpha:1.00];
+                colorBot = [UIColor colorWithRed:0.746 green:0.746 blue:0.762 alpha:1.00];
             }
             else
             {
-                colorTop = [UIColor colorWithRed: 0.858 green: 0.858 blue: 0.867 alpha: 1.00];
-                colorBot = [UIColor colorWithRed: 0.706 green: 0.706 blue: 0.722 alpha: 1.00];
+                colorTop = [UIColor colorWithRed:0.858 green:0.858 blue:0.867 alpha:1.00];
+                colorBot = [UIColor colorWithRed:0.706 green:0.706 blue:0.722 alpha:1.00];
             }
 
             CGFloat bgComponents [2][4];
@@ -39,7 +39,7 @@ static CGGradientRef PageCellBackgroundGradient (BOOL selected)
             memcpy (bgComponents [1], CGColorGetComponents (colorBot.CGColor), sizeof (CGFloat) * 4);
 
             CGFloat const locations [2] = {0.0, 1.0};
-            bgGradient [gradientType] = CGGradientCreateWithColorComponents (colorspace, (CGFloat const*)bgComponents, locations, 2);
+            bgGradient [gradientType] = CGGradientCreateWithColorComponents(colorspace, (CGFloat const*)bgComponents, locations, 2);
         }
 
 		CFRelease (colorspace);
@@ -51,7 +51,7 @@ static CGGradientRef PageCellBackgroundGradient (BOOL selected)
 
 static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCellGroupPosition position, CGFloat cornerRadius)
 {
-	CGMutablePathRef path = CGPathCreateMutable ();
+	CGMutablePathRef path = CGPathCreateMutable();
 	CGPathMoveToPoint (path, NULL,
                        rect.origin.x,
                        rect.origin.y + rect.size.height - cornerRadius);
@@ -122,7 +122,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 @synthesize position;
 
 
-+ (PageCellGroupPosition)positionForIndexPath: (NSIndexPath*)indexPath inTableView: (UITableView*)tableView;
++ (PageCellGroupPosition)positionForIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView;
 {
 	PageCellGroupPosition result;
 
@@ -133,7 +133,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 
 	PageViewController *pageViewController = (PageViewController*)[tableView delegate];
 
-	if ([indexPath row] == [pageViewController tableView: tableView numberOfRowsInSection: indexPath.section] - 1)
+	if ([indexPath row] == [pageViewController tableView:tableView numberOfRowsInSection:indexPath.section] - 1)
 	{
 		if (result == PageCellGroupPositionTop)
 			result = PageCellGroupPositionTopAndBottom;
@@ -145,14 +145,14 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 }
 
 
-- (id)initSelected: (BOOL)isSelected grouped: (BOOL)isGrouped;
+- (id)initSelected:(BOOL)isSelected grouped:(BOOL)isGrouped;
 {
 	if ((self = [super init]))
 	{
 		selected        = isSelected;
 		groupBackground = isGrouped;
 
-		self.strokeColor      = [UIColor colorWithWhite: 0.6 alpha: 1.0];
+		self.strokeColor      = [UIColor colorWithWhite:0.6 alpha:1.0];
 		self.backgroundColor  = [UIColor clearColor];
 		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	}
@@ -168,7 +168,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 }
 
 
-- (void)setPosition: (PageCellGroupPosition)newPosition
+- (void)setPosition:(PageCellGroupPosition)newPosition
 {
 	if (position != newPosition)
 	{
@@ -178,9 +178,9 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 }
 
 
-- (void)drawRect: (CGRect)rect
+- (void)drawRect:(CGRect)rect
 {
-	CGContextRef context  = UIGraphicsGetCurrentContext ();
+	CGContextRef context  = UIGraphicsGetCurrentContext();
 	CGPathRef outlinePath = NULL;
 
 
@@ -217,7 +217,7 @@ static CF_RETURNS_RETAINED CGPathRef allocPathWithRoundRect (CGRect rect, PageCe
 
 		if (position != PageCellGroupPositionTop && position != PageCellGroupPositionTopAndBottom)
 		{
-            UIColor *white = [UIColor colorWithWhite: 0.90 alpha: 1.0];
+            UIColor *white = [UIColor colorWithWhite:0.90 alpha:1.0];
             CGContextSetStrokeColorWithColor (context, white.CGColor);
 			CGContextMoveToPoint (context, rect.origin.x + 1, rect.origin.y + 0.5);
 			CGContextAddLineToPoint (context, rect.origin.x + rect.size.width - 1, rect.origin.y + 0.5);

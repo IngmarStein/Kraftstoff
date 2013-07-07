@@ -28,13 +28,13 @@ extern CGFloat StatisticsHeight;
 - (void)purgeDiscardableCacheContent;
 
 // Notify the view controller about visibility of its page in the scroll view
-- (void)noteStatisticsPageBecomesVisible: (BOOL)visible;
+- (void)noteStatisticsPageBecomesVisible:(BOOL)visible;
 
 // Update statistics display to selected time period
-- (void)setDisplayedNumberOfMonths: (NSInteger)numberOfMonths;
+- (void)setDisplayedNumberOfMonths:(NSInteger)numberOfMonths;
 
 
-- (IBAction)buttonAction: (UIButton*)sender;
+- (IBAction)buttonAction:(UIButton *)sender;
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityView;
 
