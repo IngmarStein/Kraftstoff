@@ -893,9 +893,11 @@ CGFloat const StatusBarHeight     = 20.0;
 }
 
 
+
 + (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
-                                     afterDate:(NSDate *)date
-                                   dateMatches:(BOOL)dateMatches
+                                       andDate:(NSDate *)date
+                                dateComparator:(NSString *)dateCompare
+                                     fetchSize:(NSInteger)fetchSize
                         inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -903,7 +905,7 @@ CGFloat const StatusBarHeight     = 20.0;
     // Entity name
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"fuelEvent" inManagedObjectContext:moc];
     [fetchRequest setEntity:entity];
-    [fetchRequest setFetchBatchSize:128];
+    [fetchRequest setFetchBatchSize:fetchSize];
 
     // Predicates
     NSPredicate *parentPredicate = [NSPredicate predicateWithFormat:@"car == %@", car];
@@ -915,14 +917,9 @@ CGFloat const StatusBarHeight     = 20.0;
     } else {
 
         NSString *dateDescription  = [[NSExpression expressionForConstantValue:date] description];
-        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:
-                                        [NSString stringWithFormat:@"timestamp %@ %@",
-                                            (dateMatches) ? @">=" : @">",
-                                            dateDescription]];
+        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"timestamp %@ %@", dateCompare, dateDescription]];
 
-        [fetchRequest setPredicate:
-            [NSCompoundPredicate andPredicateWithSubpredicates:
-                @[parentPredicate, datePredicate]]];
+        [fetchRequest setPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:@[parentPredicate, datePredicate]]];
     }
 
     // Sorting keys
@@ -935,45 +932,30 @@ CGFloat const StatusBarHeight     = 20.0;
 }
 
 
+
++ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
+                                     afterDate:(NSDate *)date
+                                   dateMatches:(BOOL)dateMatches
+                        inManagedObjectContext:(NSManagedObjectContext *)moc
+{
+    return [self fetchRequestForEventsForCar:car
+                                     andDate:date
+                              dateComparator:(dateMatches) ? @">=" : @">"
+                                   fetchSize:128
+                      inManagedObjectContext:moc];
+}
+
+
 + (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
                                     beforeDate:(NSDate *)date
                                    dateMatches:(BOOL)dateMatches
                         inManagedObjectContext:(NSManagedObjectContext *)moc
 {
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-
-    // Entity name
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"fuelEvent" inManagedObjectContext:moc];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setFetchBatchSize:8];
-
-    // Predicates
-    NSPredicate *parentPredicate = [NSPredicate predicateWithFormat:@"car == %@", car];
-
-    if (date == nil) {
-
-        [fetchRequest setPredicate:parentPredicate];
-
-    } else {
-
-        NSString *dateDescription = [[NSExpression expressionForConstantValue:date] description];
-        NSPredicate *datePredicate = [NSPredicate predicateWithFormat:
-                                        [NSString stringWithFormat:@"timestamp %@ %@",
-                                            (dateMatches) ? @"<=" : @"<",
-                                            dateDescription]];
-
-        [fetchRequest setPredicate:
-            [NSCompoundPredicate andPredicateWithSubpredicates:
-                @[parentPredicate, datePredicate]]];
-    }
-
-    // Sorting keys
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timestamp" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-
-    [fetchRequest setSortDescriptors:sortDescriptors];
-
-    return fetchRequest;
+    return [self fetchRequestForEventsForCar:car
+                                     andDate:date
+                              dateComparator:(dateMatches) ? @"<=" : @"<"
+                                   fetchSize:8
+                      inManagedObjectContext:moc];
 }
 
 

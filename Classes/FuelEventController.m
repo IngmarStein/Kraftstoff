@@ -18,11 +18,15 @@
 
     BOOL isShowingExportSheet;
     BOOL isShowingExportFailedAlert;
+    BOOL isShowingOpenIn;
     BOOL isShowingMailComposer;
 
     BOOL restoreExportSheet;
     BOOL restoreExportFailedAlert;
+    BOOL restoreOpenIn;
     BOOL restoreMailComposer;
+
+    UIDocumentInteractionController *openInController;
 }
 
 @synthesize fetchRequest = _fetchRequest;
@@ -60,10 +64,12 @@
 
     isShowingExportSheet       = NO;
     isShowingExportFailedAlert = NO;
+    isShowingOpenIn            = NO;
     isShowingMailComposer      = NO;
 
     restoreExportSheet         = NO;
     restoreExportFailedAlert   = NO;
+    restoreOpenIn              = NO;
     restoreMailComposer        = NO;
 
     // Configure root view
@@ -121,6 +127,9 @@
     else if (restoreExportFailedAlert)
         [self showExportFailedAlert:nil];
 
+    else if (restoreOpenIn)
+        [self showOpenIn:nil];
+
     else if (restoreMailComposer)
         [self showMailComposer:nil];
 }
@@ -144,6 +153,7 @@
 #define kSRFuelEventSelectedCarID     @"FuelEventSelectedCarID"
 #define kSRFuelEventExportSheet       @"FuelEventExportSheet"
 #define kSRFuelEventExportFailedAlert @"FuelEventExportFailedAlert"
+#define kSRFuelEventShowOpenIn        @"FuelEventShowOpenIn"
 #define kSRFuelEventShowComposer      @"FuelEventShowMailComposer"
 
 
@@ -169,6 +179,7 @@
     [coder encodeObject:[appDelegate modelIdentifierForManagedObject:_selectedCar] forKey:kSRFuelEventSelectedCarID];
     [coder encodeBool:restoreExportSheet|isShowingExportSheet forKey:kSRFuelEventExportSheet];
     [coder encodeBool:restoreExportFailedAlert|isShowingExportFailedAlert forKey:kSRFuelEventExportFailedAlert];
+    [coder encodeBool:restoreOpenIn|isShowingOpenIn forKey:kSRFuelEventShowOpenIn];
     [coder encodeBool:restoreMailComposer|isShowingMailComposer forKey:kSRFuelEventShowComposer];
 
     // don't use a snapshot image for next launch when graph is currently visible
@@ -184,6 +195,7 @@
 {
     restoreExportSheet = [coder decodeBoolForKey:kSRFuelEventExportSheet];
     restoreExportFailedAlert = [coder decodeBoolForKey:kSRFuelEventExportFailedAlert];
+    restoreOpenIn = [coder decodeBoolForKey:kSRFuelEventShowOpenIn];
     restoreMailComposer = [coder decodeBoolForKey:kSRFuelEventShowComposer];
 
     [super decodeRestorableStateWithCoder:coder];
@@ -231,7 +243,7 @@
     //  - showing the export sheets or the mail composer
     //  - the previous rotation isn't finished yet
     //  - rotations are no longer observed
-    if (isShowingExportSheet || isShowingExportFailedAlert || isShowingMailComposer || isPerformingRotation || !isObservingRotationEvents)
+    if (isShowingExportSheet || isShowingExportFailedAlert || isShowingMailComposer || isShowingOpenIn || isPerformingRotation || !isObservingRotationEvents)
         return;
 
     // Switch view controllers according rotation state
@@ -265,50 +277,21 @@
 
 
 #pragma mark -
-#pragma mark Export Objects via eMail
-
-
-
-- (void)showMailComposer:(id)sender
-{
-    restoreMailComposer   = NO;
-
-    if ([MFMailComposeViewController canSendMail]) {
-
-        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
-
-        // Copy look of navigation bar to compose window
-        if ([AppDelegate systemMajorVersion] < 7) {
-
-            UINavigationBar *navBar = [mailComposer navigationBar];
-
-            if (navBar != nil) {
-
-                navBar.barStyle = UIBarStyleBlack;
-                navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
-            }
-        }
-
-        // Setup the message
-        [mailComposer setMailComposeDelegate:self];
-        [mailComposer setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
-        [mailComposer setMessageBody:[self exportTextDescription] isHTML:NO];
-
-        [mailComposer addAttachmentData:[self exportTextData]
-                               mimeType:@"text"
-                               fileName:[NSString stringWithFormat:@"%@__%@.csv",
-                                              [_selectedCar valueForKey:@"name"],
-                                              [_selectedCar valueForKey:@"numberPlate"]]];
-
-        [self presentViewController:mailComposer animated:YES completion: ^{ isShowingMailComposer = YES; }];
-    }
-}
+#pragma mark Export Support
 
 
 - (void)validateExport
 {
-    // Sending mail needs a configured mail account
-    self.navigationItem.rightBarButtonItem.enabled = ([MFMailComposeViewController canSendMail] && [[self.fetchedResultsController fetchedObjects] count] > 0);
+    self.navigationItem.rightBarButtonItem.enabled = ([[self.fetchedResultsController fetchedObjects] count] > 0);
+}
+
+
+- (NSString *)exportFilename
+{
+    NSString *rawFilename = [NSString stringWithFormat:@"%@__%@.csv", [_selectedCar valueForKey:@"name"], [_selectedCar valueForKey:@"numberPlate"]];
+    NSCharacterSet* illegalCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
+
+    return [[rawFilename componentsSeparatedByCharactersInSet:illegalCharacters] componentsJoinedByString:@""];
 }
 
 
@@ -364,18 +347,18 @@
 
         [dataString appendFormat:@"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
 
-            [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
-            [numberFormatter stringFromNumber:[AppDelegate distanceForKilometers:distance withUnit:odometerUnit]],
-            [numberFormatter stringFromNumber:[AppDelegate volumeForLiters:fuelVolume withUnit:fuelUnit]],
-            [[managedObject valueForKey:@"filledUp"] boolValue] ? _I18N(@"Yes") : _I18N(@"No"),
-            [numberFormatter stringFromNumber:[AppDelegate pricePerUnit:price withUnit:fuelUnit]],
+         [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
+         [numberFormatter stringFromNumber:[AppDelegate distanceForKilometers:distance withUnit:odometerUnit]],
+         [numberFormatter stringFromNumber:[AppDelegate volumeForLiters:fuelVolume withUnit:fuelUnit]],
+         [[managedObject valueForKey:@"filledUp"] boolValue] ? _I18N(@"Yes") : _I18N(@"No"),
+         [numberFormatter stringFromNumber:[AppDelegate pricePerUnit:price withUnit:fuelUnit]],
 
-            [[managedObject valueForKey:@"filledUp"] boolValue]
-                ? [numberFormatter stringFromNumber:
-                      [AppDelegate consumptionForKilometers:[distance   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
-                                                     Liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
-                                                     inUnit:consumptionUnit]]
-                : @" "
+         [[managedObject valueForKey:@"filledUp"] boolValue]
+         ? [numberFormatter stringFromNumber:
+            [AppDelegate consumptionForKilometers:[distance   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
+                                           Liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
+                                           inUnit:consumptionUnit]]
+                                : @" "
          ];
     }
 
@@ -410,10 +393,100 @@
     }
 
     return [NSString stringWithFormat:_I18N(@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n"),
-                [_selectedCar valueForKey:@"name"],
-                [_selectedCar valueForKey:@"numberPlate"],
-                period,
-                count];
+            [_selectedCar valueForKey:@"name"],
+            [_selectedCar valueForKey:@"numberPlate"],
+            period,
+            count];
+}
+
+
+
+#pragma mark -
+#pragma mark Export Objects via eMail
+
+
+
+- (void)showOpenIn:(id)sender
+{
+    restoreOpenIn = NO;
+
+    // URL for a temporary file
+    NSString *exportFilename = [self exportFilename];
+    NSURL *exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), exportFilename]];
+
+    // write exported data
+    NSData *data = [self exportTextData];
+    NSError *error = nil;
+
+    if ([data writeToURL:exportURL options:NSDataWritingFileProtectionComplete error:&error] == NO) {
+
+        // FIXME
+        NSLog(@"write error");
+        return;
+    }
+
+    // show document interaction controller
+    openInController = [UIDocumentInteractionController interactionControllerWithURL:exportURL];
+
+    openInController.delegate = self;
+    openInController.name = exportFilename;
+    openInController.UTI = @"public.comma-separated-values-text";
+
+    if ([openInController presentOpenInMenuFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES] == NO) {
+
+        openInController = nil;
+        
+        // FIXME
+        NSLog(@"export error");
+        return;
+    }
+
+    isShowingOpenIn = YES;
+}
+
+
+- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller
+{
+    // FIXME file removal
+    openInController = nil;
+    isShowingOpenIn  = NO;
+}
+
+
+
+#pragma mark -
+#pragma mark Export Objects via eMail
+
+
+
+- (void)showMailComposer:(id)sender
+{
+    restoreMailComposer = NO;
+
+    if ([MFMailComposeViewController canSendMail]) {
+
+        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
+
+        // Copy look of navigation bar to compose window
+        if ([AppDelegate systemMajorVersion] < 7) {
+
+            UINavigationBar *navBar = [mailComposer navigationBar];
+
+            if (navBar != nil) {
+
+                navBar.barStyle = UIBarStyleBlack;
+                navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
+            }
+        }
+
+        // Setup the message
+        [mailComposer setMailComposeDelegate:self];
+        [mailComposer setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
+        [mailComposer setMessageBody:[self exportTextDescription] isHTML:NO];
+        [mailComposer addAttachmentData:[self exportTextData] mimeType:@"text" fileName:[self exportFilename]];
+
+        [self presentViewController:mailComposer animated:YES completion: ^{ isShowingMailComposer = YES; }];
+    }
 }
 
 
@@ -442,11 +515,14 @@
     isShowingExportSheet = YES;
     restoreExportSheet   = NO;
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Export Fuel Data as CSV via Mail?")
+    // FIXME: validate mail export  [MFMailComposeViewController canSendMail]
+    // FIXME: lokalisierung
+
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Export Fuel Data in CSV Format")
                                                        delegate:self
                                               cancelButtonTitle:_I18N(@"Cancel")
                                          destructiveButtonTitle:nil
-                                              otherButtonTitles:_I18N(@"Export"), nil];
+                                              otherButtonTitles:_I18N(@"Send as Email"), _I18N(@"Open in ..."), nil];
 
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
 
@@ -458,8 +534,10 @@
 {
     isShowingExportSheet = NO;
 
-    if (buttonIndex != actionSheet.cancelButtonIndex)
-        [self showMailComposer:nil];
+    if (buttonIndex == 0)
+        dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
+    else if (buttonIndex == 1)
+        dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
 }
 
 

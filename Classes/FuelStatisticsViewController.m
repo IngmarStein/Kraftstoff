@@ -210,21 +210,35 @@ CGFloat StatisticsHeight     = 182.0;
 
         if (sampleCar)
         {
-            // Fetch events for the selected time period
-            NSFetchRequest *fetchRequest = [AppDelegate fetchRequestForEventsForCar:sampleCar
-                                                                          afterDate:[NSDate dateWithOffsetInMonths: -numberOfMonths fromDate:[NSDate date]]
-                                                                        dateMatches:YES
-                                                             inManagedObjectContext:sampleContext];
+            // Fetch some young events to get the most recent fillup date
+            NSArray *recentEvents = [AppDelegate objectsForFetchRequest:[AppDelegate fetchRequestForEventsForCar:sampleCar
+                                                                                                      beforeDate:[NSDate date]
+                                                                                                     dateMatches:YES
+                                                                                          inManagedObjectContext:sampleContext]
+                                                 inManagedObjectContext:sampleContext];
 
-            NSArray *samplingObjects = [AppDelegate objectsForFetchRequest:fetchRequest
+            NSDate *recentFillupDate = nil;
+
+            @try {
+                if ([recentEvents count])
+                    recentFillupDate = [[recentEvents objectAtIndex:0] valueForKey:@"timestamp"];
+                else
+                    recentFillupDate = [NSDate date];
+            }
+            @catch (NSException *exception) {
+                recentFillupDate = [NSDate date];
+            }
+
+            // Fetch events for the selected time period
+            NSDate *samplingStart = [NSDate dateWithOffsetInMonths: -numberOfMonths fromDate:recentFillupDate];
+            NSArray *samplingObjects = [AppDelegate objectsForFetchRequest:[AppDelegate fetchRequestForEventsForCar:sampleCar
+                                                                                                          afterDate:samplingStart
+                                                                                                        dateMatches:YES
+                                                                                             inManagedObjectContext:sampleContext]
                                                     inManagedObjectContext:sampleContext];
 
-
             // Compute statistics
-            id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths
-                                                            forCar:sampleCar
-                                                       withObjects:samplingObjects];
-
+            id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths forCar:sampleCar withObjects:samplingObjects];
 
             // Schedule update of cache and display in main thread
             dispatch_async (dispatch_get_main_queue(),
