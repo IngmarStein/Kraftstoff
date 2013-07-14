@@ -15,18 +15,14 @@
 {
     BOOL isObservingRotationEvents;
     BOOL isPerformingRotation;
-
     BOOL isShowingExportSheet;
-    BOOL isShowingExportFailedAlert;
-    BOOL isShowingOpenIn;
-    BOOL isShowingMailComposer;
-
+    BOOL isShowingAlert;
     BOOL restoreExportSheet;
-    BOOL restoreExportFailedAlert;
     BOOL restoreOpenIn;
     BOOL restoreMailComposer;
 
     UIDocumentInteractionController *openInController;
+    MFMailComposeViewController *mailComposeController;
 }
 
 @synthesize fetchRequest = _fetchRequest;
@@ -61,14 +57,9 @@
 
     isObservingRotationEvents  = NO;
     isPerformingRotation       = NO;
-
     isShowingExportSheet       = NO;
-    isShowingExportFailedAlert = NO;
-    isShowingOpenIn            = NO;
-    isShowingMailComposer      = NO;
-
+    isShowingAlert             = NO;
     restoreExportSheet         = NO;
-    restoreExportFailedAlert   = NO;
     restoreOpenIn              = NO;
     restoreMailComposer        = NO;
 
@@ -124,9 +115,6 @@
     if (restoreExportSheet)
         [self showExportSheet:nil];
 
-    else if (restoreExportFailedAlert)
-        [self showExportFailedAlert:nil];
-
     else if (restoreOpenIn)
         [self showOpenIn:nil];
 
@@ -152,7 +140,6 @@
 
 #define kSRFuelEventSelectedCarID     @"FuelEventSelectedCarID"
 #define kSRFuelEventExportSheet       @"FuelEventExportSheet"
-#define kSRFuelEventExportFailedAlert @"FuelEventExportFailedAlert"
 #define kSRFuelEventShowOpenIn        @"FuelEventShowOpenIn"
 #define kSRFuelEventShowComposer      @"FuelEventShowMailComposer"
 
@@ -177,10 +164,9 @@
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
     [coder encodeObject:[appDelegate modelIdentifierForManagedObject:_selectedCar] forKey:kSRFuelEventSelectedCarID];
-    [coder encodeBool:restoreExportSheet|isShowingExportSheet forKey:kSRFuelEventExportSheet];
-    [coder encodeBool:restoreExportFailedAlert|isShowingExportFailedAlert forKey:kSRFuelEventExportFailedAlert];
-    [coder encodeBool:restoreOpenIn|isShowingOpenIn forKey:kSRFuelEventShowOpenIn];
-    [coder encodeBool:restoreMailComposer|isShowingMailComposer forKey:kSRFuelEventShowComposer];
+    [coder encodeBool:restoreExportSheet||isShowingExportSheet forKey:kSRFuelEventExportSheet];
+    [coder encodeBool:restoreOpenIn||(openInController != nil) forKey:kSRFuelEventShowOpenIn];
+    [coder encodeBool:restoreMailComposer|(mailComposeController != nil) forKey:kSRFuelEventShowComposer];
 
     // don't use a snapshot image for next launch when graph is currently visible
     if ([AppDelegate systemMajorVersion] >= 7)
@@ -194,7 +180,6 @@
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
     restoreExportSheet = [coder decodeBoolForKey:kSRFuelEventExportSheet];
-    restoreExportFailedAlert = [coder decodeBoolForKey:kSRFuelEventExportFailedAlert];
     restoreOpenIn = [coder decodeBoolForKey:kSRFuelEventShowOpenIn];
     restoreMailComposer = [coder decodeBoolForKey:kSRFuelEventShowComposer];
 
@@ -239,11 +224,14 @@
 
 - (void)orientationChanged:(NSNotification*)aNotification
 {
-    // Ignore rotation when:
-    //  - showing the export sheets or the mail composer
-    //  - the previous rotation isn't finished yet
-    //  - rotations are no longer observed
-    if (isShowingExportSheet || isShowingExportFailedAlert || isShowingMailComposer || isShowingOpenIn || isPerformingRotation || !isObservingRotationEvents)
+    // Ignore rotation when sheets or alerts are visible
+    if (openInController != nil)
+        return;
+
+    if (mailComposeController != nil)
+        return;
+
+    if (isShowingExportSheet || isPerformingRotation || isShowingAlert || !isObservingRotationEvents)
         return;
 
     // Switch view controllers according rotation state
@@ -292,6 +280,12 @@
     NSCharacterSet* illegalCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
 
     return [[rawFilename componentsSeparatedByCharactersInSet:illegalCharacters] componentsJoinedByString:@""];
+}
+
+
+- (NSURL*)exportURL
+{
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), [self exportFilename]]];
 }
 
 
@@ -410,46 +404,46 @@
 {
     restoreOpenIn = NO;
 
-    // URL for a temporary file
-    NSString *exportFilename = [self exportFilename];
-    NSURL *exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), exportFilename]];
-
     // write exported data
     NSData *data = [self exportTextData];
     NSError *error = nil;
 
-    if ([data writeToURL:exportURL options:NSDataWritingFileProtectionComplete error:&error] == NO) {
+    if ([data writeToURL:[self exportURL] options:NSDataWritingFileProtectionComplete error:&error] == NO) {
 
-        // FIXME
-        NSLog(@"write error");
+        [[[UIAlertView alloc] initWithTitle:_I18N(@"Export Failed")
+                                    message:_I18N(@"Sorry, could not save the CSV-data for export.")
+                                   delegate:self
+                          cancelButtonTitle:nil
+                          otherButtonTitles:_I18N(@"OK"), nil] show];
         return;
     }
 
     // show document interaction controller
-    openInController = [UIDocumentInteractionController interactionControllerWithURL:exportURL];
+    openInController = [UIDocumentInteractionController interactionControllerWithURL:[self exportURL]];
 
     openInController.delegate = self;
-    openInController.name = exportFilename;
+    openInController.name = [self exportFilename];
     openInController.UTI = @"public.comma-separated-values-text";
 
     if ([openInController presentOpenInMenuFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES] == NO) {
 
+        [[[UIAlertView alloc] initWithTitle:_I18N(@"Open In Failed")
+                                    message:_I18N(@"Sorry, there seems to be no compatible App to open the data.")
+                                   delegate:self
+                          cancelButtonTitle:nil
+                          otherButtonTitles:_I18N(@"OK"), nil] show];
+
         openInController = nil;
-        
-        // FIXME
-        NSLog(@"export error");
         return;
     }
-
-    isShowingOpenIn = YES;
 }
 
 
 - (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller
 {
-    // FIXME file removal
+    [[NSFileManager defaultManager] removeItemAtURL:[self exportURL] error:nil];
+
     openInController = nil;
-    isShowingOpenIn  = NO;
 }
 
 
@@ -465,12 +459,12 @@
 
     if ([MFMailComposeViewController canSendMail]) {
 
-        MFMailComposeViewController *mailComposer = [[MFMailComposeViewController alloc] init];
+        mailComposeController = [[MFMailComposeViewController alloc] init];
 
         // Copy look of navigation bar to compose window
         if ([AppDelegate systemMajorVersion] < 7) {
 
-            UINavigationBar *navBar = [mailComposer navigationBar];
+            UINavigationBar *navBar = [mailComposeController navigationBar];
 
             if (navBar != nil) {
 
@@ -480,12 +474,12 @@
         }
 
         // Setup the message
-        [mailComposer setMailComposeDelegate:self];
-        [mailComposer setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
-        [mailComposer setMessageBody:[self exportTextDescription] isHTML:NO];
-        [mailComposer addAttachmentData:[self exportTextData] mimeType:@"text" fileName:[self exportFilename]];
+        [mailComposeController setMailComposeDelegate:self];
+        [mailComposeController setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
+        [mailComposeController setMessageBody:[self exportTextDescription] isHTML:NO];
+        [mailComposeController addAttachmentData:[self exportTextData] mimeType:@"text" fileName:[self exportFilename]];
 
-        [self presentViewController:mailComposer animated:YES completion: ^{ isShowingMailComposer = YES; }];
+        [self presentViewController:mailComposeController animated:YES completion:nil];
     }
 }
 
@@ -496,10 +490,16 @@
 {
     [self dismissViewControllerAnimated:YES completion: ^{
 
-        isShowingMailComposer = NO;
+        mailComposeController = nil;
 
         if (result == MFMailComposeResultFailed)
-            [self showExportFailedAlert:nil];
+        {
+            [[[UIAlertView alloc] initWithTitle:_I18N(@"Sending Failed")
+                                        message:_I18N(@"The exported fuel data could not be sent.")
+                                       delegate:self
+                              cancelButtonTitle:_I18N(@"OK")
+                              otherButtonTitles:nil] show];
+        }
     }];
 }
 
@@ -515,17 +515,23 @@
     isShowingExportSheet = YES;
     restoreExportSheet   = NO;
 
-    // FIXME: validate mail export  [MFMailComposeViewController canSendMail]
-    // FIXME: lokalisierung
+    NSString *firstButton, *secondButton;
+
+    if ([MFMailComposeViewController canSendMail]) {
+        firstButton  = _I18N(@"Send as Email");
+        secondButton = _I18N(@"Open in ...");
+    } else {
+        firstButton  = _I18N(@"Open in ...");
+        secondButton = nil;
+    }
 
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Export Fuel Data in CSV Format")
                                                        delegate:self
                                               cancelButtonTitle:_I18N(@"Cancel")
                                          destructiveButtonTitle:nil
-                                              otherButtonTitles:_I18N(@"Send as Email"), _I18N(@"Open in ..."), nil];
+                                              otherButtonTitles:firstButton, secondButton, nil];
 
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-
     [sheet showFromTabBar:self.tabBarController.tabBar];
 }
 
@@ -534,35 +540,29 @@
 {
     isShowingExportSheet = NO;
 
-    if (buttonIndex == 0)
-        dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
-    else if (buttonIndex == 1)
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:_I18N(@"Open in ...")])
         dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
+    else
+        dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
+
 }
 
 
 
 #pragma mark -
-#pragma mark Export Failed Alert
+#pragma mark UIAlertViewDelegate
 
 
 
-- (void)showExportFailedAlert:(id)sender
+- (void)willPresentAlertView:(UIAlertView *)alertView
 {
-    isShowingExportFailedAlert = YES;
-    restoreExportFailedAlert = NO;
-
-    [[[UIAlertView alloc] initWithTitle:_I18N(@"Sending Failed")
-                                message:_I18N(@"The exported fuel data could not be sent.")
-                               delegate:self
-                      cancelButtonTitle:_I18N(@"OK")
-                      otherButtonTitles:nil] show];
+    isShowingAlert = YES;
 }
 
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-    isShowingExportFailedAlert = NO;
+    isShowingAlert = NO;
 }
 
 
