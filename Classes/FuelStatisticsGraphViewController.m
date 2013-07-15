@@ -185,7 +185,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     NSDate *firstDate = nil;
     NSDate *midDate   = nil;
     NSDate *lastDate  = nil;
-    
+
     // Compute vertical range of curve
     NSInteger valCount      =  0;
     NSInteger valFirstIndex = -1;
@@ -900,26 +900,30 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
 
 - (BOOL)displayCachedStatisticsForRecentMonths:(NSInteger)numberOfMonths
 {
+    UIImageView *imageView = (UIImageView*)self.view;
+
+
     // Cache lookup
     FuelStatisticsSamplingData *cell = contentCache[@(numberOfMonths)];
-    NSNumber *averageValue = cell.contentAverage;
-    UIImage  *cachedImage  = cell.contentImage;
+    NSNumber *average = cell.contentAverage;
+    UIImage  *image = cell.contentImage;
 
     // Update summary in top right of view
-    if (averageValue != nil && !isnan ([averageValue floatValue]))
-        self.rightLabel.text = [NSString stringWithFormat:
-                                    [self averageFormatString:YES],
-                                        [[self averageFormatter:NO] stringFromNumber:averageValue]];
+    if (average != nil && !isnan ([average floatValue]))
+        self.rightLabel.text = [NSString stringWithFormat:[self averageFormatString:YES], [[self averageFormatter:NO] stringFromNumber:average]];
     else
         self.rightLabel.text = [self noAverageString];
 
     // Update image contents on cache hit
-    if (cachedImage != nil && averageValue != nil)
+    if (image != nil && average != nil)
     {
         [self.activityView stopAnimating];
 
-        UIImageView *imageView = (UIImageView*)self.view;
-        imageView.image        = cachedImage;
+        [UIView transitionWithView:imageView
+                          duration:StatisticTransitionDuration
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:^{ imageView.image = image; }
+                        completion:nil];
 
         zoomRecognizer.enabled = (cell->dataCount > 0);
         return YES;
@@ -928,8 +932,6 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
     // Cache Miss => draw prelimary contents
     else
     {
-        [self.activityView startAnimating];
-
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
             if ([AppDelegate systemMajorVersion] < 7)
@@ -937,10 +939,19 @@ static CGFloat const StatisticTrackInfoYMarginFlat  =   3.0;
             else
                 [self drawFlatStatisticsForState:nil];
 
-            UIImageView *imageView = (UIImageView*)self.view;
-            imageView.image        = UIGraphicsGetImageFromCurrentImageContext();
+            image = UIGraphicsGetImageFromCurrentImageContext();
         }
         UIGraphicsEndImageContext();
+
+        [UIView transitionWithView:imageView
+                          duration:StatisticTransitionDuration
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:^{ imageView.image = image; }
+                        completion:^(BOOL finished){
+
+                            if (finished)
+                                [self.activityView startAnimating];
+                        }];
 
         zoomRecognizer.enabled = NO;
         return NO;

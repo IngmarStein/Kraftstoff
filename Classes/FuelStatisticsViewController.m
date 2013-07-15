@@ -16,6 +16,9 @@ CGFloat StatisticsViewHeight = 268.0;
 CGFloat StatisticsHeight     = 182.0;
 
 
+CGFloat StatisticTransitionDuration = 0.3;
+
+
 
 #pragma mark -
 #pragma mark Base Statistics View Controller
@@ -24,12 +27,6 @@ CGFloat StatisticsHeight     = 182.0;
 
 @implementation FuelStatisticsViewController
 
-@synthesize activityView;
-@synthesize leftLabel;
-@synthesize rightLabel;
-@synthesize centerLabel;
-@synthesize scrollView;
-@synthesize selectedCar;
 
 
 #pragma mark -
@@ -122,8 +119,8 @@ CGFloat StatisticsHeight     = 182.0;
 {
     [super viewWillAppear:animated];
 
-    leftLabel.text  = [NSString stringWithFormat:@"%@", [selectedCar valueForKey:@"name"]];
-    rightLabel.text = @"";
+    _leftLabel.text  = [NSString stringWithFormat:@"%@", [_selectedCar valueForKey:@"name"]];
+    _rightLabel.text = @"";
 
     [self setDisplayedNumberOfMonths:[[NSUserDefaults standardUserDefaults] integerForKey:@"statisticTimeSpan"]];
 }

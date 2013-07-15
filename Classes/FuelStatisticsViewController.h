@@ -10,6 +10,7 @@
 extern CGFloat StatisticsViewWidth;
 extern CGFloat StatisticsViewHeight;
 extern CGFloat StatisticsHeight;
+extern CGFloat StatisticTransitionDuration;
 
 
 @interface FuelStatisticsViewController : UIViewController

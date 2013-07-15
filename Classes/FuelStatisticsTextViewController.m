@@ -37,8 +37,8 @@ static CGFloat const GridTextHeight     =  23.0;
 
     NSManagedObject *car;
 
-    NSDate          *firstDate;
-    NSDate          *lastDate;
+    NSDate *firstDate;
+    NSDate *lastDate;
 
     NSDecimalNumber *totalCost;
     NSDecimalNumber *totalFuelVolume;
@@ -52,7 +52,6 @@ static CGFloat const GridTextHeight     =  23.0;
     NSInteger numberOfFullFillups;
 }
 
-@property (nonatomic, strong) UIImage  *backgroundImage;
 @property (nonatomic, strong) UIImage  *contentImage;
 
 @end
@@ -60,13 +59,11 @@ static CGFloat const GridTextHeight     =  23.0;
 
 @implementation FuelStatisticsData
 
-@synthesize backgroundImage;
 @synthesize contentImage;
 
 - (void)discardContent;
 {
-    self.backgroundImage = nil;
-    self.contentImage    = nil;
+    self.contentImage = nil;
 }
 
 @end
@@ -79,6 +76,22 @@ static CGFloat const GridTextHeight     =  23.0;
 
 
 @implementation FuelStatisticsTextViewController
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Initialize contents of background view
+    UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+    {
+        [self drawBackground];
+
+        UIImageView *imageView = (UIImageView*)self.view;
+        imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    UIGraphicsEndImageContext();
+}
 
 
 - (void)noteStatisticsPageBecomesVisible:(BOOL)visible
@@ -213,24 +226,11 @@ static CGFloat const GridTextHeight     =  23.0;
     if (state == nil)
     {
         state = [[FuelStatisticsData alloc] init];
-        
-        [self resampleFetchedObjects:fetchedObjects
-                              forCar:car
-                            andState:state];
+        [self resampleFetchedObjects:fetchedObjects forCar:car andState:state];
     }
     
     
     // Create image data from resampled data
-    if (state.backgroundImage == nil)
-    {
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
-        {
-            [self drawBackground];
-            state.backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
-        }
-        UIGraphicsEndImageContext();
-    }
-    
     if (state.contentImage == nil)
     {
         CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
@@ -761,22 +761,17 @@ static CGFloat const GridTextHeight     =  23.0;
 
 - (BOOL)displayCachedStatisticsForRecentMonths:(NSInteger)numberOfMonths
 {
-    // Cache lookup
     FuelStatisticsData *cell = contentCache[@(numberOfMonths)];
-    UIImageView *imageView;
 
     // Cache Hit => Update image contents
-    if (cell.backgroundImage != nil && cell.contentImage != nil)
+    if (cell.contentImage != nil)
     {
         [self.activityView stopAnimating];
-
-        imageView         = (UIImageView*)self.view;
-        imageView.image   = cell.backgroundImage;
 
         CGRect imageFrame = CGRectZero;
         imageFrame.size   = cell.contentImage.size;
 
-        imageView         = (UIImageView*)[self.scrollView viewWithTag:1];
+        UIImageView *imageView = (UIImageView*)[self.scrollView viewWithTag:1];
 
         if (imageView == nil)
         {
@@ -789,37 +784,55 @@ static CGFloat const GridTextHeight     =  23.0;
             [self.scrollView addSubview:imageView];
         }
 
-        imageView.image = cell.contentImage;
-        imageView.frame = imageFrame;
+        if (CGRectIsEmpty (imageView.frame)) {
+
+            imageView.image = cell.contentImage;
+            imageView.frame = imageFrame;
+
+        } else {
+
+            [UIView transitionWithView:imageView
+                              duration:StatisticTransitionDuration
+                               options:UIViewAnimationOptionTransitionCrossDissolve
+                            animations:^{
+                                imageView.image = cell.contentImage;
+                                imageView.frame = imageFrame; }
+                            completion:nil];
+        }
 
         self.scrollView.contentSize = imageView.image.size;
 
-        [self.scrollView flashScrollIndicators];
+        [UIView animateWithDuration:StatisticTransitionDuration
+                         animations:^{ self.scrollView.alpha = 1.0; }
+                         completion:^(BOOL finished){
+
+                             if (finished)
+                                 [self.scrollView flashScrollIndicators];
+                         }];
+
         return YES;
     }
 
     // Cache Miss => draw prelimary contents
     else
     {
-        [self.activityView startAnimating];
+        [UIView animateWithDuration:StatisticTransitionDuration
+                         animations:^{ self.scrollView.alpha = 0.0; }
+                         completion:^(BOOL finished){
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
-        {
-            [self drawBackground];
+                             if (finished ) {
+                                [self.activityView startAnimating];
 
-            imageView       = (UIImageView*)self.view;
-            imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+                                 UIImageView *imageView = (UIImageView*)[self.scrollView viewWithTag:1];
 
-            imageView       = (UIImageView*)[self.scrollView viewWithTag:1];
-
-            if (imageView)
-            {
-                imageView.image = nil;
-                imageView.frame = CGRectZero;
-                self.scrollView.contentSize = CGSizeZero;
-            }
-        }
-        UIGraphicsEndImageContext();
+                                 if (imageView)
+                                 {
+                                     imageView.image = nil;
+                                     imageView.frame = CGRectZero;
+                                     self.scrollView.contentSize = CGSizeZero;
+                                 }
+                             }
+                         }];
 
         return NO;
     }
