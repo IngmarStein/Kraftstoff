@@ -9,11 +9,11 @@
 #import "AppDelegate.h"
 
 
-@implementation FuelStatisticsPageController
 
-@synthesize scrollView;
-@synthesize pageControl;
-@synthesize selectedCar;
+@implementation FuelStatisticsPageController
+{
+    BOOL pageControlUsed;
+}
 
 
 
@@ -24,8 +24,8 @@
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle]))
-    {
+    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
+
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     }
 
@@ -38,12 +38,12 @@
     [super viewDidLoad];
 
     // Load content pages
-    for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
-    {
+    for (NSInteger page = 0; page < _pageControl.numberOfPages; page++) {
+
         FuelStatisticsViewController *controller = nil;
 
-        switch (page)
-        {
+        switch (page) {
+
             case 0:controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
             case 1:controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
             case 2:controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
@@ -56,25 +56,25 @@
         [self addChildViewController:controller];
         controller.view.frame = [self frameForPage:page];
 
-        [scrollView addSubview:controller.view];
+        [_scrollView addSubview:controller.view];
     }
 
     // Configure scroll view
-    scrollView.contentSize   = CGSizeMake (StatisticsViewWidth * pageControl.numberOfPages, StatisticsViewHeight);
-    scrollView.scrollsToTop  = NO;
+    _scrollView.contentSize = CGSizeMake (StatisticsViewWidth * _pageControl.numberOfPages, StatisticsViewHeight);
+    _scrollView.scrollsToTop = NO;
 
     // iOS7:enlarge scrollView, hide pageControl
     if ([AppDelegate systemMajorVersion] >= 7)
     {
-        scrollView.frame = self.view.frame;
-        pageControl.hidden = YES;
+        _scrollView.frame = self.view.frame;
+        _pageControl.hidden = YES;
     }
 
     // Select preferred page
     dispatch_async (dispatch_get_main_queue(), ^{
 
-        pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey:@"preferredStatisticsPage"];
-        [self scrollToPage:pageControl.currentPage animated:NO];
+        _pageControl.currentPage = [[NSUserDefaults standardUserDefaults] integerForKey:@"preferredStatisticsPage"];
+        [self scrollToPage:_pageControl.currentPage animated:NO];
 
         pageControlUsed = NO;
     });
@@ -115,7 +115,7 @@
 {
     [super viewWillDisappear:animated];
 
-    [[NSUserDefaults standardUserDefaults] setInteger:pageControl.currentPage forKey:@"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] setInteger:_pageControl.currentPage forKey:@"preferredStatisticsPage"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -164,7 +164,7 @@
 
 - (void)didEnterBackground:(id)object
 {
-    [[NSUserDefaults standardUserDefaults] setInteger:pageControl.currentPage forKey:@"preferredStatisticsPage"];
+    [[NSUserDefaults standardUserDefaults] setInteger:_pageControl.currentPage forKey:@"preferredStatisticsPage"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     for (FuelStatisticsViewController *controller in self.childViewControllers)
@@ -191,9 +191,9 @@
     [[NSUserDefaults standardUserDefaults] setInteger:numberOfMonths forKey:@"statisticTimeSpan"];
 
     // Update all statistics controllers
-    for (NSInteger i = 0; i < pageControl.numberOfPages; i++)
-    {
-        NSInteger page = (pageControl.currentPage + i) % pageControl.numberOfPages;
+    for (NSInteger i = 0; i < _pageControl.numberOfPages; i++) {
+
+        NSInteger page = (_pageControl.currentPage + i) % _pageControl.numberOfPages;
 
         FuelStatisticsViewController *controller = (self.childViewControllers)[page];
         [controller setDisplayedNumberOfMonths:numberOfMonths];
@@ -209,9 +209,9 @@
 
 - (CGRect)frameForPage:(NSInteger)page
 {
-    page = [self.scrollView visiblePageForPage:page];
+    page = [_scrollView visiblePageForPage:page];
 
-    CGRect frame   = scrollView.frame;
+    CGRect frame = _scrollView.frame;
     frame.origin.x = frame.size.width * page;
     frame.origin.y = 0;
 
@@ -227,14 +227,14 @@
 
 - (void)scrollViewDidScroll:(UIScrollView*)sender
 {
-    if (pageControlUsed == NO)
-    {
-        NSInteger newPage = floor ((scrollView.contentOffset.x - StatisticsViewWidth*0.5) / StatisticsViewWidth) + 1;
+    if (pageControlUsed == NO) {
+
+        NSInteger newPage = floor ((_scrollView.contentOffset.x - StatisticsViewWidth*0.5) / StatisticsViewWidth) + 1;
         newPage = [self.scrollView pageForVisiblePage:newPage];
 
-        if (pageControl.currentPage != newPage)
-        {
-            pageControl.currentPage = newPage;
+        if (_pageControl.currentPage != newPage) {
+
+            _pageControl.currentPage = newPage;
             [self updatePageVisibility];
         }
     }
@@ -261,10 +261,10 @@
 
 - (void)updatePageVisibility
 {
-    for (NSInteger page = 0; page < pageControl.numberOfPages; page++)
-    {
+    for (NSInteger page = 0; page < _pageControl.numberOfPages; page++) {
+
         FuelStatisticsViewController *controller = (self.childViewControllers)[page];
-        [controller noteStatisticsPageBecomesVisible:(page == pageControl.currentPage)];
+        [controller noteStatisticsPageBecomesVisible:(page == _pageControl.currentPage)];
     }
 }
 
@@ -273,14 +273,14 @@
 {
     pageControlUsed = YES;
 
-    [scrollView scrollRectToVisible:[self frameForPage:page] animated:animated];
+    [_scrollView scrollRectToVisible:[self frameForPage:page] animated:animated];
     [self updatePageVisibility];
 }
 
 
 - (IBAction)pageAction:(id)sender
 {
-    [self scrollToPage:pageControl.currentPage animated:YES];
+    [self scrollToPage:_pageControl.currentPage animated:YES];
 }
 
 

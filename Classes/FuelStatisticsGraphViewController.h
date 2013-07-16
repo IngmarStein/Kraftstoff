@@ -11,13 +11,11 @@
 
 
 @interface FuelStatisticsGraphViewController : FuelStatisticsViewController
-{
-    NSInteger zoomIndex;
-}
 
-@property (nonatomic)         BOOL zooming;
+@property (nonatomic) BOOL zooming;
 @property (nonatomic, strong) UILongPressGestureRecognizer *zoomRecognizer;
 
+// Location and dimension of actual graph, customizable by subclasses
 @property (readonly, nonatomic) CGFloat graphRightBorder;
 @property (readonly, nonatomic) CGFloat graphTopBorder;
 @property (readonly, nonatomic) CGFloat graphBottomBorder;
@@ -28,20 +26,14 @@
 
 
 #pragma mark -
-#pragma mark Subclasses for different Statistic Graphs
+#pragma mark Subclasses for Different Statistic Graphs
 
 
 @interface FuelStatisticsViewController_AvgConsumption : FuelStatisticsGraphViewController
-{
-}
 @end
 
 @interface FuelStatisticsViewController_PriceAmount : FuelStatisticsGraphViewController
-{
-}
 @end
 
 @interface FuelStatisticsViewController_PriceDistance : FuelStatisticsGraphViewController
-{
-}
 @end

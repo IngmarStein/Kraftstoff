@@ -11,11 +11,9 @@
 
 
 // Coordinates for the content area
-CGFloat StatisticsViewWidth  = 480.0;
+CGFloat StatisticsViewWidth = 480.0;
 CGFloat StatisticsViewHeight = 268.0;
-CGFloat StatisticsHeight     = 182.0;
-
-
+CGFloat StatisticsHeight = 182.0;
 CGFloat StatisticTransitionDuration = 0.3;
 
 
@@ -26,6 +24,10 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 
 @implementation FuelStatisticsViewController
+{
+    NSInteger invalidationCounter;
+    NSInteger expectedCounter;
+}
 
 
 
@@ -39,8 +41,7 @@ CGFloat StatisticTransitionDuration = 0.3;
     if ([AppDelegate isLongPhone])
         StatisticsViewWidth = 568.0;
 
-    if ([AppDelegate systemMajorVersion] >= 7)
-    {
+    if ([AppDelegate systemMajorVersion] >= 7) {
         StatisticsViewHeight = 300.0;
         StatisticsHeight     = 214.0;
     }
@@ -55,12 +56,12 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
-    {
-        contentCache            = [[NSMutableDictionary alloc] init];
-        displayedNumberOfMonths = 0;
-        invalidationCounter     = 0;
-        expectedCounter         = 0;
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+
+        _contentCache            = [[NSMutableDictionary alloc] init];
+        _displayedNumberOfMonths = 0;
+        invalidationCounter      = 0;
+        expectedCounter          = 0;
     }
 
     return self;
@@ -71,33 +72,33 @@ CGFloat StatisticTransitionDuration = 0.3;
 {
     [super viewDidLoad];
 
-    if ([AppDelegate systemMajorVersion] >= 7)
-    {
+    if ([AppDelegate systemMajorVersion] >= 7) {
+
         UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
         UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
         UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
 
         // Labels on top of view
-        self.leftLabel.font          = titleFont;
-        self.centerLabel.font        = titleFont;
-        self.rightLabel.font         = titleFont;
-        self.leftLabel.shadowColor   = nil;
+        self.leftLabel.font = titleFont;
+        self.centerLabel.font = titleFont;
+        self.rightLabel.font = titleFont;
+        self.leftLabel.shadowColor = nil;
         self.centerLabel.shadowColor = nil;
-        self.rightLabel.shadowColor  = nil;
+        self.rightLabel.shadowColor = nil;
 
         // Update selection status of all buttons
         for (UIButton *button in [self.view subviews])
-            if ([button isKindOfClass:[UIButton class]])
-            {
+            if ([button isKindOfClass:[UIButton class]]) {
+
                 NSAttributedString *label = [[NSAttributedString alloc]
-                                             initWithString:button.titleLabel.text
-                                             attributes:@{NSFontAttributeName:font,
-                                                          NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]}];
+                                                initWithString:button.titleLabel.text
+                                                    attributes:@{NSFontAttributeName:font,
+                                                                 NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]}];
 
                 NSAttributedString *labelSelected = [[NSAttributedString alloc]
-                                                     initWithString:button.titleLabel.text
-                                                     attributes:@{NSFontAttributeName:fontSelected,
-                                                                  NSForegroundColorAttributeName:[UIColor whiteColor]}];
+                                                        initWithString:button.titleLabel.text
+                                                            attributes:@{NSFontAttributeName:fontSelected,
+                                                                         NSForegroundColorAttributeName:[UIColor whiteColor]}];
 
                 [button setAttributedTitle:label forState:UIControlStateNormal];
                 [button setAttributedTitle:label forState:UIControlStateHighlighted];
@@ -144,11 +145,6 @@ CGFloat StatisticTransitionDuration = 0.3;
 }
 
 
-- (void)noteStatisticsPageBecomesVisible:(BOOL)visible
-{
-}
-
-
 
 #pragma mark -
 #pragma mark Cache Handling
@@ -157,16 +153,16 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 - (void)invalidateCaches
 {
-    [contentCache removeAllObjects];
+    [_contentCache removeAllObjects];
     invalidationCounter += 1;
 }
 
 
 - (void)purgeDiscardableCacheContent
 {
-    [contentCache enumerateKeysAndObjectsUsingBlock: ^(id key, id<DiscardableDataObject> data, BOOL *stop)
-        {
-            if ([key integerValue] != displayedNumberOfMonths)
+    [_contentCache enumerateKeysAndObjectsUsingBlock: ^(id key, id<DiscardableDataObject> data, BOOL *stop) {
+
+            if ([key integerValue] != _displayedNumberOfMonths)
                 [data discardContent];
         }];
 }
@@ -180,7 +176,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 - (void)displayStatisticsForRecentMonths:(NSInteger)numberOfMonths
 {
-    displayedNumberOfMonths = numberOfMonths;
+    _displayedNumberOfMonths = numberOfMonths;
     expectedCounter         = invalidationCounter;
 
 
@@ -202,11 +198,10 @@ CGFloat StatisticTransitionDuration = 0.3;
 
         // Get the selected car
         NSError *error = nil;
-        NSManagedObject *sampleCar = [sampleContext existingObjectWithID:selectedCarID
-                                                                   error:&error];
+        NSManagedObject *sampleCar = [sampleContext existingObjectWithID:selectedCarID error:&error];
 
-        if (sampleCar)
-        {
+        if (sampleCar) {
+
             // Fetch some young events to get the most recent fillup date
             NSArray *recentEvents = [AppDelegate objectsForFetchRequest:[AppDelegate fetchRequestForEventsForCar:sampleCar
                                                                                                       beforeDate:[NSDate date]
@@ -238,18 +233,24 @@ CGFloat StatisticTransitionDuration = 0.3;
             id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths forCar:sampleCar withObjects:samplingObjects];
 
             // Schedule update of cache and display in main thread
-            dispatch_async (dispatch_get_main_queue(),
-                           ^{
-                               if (invalidationCounter == expectedCounter)
-                               {
-                                   contentCache[@(numberOfMonths)] = sampleData;
+            dispatch_async (dispatch_get_main_queue(), ^{
 
-                                   if (displayedNumberOfMonths == numberOfMonths)
-                                       [self displayCachedStatisticsForRecentMonths:numberOfMonths];
-                               }
-                           });
+                if (invalidationCounter == expectedCounter) {
+
+                    _contentCache[@(numberOfMonths)] = sampleData;
+
+                    if (_displayedNumberOfMonths == numberOfMonths)
+                        [self displayCachedStatisticsForRecentMonths:numberOfMonths];
+                }
+            });
         }
     }];
+}
+
+
+
+- (void)noteStatisticsPageBecomesVisible:(BOOL)visible
+{
 }
 
 
@@ -261,9 +262,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 - (IBAction)buttonAction:(UIButton *)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"numberOfMonthsSelected"
-                                                        object:self
-                                                      userInfo:@{@"span":@([sender tag])}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"numberOfMonthsSelected" object:self userInfo:@{@"span":@([sender tag])}];
 }
 
 
@@ -289,7 +288,6 @@ CGFloat StatisticTransitionDuration = 0.3;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
     [self purgeDiscardableCacheContent];
 }
 

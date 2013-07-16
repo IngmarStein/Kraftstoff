@@ -6,8 +6,10 @@
 #import "FuelStatisticsViewController.h"
 
 
+// Protocol for objects containing computed statistics data
 @protocol DiscardableDataObject <NSObject>
 
+// Throw away easily recomputable content
 - (void)discardContent;
 
 @end

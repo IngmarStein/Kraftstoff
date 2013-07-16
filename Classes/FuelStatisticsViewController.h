@@ -3,24 +3,30 @@
 // Kraftstoff
 
 
-#pragma mark -
-#pragma mark Base Class for Statistics View Controller
-
-
 extern CGFloat StatisticsViewWidth;
 extern CGFloat StatisticsViewHeight;
 extern CGFloat StatisticsHeight;
 extern CGFloat StatisticTransitionDuration;
 
 
-@interface FuelStatisticsViewController : UIViewController
-{
-    NSMutableDictionary *contentCache;
+#pragma mark -
+#pragma mark Base Class for Statistics View Controller
 
-    NSInteger displayedNumberOfMonths;
-    NSInteger invalidationCounter;
-    NSInteger expectedCounter;
-}
+
+@interface FuelStatisticsViewController : UIViewController
+
+// Set by presenting view controller
+@property (nonatomic, strong) NSManagedObject *selectedCar;
+
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityView;
+@property (nonatomic, weak) IBOutlet UILabel *leftLabel;
+@property (nonatomic, weak) IBOutlet UILabel *rightLabel;
+@property (nonatomic, weak) IBOutlet UILabel *centerLabel;
+@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
+
+@property (nonatomic, readonly) NSMutableDictionary *contentCache;
+@property (nonatomic, readonly) NSInteger displayedNumberOfMonths;
+
 
 // Throw away all cached content, e.g. on new/updated events
 - (void)invalidateCaches;
@@ -34,17 +40,7 @@ extern CGFloat StatisticTransitionDuration;
 // Update statistics display to selected time period
 - (void)setDisplayedNumberOfMonths:(NSInteger)numberOfMonths;
 
-
+// Handler for time selection buttons
 - (IBAction)buttonAction:(UIButton *)sender;
-
-@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityView;
-
-@property (nonatomic, weak) IBOutlet UILabel *leftLabel;
-@property (nonatomic, weak) IBOutlet UILabel *rightLabel;
-@property (nonatomic, weak) IBOutlet UILabel *centerLabel;
-
-@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
-
-@property (nonatomic, strong) NSManagedObject *selectedCar;
 
 @end

@@ -5,18 +5,16 @@
 #import "FuelStatisticsScrollView.h"
 
 @interface FuelStatisticsPageController : UIViewController
-{
-    BOOL pageControlUsed;
-}
 
-// Throw away all cached content, e.g. on updates to CoreData
-- (void)invalidateCaches;
-
-- (IBAction)pageAction:(id)sender;
+// Set by presenting view controller
+@property (nonatomic, strong) NSManagedObject *selectedCar;
 
 @property (nonatomic, weak) IBOutlet FuelStatisticsScrollView *scrollView;
 @property (nonatomic, weak) IBOutlet UIPageControl *pageControl;
 
-@property (nonatomic, strong) NSManagedObject *selectedCar;
+- (IBAction)pageAction:(id)sender;
+
+// Throw away all cached content, e.g. on updates to CoreData
+- (void)invalidateCaches;
 
 @end

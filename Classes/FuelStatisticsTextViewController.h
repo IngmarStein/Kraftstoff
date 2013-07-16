@@ -11,7 +11,5 @@
 
 
 @interface FuelStatisticsTextViewController : FuelStatisticsViewController
-{
-}
 
 @end
