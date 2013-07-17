@@ -540,11 +540,13 @@
 {
     isShowingExportSheet = NO;
 
-    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:_I18N(@"Open in ...")])
-        dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
-    else
-        dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
+    if (buttonIndex != [actionSheet cancelButtonIndex]) {
 
+        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:_I18N(@"Open in ...")])
+            dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
+        else
+            dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
+    }
 }
 
 

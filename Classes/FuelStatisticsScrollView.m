@@ -45,7 +45,7 @@
 }
 
 
-// Updates the internal pageOffset between logical and visible pages such that such that scrollview can be shifted to the second page.
+// Updates the internal pageOffset between logical and visible pages such that such that the actual offset of the scrollview can be kept at the second page.
 - (void)recenterIfNecessary
 {
     CGPoint currentOffset = [self contentOffset];
