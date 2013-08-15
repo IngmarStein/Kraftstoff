@@ -13,6 +13,12 @@
       "scale" : "2x"
     },
     {
+      "size" : "40x40",
+      "idiom" : "iphone",
+      "filename" : "Icon-iOS7-Spotlight-Retina.png",
+      "scale" : "2x"
+    },
+    {
       "size" : "57x57",
       "idiom" : "iphone",
       "filename" : "Icon-iOS6-iPhone.png",
@@ -32,14 +38,62 @@
     },
     {
       "size" : "29x29",
-      "idiom" : "iphone",
-      "unassigned" : true,
+      "idiom" : "ipad",
+      "filename" : "Icon-iPhone-Settings.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
-      "idiom" : "iphone",
-      "unassigned" : true,
+      "idiom" : "ipad",
+      "filename" : "Icon-iPhone-Settings-Retina.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS7-Spotlight.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS7-Spotlight-Retina.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS6-iPad-Spotlight.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS6-iPad-Spotlight-Retina.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS6-iPad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS6-iPad-Retina.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS7-iPad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "Icon-iOS7-iPad-Retina.png",
       "scale" : "2x"
     }
   ],
