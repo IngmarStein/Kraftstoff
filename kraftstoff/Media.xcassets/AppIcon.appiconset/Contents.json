@@ -15,7 +15,7 @@
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "Icon-iOS7-Spotlight-Retina.png",
+      "filename" : "Icon-iOS7-iPhone-Spotlight-Retina.png",
       "scale" : "2x"
     },
     {
@@ -51,13 +51,13 @@
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "Icon-iOS7-Spotlight.png",
+      "filename" : "Icon-iOS7-iPad-Spotlight.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "Icon-iOS7-Spotlight-Retina.png",
+      "filename" : "Icon-iOS7-iPad-Spotlight-Retina.png",
       "scale" : "2x"
     },
     {
