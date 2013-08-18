@@ -209,16 +209,14 @@ CGFloat StatisticTransitionDuration = 0.3;
                                                                                           inManagedObjectContext:sampleContext]
                                                  inManagedObjectContext:sampleContext];
 
-            NSDate *recentFillupDate = nil;
+            NSDate *recentFillupDate = [NSDate date];
 
-            @try {
-                if ([recentEvents count])
-                    recentFillupDate = [[recentEvents objectAtIndex:0] valueForKey:@"timestamp"];
-                else
-                    recentFillupDate = [NSDate date];
-            }
-            @catch (NSException *exception) {
-                recentFillupDate = [NSDate date];
+            if ([recentEvents count]) {
+
+                NSManagedObject *recentEvent = [AppDelegate existingObject:[recentEvents objectAtIndex:0] inManagedObjectContext:sampleContext];
+
+                if (recentEvent)
+                    recentFillupDate = [recentEvent valueForKey:@"timestamp"];
             }
 
             // Fetch events for the selected time period
@@ -228,9 +226,12 @@ CGFloat StatisticTransitionDuration = 0.3;
                                                                                                         dateMatches:YES
                                                                                              inManagedObjectContext:sampleContext]
                                                     inManagedObjectContext:sampleContext];
-
+            
             // Compute statistics
-            id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths forCar:sampleCar withObjects:samplingObjects];
+            id sampleData = [self computeStatisticsForRecentMonths:numberOfMonths
+                                                            forCar:sampleCar
+                                                       withObjects:samplingObjects
+                                            inManagedObjectContext:sampleContext];
 
             // Schedule update of cache and display in main thread
             dispatch_async (dispatch_get_main_queue(), ^{

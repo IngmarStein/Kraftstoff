@@ -112,7 +112,7 @@ static CGFloat const GridTextHeight = 23.0;
     GridRightBorder    = 464.0;
     GridWidth          = 448.0;
     GridDesColumnWidth = (240.0 - GridLeftBorder);
-    
+
     if ([AppDelegate isLongPhone]) {
 
         GridRightBorder    += 88.0;
@@ -128,7 +128,10 @@ static CGFloat const GridTextHeight = 23.0;
 
 
 
-- (void)resampleFetchedObjects:(NSArray *)fetchedObjects forCar:(NSManagedObject *)car andState:(FuelStatisticsData*)state;
+- (void)resampleFetchedObjects:(NSArray *)fetchedObjects
+                        forCar:(NSManagedObject *)car
+                      andState:(FuelStatisticsData*)state
+        inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     state->car = car;
     state->firstDate = nil;
@@ -149,61 +152,57 @@ static CGFloat const GridTextHeight = 23.0;
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--) {
 
-        @try {
+        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
-            NSManagedObject *managedObject = fetchedObjects[i];
+        if (!managedObject)
+            continue;
 
-            NSDecimalNumber *price = [managedObject valueForKey:@"price"];
-            NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-            NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
-            NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
+        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+        NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
+        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+        NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
 
-            // Collect dates of events
-            NSDate *timestamp = [managedObject valueForKey:@"timestamp"];
+        // Collect dates of events
+        NSDate *timestamp = [managedObject valueForKey:@"timestamp"];
 
-            if ([timestamp compare:state->firstDate] != NSOrderedDescending)
-                state->firstDate = timestamp;
+        if ([timestamp compare:state->firstDate] != NSOrderedDescending)
+            state->firstDate = timestamp;
 
-            if ([timestamp compare:state->lastDate] != NSOrderedAscending)
-                state->lastDate = timestamp;
+        if ([timestamp compare:state->lastDate] != NSOrderedAscending)
+            state->lastDate = timestamp;
 
-            // Summarize all amounts
-            state->totalCost = [state->totalCost decimalNumberByAdding:cost];
-            state->totalFuelVolume = [state->totalFuelVolume decimalNumberByAdding:fuelVolume];
-            state->totalDistance = [state->totalDistance decimalNumberByAdding:distance];
+        // Summarize all amounts
+        state->totalCost = [state->totalCost decimalNumberByAdding:cost];
+        state->totalFuelVolume = [state->totalFuelVolume decimalNumberByAdding:fuelVolume];
+        state->totalDistance = [state->totalDistance decimalNumberByAdding:distance];
 
-            // Track consumption
-            if ([[managedObject valueForKey:@"filledUp"] boolValue]) {
+        // Track consumption
+        if ([[managedObject valueForKey:@"filledUp"] boolValue]) {
 
-                NSDecimalNumber *inheritedDistance = [managedObject valueForKey:@"inheritedDistance"];
-                NSDecimalNumber *inheritedFuelVolume = [managedObject valueForKey:@"inheritedFuelVolume"];
+            NSDecimalNumber *inheritedDistance = [managedObject valueForKey:@"inheritedDistance"];
+            NSDecimalNumber *inheritedFuelVolume = [managedObject valueForKey:@"inheritedFuelVolume"];
 
-                NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:[distance decimalNumberByAdding:inheritedDistance]
-                                                                              Liters:[fuelVolume decimalNumberByAdding:inheritedFuelVolume]
-                                                                              inUnit:consumptionUnit];
+            NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:[distance decimalNumberByAdding:inheritedDistance]
+                                                                          Liters:[fuelVolume decimalNumberByAdding:inheritedFuelVolume]
+                                                                          inUnit:consumptionUnit];
 
-                state->avgConsumption = [state->avgConsumption decimalNumberByAdding:consumption];
+            state->avgConsumption = [state->avgConsumption decimalNumberByAdding:consumption];
 
-                if (KSFuelConsumptionIsEfficiency (consumptionUnit)) {
+            if (KSFuelConsumptionIsEfficiency (consumptionUnit)) {
 
-                    state->bestConsumption  = [consumption max:state->bestConsumption];
-                    state->worstConsumption = [consumption min:state->worstConsumption];
+                state->bestConsumption  = [consumption max:state->bestConsumption];
+                state->worstConsumption = [consumption min:state->worstConsumption];
 
-                } else {
+            } else {
 
-                    state->bestConsumption  = [consumption min:state->bestConsumption];
-                    state->worstConsumption = [consumption max:state->worstConsumption];
-                }
-
-                state->numberOfFullFillups++;
+                state->bestConsumption  = [consumption min:state->bestConsumption];
+                state->worstConsumption = [consumption max:state->worstConsumption];
             }
 
-            state->numberOfFillups++;
-
-        } @catch (NSException *e) {
-
-            continue;
+            state->numberOfFullFillups++;
         }
+
+        state->numberOfFillups++;
     }
 
     // Compute average consumption
@@ -217,22 +216,23 @@ static CGFloat const GridTextHeight = 23.0;
 - (id<DiscardableDataObject>)computeStatisticsForRecentMonths:(NSInteger)numberOfMonths
                                                        forCar:(NSManagedObject *)car
                                                   withObjects:(NSArray *)fetchedObjects
+                                       inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     // No cache cell exists => resample data and compute average value
     FuelStatisticsData *state = self.contentCache[@(numberOfMonths)];
-    
+
     if (state == nil) {
 
         state = [[FuelStatisticsData alloc] init];
-        [self resampleFetchedObjects:fetchedObjects forCar:car andState:state];
+        [self resampleFetchedObjects:fetchedObjects forCar:car andState:state inManagedObjectContext:moc];
     }
-    
-    
+
+
     // Create image data from resampled data
     if (state.contentImage == nil) {
 
         CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
-        
+
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, height), NO, 0.0);
         {
             [self drawStatisticsForState:state withHeight:height];
@@ -240,7 +240,7 @@ static CGFloat const GridTextHeight = 23.0;
         }
         UIGraphicsEndImageContext();
     }
-    
+
     return state;
 }
 

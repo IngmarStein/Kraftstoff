@@ -183,7 +183,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)resampleFetchedObjects:(NSArray *)fetchedObjects
                            forCar:(NSManagedObject *)car
-                         andState:(FuelStatisticsSamplingData*)state;
+                         andState:(FuelStatisticsSamplingData*)state
+           inManagedObjectContext:(NSManagedObjectContext *)moc
 {
     NSDate *firstDate = nil;
     NSDate *midDate = nil;
@@ -202,29 +203,33 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--) {
 
-        NSManagedObject *object = fetchedObjects[i];
-        CGFloat value = [self valueForManagedObject:object forCar:car];
+        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
-        if (!isnan (value)) {
+        if (managedObject) {
 
-            valCount   += 1;
-            valAverage += value;
+            CGFloat value = [self valueForManagedObject:managedObject forCar:car];
 
-            if (valMin > value)
-                valMin = value;
+            if (!isnan (value)) {
 
-            if (valMax < value)
-                valMax = value;
+                valCount   += 1;
+                valAverage += value;
 
-            if (valLastIndex < 0) {
+                if (valMin > value)
+                    valMin = value;
 
-                valLastIndex = i;
-                lastDate = [object valueForKey:@"timestamp"];
+                if (valMax < value)
+                    valMax = value;
 
-            } else {
+                if (valLastIndex < 0) {
 
-                valFirstIndex = i;
-                firstDate = [object valueForKey:@"timestamp"];
+                    valLastIndex = i;
+                    lastDate = [managedObject valueForKey:@"timestamp"];
+
+                } else {
+
+                    valFirstIndex = i;
+                    firstDate = [managedObject valueForKey:@"timestamp"];
+                }
             }
         }
     }
@@ -292,25 +297,29 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     for (NSInteger i = valLastIndex; i >= valFirstIndex; i--) {
 
-        NSManagedObject *managedObject = fetchedObjects[i];
-        CGFloat value = [self valueForManagedObject:managedObject forCar:car];
+        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
-        if (!isnan (value)) {
+        if (managedObject) {
 
-            // Collect sample data
-            NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate:[managedObject valueForKey:@"timestamp"]];
-            NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
+            CGFloat value = [self valueForManagedObject:managedObject forCar:car];
 
-            if (valRange < 0.0001)
-                samples [sampleIndex] += 0.5;
-            else
-                samples [sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay;
+            if (!isnan (value)) {
 
-            // Collect lens data
-            state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey:@"timestamp"] timeIntervalSince1970];
-            state->lensValue [sampleIndex] += value;
+                // Collect sample data
+                NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate:[managedObject valueForKey:@"timestamp"]];
+                NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
 
-            samplesCount [sampleIndex] += 1;
+                if (valRange < 0.0001)
+                    samples [sampleIndex] += 0.5;
+                else
+                    samples [sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay;
+
+                // Collect lens data
+                state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey:@"timestamp"] timeIntervalSince1970];
+                state->lensValue [sampleIndex] += value;
+
+                samplesCount [sampleIndex] += 1;
+            }
         }
     }
 
@@ -387,6 +396,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 - (id<DiscardableDataObject>)computeStatisticsForRecentMonths:(NSInteger)numberOfMonths
                                                        forCar:(NSManagedObject *)car
                                                   withObjects:(NSArray *)fetchedObjects
+                                       inManagedObjectContext:(NSManagedObjectContext *)moc
+                                   
 {
     // No cache cell exists => resample data and compute average value
     FuelStatisticsSamplingData *state = self.contentCache[@(numberOfMonths)];
@@ -394,7 +405,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     if (state == nil) {
 
         state = [[FuelStatisticsSamplingData alloc] init];
-        state.contentAverage = @([self resampleFetchedObjects:fetchedObjects forCar:car andState:state]);
+        state.contentAverage = @([self resampleFetchedObjects:fetchedObjects forCar:car andState:state inManagedObjectContext:moc]);
     }
     
     
@@ -1355,21 +1366,14 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
-    @try {
-
-        if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
-            return NAN;
-
-        NSInteger consumptionUnit = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
-        NSDecimalNumber *distance = [[managedObject valueForKey:@"distance"]   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
-        NSDecimalNumber *fuelVolume = [[managedObject valueForKey:@"fuelVolume"] decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
-
-        return [[AppDelegate consumptionForKilometers:distance Liters:fuelVolume inUnit:consumptionUnit] floatValue];
-
-    } @catch (NSException *e) {
-
+    if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
         return NAN;
-    }
+
+    NSInteger consumptionUnit = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    NSDecimalNumber *distance = [[managedObject valueForKey:@"distance"]   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
+    NSDecimalNumber *fuelVolume = [[managedObject valueForKey:@"fuelVolume"] decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
+
+    return [[AppDelegate consumptionForKilometers:distance Liters:fuelVolume inUnit:consumptionUnit] floatValue];
 }
 
 @end
@@ -1422,19 +1426,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
-    @try {
+    NSDecimalNumber *price = [managedObject valueForKey:@"price"];
 
-        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
-
-        if ([price compare:[NSDecimalNumber zero]] == NSOrderedSame)
-            return NAN;
-
-        return [[AppDelegate pricePerUnit:price withUnit:[[car valueForKey:@"fuelUnit"] integerValue]] floatValue];
-
-    } @catch (NSException *e) {
-
+    if ([price compare:[NSDecimalNumber zero]] == NSOrderedSame)
         return NAN;
-    }
+
+    return [[AppDelegate pricePerUnit:price withUnit:[[car valueForKey:@"fuelUnit"] integerValue]] floatValue];
 }
 
 @end
@@ -1499,39 +1496,32 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car
 {
-    @try {
-
-        if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
-            return NAN;
-
-        NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
-        KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
-
-        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
-
-        NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
-        NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
-
-        distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
-        cost     = [cost     decimalNumberByAdding:[managedObject valueForKey:@"inheritedCost"]];
-
-        if ([cost compare:[NSDecimalNumber zero]] == NSOrderedSame)
-            return NAN;
-
-        if (KSDistanceIsMetric (distanceUnit))
-            return [[[cost decimalNumberByMultiplyingByPowerOf10:2]
-                        decimalNumberByDividingBy:distance
-                                     withBehavior:handler] floatValue];
-        else
-            return [[[distance decimalNumberByDividingBy:[AppDelegate kilometersPerStatuteMile]]
-                        decimalNumberByDividingBy:cost
-                                     withBehavior:handler] floatValue];
-
-    } @catch (NSException *e) {
-
+    if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
         return NAN;
-    }
+
+    NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
+    KSDistance distanceUnit = [[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+
+    NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+
+    NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
+    NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+    NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
+
+    distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
+    cost     = [cost     decimalNumberByAdding:[managedObject valueForKey:@"inheritedCost"]];
+
+    if ([cost compare:[NSDecimalNumber zero]] == NSOrderedSame)
+        return NAN;
+
+    if (KSDistanceIsMetric (distanceUnit))
+        return [[[cost decimalNumberByMultiplyingByPowerOf10:2]
+                    decimalNumberByDividingBy:distance
+                                 withBehavior:handler] floatValue];
+    else
+        return [[[distance decimalNumberByDividingBy:[AppDelegate kilometersPerStatuteMile]]
+                    decimalNumberByDividingBy:cost
+                                 withBehavior:handler] floatValue];
 }
 
 @end

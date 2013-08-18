@@ -112,6 +112,7 @@ typedef enum
 - (NSString *)cacheNameForFuelEventFetchWithParent:(NSManagedObject *)object;
 - (NSString *)modelIdentifierForManagedObject:(NSManagedObject *)object;
 - (NSManagedObject *)managedObjectForModelIdentifier:(NSString *)identifier;
++ (NSManagedObject *)existingObject:(NSManagedObject *)object inManagedObjectContext:(NSManagedObjectContext *)moc;
 
 
 

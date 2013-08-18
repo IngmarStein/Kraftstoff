@@ -26,6 +26,7 @@
 // Computes the statistics and returns a state object
 - (id<DiscardableDataObject>)computeStatisticsForRecentMonths:(NSInteger)numberOfMonths
                                                        forCar:(NSManagedObject *)car
-                                                  withObjects:(NSArray *)fetchedObjects;
+                                                  withObjects:(NSArray *)fetchedObjects
+                                       inManagedObjectContext:(NSManagedObjectContext *)moc;
 
 @end

@@ -869,6 +869,15 @@ CGFloat const StatusBarHeight     = 20.0;
 }
 
 
++ (NSManagedObject *)existingObject:(NSManagedObject *)object inManagedObjectContext:(NSManagedObjectContext *)moc
+{
+    if (object.isDeleted)
+        return nil;
+    else
+        return [moc existingObjectWithID:object.objectID error:NULL];
+}
+
+
 
 #pragma mark -
 #pragma mark Preconfigured Core Data Fetches
