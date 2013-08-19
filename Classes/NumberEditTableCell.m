@@ -177,6 +177,7 @@
 
         aTextField.text = [self.numberFormatter stringFromNumber:value];
         [self.delegate valueChanged:value identifier:self.valueIdentifier];
+        [self updateTextFieldColorForValue:value];
     }
 }
 
@@ -184,24 +185,22 @@
 // Editing ends, switch back to alternate formatter and append specified suffix
 - (void)textFieldDidEndEditing:(UITextField *)aTextField
 {
+    [super textFieldDidEndEditing:aTextField];
+
+    NSDecimalNumber *value = (NSDecimalNumber *)[self.numberFormatter numberFromString:aTextField.text];
+
+    if (value == nil)
+        value = [NSDecimalNumber zero];
+
     if (self.alternateNumberFormatter)
-    {
-        NSDecimalNumber *value = (NSDecimalNumber *)[self.numberFormatter numberFromString:aTextField.text];
-
-        if (value == nil)
-            value = [NSDecimalNumber zero];
-
         aTextField.text = [self.alternateNumberFormatter stringFromNumber:value];
-        [self.delegate valueChanged:value identifier:self.valueIdentifier];
-    }
 
     if (self.textFieldSuffix)
-    {
         if (! [aTextField.text hasSuffix:self.textFieldSuffix])
             aTextField.text = [aTextField.text stringByAppendingString:self.textFieldSuffix];
-    }
 
-    [super textFieldDidEndEditing:aTextField];
+    [self.delegate valueChanged:value identifier:self.valueIdentifier];
+    [self updateTextFieldColorForValue:value];
 }
 
 @end
