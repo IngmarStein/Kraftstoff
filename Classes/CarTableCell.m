@@ -34,9 +34,16 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 + (void)initialize
 {
+    CFStringRef font;
+
+    if ([AppDelegate systemMajorVersion] >= 7)
+        font = CFSTR ("Helvetica");
+    else
+        font = CFSTR ("Helvetica-Bold");
+
     if (prefixAttributesDict == nil)
     {
-        CTFontRef helvetica24 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 24, NULL);
+        CTFontRef helvetica24 = CTFontCreateWithName (font, 24, NULL);
 
         prefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
                                  (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor blackColor] CGColor]};
@@ -49,7 +56,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
     if (suffixAttributesDict == nil)
     {
-        CTFontRef helvetica18 = CTFontCreateWithName (CFSTR ("Helvetica-Bold"), 18, NULL);
+        CTFontRef helvetica18 = CTFontCreateWithName (font, 18, NULL);
 
         suffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
                                  (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor darkGrayColor] CGColor]};
