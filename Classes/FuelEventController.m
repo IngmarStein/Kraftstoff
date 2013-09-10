@@ -291,9 +291,9 @@
 
 - (NSData*)exportTextData
 {
-    KSDistance odometerUnit = [[_selectedCar valueForKey:@"odometerUnit"] integerValue];
-    KSVolume fuelUnit = [[_selectedCar valueForKey:@"fuelUnit"] integerValue];
-    KSFuelConsumption consumptionUnit = [[_selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[_selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSVolume fuelUnit = (KSVolume)[[_selectedCar valueForKey:@"fuelUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[_selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     NSMutableString *dataString = [NSMutableString stringWithCapacity:4096];
 
@@ -584,8 +584,8 @@
     NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
     NSDecimalNumber *price = [managedObject valueForKey:@"price"];
 
-    KSDistance        odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
-    KSFuelConsumption consumptionUnit = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSDistance        odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     UILabel *label;
 

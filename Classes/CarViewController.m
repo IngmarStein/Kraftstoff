@@ -281,8 +281,8 @@ static NSInteger maxEditHelpCounter = 1;
         [newManagedObject setValue:controller.plate forKey:@"numberPlate"];
         [newManagedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
 
-        [newManagedObject setValue:[AppDelegate kilometersForDistance:  controller.odometer
-                                                              withUnit:[controller.odometerUnit integerValue]]
+        [newManagedObject setValue:[AppDelegate kilometersForDistance:controller.odometer
+                                                             withUnit:(KSDistance)[controller.odometerUnit integerValue]]
                             forKey:@"odometer"];
 
         [newManagedObject setValue:controller.fuelUnit forKey:@"fuelUnit"];
@@ -303,7 +303,7 @@ static NSInteger maxEditHelpCounter = 1;
         [_editedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
 
         NSDecimalNumber *odometer = [AppDelegate kilometersForDistance:controller.odometer
-                                                              withUnit:[controller.odometerUnit integerValue]];
+                                                              withUnit:(KSDistance)[controller.odometerUnit integerValue]];
 
         odometer = [odometer max:[_editedObject valueForKey:@"distanceTotalSum"]];
 
@@ -538,7 +538,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     // Average consumption
     NSString *avgConsumption;
-    KSFuelConsumption consumptionUnit = [[managedObject valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[managedObject valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     NSDecimalNumber *distance   = [managedObject valueForKey:@"distanceTotalSum"];
     NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolumeTotalSum"];

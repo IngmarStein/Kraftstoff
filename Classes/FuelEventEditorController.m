@@ -200,8 +200,8 @@
 {
     _car = [_event valueForKey:@"car"];
 
-    KSDistance odometerUnit = [[_car valueForKey:@"odometerUnit"] integerValue];
-    KSVolume   fuelUnit     = [[_car valueForKey:@"fuelUnit"]     integerValue];
+    KSDistance odometerUnit = (KSDistance)[[_car valueForKey:@"odometerUnit"] integerValue];
+    KSVolume   fuelUnit     = (KSVolume)[[_car valueForKey:@"fuelUnit"]     integerValue];
     
     self.title  = [[AppDelegate sharedDateFormatter] stringFromDate:[_event valueForKey:@"timestamp"]];
     _date       = [_event valueForKey:@"timestamp"];
@@ -379,9 +379,9 @@
         return;
 
     // Conversion units
-    KSDistance        odometerUnit    = [[_car valueForKey:@"odometerUnit"]        integerValue];
-    KSVolume          fuelUnit        = [[_car valueForKey:@"fuelUnit"]            integerValue];
-    KSFuelConsumption consumptionUnit = [[_car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSDistance        odometerUnit    = (KSDistance)[[_car valueForKey:@"odometerUnit"] integerValue];
+    KSVolume          fuelUnit        = (KSVolume)[[_car valueForKey:@"fuelUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[_car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     // Compute the average consumption
     NSDecimalNumber *cost = [_fuelVolume decimalNumberByMultiplyingBy:_price];
@@ -423,7 +423,7 @@
                           @"valueIdentifier": @"date"}
           withAnimation:animation];
 
-    KSDistance odometerUnit = [[_car valueForKey:@"odometerUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[_car valueForKey:@"odometerUnit"] integerValue];
 
     [self addRowAtIndex:1
               inSection:0
@@ -434,7 +434,7 @@
                           @"valueIdentifier": @"distance"}
           withAnimation:animation];
 
-    KSVolume fuelUnit = [[_car valueForKey:@"fuelUnit"] integerValue];
+    KSVolume fuelUnit = (KSVolume)[[_car valueForKey:@"fuelUnit"] integerValue];
 
     [self addRowAtIndex:2
               inSection:0

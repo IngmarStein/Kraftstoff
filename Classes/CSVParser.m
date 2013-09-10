@@ -171,7 +171,7 @@ foundHeader:
         if (fieldNamesCount > fieldCount) {
             fieldName = fieldNames[fieldCount];
         } else {
-            fieldName = [NSString stringWithFormat:@"FIELD_%d", fieldCount + 1];
+            fieldName = [NSString stringWithFormat:@"FIELD_%ld", (long)(fieldCount + 1)];
             [fieldNames addObject:fieldName];
             fieldNamesCount++;
         }

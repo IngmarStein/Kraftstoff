@@ -148,7 +148,7 @@ static CGFloat const GridTextHeight = 23.0;
     state->numberOfFillups = 0;
     state->numberOfFullFillups = 0;
 
-    NSInteger consumptionUnit = [[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--) {
 
@@ -268,9 +268,9 @@ static CGFloat const GridTextHeight = 23.0;
 
         // Background shade with rounded corners
         [[UIColor blackColor] setFill];
-        CGContextFillRect (cgContext, self.view.bounds);
+        CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
 
-        [[UIBezierPath bezierPathWithRoundedRect:CGRectMake (1.0, 0.0, self.view.bounds.size.width - 2.0, self.view.bounds.size.height)
+        [[UIBezierPath bezierPathWithRoundedRect:CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
                                byRoundingCorners:UIRectCornerAllCorners
                                      cornerRadii:CGSizeMake (12.0, 12.0)] addClip];
 
@@ -410,13 +410,13 @@ static CGFloat const GridTextHeight = 23.0;
             NSNumberFormatter *pcf = [AppDelegate sharedPreciseCurrencyFormatter];
             NSDecimalNumber *val, *val2, *zero = [NSDecimalNumber zero];
 
-            KSFuelConsumption consumptionUnit = [[state->car valueForKey:@"fuelConsumptionUnit"] integerValue];
+            KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[state->car valueForKey:@"fuelConsumptionUnit"] integerValue];
             NSString *consumptionUnitString = [AppDelegate consumptionUnitString:consumptionUnit];
 
-            KSDistance odometerUnit  = [[state->car valueForKey:@"odometerUnit"] integerValue];
+            KSDistance odometerUnit  = (KSDistance)[[state->car valueForKey:@"odometerUnit"] integerValue];
             NSString *odometerUnitString = [AppDelegate odometerUnitString:odometerUnit];
 
-            KSVolume fuelUnit = [[state->car valueForKey:@"fuelUnit"] integerValue];
+            KSVolume fuelUnit = (KSVolume)[[state->car valueForKey:@"fuelUnit"] integerValue];
             NSString *fuelUnitString = [AppDelegate fuelUnitString:fuelUnit];
 
             NSInteger numberOfDays = [NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate];
@@ -434,7 +434,7 @@ static CGFloat const GridTextHeight = 23.0;
                 [labelColor setFill];
                 [text drawAtPoint:CGPointMake (x, y) withFont:font];
 
-                text = [NSString stringWithFormat:@"%d", [NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate]];
+                text = [NSString stringWithFormat:@"%ld", (long)[NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate]];
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [valueColor setFill];
                 [text drawAtPoint:CGPointMake (x, y) withFont:font];
@@ -548,7 +548,7 @@ static CGFloat const GridTextHeight = 23.0;
                 [labelColor setFill];
                 [text drawAtPoint:CGPointMake (x, y) withFont:font];
 
-                text = [NSString stringWithFormat:@"%d", state->numberOfFillups];
+                text = [NSString stringWithFormat:@"%ld", (long)state->numberOfFillups];
                 x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
                 [valueColor setFill];
                 [text drawAtPoint:CGPointMake (x, y) withFont:font];

@@ -1054,8 +1054,8 @@ CGFloat const StatusBarHeight     = 20.0;
 
 
     // Convert distance and fuelvolume to SI units
-    KSVolume fuelUnit       = [[car valueForKey:@"fuelUnit"]     integerValue];
-    KSDistance odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
+    KSVolume fuelUnit       = (KSVolume)[[car valueForKey:@"fuelUnit"]     integerValue];
+    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     NSDecimalNumber *liters        = [AppDelegate litersForVolume:fuelVolume withUnit:fuelUnit];
     NSDecimalNumber *kilometers    = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];

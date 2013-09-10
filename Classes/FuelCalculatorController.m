@@ -270,9 +270,9 @@ typedef enum
 
     if (self.car)
     {
-        odometerUnit    = [[self.car valueForKey:@"odometerUnit"]        integerValue];
-        fuelUnit        = [[self.car valueForKey:@"fuelUnit"]            integerValue];
-        consumptionUnit = [[self.car valueForKey:@"fuelConsumptionUnit"] integerValue];
+        odometerUnit    = (KSDistance)[[self.car valueForKey:@"odometerUnit"]        integerValue];
+        fuelUnit        = (KSVolume)[[self.car valueForKey:@"fuelUnit"]            integerValue];
+        consumptionUnit = (KSFuelConsumption)[[self.car valueForKey:@"fuelConsumptionUnit"] integerValue];
     }
     else
     {
@@ -317,8 +317,8 @@ typedef enum
     KSVolume fuelUnit;
 
     if (self.car) {
-        odometerUnit = [[self.car valueForKey:@"odometerUnit"] integerValue];
-        fuelUnit     = [[self.car valueForKey:@"fuelUnit"]     integerValue];
+        odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
+        fuelUnit     = (KSVolume)[[self.car valueForKey:@"fuelUnit"]     integerValue];
     } else {
         odometerUnit = [AppDelegate distanceUnitFromLocale];
         fuelUnit     = [AppDelegate volumeUnitFromLocale];
@@ -690,7 +690,7 @@ typedef enum
         return NO;
     
     // 1.) entered "distance" must be larger than car odometer
-    KSDistance odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
     
     NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
@@ -700,7 +700,7 @@ typedef enum
     
     
     // 2.) consumption with converted distances is more 'logical'
-    NSDecimalNumber *liters = [AppDelegate litersForVolume:fuelVolume withUnit:[[car valueForKey:@"fuelUnit"] integerValue]];
+    NSDecimalNumber *liters = [AppDelegate litersForVolume:fuelVolume withUnit:(KSVolume)[[car valueForKey:@"fuelUnit"] integerValue]];
     
     if ([[NSDecimalNumber zero] compare:liters] != NSOrderedAscending)
         return NO;
@@ -764,7 +764,7 @@ typedef enum
 
 - (void)showOdometerConversionAlert
 {
-    KSDistance odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
@@ -799,7 +799,7 @@ typedef enum
     if (buttonIndex != actionSheet.cancelButtonIndex)
     {
         // Replace distance in table with difference to car odometer
-        KSDistance odometerUnit = [[car valueForKey:@"odometerUnit"] integerValue];
+        KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
         NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
         NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
         

@@ -32,7 +32,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 
 #pragma mark -
-#pragma mark iPhone 5 ans iOS7 Support
+#pragma mark iPhone 5 and iOS7 Support
 
 
 

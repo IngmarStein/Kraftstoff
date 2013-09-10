@@ -170,7 +170,7 @@
 
 - (void)createOdometerRowWithAnimation:(UITableViewRowAnimation)animation
 {
-    NSString *suffix = [@" " stringByAppendingString:[AppDelegate odometerUnitString:[self.odometerUnit integerValue]]];
+    NSString *suffix = [@" " stringByAppendingString:[AppDelegate odometerUnitString:(KSDistance)[self.odometerUnit integerValue]]];
 
     if (odometer == nil)
         self.odometer = [NSDecimalNumber zero];
@@ -503,8 +503,8 @@
     {
         if ([valueIdentifier isEqualToString:@"odometerUnit"])
         {
-            KSDistance oldUnit = [self.odometerUnit integerValue];
-            KSDistance newUnit = [(NSNumber*)newValue integerValue];
+            KSDistance oldUnit = (KSDistance)[self.odometerUnit integerValue];
+            KSDistance newUnit = (KSDistance)[(NSNumber*)newValue integerValue];
 
             if (oldUnit != newUnit)
             {
