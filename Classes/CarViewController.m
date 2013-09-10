@@ -471,6 +471,7 @@ static NSInteger maxEditHelpCounter = 1;
     NSManagedObject *deletedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSInteger deletedObjectOrder = [[deletedObject valueForKey:@"order"] integerValue];
 
+    // catch nil objects
     if (!deletedObject)
         return;
 

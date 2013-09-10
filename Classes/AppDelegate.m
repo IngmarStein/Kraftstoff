@@ -1195,6 +1195,9 @@ CGFloat const StatusBarHeight     = 20.0;
     NSDecimalNumber *fuelVolume = [event valueForKey:@"fuelVolume"];
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
+    // catch nil events
+    if (!event)
+        return;
 
     // Event will be deleted:update inherited distance/fuelVolume for younger events
     NSArray *youngerEvents = [self objectsForFetchRequest:[self fetchRequestForEventsForCar:car
