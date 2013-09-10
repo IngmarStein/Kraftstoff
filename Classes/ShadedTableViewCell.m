@@ -179,7 +179,10 @@
     CGFloat margin = (useOldStyle ? 10.0 : 15.0);
 
     // offset to compensate shift caused by editing control
-    CGFloat editOffset = (cellState & UITableViewCellStateShowingEditControlMask) ? 32 : 0;
+    CGFloat editOffset = 0;
+
+    if (cellState & UITableViewCellStateShowingEditControlMask)
+        editOffset = (useOldStyle ? 32.0 : 38.0);
 
     // space that can be distributed
     CGFloat width = self.frame.size.width - 9 - margin;

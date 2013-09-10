@@ -471,6 +471,8 @@ static NSInteger maxEditHelpCounter = 1;
     NSManagedObject *deletedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSInteger deletedObjectOrder = [[deletedObject valueForKey:@"order"] integerValue];
 
+    if (!deletedObject)
+        return;
 
     // Delete any fetch-cache for the deleted object
     NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent:deletedObject];
