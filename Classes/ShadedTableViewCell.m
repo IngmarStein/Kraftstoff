@@ -96,9 +96,11 @@
         imageView.image = [UIImage imageNamed:(useOldStyle) ? @"CellShade" : @"CellShadeFlat"];
         self.backgroundView = imageView;
 
-        imageView = [[UIImageView alloc] init];
-        imageView.image = [UIImage imageNamed:(useOldStyle) ? @"SelectedCellShade" : @"SelectedCellShadeFlat"];
-        self.selectedBackgroundView = imageView;
+        if (useOldStyle) {
+            imageView = [[UIImageView alloc] init];
+            imageView.image = [UIImage imageNamed:@"SelectedCellShade"];
+            self.selectedBackgroundView = imageView;
+        }
 
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
@@ -216,6 +218,14 @@
                      }];
 
     [super layoutSubviews];
+
+    // #radar 14977605: backgroundView may overlap delete confirmation button
+    if (useOldStyle == NO && self.editingStyle == UITableViewCellEditingStyleDelete) {
+
+        CGRect frame = self.backgroundView.frame;
+        frame.size.width = MIN(frame.size.width, 320-frame.origin.x);
+        self.backgroundView.frame = frame;
+    }
 }
 
 @end
