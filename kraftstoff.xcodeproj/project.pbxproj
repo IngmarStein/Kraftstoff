@@ -61,7 +61,7 @@
 		4DA74B67176A3A8B0042DC79 /* EditFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B69176A3A8B0042DC79 /* EditFlat@2x.png */; };
 		4DA74B74176A3C300042DC79 /* StartFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B76176A3C300042DC79 /* StartFlat.png */; };
 		4DA74B77176A3C380042DC79 /* StartFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B79176A3C380042DC79 /* StartFlat@2x.png */; };
-		4DAAF4A115B4A41B0016FAD6 /* PortraitOnlyTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */; };
+		4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC5627130317DD00D02BEC /* PageCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5625130317DD00D02BEC /* PageCellBackground.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
@@ -171,8 +171,8 @@
 		4DA74B78176A3C380042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = "en.lproj/StartFlat@2x.png"; sourceTree = "<group>"; };
 		4DA74B7A176A3C7A0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/StartFlat.png; sourceTree = "<group>"; };
 		4DA74B7B176A3C7A0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/StartFlat@2x.png"; sourceTree = "<group>"; };
-		4DAAF49F15B4A41B0016FAD6 /* PortraitOnlyTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortraitOnlyTabBarController.h; sourceTree = "<group>"; };
-		4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PortraitOnlyTabBarController.m; sourceTree = "<group>"; };
+		4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NonRotatingTabBarController.h; sourceTree = "<group>"; };
+		4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonRotatingTabBarController.m; sourceTree = "<group>"; };
 		4DAC5622130317DD00D02BEC /* PageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DAC5623130317DD00D02BEC /* PageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC5624130317DD00D02BEC /* PageCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCellBackground.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -405,8 +405,8 @@
 				4D0B7ACC15A9F2DF0012A62B /* NSDate+Kraftstoff.m */,
 				4D92C9CE14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.h */,
 				4D92C9CF14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.m */,
-				4DAAF49F15B4A41B0016FAD6 /* PortraitOnlyTabBarController.h */,
-				4DAAF4A015B4A41B0016FAD6 /* PortraitOnlyTabBarController.m */,
+				4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */,
+				4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */,
 			);
 			name = "Cocoa Extensions";
 			sourceTree = "<group>";
@@ -729,7 +729,7 @@
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,
 				4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */,
 				4D0B7ACD15A9F2DF0012A62B /* NSDate+Kraftstoff.m in Sources */,
-				4DAAF4A115B4A41B0016FAD6 /* PortraitOnlyTabBarController.m in Sources */,
+				4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

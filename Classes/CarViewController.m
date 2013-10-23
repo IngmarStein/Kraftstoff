@@ -828,8 +828,6 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (self.navigationController.topViewController == self)
         _fuelEventController = nil;
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

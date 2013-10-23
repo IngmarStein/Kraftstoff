@@ -667,18 +667,6 @@
 
 
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-
-    _editButton   = nil;
-    _cancelButton = nil;
-    _doneButton   = nil;
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

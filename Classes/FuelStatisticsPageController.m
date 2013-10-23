@@ -286,15 +286,6 @@
 #pragma mark Memory Management
 
 
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

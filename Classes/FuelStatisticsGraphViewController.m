@@ -891,19 +891,6 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-#pragma mark -
-#pragma mark Memory Management
-
-
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-
-    self.zoomRecognizer = nil;
-}
-
-
 @end
 
 

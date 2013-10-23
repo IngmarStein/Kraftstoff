@@ -355,11 +355,8 @@
 
 
 #pragma mark -
-#pragma mark Button Actions
-
-
-
 #pragma mark Cancel Button
+
 
 
 - (IBAction)handleCancel:(id)sender
@@ -423,6 +420,7 @@
 }
 
 
+#pragma mark -
 #pragma mark Save Button
 
 
@@ -539,14 +537,6 @@
 #pragma mark -
 #pragma mark Memory Management
 
-
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 
 - (void)dealloc
