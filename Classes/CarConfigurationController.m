@@ -47,8 +47,6 @@
 
     [self recreateTableContents];
 
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-
     // Configure the navigation bar
     UINavigationItem *item = self.navigationController.navigationBar.topItem;
 
@@ -56,7 +54,7 @@
                                                                             target:self
                                                                             action:@selector(handleSave:)];
 
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:(useOldStyle) ? UIBarButtonSystemItemStop : UIBarButtonSystemItemCancel
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                             target:self
                                                                             action:@selector(handleCancel:)];
 
@@ -65,17 +63,8 @@
     [self setToolbarItems:@[item] animated:NO];
 
 
-    // iOS7:remove tint from navigation bar
-    if ([AppDelegate systemMajorVersion] >= 7)
-        self.navigationController.navigationBar.tintColor = nil;
-
-    // iOS6:background image on view
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
-        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
-
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] resizableImageWithCapInsets:UIEdgeInsetsZero]];
-    }
+    // emove tint from navigation bar
+    self.navigationController.navigationBar.tintColor = nil;
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self

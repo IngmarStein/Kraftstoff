@@ -63,12 +63,9 @@
     _scrollView.contentSize = CGSizeMake (StatisticsViewWidth * _pageControl.numberOfPages, StatisticsViewHeight);
     _scrollView.scrollsToTop = NO;
 
-    // iOS7:enlarge scrollView, hide pageControl
-    if ([AppDelegate systemMajorVersion] >= 7)
-    {
-        _scrollView.frame = self.view.frame;
-        _pageControl.hidden = YES;
-    }
+    // Enlarge scrollView, hide pageControl
+    _scrollView.frame = self.view.frame;
+    _pageControl.hidden = YES;
 
     // Select preferred page
     dispatch_async (dispatch_get_main_queue(), ^{

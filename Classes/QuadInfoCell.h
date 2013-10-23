@@ -1,9 +1,9 @@
-// ShadedTableViewCell.h
+// QuadInfoCell.h
 //
 // TableView cells with four labels for information.
 
 
-@interface ShadedTableViewCell : UITableViewCell
+@interface QuadInfoCell : UITableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)largeRightLabel;
 

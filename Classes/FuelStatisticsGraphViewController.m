@@ -142,7 +142,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphBottomBorder
 {
-    return StatisticGraphBottomBorder + ([AppDelegate systemMajorVersion] >= 7 ? 32.0 : 0.0);
+    return StatisticGraphBottomBorder + 32.0;
 }
 
 - (CGFloat)graphWidth
@@ -152,7 +152,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphHeight
 {
-    return StatisticGraphHeight + ([AppDelegate systemMajorVersion] >= 7 ? 32.0 : 0.0);
+    return StatisticGraphHeight + 32.0;
 }
 
 
@@ -273,8 +273,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     valRange = valMax - valMin;
 
-    // iOS7:shrink the computed graph to keep the top h-marker below the top-border
-    if ([AppDelegate systemMajorVersion] >= 7 && valRange > 0.0001)
+    // Shrink the computed graph to keep the top h-marker below the top-border
+    if (valRange > 0.0001)
         valStretchFactorForDisplay = StatisticsHeight / (StatisticsHeight + 18);
     else
         valStretchFactorForDisplay = 1.0;
@@ -414,11 +414,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
-            if ([AppDelegate systemMajorVersion] < 7)
-                [self drawStatisticsForState:state];
-            else
-                [self drawFlatStatisticsForState:state];
-
+            [self drawFlatStatisticsForState:state];
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext();
         }
         UIGraphicsEndImageContext();
@@ -432,263 +428,6 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 #pragma mark -
 #pragma mark Graph Display
 
-
-
-- (void)drawStatisticsForState:(FuelStatisticsSamplingData*)state
-{
-    CGContextRef cgContext = UIGraphicsGetCurrentContext();
-
-
-    // Background shade with rounded corners
-    [[UIColor blackColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake (0.0, 0.0, StatisticsViewWidth, StatisticsViewHeight));
-
-    [[UIBezierPath bezierPathWithRoundedRect:CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
-                           byRoundingCorners:UIRectCornerAllCorners
-                                 cornerRadii:CGSizeMake (12.0, 12.0)] addClip];
-
-    CGContextDrawLinearGradient (cgContext,
-                                 [AppDelegate backGradient],
-                                 CGPointMake (0.0, StatisticsViewHeight + StatusBarHeight),
-                                 CGPointMake (0.0, 0.0),
-                                 kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-
-
-    // Contents if there is a valid state
-    if (state == nil)
-        return;
-
-    UIFont *font       = [UIFont boldSystemFontOfSize:14];
-    UIBezierPath *path = [UIBezierPath bezierPath];
-    CGFloat x, y;
-
-    if (state->dataCount == 0) {
-
-        CGContextSaveGState (cgContext);
-        {
-            CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, -1.0), 0.0, [[UIColor blackColor] CGColor]);
-            [[UIColor whiteColor] setFill];
-
-            NSString *text = _I18N(@"Not enough data to display statistics");
-            CGSize size    = [text sizeWithFont:font];
-
-            x = floor ((StatisticsViewWidth -  size.width)/2.0);
-            y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
-
-            [text drawAtPoint:CGPointMake (x, y)   withFont:font];
-        }
-        CGContextRestoreGState (cgContext);
-
-    } else {
-
-        // Color for coordinate-axes
-        [[UIColor colorWithWhite:0.45 alpha:1.0] setStroke];
-
-
-        // Horizontal marker lines (clipped away below the curve)
-        CGContextSaveGState (cgContext);
-        {
-            CGFloat   dashDotPattern [2]   = { 1.0, 1.0 };
-            NSInteger dashDotPatternLength = 2;
-
-            // Clipping
-            [path removeAllPoints];
-            [path moveToPoint:CGPointMake (self.graphLeftBorder, self.graphTopBorder)];
-
-            for (NSInteger i = 0; i < state->dataCount; i++) {
-
-                x = rint (self.graphLeftBorder + self.graphWidth  * state->data [i].x);
-                y = rint (self.graphTopBorder  + self.graphHeight * state->data [i].y);
-
-                [path addLineToPoint:CGPointMake (x, y)];
-            }
-
-            [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphTopBorder)];
-            [path closePath];
-            [path addClip];
-
-            // Marker lines
-            path.lineWidth = 1;
-            [path setLineDash:dashDotPattern count:dashDotPatternLength phase:0.0];
-
-            [path removeAllPoints];
-            [path moveToPoint:CGPointMake (self.graphLeftBorder, 0.5)];
-            [path addLineToPoint:CGPointMake (self.graphRightBorder, 0.5)];
-
-            CGContextSaveGState (cgContext);
-            {
-                CGFloat lastY;
-
-                for (NSInteger i = 0, y = 0.0; i < state->hMarkCount; i++) {
-
-                    lastY = y;
-                    y = rint (self.graphTopBorder + self.graphHeight * state->hMarkPositions [i]);
-
-                    CGContextTranslateCTM (cgContext, 0.0, y - lastY);
-                    [path stroke];
-                }
-            }
-            CGContextRestoreGState (cgContext);
-        }
-        CGContextRestoreGState (cgContext);
-
-
-        // Axis decription for horizontal marker lines markers
-        CGContextSaveGState (cgContext);
-        {
-            CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, -1.0), 0.0, [[UIColor blackColor] CGColor]);
-            [[UIColor whiteColor] setFill];
-
-            for (NSInteger i = 0; i < state->hMarkCount; i++)
-                if (state->hMarkNames [i] != nil) {
-
-                    CGSize size = [state->hMarkNames[i] sizeWithFont:font];
-
-                    x = self.graphRightBorder + 6;
-                    y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height - font.descender) + 0.5;
-
-                    [state->hMarkNames[i] drawAtPoint:CGPointMake (x, y) withFont:font];
-                }
-        }
-        CGContextRestoreGState (cgContext);
-
-
-        // Vertical marker lines
-        path.lineWidth = 2;
-        [path setLineDash:NULL count:0 phase:0.0];
-
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (0, self.graphTopBorder)];
-        [path addLineToPoint:CGPointMake (0, self.graphBottomBorder)];
-
-        CGContextSaveGState (cgContext);
-        {
-            CGFloat lastX;
-
-            for (NSInteger i = 0, x = 0.0; i < state->vMarkCount; i++) {
-
-                lastX = x;
-                x = rint (self.graphLeftBorder + self.graphWidth * state->vMarkPositions [i]);
-
-                CGContextTranslateCTM (cgContext, x - lastX, 0.0);
-                [path stroke];
-            }
-        }
-        CGContextRestoreGState (cgContext);
-
-
-        // Axis description for vertical marker lines
-        CGContextSaveGState (cgContext);
-        {
-            CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, -1.0), 0.0, [[UIColor blackColor] CGColor]);
-            [[UIColor whiteColor] setFill];
-
-            for (NSInteger i = 0; i < state->vMarkCount; i++)
-                if (state->vMarkNames [i] != nil) {
-
-                    CGSize size = [state->vMarkNames[i] sizeWithFont:font];
-
-                    x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state->vMarkPositions [i] - size.width/2.0);
-                    y = self.graphBottomBorder + 5;
-
-                    if (x < self.graphLeftBorder)
-                        x = self.graphLeftBorder;
-
-                    if (x > self.graphRightBorder - size.width)
-                        x = self.graphRightBorder - size.width;
-
-                    [state->vMarkNames[i] drawAtPoint:CGPointMake (x, y) withFont:font];
-                }
-        }
-        CGContextRestoreGState (cgContext);
-
-
-        // Pattern fill below cure
-        CGContextSaveGState (cgContext);
-        {
-            [path removeAllPoints];
-            [path moveToPoint:CGPointMake (self.graphLeftBorder + 1, self.graphBottomBorder)];
-
-            for (NSInteger i = 0; i < state->dataCount; i++) {
-
-                x = rint (self.graphLeftBorder + self.graphWidth * state->data [i].x);
-                y = rint (self.graphTopBorder + self.graphHeight * state->data [i].y);
-
-                [path addLineToPoint:CGPointMake (x, y)];
-            }
-
-            [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
-            [path closePath];
-
-            // Color gradient
-            [path addClip];
-            CGContextDrawLinearGradient (cgContext,
-                                         [self curveGradient],
-                                         CGPointMake (0, self.graphBottomBorder),
-                                         CGPointMake (320, self.graphTopBorder),
-                                         kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-
-            // Stripe pattern
-            [path removeAllPoints];
-            [path moveToPoint:CGPointMake (self.graphLeftBorder, 0)];
-            [path addLineToPoint:CGPointMake (self.graphRightBorder, 0)];
-
-            CGContextSaveGState (cgContext);
-            {
-                CGContextTranslateCTM (cgContext, 0.0, self.graphTopBorder-2);
-
-                for (NSInteger i = 0; i < (NSInteger)self.graphHeight; i += 4) {
-
-                    CGContextTranslateCTM (cgContext, 0.0, 4.0);
-                    [[UIColor colorWithWhite:0.8 alpha:0.28 - 0.20 * i/self.graphHeight] setStroke];
-                    [path stroke];
-                }
-            }
-            CGContextRestoreGState (cgContext);
-        }
-        CGContextRestoreGState (cgContext);
-
-
-        // Bottom line
-        path.lineWidth = 2;
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (self.graphLeftBorder - 1, self.graphBottomBorder)];
-        [path addLineToPoint:CGPointMake (self.graphRightBorder + 1, self.graphBottomBorder)];
-        [path stroke];
-
-        // Left line
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (self.graphLeftBorder, self.graphTopBorder)];
-        [path addLineToPoint:CGPointMake (self.graphLeftBorder, self.graphBottomBorder)];
-        [path stroke];
-
-        // Right line
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (self.graphRightBorder, self.graphTopBorder)];
-        [path addLineToPoint:CGPointMake (self.graphRightBorder, self.graphBottomBorder)];
-        [path stroke];
-
-
-        // The curve
-        path.lineWidth    = 4;
-        path.lineCapStyle = kCGLineCapRound;
-        [[UIColor whiteColor] setStroke];
-
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (rint (self.graphLeftBorder + self.graphWidth * state->data [0].x),
-                                       rint (self.graphTopBorder + self.graphHeight * state->data [0].y))];
-
-        for (NSInteger i = 1; i < state->dataCount; i++) {
-
-            x = rint (self.graphLeftBorder + self.graphWidth * state->data [i].x);
-            y = rint (self.graphTopBorder + self.graphHeight * state->data [i].y);
-
-            [path addLineToPoint:CGPointMake (x, y)];
-        }
-
-        [path stroke];
-    }
-}
 
 
 - (void)drawFlatStatisticsForState:(FuelStatisticsSamplingData*)state
@@ -943,11 +682,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
         {
-            if ([AppDelegate systemMajorVersion] < 7)
-                [self drawStatisticsForState:nil];
-            else
-                [self drawFlatStatisticsForState:nil];
-
+            [self drawFlatStatisticsForState:nil];
             image = UIGraphicsGetImageFromCurrentImageContext();
         }
         UIGraphicsEndImageContext();
@@ -1077,10 +812,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                                                         [[self averageFormatter:YES]
                                                             stringFromNumber:@(cell->lensValue [minIndex])]];
 
-                        if ([AppDelegate systemMajorVersion] < 7)
-                            [self drawLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
-                        else
-                            [self drawFlatLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
+                        [self drawFlatLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
 
                         UIImageView *imageView = (UIImageView*)self.view;
                         imageView.image = UIGraphicsGetImageFromCurrentImageContext();
@@ -1097,134 +829,6 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
             self.zooming = NO;
             break;
     }
-}
-
-
-
-- (void)drawLensWithBGImage:(UIImage*)background lensLocation:(CGPoint)location info:(NSString *)info
-{
-    CGContextRef cgContext = UIGraphicsGetCurrentContext();
-
-    UIBezierPath *path;
-
-
-    // Graph as background
-    [background drawAtPoint:CGPointZero blendMode:kCGBlendModeCopy alpha:1.0];
-
-
-    // Slider track
-    CGContextSaveGState (cgContext);
-    {
-        path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake (self.graphLeftBorder, StatisticTrackYPosition, self.graphWidth, StatisticTrackThickness)
-                                     byRoundingCorners:UIRectCornerAllCorners
-                                           cornerRadii:CGSizeMake (2.0, 2.0)];
-
-        CGFloat scale = [[UIScreen mainScreen] scale];
-
-        CGContextTranslateCTM (cgContext, 0.0, -1.0 / scale);
-        [[UIColor blackColor] setFill];
-        [path fill];
-
-        CGContextTranslateCTM (cgContext, 0.0, +2.0 / scale);
-        [[UIColor colorWithWhite:0.5 alpha:1.0] setFill];
-        [path fill];
-
-        CGContextTranslateCTM (cgContext, 0.0, -1.0 / scale);
-        [[UIColor colorWithWhite:0.28 alpha:1.0] setFill];
-        [path fill];
-    }
-    CGContextRestoreGState (cgContext);
-
-
-    // Marker line
-    CGContextSaveGState (cgContext);
-    {
-        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +2.0), 2.0, [[UIColor colorWithWhite:0.0 alpha:0.6] CGColor]);
-
-        [[UIColor colorWithRed:1.0 green:0.756 blue:0.188 alpha:1.0] set];
-
-        // Knob shadow
-        [path removeAllPoints];
-        [path addArcWithCenter:location radius:8.0 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO];
-        [path fill];
-
-        // Marker line
-        path.lineWidth = 2;
-
-        [path removeAllPoints];
-        [path moveToPoint:CGPointMake (location.x, StatisticTrackYPosition + StatisticTrackThickness)];
-        [path addLineToPoint:CGPointMake (location.x, self.graphBottomBorder)];
-        [path stroke];
-    }
-    CGContextRestoreGState (cgContext);
-
-
-    // Marker knob
-    CGContextSaveGState (cgContext);
-    {
-        [[UIBezierPath bezierPathWithArcCenter:location radius:8.0 startAngle:0.0 endAngle:M_PI*2.0 clockwise:NO] addClip];
-
-        CGContextDrawRadialGradient (cgContext,
-                                     [AppDelegate knobGradient],
-                                     CGPointMake (location.x, location.y - 2),
-                                     0.0,
-                                     location,
-                                     8.0,
-                                     kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-    }
-    CGContextRestoreGState (cgContext);
-
-
-    // Layout for info box
-    UIFont *font = [UIFont boldSystemFontOfSize:14];
-    CGRect infoRect;
-
-    infoRect.size = [info sizeWithFont:font];
-    infoRect.size.width  += StatisticTrackInfoXMargin * 2.0;
-    infoRect.size.height += StatisticTrackInfoYMargin * 2.0;
-    infoRect.origin.x = rint (location.x - infoRect.size.width/2);
-    infoRect.origin.y = StatisticTrackYPosition + rint ((StatisticTrackThickness - infoRect.size.height) / 2);
-
-    if (infoRect.origin.x < self.graphLeftBorder - 1)
-        infoRect.origin.x = self.graphLeftBorder - 1;
-
-    if (infoRect.origin.x > self.graphRightBorder - infoRect.size.width + 1)
-        infoRect.origin.x = self.graphRightBorder - infoRect.size.width + 1;
-
-    // Info box
-    path = [UIBezierPath bezierPathWithRoundedRect:infoRect
-                                 byRoundingCorners:UIRectCornerAllCorners
-                                       cornerRadii:CGSizeMake (6.0, 6.0)];
-
-    // Box background
-    CGContextSaveGState (cgContext);
-    {
-        CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 2.0, [[UIColor colorWithWhite:0.0 alpha:0.6] CGColor]);
-
-        [[UIColor blackColor] set];
-        [path fill];
-    }
-    CGContextRestoreGState (cgContext);
-
-    // Box gradient
-    CGContextSaveGState (cgContext);
-    {
-        [path addClip];
-
-        CGContextDrawLinearGradient (cgContext,
-                                     [AppDelegate infoGradient],
-                                     infoRect.origin,
-                                     CGPointMake (infoRect.origin.x, infoRect.origin.y + infoRect.size.height),
-                                     kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-    }
-    CGContextRestoreGState (cgContext);
-
-
-    // Info text
-    CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, +1.0), 0.0, [[UIColor whiteColor] CGColor]);
-
-    [[UIColor darkGrayColor] set];
-    [info drawAtPoint:CGPointMake (infoRect.origin.x + StatisticTrackInfoXMargin, infoRect.origin.y + StatisticTrackInfoYMargin) withFont:font];
 }
 
 

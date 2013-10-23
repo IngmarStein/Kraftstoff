@@ -21,14 +21,12 @@ static CGFloat const margin = 8.0;
 
 - (void)finishConstruction
 {
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-
 	[super finishConstruction];
 
     // Create textfield
     textField = [[EditablePageCellTextField alloc] initWithFrame:CGRectZero];
 
-	textField.font                     = (useOldStyle) ? [UIFont systemFontOfSize:15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
+	textField.font                     = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
 	textField.textAlignment            = NSTextAlignmentRight;
 	textField.autocapitalizationType   = UITextAutocapitalizationTypeNone;
 	textField.autocorrectionType       = UITextAutocorrectionTypeNo;
@@ -45,15 +43,9 @@ static CGFloat const margin = 8.0;
     UILabel *label = self.textLabel;
 
 	label.textAlignment        = NSTextAlignmentLeft;
-	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize:17.0] : [UIFont fontWithName:@"HelveticaNeue" size:17.0];
+	label.font                 = [UIFont fontWithName:@"HelveticaNeue" size:17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
-
-    if (useOldStyle)
-    {
-        label.shadowColor      = [UIColor whiteColor];
-        label.shadowOffset     = CGSizeMake (0, 1);
-    }
 }
 
 
@@ -83,7 +75,7 @@ static CGFloat const margin = 8.0;
 {
     [super layoutSubviews];
     
-    CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
+    CGFloat leftOffset = 6.0;
     CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
@@ -95,10 +87,7 @@ static CGFloat const margin = 8.0;
 
 - (UIColor *)invalidTextColor
 {
-    if ([AppDelegate systemMajorVersion] < 7)
-        return [UIColor colorWithRed:0.42 green:0.0 blue:0.0 alpha:1.0];
-    else
-        return [(AppDelegate *)[[UIApplication sharedApplication] delegate] window].tintColor;
+    return [(AppDelegate *)[[UIApplication sharedApplication] delegate] window].tintColor;
 }
 
 

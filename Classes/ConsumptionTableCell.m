@@ -27,8 +27,6 @@ static CGFloat const cellVMargin          =  1.0;
 
 - (void)finishConstruction
 {
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-    
 	[super finishConstruction];
 
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -37,18 +35,12 @@ static CGFloat const cellVMargin          =  1.0;
 
 	coloredLabel.textAlignment             = NSTextAlignmentCenter;
     coloredLabel.adjustsFontSizeToFitWidth = YES;
-	coloredLabel.font                      = (useOldStyle) ? [UIFont boldSystemFontOfSize:19.0] : [UIFont fontWithName:@"HelveticaNeue" size:20];
+	coloredLabel.font                      = [UIFont fontWithName:@"HelveticaNeue" size:20];
 	coloredLabel.minimumScaleFactor        = 12.0/[coloredLabel.font pointSize];
     coloredLabel.backgroundColor           = [UIColor clearColor];
-	coloredLabel.highlightedTextColor      = [UIColor colorWithWhite:(useOldStyle) ? 0.4 : 0.5 alpha:1.0];
+	coloredLabel.highlightedTextColor      = [UIColor colorWithWhite:0.5 alpha:1.0];
 	coloredLabel.textColor                 = [UIColor blackColor];
 
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
-        coloredLabel.shadowColor           = [UIColor whiteColor];
-        coloredLabel.shadowOffset          = CGSizeMake (0, 1);
-    }
-    
     [self.contentView addSubview:coloredLabel];
 }
 

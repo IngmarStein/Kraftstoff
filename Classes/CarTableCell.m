@@ -34,12 +34,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
 + (void)initialize
 {
-    CFStringRef font;
-
-    if ([AppDelegate systemMajorVersion] >= 7)
-        font = CFSTR ("Helvetica");
-    else
-        font = CFSTR ("Helvetica-Bold");
+    CFStringRef font = CFSTR ("Helvetica");
 
     if (prefixAttributesDict == nil)
     {
@@ -218,17 +213,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
         CGContextTranslateCTM (context, 1, PickerViewCellHeight);
         CGContextScaleCTM (context, 1, -1);
 
-        CTLineRef truncatedLine;
-
-        if ([AppDelegate systemMajorVersion] < 7)
-        {
-            truncatedLine= [self truncatedLineForName:name info:info shadow:YES];
-            CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition - 1);
-            CTLineDraw (truncatedLine, context);
-            CFRelease (truncatedLine);
-        }
-
-        truncatedLine = [self truncatedLineForName:name info:info shadow:NO];
+        CTLineRef truncatedLine = [self truncatedLineForName:name info:info shadow:NO];
         CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition);
         CTLineDraw (truncatedLine, context);
         CFRelease (truncatedLine);

@@ -46,7 +46,6 @@
 {
     [super viewDidLoad];
 
-
     // Title bar
     _editButton   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(enterEditingMode:)];
     _doneButton   = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(endEditingModeAndSave:)];
@@ -55,15 +54,8 @@
     self.title = [[AppDelegate sharedDateFormatter] stringFromDate:[_event valueForKey:@"timestamp"]];
     self.navigationItem.rightBarButtonItem = _editButton;
 
-    // iOS7:remove tint from bavigation bar
-    if ([AppDelegate systemMajorVersion] >= 7)
-        self.navigationController.navigationBar.tintColor = nil;
-
-    // iOS6:background image on view
-    if ([AppDelegate systemMajorVersion] < 7) {
-        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] resizableImageWithCapInsets:UIEdgeInsetsZero]];
-    }
+    // Remove tint from bavigation bar
+    self.navigationController.navigationBar.tintColor = nil;
 
     // Table contents
     self.constantRowHeight = NO;

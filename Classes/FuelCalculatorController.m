@@ -59,16 +59,8 @@ typedef enum
     self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction:)];
     self.title = _I18N(@"Fill-Up");
 
-    // iOS7:remove tint from bavigation bar
-    if ([AppDelegate systemMajorVersion] >= 7) {
-        self.navigationController.navigationBar.tintColor = nil;
-
-    // iOS6:background image on view
-    } else {
-
-        NSString *imageName = [AppDelegate isLongPhone] ? @"TablePattern-568h" : @"TablePattern";
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] resizableImageWithCapInsets:UIEdgeInsetsZero]];
-    }
+    // Remove tint from bavigation bar
+    self.navigationController.navigationBar.tintColor = nil;
 
     // Fetch the cars
     self.managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];

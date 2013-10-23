@@ -39,20 +39,6 @@ CGFloat const StatusBarHeight     = 20.0;
 
 
 
-+ (NSInteger)systemMajorVersion
-{
-    static dispatch_once_t once;
-
-    static NSUInteger systemMajorVersion = -1;
-
-    dispatch_once (&once, ^{
-            systemMajorVersion = [[[[UIDevice currentDevice] systemVersion] componentsSeparatedByString:@"."][0] intValue];
-        });
-    
-    return systemMajorVersion;
-}
-
-
 + (BOOL)isLongPhone
 {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -99,9 +85,6 @@ CGFloat const StatusBarHeight     = 20.0;
 
     dispatch_once (&pred, ^{
         
-        //if ([AppDelegate systemMajorVersion] >= 7)
-        //    _window.tintColor = [UIColor orangeColor];
-
         [_window makeKeyAndVisible];
 
         // Switch once to the car view for new users
@@ -394,12 +377,11 @@ CGFloat const StatusBarHeight     = 20.0;
 
     dispatch_once (&pred, ^{
 
-        static CGFloat colorComponents [8] = { 0.360, 0.682, 0.870, 0.93,  0.466, 0.721, 0.870, 0.93 };
         static CGFloat colorComponentsFlat [8] = { 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 };
 
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        blueGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
+        blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -414,12 +396,11 @@ CGFloat const StatusBarHeight     = 20.0;
 
     dispatch_once (&pred, ^{
 
-        static CGFloat colorComponents [8] = { 0.615, 0.815, 0.404, 0.93,  0.662, 0.815, 0.502, 0.93 };
         static CGFloat colorComponentsFlat [8] = { 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 };
 
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        greenGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
+        greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 
@@ -434,12 +415,11 @@ CGFloat const StatusBarHeight     = 20.0;
 
     dispatch_once (&pred, ^{
 
-        static CGFloat colorComponents [8] = { 0.988, 0.603, 0.215, 0.93,  0.988, 0.662, 0.333, 0.93 };
         static CGFloat colorComponentsFlat [8] = { 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 };
 
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-        orangeGradient = CGGradientCreateWithColorComponents(colorSpace, [self systemMajorVersion] < 7 ? colorComponents : colorComponentsFlat, NULL, 2);
+        orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, NULL, 2);
         CGColorSpaceRelease (colorSpace);
     });
 

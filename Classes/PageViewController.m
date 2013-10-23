@@ -84,14 +84,9 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
                          CGRect kRect = [[notification userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
 
-                         if ([AppDelegate systemMajorVersion] < 7) {
-                             self.tableView.frame = [self frameForKeyboardApprearingInRect:[self.view.window convertRect:kRect fromWindow:nil]];
-                         } else {
-
-                             UIEdgeInsets insets = self.tableView.contentInset;
-                             insets.bottom               = kRect.size.height;
-                             self.tableView.contentInset = insets;
-                         }
+                         UIEdgeInsets insets = self.tableView.contentInset;
+                         insets.bottom               = kRect.size.height;
+                         self.tableView.contentInset = insets;
                      }
                      completion:nil];
 }
@@ -99,22 +94,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
-    CGFloat duration = [[notification userInfo][UIKeyboardAnimationDurationUserInfoKey] doubleValue] - 0.08;
-    duration = MAX (duration, 0.0);
-
-    CGFloat delay = ([AppDelegate systemMajorVersion] < 7) ? 0.0 : 0.05;
-
-    [UIView animateWithDuration:duration
-                          delay:delay
-                        options:[[notification userInfo][UIKeyboardAnimationCurveUserInfoKey] integerValue]
-                     animations:^{
-
-                         if ([AppDelegate systemMajorVersion] < 7) {
-                             self.tableView.frame = frameBeforeKeyboard;
-                         }
-                     }
-                     completion:nil];
-
     keyboardIsVisible = NO;
 }
 

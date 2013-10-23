@@ -19,8 +19,6 @@ static CGFloat const margin = 8.0;
 
 - (void)finishConstruction
 {
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-    
 	[super finishConstruction];
 
     // No highlight on touch
@@ -35,17 +33,11 @@ static CGFloat const margin = 8.0;
     // Configure the alternate textlabel
     self.valueLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 
-    valueLabel.font             = (useOldStyle) ? [UIFont systemFontOfSize:15.0] : [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
+    valueLabel.font             = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
 	valueLabel.textAlignment    = NSTextAlignmentRight;
 	valueLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	valueLabel.backgroundColor  = [UIColor clearColor];
 	valueLabel.textColor        = [UIColor blackColor];
-
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
-        valueLabel.shadowColor  = [UIColor whiteColor];
-        valueLabel.shadowOffset = CGSizeMake (0, 1);
-    }
 
     valueLabel.hidden                 = YES;
 	valueLabel.userInteractionEnabled = NO;
@@ -56,15 +48,9 @@ static CGFloat const margin = 8.0;
     UILabel *label = self.textLabel;
 
 	label.textAlignment        = NSTextAlignmentLeft;
-	label.font                 = (useOldStyle) ? [UIFont boldSystemFontOfSize:17.0] : [UIFont fontWithName:@"HelveticaNeue" size:17.0];
+	label.font                 = [UIFont fontWithName:@"HelveticaNeue" size:17.0];
 	label.highlightedTextColor = [UIColor blackColor];
 	label.textColor            = [UIColor blackColor];
-
-    if ([AppDelegate systemMajorVersion] < 7)
-    {
-        label.shadowColor      = [UIColor whiteColor];
-        label.shadowOffset     = CGSizeMake (0, 1);
-    }
 }
 
 
@@ -96,7 +82,7 @@ static CGFloat const margin = 8.0;
     [super layoutSubviews];
 
 
-    CGFloat leftOffset = ([AppDelegate systemMajorVersion] >= 7) ? 6.0 : 0.0;
+    CGFloat leftOffset = 6.0;
 
     // Text label on the left
     CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;

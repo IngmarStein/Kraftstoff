@@ -4,8 +4,7 @@
 
 
 #import "FuelEventController.h"
-#import "ShadowTableView.h"
-#import "ShadedTableViewCell.h"
+#import "QuadInfoCell.h"
 #import "FuelStatisticsPageController.h"
 #import "FuelEventEditorController.h"
 #import "AppDelegate.h"
@@ -74,14 +73,11 @@
 
     self.navigationItem.rightBarButtonItem.enabled = NO;
 
-    // iOS7:reset tint color
-    if ([AppDelegate systemMajorVersion] >= 7)
-        self.navigationController.navigationBar.tintColor = nil;
+    // Reset tint color
+    self.navigationController.navigationBar.tintColor = nil;
 
     // Background image
-    NSString *imageName = [NSString stringWithFormat:@"TableBackground%@%@",
-                                ([AppDelegate systemMajorVersion] >= 7 ? @"Flat"  : @""),
-                                ([AppDelegate isLongPhone]             ? @"-568h" : @"")];
+    NSString *imageName = [NSString stringWithFormat:@"TableBackgroundFlat%@", ([AppDelegate isLongPhone] ? @"-568h" : @"")];
 
     self.tableView.backgroundView  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
     self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
@@ -169,9 +165,8 @@
     [coder encodeBool:restoreMailComposer|(mailComposeController != nil) forKey:kSRFuelEventShowComposer];
 
     // don't use a snapshot image for next launch when graph is currently visible
-    if ([AppDelegate systemMajorVersion] >= 7)
-        if ([self presentedViewController] != nil)
-            [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
+    if ([self presentedViewController] != nil)
+        [[UIApplication sharedApplication] ignoreSnapshotOnNextApplicationLaunch];
 
     [super encodeRestorableStateWithCoder:coder];
 }
@@ -461,18 +456,6 @@
 
         mailComposeController = [[MFMailComposeViewController alloc] init];
 
-        // Copy look of navigation bar to compose window
-        if ([AppDelegate systemMajorVersion] < 7) {
-
-            UINavigationBar *navBar = [mailComposeController navigationBar];
-
-            if (navBar != nil) {
-
-                navBar.barStyle = UIBarStyleBlack;
-                navBar.tintColor = [[[self navigationController] navigationBar] tintColor];
-            }
-        }
-
         // Setup the message
         [mailComposeController setMailComposeDelegate:self];
         [mailComposeController setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
@@ -576,7 +559,7 @@
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    ShadedTableViewCell *tableCell = (ShadedTableViewCell*)cell;
+    QuadInfoCell *tableCell = (QuadInfoCell*)cell;
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     NSManagedObject *car = [managedObject valueForKey:@"car"];
@@ -668,9 +651,9 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     if (cell == nil)
-        cell = [[ShadedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                           reuseIdentifier:CellIdentifier
-                                      enlargeTopRightLabel:NO];
+        cell = [[QuadInfoCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                   reuseIdentifier:CellIdentifier
+                              enlargeTopRightLabel:NO];
 
     [self configureCell:cell atIndexPath:indexPath];
     return cell;

@@ -65,7 +65,6 @@ typedef enum
 
 #pragma mark Hardware/Software Version Check
 
-+ (NSInteger)systemMajorVersion;
 + (BOOL)isLongPhone;
 
 

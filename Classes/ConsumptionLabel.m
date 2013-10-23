@@ -14,8 +14,6 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-
     // Clear background
     UIBezierPath *path = [UIBezierPath bezierPathWithRect:rect];
 
@@ -51,25 +49,11 @@
             {
                 NSString *prefix  = [text substringToIndex:range.location];
 
-                if (useOldStyle)
-                {
-                    [self.shadowColor setFill];
-                    [prefix drawAtPoint:CGPointMake (where.x + self.shadowOffset.width + offset, where.y + self.shadowOffset.height)
-                               withFont:self.font];
-                }
-
                 [self.textColor setFill];
                 [prefix drawAtPoint:CGPointMake (where.x + offset, where.y)
                            withFont:self.font];
 
                 offset += rintf ([prefix sizeWithFont:actualFont].width);
-            }
-
-            if (useOldStyle)
-            {
-                [self.shadowColor setFill];
-                [subString drawAtPoint:CGPointMake (where.x + self.shadowOffset.width + offset, where.y + self.shadowOffset.height)
-                              withFont:self.font];
             }
 
             [self.highlightedTextColor setFill];
@@ -82,13 +66,6 @@
     }
 
     // Remaining text
-    if (useOldStyle)
-    {
-        [self.shadowColor setFill];
-        [text drawAtPoint:CGPointMake (where.x + self.shadowOffset.width + offset, where.y + self.shadowOffset.height)
-                 withFont:self.font];
-    }
-
     [self.highlightedTextColor setFill];
     [text drawAtPoint:CGPointMake (where.x + offset, where.y)
              withFont:self.font];

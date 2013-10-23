@@ -12,8 +12,8 @@
 
 // Coordinates for the content area
 CGFloat StatisticsViewWidth = 480.0;
-CGFloat StatisticsViewHeight = 268.0;
-CGFloat StatisticsHeight = 182.0;
+CGFloat StatisticsViewHeight = 300.0;
+CGFloat StatisticsHeight = 214.0;
 CGFloat StatisticTransitionDuration = 0.3;
 
 
@@ -40,11 +40,6 @@ CGFloat StatisticTransitionDuration = 0.3;
 {
     if ([AppDelegate isLongPhone])
         StatisticsViewWidth = 568.0;
-
-    if ([AppDelegate systemMajorVersion] >= 7) {
-        StatisticsViewHeight = 300.0;
-        StatisticsHeight     = 214.0;
-    }
 }
 
 
@@ -72,47 +67,44 @@ CGFloat StatisticTransitionDuration = 0.3;
 {
     [super viewDidLoad];
 
-    if ([AppDelegate systemMajorVersion] >= 7) {
+    UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+    UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
 
-        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
-        UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
-        UIFont *fontSelected = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    // Labels on top of view
+    self.leftLabel.font = titleFont;
+    self.centerLabel.font = titleFont;
+    self.rightLabel.font = titleFont;
+    self.leftLabel.shadowColor = nil;
+    self.centerLabel.shadowColor = nil;
+    self.rightLabel.shadowColor = nil;
 
-        // Labels on top of view
-        self.leftLabel.font = titleFont;
-        self.centerLabel.font = titleFont;
-        self.rightLabel.font = titleFont;
-        self.leftLabel.shadowColor = nil;
-        self.centerLabel.shadowColor = nil;
-        self.rightLabel.shadowColor = nil;
+    // Update selection status of all buttons
+    for (UIButton *button in [self.view subviews])
+        if ([button isKindOfClass:[UIButton class]]) {
 
-        // Update selection status of all buttons
-        for (UIButton *button in [self.view subviews])
-            if ([button isKindOfClass:[UIButton class]]) {
+            NSAttributedString *label = [[NSAttributedString alloc]
+                                            initWithString:button.titleLabel.text
+                                                attributes:@{NSFontAttributeName:font,
+                                                             NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]}];
 
-                NSAttributedString *label = [[NSAttributedString alloc]
-                                                initWithString:button.titleLabel.text
-                                                    attributes:@{NSFontAttributeName:font,
-                                                                 NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]}];
+            NSAttributedString *labelSelected = [[NSAttributedString alloc]
+                                                    initWithString:button.titleLabel.text
+                                                        attributes:@{NSFontAttributeName:fontSelected,
+                                                                     NSForegroundColorAttributeName:[UIColor whiteColor]}];
 
-                NSAttributedString *labelSelected = [[NSAttributedString alloc]
-                                                        initWithString:button.titleLabel.text
-                                                            attributes:@{NSFontAttributeName:fontSelected,
-                                                                         NSForegroundColorAttributeName:[UIColor whiteColor]}];
+            [button setAttributedTitle:label forState:UIControlStateNormal];
+            [button setAttributedTitle:label forState:UIControlStateHighlighted];
+            [button setAttributedTitle:labelSelected forState:UIControlStateSelected];
 
-                [button setAttributedTitle:label forState:UIControlStateNormal];
-                [button setAttributedTitle:label forState:UIControlStateHighlighted];
-                [button setAttributedTitle:labelSelected forState:UIControlStateSelected];
+            [button setBackgroundImage:nil forState:UIControlStateNormal];
+            [button setBackgroundImage:nil forState:UIControlStateHighlighted];
+            [button setBackgroundImage:nil forState:UIControlStateSelected];
 
-                [button setBackgroundImage:nil forState:UIControlStateNormal];
-                [button setBackgroundImage:nil forState:UIControlStateHighlighted];
-                [button setBackgroundImage:nil forState:UIControlStateSelected];
+            [button setShowsTouchWhenHighlighted:NO];
 
-                [button setShowsTouchWhenHighlighted:NO];
-
-                button.titleLabel.shadowColor = nil;
-            }
-    }
+            button.titleLabel.shadowColor = nil;
+        }
 }
 
 

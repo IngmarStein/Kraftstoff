@@ -255,53 +255,29 @@ static CGFloat const GridTextHeight = 23.0;
 {
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
-    if ([AppDelegate systemMajorVersion] >= 7) {
+    // Background colors
+    [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
+    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
 
-        // Background colors
-        [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
-        CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
-
-        [[UIColor blackColor] setFill];
-        CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28));
-
-    } else {
-
-        // Background shade with rounded corners
-        [[UIColor blackColor] setFill];
-        CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
-
-        [[UIBezierPath bezierPathWithRoundedRect:CGRectMake (1.0, 0.0, StatisticsViewWidth - 2.0, StatisticsViewHeight)
-                               byRoundingCorners:UIRectCornerAllCorners
-                                     cornerRadii:CGSizeMake (12.0, 12.0)] addClip];
-
-        CGContextDrawLinearGradient (cgContext,
-                                     [AppDelegate backGradient],
-                                     CGPointMake (0.0, StatisticsViewHeight + StatusBarHeight),
-                                     CGPointMake (0.0, 0.0),
-                                     kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-    }
+    [[UIColor blackColor] setFill];
+    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28));
 }
 
 
 - (void)drawStatisticsForState:(FuelStatisticsData*)state withHeight:(CGFloat)height
 {
-    BOOL useOldStyle = ([AppDelegate systemMajorVersion] < 7);
-
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
     [[UIColor clearColor] setFill];
     CGContextFillRect (cgContext, CGRectMake (0, 0, StatisticsViewWidth, height));
 
-    UIFont *font = (useOldStyle) ? [UIFont boldSystemFontOfSize:14] : [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
     CGFloat x, y;
 
     if (state->numberOfFillups == 0) {
 
         CGContextSaveGState (cgContext);
         {
-            if (useOldStyle)
-                CGContextSetShadowWithColor (cgContext, CGSizeMake (0.0, -1.0), 0.0, [[UIColor blackColor] CGColor]);
-
             [[UIColor whiteColor] setFill];
 
             NSString *text = _I18N(@"Not enough data to display statistics");
@@ -320,7 +296,7 @@ static CGFloat const GridTextHeight = 23.0;
         UIBezierPath *path = [UIBezierPath bezierPath];
 
         path.lineWidth = GridTextHeight - 1;
-        [[UIColor colorWithWhite:(useOldStyle ? 0.45 : 0.224) alpha:0.1] setStroke];
+        [[UIColor colorWithWhite:0.224 alpha:0.1] setStroke];
 
         CGContextSaveGState (cgContext);
         {
@@ -345,25 +321,17 @@ static CGFloat const GridTextHeight = 23.0;
 
 
         // Horizontal grid lines
-        CGFloat   dashDotPattern [2] = { 1.0, 1.0 };
-        NSInteger dashDotPatternLength = 2;
-        path.lineWidth = 1;
-
-        if (! useOldStyle) {
-
-            dashDotPattern [0] = 0.5;
-            dashDotPattern [1] = 0.5;
-            dashDotPatternLength = 1;
-            path.lineWidth = 0.5;
-        }
+        CGFloat   dashDotPattern [2] = { 0.5, 0.5 };
+        NSInteger dashDotPatternLength = 1;
+        path.lineWidth = 0.5;
 
         [path setLineDash:dashDotPattern count:dashDotPatternLength phase:0.0];
 
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint:    CGPointMake (GridLeftBorder,  (useOldStyle ? 0.5 : 0.25))];
-            [path addLineToPoint:CGPointMake (GridRightBorder, (useOldStyle ? 0.5 : 0.25))];
+            [path moveToPoint:   CGPointMake (GridLeftBorder,  0.25)];
+            [path addLineToPoint:CGPointMake (GridRightBorder, 0.25)];
 
             CGFloat lastY;
 
@@ -380,18 +348,14 @@ static CGFloat const GridTextHeight = 23.0;
 
 
         // Vertical grid line
-        if (useOldStyle)
-            path.lineWidth = 2;
-        else
-            path.lineWidth = 0.5;
-
+        path.lineWidth = 0.5;
         [path setLineDash:NULL count:0 phase:0.0];
 
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint:    CGPointMake (GridLeftBorder + GridDesColumnWidth + (useOldStyle ? 0.0 : 0.25), 0.0)];
-            [path addLineToPoint:CGPointMake (GridLeftBorder + GridDesColumnWidth + (useOldStyle ? 0.0 : 0.25), GridTextHeight*16 + (useOldStyle ? 1.0 : 0.0))];
+            [path moveToPoint:   CGPointMake (GridLeftBorder + GridDesColumnWidth + 0.25, 0.0)];
+            [path addLineToPoint:CGPointMake (GridLeftBorder + GridDesColumnWidth + 0.25, GridTextHeight*16)];
             [path stroke];
         }
         CGContextRestoreGState (cgContext);
@@ -421,7 +385,7 @@ static CGFloat const GridTextHeight = 23.0;
 
             NSInteger numberOfDays = [NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate];
 
-            UIColor *labelColor = (useOldStyle) ? [UIColor whiteColor] : [UIColor colorWithWhite:0.78 alpha:1.0];
+            UIColor *labelColor = [UIColor colorWithWhite:0.78 alpha:1.0];
             UIColor *valueColor = [UIColor whiteColor];
 
             // number of days

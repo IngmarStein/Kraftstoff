@@ -6,8 +6,7 @@
 #import "AppDelegate.h"
 #import "CarViewController.h"
 #import "FuelEventController.h"
-#import "ShadowTableView.h"
-#import "ShadedTableViewCell.h"
+#import "QuadInfoCell.h"
 #import "DemoData.h"
 #import "TextEditTableCell.h"
 
@@ -49,14 +48,11 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.longPressRecognizer.delegate = self;
 
-    // iOS7:reset tint color
-    if ([AppDelegate systemMajorVersion] >= 7)
-        self.navigationController.navigationBar.tintColor = nil;
+    // reset tint color
+    self.navigationController.navigationBar.tintColor = nil;
 
     // Background image
-    NSString *imageName = [NSString stringWithFormat:@"TableBackground%@%@",
-                                ([AppDelegate systemMajorVersion] >= 7 ? @"Flat"  : @""),
-                                ([AppDelegate isLongPhone]             ? @"-568h" : @"")];
+    NSString *imageName = [NSString stringWithFormat:@"TableBackgroundFlat%@", ([AppDelegate isLongPhone] ? @"-568h" : @"")];
 
     self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
     self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
@@ -150,7 +146,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (self.editing == NO && carCount == 0) {
 
-        helpImageName = ([AppDelegate systemMajorVersion] < 7) ? @"Start" : @"StartFlat";
+        helpImageName = @"StartFlat";
         helpViewFrame = CGRectMake (0, 0, 320, 70);
 
         [defaults setObject:@0 forKey:@"editHelpCounter"];
@@ -162,7 +158,7 @@ static NSInteger maxEditHelpCounter = 1;
         if (editCounter < maxEditHelpCounter) {
 
             [defaults setObject:@(++editCounter) forKey:@"editHelpCounter"];
-            helpImageName = ([AppDelegate systemMajorVersion] < 7) ? @"Edit" : @"EditFlat";
+            helpImageName = @"EditFlat";
             helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
         }
     }
@@ -189,19 +185,12 @@ static NSInteger maxEditHelpCounter = 1;
 
         if (helpView == nil) {
 
-            UIImage *helpImage  = [UIImage imageNamed:helpImageName];
-            CGFloat targetAlpha = 0.9;
-
-            if ([AppDelegate systemMajorVersion] >= 7) {
-
-                helpImage   = [helpImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                targetAlpha = 1.0;
-            }
+            UIImage *helpImage  = [[UIImage imageNamed:helpImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
             helpView       = [[UIImageView alloc] initWithImage:helpImage];
             helpView.tag   = 100;
             helpView.frame = helpViewFrame;
-            helpView.alpha = (animated) ? 0.0 : targetAlpha;
+            helpView.alpha = (animated) ? 0.0 : 1.0;
 
             [self.view addSubview:helpView];
 
@@ -209,7 +198,7 @@ static NSInteger maxEditHelpCounter = 1;
                 [UIView animateWithDuration:0.33
                                       delay:0.8
                                     options:UIViewAnimationOptionCurveEaseOut
-                                 animations: ^{ helpView.alpha = targetAlpha; }
+                                 animations: ^{ helpView.alpha = 1.0; }
                                  completion:NULL];
 
         } else {
@@ -525,7 +514,7 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    ShadedTableViewCell *tableCell = (ShadedTableViewCell*)cell;
+    QuadInfoCell *tableCell = (QuadInfoCell*)cell;
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     UILabel *label;
@@ -594,9 +583,9 @@ static NSInteger maxEditHelpCounter = 1;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     if (cell == nil)
-        cell = [[ShadedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                          reuseIdentifier:CellIdentifier
-                                     enlargeTopRightLabel:YES];
+        cell = [[QuadInfoCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                   reuseIdentifier:CellIdentifier
+                              enlargeTopRightLabel:YES];
 
     [self configureCell:cell atIndexPath:indexPath];
 
@@ -688,8 +677,6 @@ static NSInteger maxEditHelpCounter = 1;
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
                                                                          toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath
 {
-    [(ShadowTableView*)tableView setNeedsShadowUpdate];
-
     return proposedDestinationIndexPath;
 }
 
