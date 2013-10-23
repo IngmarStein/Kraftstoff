@@ -52,16 +52,9 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 }
 
 
-// (Re-)configure the cell with data
 - (void)configureForData:(id)object viewController:(id)viewController tableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-}
-
-
-// Revert default behaviour of color change when cell is selected
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-	[super setSelected:selected animated:animated];
+    // Overridepoint for subclasses
 }
 
 @end

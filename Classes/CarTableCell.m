@@ -20,10 +20,7 @@ static NSInteger maximumDescriptionLength = 24;
 
 // Attributes for custom PickerViews
 static NSDictionary *prefixAttributesDict       = nil;
-static NSDictionary *shadowPrefixAttributesDict = nil;
-
 static NSDictionary *suffixAttributesDict       = nil;
-static NSDictionary *shadowSuffixAttributesDict = nil;
 
 
 @implementation CarTableCell
@@ -43,9 +40,6 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
         prefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
                                  (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor blackColor] CGColor]};
 
-        shadowPrefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
-                                       (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor whiteColor] CGColor]};
-
         CFRelease (helvetica24);
     }
 
@@ -55,9 +49,6 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 
         suffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
                                  (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor darkGrayColor] CGColor]};
-
-        shadowSuffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
-                                       (NSString *)kCTForegroundColorAttributeName:(id)[[UIColor whiteColor] CGColor]};
 
         CFRelease (helvetica18);
     }
@@ -170,18 +161,17 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
 }
 
 
-- (CTLineRef)truncatedLineForName:(NSString *)name info:(NSString *)info shadow:(BOOL)shadow
+- (CTLineRef)truncatedLineForName:(NSString *)name info:(NSString *)info
 {
     NSAttributedString *truncationString = [[NSAttributedString alloc]
                                                 initWithString:[NSString stringWithFormat:@"%C", (unsigned short)0x2026]
-                                                    attributes:(shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
+                                                    attributes:suffixAttributesDict];
 
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc]
                                                         initWithString:[NSString stringWithFormat:@"%@  %@", name, info]
-                                                            attributes:(shadow) ? shadowSuffixAttributesDict : suffixAttributesDict];
+                                                            attributes:suffixAttributesDict];
 
-    [attributedString setAttributes:(shadow) ? shadowPrefixAttributesDict : prefixAttributesDict
-                              range:NSMakeRange (0, [name length])];
+    [attributedString setAttributes:prefixAttributesDict range:NSMakeRange (0, [name length])];
 
     CTLineRef line            = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) attributedString);
     CTLineRef truncationToken = CTLineCreateWithAttributedString ((__bridge CFAttributedStringRef) truncationString);
@@ -213,7 +203,7 @@ static NSDictionary *shadowSuffixAttributesDict = nil;
         CGContextTranslateCTM (context, 1, PickerViewCellHeight);
         CGContextScaleCTM (context, 1, -1);
 
-        CTLineRef truncatedLine = [self truncatedLineForName:name info:info shadow:NO];
+        CTLineRef truncatedLine = [self truncatedLineForName:name info:info];
         CGContextSetTextPosition (context, PickerViewCellMargin, PickerViewCellTextPosition);
         CTLineDraw (truncatedLine, context);
         CFRelease (truncatedLine);

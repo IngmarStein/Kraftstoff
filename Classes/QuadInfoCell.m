@@ -146,7 +146,7 @@
     [super layoutSubviews];
 
     // #radar 14977605: backgroundView may overlap delete confirmation button
-    if (0 && self.editingStyle == UITableViewCellEditingStyleDelete) {
+    if (self.editingStyle == UITableViewCellEditingStyleDelete) {
 
         CGRect frame = self.backgroundView.frame;
         frame.size.width = MIN(frame.size.width, 320-frame.origin.x);
