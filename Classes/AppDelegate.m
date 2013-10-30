@@ -808,16 +808,6 @@ CGFloat const StatusBarHeight     = 20.0;
 }
 
 
-// Returns a unique cache-name for fetch requests which must rely on 'parent == object' properties.
-// The name is derived from the parents object ID.
-- (NSString *)cacheNameForFuelEventFetchWithParent:(NSManagedObject *)parent
-{
-    NSString *URL = [self modelIdentifierForManagedObject:parent];
-
-    return [URL stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
-}
-
-
 - (NSString *)modelIdentifierForManagedObject:(NSManagedObject *)object
 {
     NSManagedObjectID *objectID = object.objectID;

@@ -464,13 +464,6 @@ static NSInteger maxEditHelpCounter = 1;
     if (!deletedObject)
         return;
 
-    // Delete any fetch-cache for the deleted object
-    NSString *cacheName = [appDelegate cacheNameForFuelEventFetchWithParent:deletedObject];
-
-    if (cacheName)
-        [NSFetchedResultsController deleteCacheWithName:cacheName];
-
-
     // Invalidate preference for deleted car
     NSString *preferredCarID = [[NSUserDefaults standardUserDefaults] stringForKey:@"preferredCarID"];
     NSString *deletedCarID = [appDelegate modelIdentifierForManagedObject:deletedObject];

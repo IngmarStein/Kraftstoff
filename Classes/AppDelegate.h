@@ -108,7 +108,6 @@ typedef enum
 #pragma mark Core Data Support
 
 - (BOOL)saveContext:(NSManagedObjectContext *)context;
-- (NSString *)cacheNameForFuelEventFetchWithParent:(NSManagedObject *)object;
 - (NSString *)modelIdentifierForManagedObject:(NSManagedObject *)object;
 - (NSManagedObject *)managedObjectForModelIdentifier:(NSString *)identifier;
 + (NSManagedObject *)existingObject:(NSManagedObject *)object inManagedObjectContext:(NSManagedObjectContext *)moc;
