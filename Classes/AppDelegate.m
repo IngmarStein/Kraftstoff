@@ -147,7 +147,12 @@ CGFloat const StatusBarHeight     = 20.0;
     NSInteger bundleVersion = [[[NSBundle mainBundle] infoDictionary][(NSString *)kCFBundleVersionKey] integerValue];
     NSInteger stateVersion = [[coder decodeObjectForKey:UIApplicationStateRestorationBundleVersionKey] integerValue];
 
-    return (stateVersion <= bundleVersion);
+    // we don't restore from iOS6 compatible or future versions of the App
+    if (stateVersion >= 1572)
+        if (stateVersion <= bundleVersion)
+            return YES;
+
+    return NO;
 }
 
 
