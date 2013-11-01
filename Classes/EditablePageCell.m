@@ -76,7 +76,7 @@ static CGFloat const margin = 8.0;
     [super layoutSubviews];
     
     CGFloat leftOffset = 6.0;
-    CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;
+    CGFloat labelWidth = [self.textLabel.text sizeWithAttributes:@{NSFontAttributeName:self.textLabel.font}].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 

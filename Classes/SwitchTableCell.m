@@ -85,7 +85,7 @@ static CGFloat const margin = 8.0;
     CGFloat leftOffset = 6.0;
 
     // Text label on the left
-    CGFloat labelWidth = [self.textLabel.text sizeWithFont:self.textLabel.font].width;
+    CGFloat labelWidth = [self.textLabel.text sizeWithAttributes:@{NSFontAttributeName:self.textLabel.font}].width;
     CGFloat height     = self.contentView.bounds.size.height;
 	CGFloat width      = self.contentView.bounds.size.width;
 
@@ -99,7 +99,7 @@ static CGFloat const margin = 8.0;
                                          valueFrame.size.height);
 
     // Alternate for UISwitch
-    CGFloat alternateHeight = [self.valueLabel.text sizeWithFont:self.valueLabel.font].height;
+    CGFloat alternateHeight = [self.valueLabel.text sizeWithAttributes:@{NSFontAttributeName:self.valueLabel.font}].height;
     self.valueLabel.frame = CGRectMake (width - margin - 100.0, floor ((height - alternateHeight)/2), 100.0, alternateHeight);
 }
 

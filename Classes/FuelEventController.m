@@ -740,8 +740,6 @@
 {
     if (_fetchedResultsController == nil)
     {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
         NSFetchedResultsController *fetchController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
                                                                                           managedObjectContext:_managedObjectContext
                                                                                             sectionNameKeyPath:nil
