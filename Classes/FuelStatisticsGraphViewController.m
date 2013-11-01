@@ -455,15 +455,15 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         CGContextSaveGState (cgContext);
         {
-            [[UIColor whiteColor] setFill];
+            NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor whiteColor]};
 
             NSString *text = _I18N(@"Not enough data to display statistics");
-            CGSize size    = [text sizeWithFont:font];
+            CGSize size    = [text sizeWithAttributes:attributes];
 
             x = floor ((StatisticsViewWidth - size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
 
-            [text drawAtPoint:CGPointMake (x, y) withFont:font];
+            [text drawAtPoint:CGPointMake (x, y) withAttributes:attributes];
         }
         CGContextRestoreGState (cgContext);
 
@@ -508,17 +508,17 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         // Axis decription for horizontal marker lines markers
         CGContextSaveGState (cgContext);
         {
-            [[UIColor whiteColor] setFill];
+            NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor whiteColor]};
 
             for (NSInteger i = 0; i < state->hMarkCount; i++)
                 if (state->hMarkNames [i] != nil) {
 
-                    CGSize size = [state->hMarkNames[i] sizeWithFont:font];
+                    CGSize size = [state->hMarkNames[i] sizeWithAttributes:attributes];
 
                     x = self.graphRightBorder + 6;
                     y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state->hMarkPositions [i] - size.height) + 0.5;
 
-                    [state->hMarkNames[i] drawAtPoint:CGPointMake (x, y) withFont:font];
+                    [state->hMarkNames[i] drawAtPoint:CGPointMake (x, y) withAttributes:attributes];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -551,12 +551,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         // Axis description for vertical marker lines
         CGContextSaveGState (cgContext);
         {
-            [[UIColor colorWithWhite:0.78 alpha:1.0] setFill];
+            NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]};
 
             for (NSInteger i = 0; i < state->vMarkCount; i++)
                 if (state->vMarkNames [i] != nil) {
 
-                    CGSize size = [state->vMarkNames[i] sizeWithFont:font];
+                    CGSize size = [state->vMarkNames[i] sizeWithAttributes:attributes];
 
                     x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state->vMarkPositions [i] - size.width/2.0);
                     y = self.graphBottomBorder + 5;
@@ -567,7 +567,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                     if (x > self.graphRightBorder - size.width)
                         x = self.graphRightBorder - size.width;
 
-                    [state->vMarkNames[i] drawAtPoint:CGPointMake (x, y)   withFont:font];
+                    [state->vMarkNames[i] drawAtPoint:CGPointMake (x, y) withAttributes:attributes];
                 }
         }
         CGContextRestoreGState (cgContext);
@@ -861,10 +861,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     [path fill];
 
     // Layout for info box
-    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:17];
-    CGRect infoRect;
+    NSDictionary *attributes = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Light" size:17],
+                                 NSForegroundColorAttributeName:[UIColor whiteColor]};
 
-    infoRect.size = [info sizeWithFont:font];
+    CGRect infoRect;
+    infoRect.size = [info sizeWithAttributes:attributes];
     infoRect.size.width += StatisticTrackInfoXMarginFlat * 2.0;
     infoRect.size.height += StatisticTrackInfoYMarginFlat * 2.0;
     infoRect.origin.x = rint (location.x - infoRect.size.width/2);
@@ -885,8 +886,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     [path fill];
 
     // Info text
-    [[UIColor whiteColor] set];
-    [info drawAtPoint:CGPointMake (infoRect.origin.x + StatisticTrackInfoXMarginFlat, infoRect.origin.y + StatisticTrackInfoYMarginFlat) withFont:font];
+    [info drawAtPoint:CGPointMake (infoRect.origin.x + StatisticTrackInfoXMarginFlat, infoRect.origin.y + StatisticTrackInfoYMarginFlat)
+       withAttributes:attributes];
 }
 
 
