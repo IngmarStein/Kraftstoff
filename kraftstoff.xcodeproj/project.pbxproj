@@ -37,6 +37,7 @@
 		4D3F1984176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F1982176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png */; };
 		4D3F1986176B0AEB003FE2C7 /* TableBackgroundFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F1985176B0AEB003FE2C7 /* TableBackgroundFlat.png */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
+		4D4EF383182450B1006A9DAE /* NSString+Kraftstoff.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D4EF382182450B1006A9DAE /* NSString+Kraftstoff.m */; };
 		4D58AD2512B00C4A002B7A71 /* FuelStatisticsPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D58AD2312B00C4A002B7A71 /* FuelStatisticsPageController.m */; };
 		4D592708136DE3CF002174C8 /* EditableProxyPageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D592707136DE3CF002174C8 /* EditableProxyPageCell.m */; };
 		4D5C57CA13046B76009C545E /* PageCellDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C57C913046B76009C545E /* PageCellDescription.m */; };
@@ -126,6 +127,8 @@
 		4D3F1982176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TableBackgroundFlat@2x.png"; sourceTree = "<group>"; };
 		4D3F1985176B0AEB003FE2C7 /* TableBackgroundFlat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TableBackgroundFlat.png; sourceTree = "<group>"; };
 		4D3F199B176B2B5F003FE2C7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = kraftstoff/Media.xcassets; sourceTree = "<group>"; };
+		4D4EF381182450B1006A9DAE /* NSString+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Kraftstoff.h"; sourceTree = "<group>"; };
+		4D4EF382182450B1006A9DAE /* NSString+Kraftstoff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Kraftstoff.m"; sourceTree = "<group>"; };
 		4D58AD2212B00C4A002B7A71 /* FuelStatisticsPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FuelStatisticsPageController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D58AD2312B00C4A002B7A71 /* FuelStatisticsPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsPageController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D592706136DE3CF002174C8 /* EditableProxyPageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditableProxyPageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -404,6 +407,8 @@
 				4D92C9CF14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.m */,
 				4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */,
 				4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */,
+				4D4EF381182450B1006A9DAE /* NSString+Kraftstoff.h */,
+				4D4EF382182450B1006A9DAE /* NSString+Kraftstoff.m */,
 			);
 			name = "Cocoa Extensions";
 			sourceTree = "<group>";
@@ -723,6 +728,7 @@
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,
 				4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */,
 				4D0B7ACD15A9F2DF0012A62B /* NSDate+Kraftstoff.m in Sources */,
+				4D4EF383182450B1006A9DAE /* NSString+Kraftstoff.m in Sources */,
 				4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
