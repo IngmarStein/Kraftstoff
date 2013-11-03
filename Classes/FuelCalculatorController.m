@@ -127,6 +127,7 @@ typedef enum
 
         if (isShowingConvertSheet) {
             [self showOdometerConversionAlert];
+
         } else {
 
             [self selectRowAtIndexPath:restoredSelectionIndex];
@@ -260,14 +261,14 @@ typedef enum
     KSVolume          fuelUnit;
     KSFuelConsumption consumptionUnit;
 
-    if (self.car)
-    {
+    if (self.car) {
+
         odometerUnit    = (KSDistance)[[self.car valueForKey:@"odometerUnit"]        integerValue];
         fuelUnit        = (KSVolume)[[self.car valueForKey:@"fuelUnit"]            integerValue];
         consumptionUnit = (KSFuelConsumption)[[self.car valueForKey:@"fuelConsumptionUnit"] integerValue];
-    }
-    else
-    {
+
+    } else {
+
         odometerUnit    = [AppDelegate distanceUnitFromLocale];
         fuelUnit        = [AppDelegate volumeUnitFromLocale];
         consumptionUnit = [AppDelegate fuelConsumptionUnitFromLocale];
@@ -309,9 +310,12 @@ typedef enum
     KSVolume fuelUnit;
 
     if (self.car) {
+
         odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
         fuelUnit     = (KSVolume)[[self.car valueForKey:@"fuelUnit"]     integerValue];
+
     } else {
+
         odometerUnit = [AppDelegate distanceUnitFromLocale];
         fuelUnit     = [AppDelegate volumeUnitFromLocale];
     }
@@ -380,8 +384,8 @@ typedef enum
     // Car selector (optional)
     self.car = nil;
     
-    if ([self.fetchedResultsController.fetchedObjects count] > 0)
-    {
+    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+
         self.car = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:
                         [[NSUserDefaults standardUserDefaults] objectForKey:@"preferredCarID"]];
 
@@ -482,10 +486,10 @@ typedef enum
     UITableViewRowAnimation animation = UITableViewRowAnimationRight;
     int count = 0;
 
-    for (int row = 2; row <= 4; row++)
-    {
-        if ((row == 2 && odoChanged) || (row != 2 && fuelChanged))
-        {
+    for (int row = 2; row <= 4; row++) {
+
+        if ((row == 2 && odoChanged) || (row != 2 && fuelChanged)) {
+
             animation = UITableViewRowAnimationRight + (count % 2);
             count ++;
         }
@@ -557,8 +561,8 @@ typedef enum
     else
         noChangeInterval = -1;
 
-    if (lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0)
-    {
+    if (lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0) {
+
         // Reset date to current time
         NSDate *now         = [NSDate date];
         self.date           = [NSDate dateWithoutSeconds:now];
@@ -600,8 +604,8 @@ typedef enum
 
 - (void)selectRowAtIndexPath:(NSIndexPath *)path
 {
-    if (path)
-    {
+    if (path) {
+
         [self.tableView selectRowAtIndexPath:path animated:NO scrollPosition:UITableViewScrollPositionNone];
         [self tableView:self.tableView didSelectRowAtIndexPath:path];
     }
@@ -717,13 +721,13 @@ typedef enum
     
     NSDecimalNumber *loBound, *hiBound;
     
-    if ([avgConsumption isEqual:[NSDecimalNumber notANumber]])
-    {
+    if ([avgConsumption isEqual:[NSDecimalNumber notANumber]]) {
+
         loBound = [NSDecimalNumber decimalNumberWithMantissa:  2 exponent:0 isNegative:NO];
         hiBound = [NSDecimalNumber decimalNumberWithMantissa:20 exponent:0 isNegative:NO];
-    }
-    else
-    {
+
+    } else {
+
         loBound = [avgConsumption decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithMantissa:5 exponent: -1 isNegative:NO]];
         hiBound = [avgConsumption decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithMantissa:5 exponent:  0 isNegative:NO]];
     }
@@ -788,8 +792,8 @@ typedef enum
 {
     isShowingConvertSheet = NO;
 
-    if (buttonIndex != actionSheet.cancelButtonIndex)
-    {
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+
         // Replace distance in table with difference to car odometer
         KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
         NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];

@@ -13,8 +13,8 @@
 
 - (id)initWithCellClass:(Class)class andData:(id)object
 {
-	if ((self = [super init]))
-	{
+	if ((self = [super init])) {
+
 		cellClass = class;
 		cellData  = object;
 	}

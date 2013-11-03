@@ -44,9 +44,7 @@ NSUInteger const maximumTextFieldLength = 15;
 {
     // Let delegate handle switching to next textfield
     if ([(id)self.delegate respondsToSelector:@selector(focusNextFieldForValueIdentifier:)])
-    {
         [self.delegate focusNextFieldForValueIdentifier:self.valueIdentifier];
-    }
 
     return NO;
 }

@@ -20,20 +20,6 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 
 #pragma mark -
-#pragma mark Frame Computation for Keyboard Animations
-
-
-
-- (CGRect)frameForKeyboardApprearingInRect:(CGRect)keyboardRect
-{
-    CGRect frame = frameBeforeKeyboard;
-    frame.size.height = frame.size.height + TabBarHeight - keyboardRect.size.height;
-    return frame;
-}
-
-
-
-#pragma mark -
 #pragma mark View Resize on Keyboard Events (only when visible)
 
 
@@ -70,9 +56,8 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)keyboardWillShow:(NSNotification*)notification
 {
-    if (keyboardIsVisible == NO)
-    {
-        frameBeforeKeyboard = self.tableView.frame;
+    if (keyboardIsVisible == NO) {
+
         bottomInsetBeforeKeyboard = self.tableView.contentInset.bottom;
         keyboardIsVisible = YES;
     }
@@ -85,7 +70,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                          CGRect kRect = [[notification userInfo][UIKeyboardFrameEndUserInfoKey] CGRectValue];
 
                          UIEdgeInsets insets = self.tableView.contentInset;
-                         insets.bottom               = kRect.size.height;
+                         insets.bottom = kRect.size.height;
                          self.tableView.contentInset = insets;
                      }
                      completion:nil];
@@ -121,8 +106,8 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                                                    atScrollPosition:UITableViewScrollPositionTop
                                                            animated:NO];
 
-                         UIEdgeInsets insets         = self.tableView.contentInset;
-                         insets.bottom               = bottomInsetBeforeKeyboard;
+                         UIEdgeInsets insets = self.tableView.contentInset;
+                         insets.bottom = bottomInsetBeforeKeyboard;
                          self.tableView.contentInset = insets;
                      }
                      completion: ^(BOOL finished){
@@ -201,8 +186,8 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
 - (void)removeSectionAtIndex:(NSInteger)sectionIndex withAnimation:(UITableViewRowAnimation)animation
 {
-    if (sectionIndex < [tableSections count])
-    {
+    if (sectionIndex < [tableSections count]) {
+
         [tableSections removeObjectAtIndex:sectionIndex];
         [self headerSectionsReordered];
 
@@ -254,12 +239,10 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
 
     // Store cell description
     PageCellDescription *description = [[PageCellDescription alloc] initWithCellClass:class andData:data];
-    {
-        [tableSection insertObject:description atIndex:rowIndex];
-    }
+    [tableSection insertObject:description atIndex:rowIndex];
 
-    if (animation != UITableViewRowAnimationNone)
-    {
+    if (animation != UITableViewRowAnimationNone) {
+
         // If necessary update position for former bottom row of the section
         if (tableView.style == UITableViewStyleGrouped)
             if (rowIndex == [tableSection count] - 1 && rowIndex > 0)
@@ -279,16 +262,16 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
                inSection:(NSInteger)sectionIndex
            withAnimation:(UITableViewRowAnimation)animation
 {
-    if (sectionIndex < [tableSections count])
-    {
+    if (sectionIndex < [tableSections count]) {
+
         NSMutableArray *tableSection = tableSections[sectionIndex];
 
-        if (rowIndex < [tableSection count])
-        {
+        if (rowIndex < [tableSection count]) {
+
             [tableSection removeObjectAtIndex:rowIndex];
 
-            if (animation != UITableViewRowAnimationNone)
-            {
+            if (animation != UITableViewRowAnimationNone) {
+
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:rowIndex inSection:sectionIndex];
                 [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:animation];
             }
@@ -319,9 +302,7 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     [tableView setDataSource:self];
 
     if (!self.nibName && !self.view)
-    {
         self.view = newTableView;
-    }
 }
 
 
@@ -354,11 +335,8 @@ static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
         return !constantRowHeight;
 
-    if (aSelector == @selector(tableView:viewForHeaderInSection:) ||
-        aSelector == @selector(tableView:heightForHeaderInSection:))
-    {
+    if (aSelector == @selector(tableView:viewForHeaderInSection:) || aSelector == @selector(tableView:heightForHeaderInSection:))
         return useCustomHeaders;
-    }
 
     return [super respondsToSelector:aSelector];
 }

@@ -67,8 +67,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (id)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
+
         dataCount  = 0;
         hMarkCount = 0;
         vMarkCount = 0;

@@ -28,10 +28,9 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 
 - (id)init
 {
-	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[[self class] reuseIdentifier]]))
-	{
-		[self finishConstruction];
+	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[[self class] reuseIdentifier]])) {
 
+		[self finishConstruction];
         self.detailTextLabel.hidden = YES;
 	}
 

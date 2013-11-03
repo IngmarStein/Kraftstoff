@@ -228,7 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				4D1899B714328AEF001434BD /* Cocoa Extensions */,
-				4D8079DD12A5A0100082C40A /* ShadowTables */,
+				4D8079DD12A5A0100082C40A /* InfoTables */,
 				4DAC56211303178D00D02BEC /* PageTables */,
 				4D630C3E12EEF83500134FD7 /* Calculator */,
 				4D8079DB12A59FBE0082C40A /* Car View */,
@@ -509,13 +509,13 @@
 			name = "FuelEvent View";
 			sourceTree = "<group>";
 		};
-		4D8079DD12A5A0100082C40A /* ShadowTables */ = {
+		4D8079DD12A5A0100082C40A /* InfoTables */ = {
 			isa = PBXGroup;
 			children = (
 				4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */,
 				4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */,
 			);
-			name = ShadowTables;
+			name = InfoTables;
 			sourceTree = "<group>";
 		};
 		4D8329E31401295600E4F22F /* CSV Import */ = {

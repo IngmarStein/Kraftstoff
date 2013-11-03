@@ -7,7 +7,6 @@
 #import "EditablePageCell.h"
 
 
-
 @interface SwitchTableCell : PageCell {}
 
 @property (nonatomic, strong) UISwitch *valueSwitch;

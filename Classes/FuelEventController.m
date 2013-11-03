@@ -603,8 +603,8 @@
     // Consumption combined with inherited data from earlier events
     NSString *consumptionDescription;
 
-    if ([[managedObject valueForKey:@"filledUp"] boolValue])
-    {
+    if ([[managedObject valueForKey:@"filledUp"] boolValue]) {
+
         distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
         fuelVolume = [fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
 
@@ -617,11 +617,10 @@
         tableCell.botRightAccessibilityLabel = [NSString stringWithFormat:@", %@ %@",
                                                     consumptionDescription,
                                                     [AppDelegate consumptionUnitAccesibilityDescription:consumptionUnit]];
-    }
-    else
-    {
-        consumptionDescription = _I18N(@"-");
 
+    } else {
+
+        consumptionDescription = _I18N(@"-");
         tableCell.botRightAccessibilityLabel = _I18N(@"fuel mileage not available");
     }
 

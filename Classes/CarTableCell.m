@@ -33,8 +33,8 @@ static NSDictionary *suffixAttributesDict       = nil;
 {
     CFStringRef font = CFSTR ("Helvetica");
 
-    if (prefixAttributesDict == nil)
-    {
+    if (prefixAttributesDict == nil) {
+
         CTFontRef helvetica24 = CTFontCreateWithName (font, 24, NULL);
 
         prefixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica24,
@@ -43,8 +43,8 @@ static NSDictionary *suffixAttributesDict       = nil;
         CFRelease (helvetica24);
     }
 
-    if (suffixAttributesDict == nil)
-    {
+    if (suffixAttributesDict == nil) {
+
         CTFontRef helvetica18 = CTFontCreateWithName (font, 18, NULL);
 
         suffixAttributesDict = @{(NSString *)kCTFontAttributeName:(__bridge id)helvetica18,
@@ -216,15 +216,14 @@ static NSDictionary *suffixAttributesDict       = nil;
     // Wrap with imageview
     PickerImageView *imageView;
 
-    if (view != nil && [view isKindOfClass:[PickerImageView class]])
-    {
+    if (view != nil && [view isKindOfClass:[PickerImageView class]]) {
+
         imageView       = (PickerImageView*)view;
         imageView.image = image;
+
     }
     else
-    {
         imageView = [[PickerImageView alloc] initWithImage:image];
-    }
 
     imageView.userInteractionEnabled = YES;
     imageView.pickerView = pickerView;

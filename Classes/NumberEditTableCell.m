@@ -44,8 +44,8 @@
 
     NSDecimalNumber *value = [self.delegate valueForIdentifier:self.valueIdentifier];
 
-    if (value)
-    {
+    if (value) {
+
         if (self.alternateNumberFormatter)
             self.textField.text = [self.alternateNumberFormatter stringFromNumber:value];
         else
@@ -76,10 +76,10 @@
     NSDecimalNumber *ten   = [NSDecimalNumber decimalNumberWithMantissa:1 exponent:1 isNegative:NO];
     NSDecimalNumber *scale = [NSDecimalNumber decimalNumberWithMantissa:1 exponent:[self.numberFormatter maximumFractionDigits] isNegative:NO];
 
-    if (range.length == 0)
-    {
-        if (range.location == [text length] && [string length] == 1)
-        {
+    if (range.length == 0) {
+
+        if (range.location == [text length] && [string length] == 1) {
+
             // New character must be a digit
             NSDecimalNumber *digit = [NSDecimalNumber decimalNumberWithString:string];
 
@@ -89,9 +89,9 @@
             // Special shift semantics when appending at end of string
             value = [value decimalNumberByMultiplyingBy:ten];
             value = [value decimalNumberByAdding:[digit decimalNumberByDividingBy:scale]];
-        }
-        else
-        {
+
+        } else {
+
             // Normal insert otherwise
             text  = [text stringByReplacingCharactersInRange:range withString:string];
             text  = [text stringByReplacingOccurrencesOfString:[self.numberFormatter groupingSeparator] withString:@""];
@@ -106,8 +106,8 @@
             return NO;
     }
 
-    else if (range.location >= [text length] - 1)
-    {
+    else if (range.location >= [text length] - 1) {
+
         NSDecimalNumberHandler *handler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundDown
                                                                                                  scale:(short)[self.numberFormatter maximumFractionDigits]
                                                                                       raiseOnExactness:NO
@@ -136,12 +136,12 @@
     NSNumber *clearedValue = [NSDecimalNumber zero];
 
 
-    if (aTextField.editing)
-    {
+    if (aTextField.editing) {
+
         aTextField.text = [self.numberFormatter stringFromNumber:clearedValue];
-    }
-    else
-    {
+
+    } else {
+
         if (self.alternateNumberFormatter)
             aTextField.text = [self.alternateNumberFormatter stringFromNumber:clearedValue];
         else
@@ -163,13 +163,11 @@
 - (void)textFieldDidBeginEditing:(UITextField *)aTextField
 {
     if (self.textFieldSuffix)
-    {
         if ([aTextField.text hasSuffix:self.textFieldSuffix])
             aTextField.text = [aTextField.text substringToIndex:[aTextField.text length] - [self.textFieldSuffix length]];
-    }
 
-    if (self.alternateNumberFormatter)
-    {
+    if (self.alternateNumberFormatter) {
+
         NSDecimalNumber *value = (NSDecimalNumber *)[self.alternateNumberFormatter numberFromString:aTextField.text];
 
         if (value == nil)

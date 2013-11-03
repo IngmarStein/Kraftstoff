@@ -49,7 +49,7 @@
             }
 
             // Reduce point size, try again
-            pointSize = pointSize * size.width/maxWidth;
+            pointSize = pointSize * maxWidth / size.width;
         }
     }
 }

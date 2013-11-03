@@ -75,8 +75,8 @@
 {
     NSDate *selectedDate = [NSDate dateWithoutSeconds:[sender date]];
 
-    if ([[self.delegate valueForIdentifier:self.valueIdentifier] isEqualToDate:selectedDate] == NO)
-    {
+    if ([[self.delegate valueForIdentifier:self.valueIdentifier] isEqualToDate:selectedDate] == NO) {
+
         self.textFieldProxy.text = [self.dateFormatter stringFromDate:selectedDate];
         [self.delegate valueChanged:selectedDate  identifier:self.valueIdentifier];
         [self.delegate valueChanged:[NSDate date] identifier:self.valueTimestamp];
@@ -107,8 +107,8 @@
 
 
     // Create new datepicker with a correct 'today' flag
-    if (datePicker == nil)
-    {
+    if (datePicker == nil) {
+
         datePicker                = [[UIDatePicker alloc] init];
         datePicker.datePickerMode = UIDatePickerModeDateAndTime;
 
@@ -140,8 +140,8 @@
     // Optional:update selected value to current time when no change was done in the last 5 minutes
     NSDate *selectedDate = nil;
 
-    if (autoRefreshedDate)
-    {
+    if (autoRefreshedDate) {
+
         NSDate *now            = [NSDate date];
         NSDate *lastChangeDate = [self.delegate valueForIdentifier:self.valueTimestamp];
 

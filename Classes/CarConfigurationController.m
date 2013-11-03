@@ -31,8 +31,8 @@
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle]))
-    {
+    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
+
         self.restorationIdentifier = @"CarConfigurationController";
         self.restorationClass = [self class];
     }
@@ -341,20 +341,6 @@
 
 
 #pragma mark -
-#pragma mark Frame Computation for Keyboard Animations
-
-
-
-- (CGRect)frameForKeyboardApprearingInRect:(CGRect)keyboardRect
-{
-    CGRect frame = frameBeforeKeyboard;
-    frame.size.height -= keyboardRect.size.height;
-    return frame;
-}
-
-
-
-#pragma mark -
 #pragma mark Cancel Button
 
 
@@ -471,30 +457,28 @@
 
 - (void)valueChanged:(id)newValue identifier:(NSString *)valueIdentifier
 {
-    if ([newValue isKindOfClass:[NSString class]])
-    {
+    if ([newValue isKindOfClass:[NSString class]]) {
+
         if ([valueIdentifier isEqualToString:@"name"])
             self.name  = (NSString *)newValue;
 
         else if ([valueIdentifier isEqualToString:@"plate"])
             self.plate = (NSString *)newValue;
-    }
 
-    else if ([newValue isKindOfClass:[NSDecimalNumber class]])
-    {
+    } else if ([newValue isKindOfClass:[NSDecimalNumber class]]) {
+
         if ([valueIdentifier isEqualToString:@"odometer"])
             self.odometer = (NSDecimalNumber *)newValue;
-    }
 
-    else if ([newValue isKindOfClass:[NSNumber class]])
-    {
-        if ([valueIdentifier isEqualToString:@"odometerUnit"])
-        {
+    } else if ([newValue isKindOfClass:[NSNumber class]]) {
+
+        if ([valueIdentifier isEqualToString:@"odometerUnit"]) {
+
             KSDistance oldUnit = (KSDistance)[self.odometerUnit integerValue];
             KSDistance newUnit = (KSDistance)[(NSNumber*)newValue integerValue];
 
-            if (oldUnit != newUnit)
-            {
+            if (oldUnit != newUnit) {
+
                 self.odometerUnit = (NSNumber*)newValue;
                 self.odometer     = [AppDelegate distanceForKilometers:[AppDelegate kilometersForDistance:self.odometer
                                                                                                   withUnit:oldUnit]

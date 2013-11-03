@@ -9,7 +9,6 @@
     NSMutableArray *headerViews;
 
     BOOL    keyboardIsVisible;
-    CGRect  frameBeforeKeyboard;
     CGFloat bottomInsetBeforeKeyboard;
 }
 
@@ -47,11 +46,6 @@
 - (void)removeRowAtIndex:(NSInteger)rowIndex
                inSection:(NSInteger)sectionIndex
            withAnimation:(UITableViewRowAnimation)animation;
-
-
-#pragma mark Frame Computation for Keyboard Animations
-
-- (CGRect)frameForKeyboardApprearingInRect:(CGRect)keyboardRect;
 
 
 #pragma mark Keyboard Support
