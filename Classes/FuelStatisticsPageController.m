@@ -72,7 +72,7 @@
     _scrollView.scrollsToTop = NO;
 
     // Hide pageControl
-    _pageControl.hidden = YES;
+    //_pageControl.hidden = YES;
 
     // Select preferred page
     dispatch_async (dispatch_get_main_queue(), ^{
