@@ -1,0 +1,25 @@
+{
+  "images" : [
+    {
+      "idiom" : "universal",
+      "scale" : "1x",
+      "filename" : "TableBackgroundFlat.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x",
+      "filename" : "TableBackgroundFlat@2x.png"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "TableBackgroundFlat-568h@2x.png",
+      "unassigned" : true,
+      "subtype" : "retina4",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  }
+}
