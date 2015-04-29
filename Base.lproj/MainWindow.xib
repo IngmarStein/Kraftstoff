@@ -29,14 +29,14 @@
         <tabBarController restorationIdentifier="Root" id="31" userLabel="TabBar Controller" customClass="NonRotatingTabBarController">
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <nil key="simulatedBottomBarMetrics"/>
-            <tabBar key="tabBar" contentMode="scaleToFill" id="32">
+            <tabBar key="tabBar" contentMode="scaleToFill" selectedItem="37" id="32">
                 <rect key="frame" x="0.0" y="431" width="320" height="49"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                 <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
             </tabBar>
             <viewControllers>
                 <navigationController restorationIdentifier="FillupNavigationController" title="Fill-Up" id="41">
-                    <tabBarItem key="tabBarItem" title="Fill-Up" image="Zapfhahn.png" id="45" userLabel="Tab Bar Item - Fill Up"/>
+                    <tabBarItem key="tabBarItem" title="Fill-Up" image="Zapfhahn" id="45" userLabel="Tab Bar Item - Fill Up"/>
                     <navigationBar key="navigationBar" opaque="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" id="42">
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -48,7 +48,7 @@
                     </viewControllers>
                 </navigationController>
                 <navigationController restorationIdentifier="CarNavigationController" title="Cars" id="9">
-                    <tabBarItem key="tabBarItem" tag="1" title="Cars" image="Cars.png" id="37"/>
+                    <tabBarItem key="tabBarItem" tag="1" title="Cars" image="Cars" id="37"/>
                     <navigationBar key="navigationBar" opaque="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" id="11">
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -64,8 +64,8 @@
         </tabBarController>
     </objects>
     <resources>
-        <image name="Cars.png" width="27" height="26"/>
-        <image name="Zapfhahn.png" width="27" height="26"/>
+        <image name="Cars" width="27" height="26"/>
+        <image name="Zapfhahn" width="27" height="26"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

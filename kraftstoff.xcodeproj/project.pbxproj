@@ -59,6 +59,7 @@
 		4DE5E432139A2D4E007EDB10 /* PickerTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE5E431139A2D4E007EDB10 /* PickerTableCell.m */; };
 		4DE963BA12CD045C007E7E16 /* FuelStatisticsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE963B812CD045C007E7E16 /* FuelStatisticsViewController.m */; };
 		4DF6DACD13C2868300703A1F /* AppWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF6DACC13C2868300703A1F /* AppWindow.m */; };
+		9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -162,6 +163,7 @@
 		9504F3C11AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelEventController.xib; sourceTree = "<group>"; };
 		9504F3C21AF141EC003FF5B8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainWindow.strings; sourceTree = "<group>"; };
 		9504F3C31AF14204003FF5B8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FuelStatisticsViewController.strings; sourceTree = "<group>"; };
+		9504F3C71AF144E8003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -346,14 +348,15 @@
 		4D19186E13BF9A0100ADAED6 /* XIBs */ = {
 			isa = PBXGroup;
 			children = (
-				4D0C9CF21392904200430C04 /* MainWindow.xib */,
-				4D0C9CF8139290CC00430C04 /* FuelCalculator.xib */,
-				4D0C9D011392912100430C04 /* CarViewController.xib */,
 				4D0C9D0C1392916A00430C04 /* CarConfigurationController.xib */,
+				4D0C9D011392912100430C04 /* CarViewController.xib */,
+				4D0C9CF8139290CC00430C04 /* FuelCalculator.xib */,
 				4D0C9D041392912800430C04 /* FuelEventController.xib */,
+				4D959D09142AA0EB0079A61A /* FuelEventEditor.xib */,
 				4D0C9D071392912B00430C04 /* FuelStatisticsPageController.xib */,
 				4D0C9D111392917F00430C04 /* FuelStatisticsViewController.xib */,
-				4D959D09142AA0EB0079A61A /* FuelEventEditor.xib */,
+				9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */,
+				4D0C9CF21392904200430C04 /* MainWindow.xib */,
 			);
 			name = XIBs;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				4D0C9D0F1392917F00430C04 /* FuelStatisticsViewController.xib in Resources */,
 				4D959D07142AA0EB0079A61A /* FuelEventEditor.xib in Resources */,
 				4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */,
+				9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */,
 				4DA74B74176A3C300042DC79 /* StartFlat.png in Resources */,
 				4DA74B77176A3C380042DC79 /* StartFlat@2x.png in Resources */,
 			);
@@ -742,6 +746,14 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
+		9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9504F3C71AF144E8003FF5B8 /* Base */,
+			);
+			name = "Launch Screen.xib";
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -750,7 +762,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -765,7 +776,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				PRODUCT_NAME = kraftstoff;
@@ -779,8 +789,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_VERSION = "";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -798,8 +807,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_VERSION = "";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
