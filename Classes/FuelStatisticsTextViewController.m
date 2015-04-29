@@ -264,7 +264,7 @@ static CGFloat const GridTextHeight = 23.0;
             CGSize size = [text sizeWithAttributes:valueAttributes];
 
             x = floor ((self.view.bounds.size.width -  size.width)/2.0);
-            y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0 - 65.0);
+            y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0);
 
             [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
         }

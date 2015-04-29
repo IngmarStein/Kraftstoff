@@ -145,7 +145,7 @@ static NSInteger maxEditHelpCounter = 1;
     if (self.editing == NO && carCount == 0) {
 
         helpImageName = @"StartFlat";
-        helpViewFrame = CGRectMake (0, 0, 320, 70);
+        helpViewFrame = CGRectMake (0, 0, self.view.bounds.size.width, 70);
 
         [defaults setObject:@0 forKey:@"editHelpCounter"];
 
@@ -157,7 +157,7 @@ static NSInteger maxEditHelpCounter = 1;
 
             [defaults setObject:@(++editCounter) forKey:@"editHelpCounter"];
             helpImageName = @"EditFlat";
-            helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
+            helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, self.view.bounds.size.width, 92);
         }
     }
 
