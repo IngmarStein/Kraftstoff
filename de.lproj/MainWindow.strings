@@ -1,0 +1,18 @@
+
+/* Class = "UINavigationController"; title = "Fahrzeuge"; ObjectID = "9"; */
+"9.title" = "Fahrzeuge";
+
+/* Class = "UIViewController"; title = "Fahrzeuge"; ObjectID = "13"; */
+"13.title" = "Fahrzeuge";
+
+/* Class = "UITabBarItem"; title = "Fahrzeuge"; ObjectID = "37"; */
+"37.title" = "Fahrzeuge";
+
+/* Class = "UINavigationController"; title = "Tanken"; ObjectID = "41"; */
+"41.title" = "Tanken";
+
+/* Class = "UIViewController"; title = "Tanken"; ObjectID = "43"; */
+"43.title" = "Tanken";
+
+/* Class = "UITabBarItem"; title = "Tanken"; ObjectID = "45"; */
+"45.title" = "Tanken";

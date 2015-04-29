@@ -73,15 +73,6 @@
 		4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FuelStatisticsScrollView.m; sourceTree = "<group>"; };
 		4D0B7ACB15A9F2DF0012A62B /* NSDate+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Kraftstoff.h"; sourceTree = "<group>"; };
 		4D0B7ACC15A9F2DF0012A62B /* NSDate+Kraftstoff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Kraftstoff.m"; sourceTree = "<group>"; };
-		4D0C9CF11392904200430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		4D0C9CF31392905B00430C04 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		4D0C9CF7139290CC00430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelCalculator.xib; sourceTree = "<group>"; };
-		4D0C9D001392912100430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CarViewController.xib; sourceTree = "<group>"; };
-		4D0C9D031392912800430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelEventController.xib; sourceTree = "<group>"; };
-		4D0C9D061392912B00430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelStatisticsPageController.xib; sourceTree = "<group>"; };
-		4D0C9D0B1392916A00430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CarConfigurationController.xib; sourceTree = "<group>"; };
-		4D0C9D101392917F00430C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelStatisticsViewController.xib; sourceTree = "<group>"; };
-		4D0C9D12139291A600430C04 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/FuelStatisticsViewController.xib; sourceTree = "<group>"; };
 		4D184721123CF970008D7454 /* CarConfigurationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CarConfigurationController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D184722123CF970008D7454 /* CarConfigurationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarConfigurationController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D1899B514328AC0001434BD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -125,7 +116,6 @@
 		4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsTextViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D92C9CE14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDecimalNumber+Kraftstoff.h"; sourceTree = "<group>"; };
 		4D92C9CF14324BA50092CF57 /* NSDecimalNumber+Kraftstoff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDecimalNumber+Kraftstoff.m"; sourceTree = "<group>"; };
-		4D959D08142AA0EB0079A61A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelEventEditor.xib; sourceTree = "<group>"; };
 		4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = QuadInfoCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuadInfoCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DA74B65176A3A7C0042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/EditFlat.png; sourceTree = "<group>"; };
@@ -162,6 +152,16 @@
 		4DE963B812CD045C007E7E16 /* FuelStatisticsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DF6DACB13C2868300703A1F /* AppWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppWindow.h; path = Classes/AppWindow.h; sourceTree = "<group>"; };
 		4DF6DACC13C2868300703A1F /* AppWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppWindow.m; path = Classes/AppWindow.m; sourceTree = "<group>"; };
+		9504F3BA1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelStatisticsPageController.xib; sourceTree = "<group>"; };
+		9504F3BB1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelStatisticsViewController.xib; sourceTree = "<group>"; };
+		9504F3BC1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelEventEditor.xib; sourceTree = "<group>"; };
+		9504F3BD1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		9504F3BE1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelCalculator.xib; sourceTree = "<group>"; };
+		9504F3BF1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CarViewController.xib; sourceTree = "<group>"; };
+		9504F3C01AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CarConfigurationController.xib; sourceTree = "<group>"; };
+		9504F3C11AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelEventController.xib; sourceTree = "<group>"; };
+		9504F3C21AF141EC003FF5B8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainWindow.strings; sourceTree = "<group>"; };
+		9504F3C31AF14204003FF5B8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FuelStatisticsViewController.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -522,6 +522,7 @@
 				German,
 				en,
 				de,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -624,8 +625,8 @@
 		4D0C9CF21392904200430C04 /* MainWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9CF11392904200430C04 /* en */,
-				4D0C9CF31392905B00430C04 /* de */,
+				9504F3BD1AF141BD003FF5B8 /* Base */,
+				9504F3C21AF141EC003FF5B8 /* de */,
 			);
 			name = MainWindow.xib;
 			sourceTree = "<group>";
@@ -633,7 +634,7 @@
 		4D0C9CF8139290CC00430C04 /* FuelCalculator.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9CF7139290CC00430C04 /* en */,
+				9504F3BE1AF141BD003FF5B8 /* Base */,
 			);
 			name = FuelCalculator.xib;
 			sourceTree = "<group>";
@@ -641,7 +642,7 @@
 		4D0C9D011392912100430C04 /* CarViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9D001392912100430C04 /* en */,
+				9504F3BF1AF141BD003FF5B8 /* Base */,
 			);
 			name = CarViewController.xib;
 			sourceTree = "<group>";
@@ -649,7 +650,7 @@
 		4D0C9D041392912800430C04 /* FuelEventController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9D031392912800430C04 /* en */,
+				9504F3C11AF141BD003FF5B8 /* Base */,
 			);
 			name = FuelEventController.xib;
 			sourceTree = "<group>";
@@ -657,7 +658,7 @@
 		4D0C9D071392912B00430C04 /* FuelStatisticsPageController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9D061392912B00430C04 /* en */,
+				9504F3BA1AF141BD003FF5B8 /* Base */,
 			);
 			name = FuelStatisticsPageController.xib;
 			sourceTree = "<group>";
@@ -665,7 +666,7 @@
 		4D0C9D0C1392916A00430C04 /* CarConfigurationController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9D0B1392916A00430C04 /* en */,
+				9504F3C01AF141BD003FF5B8 /* Base */,
 			);
 			name = CarConfigurationController.xib;
 			sourceTree = "<group>";
@@ -673,8 +674,8 @@
 		4D0C9D111392917F00430C04 /* FuelStatisticsViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D0C9D101392917F00430C04 /* en */,
-				4D0C9D12139291A600430C04 /* de */,
+				9504F3BB1AF141BD003FF5B8 /* Base */,
+				9504F3C31AF14204003FF5B8 /* de */,
 			);
 			name = FuelStatisticsViewController.xib;
 			sourceTree = "<group>";
@@ -691,7 +692,7 @@
 		4D959D09142AA0EB0079A61A /* FuelEventEditor.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4D959D08142AA0EB0079A61A /* en */,
+				9504F3BC1AF141BD003FF5B8 /* Base */,
 			);
 			name = FuelEventEditor.xib;
 			sourceTree = "<group>";
