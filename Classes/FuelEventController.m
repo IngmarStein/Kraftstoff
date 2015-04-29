@@ -77,9 +77,7 @@
     self.navigationController.navigationBar.tintColor = nil;
 
     // Background image
-    NSString *imageName = [NSString stringWithFormat:@"TableBackgroundFlat%@", ([AppDelegate isLongPhone] ? @"-568h" : @"")];
-
-    self.tableView.backgroundView  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
+    self.tableView.backgroundView  = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TableBackgroundFlat"]];
     self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
 
     [[NSNotificationCenter defaultCenter]

@@ -35,31 +35,6 @@ CGFloat const StatusBarHeight     = 20.0;
 
 
 #pragma mark -
-#pragma mark Hardware/Software Version Check
-
-
-
-+ (BOOL)isLongPhone
-{
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        if ([UIScreen mainScreen].scale == 2.0f) {
-
-            CGSize result = [[UIScreen mainScreen] bounds].size;
-            CGFloat scale = [UIScreen mainScreen].scale;
-
-            result = CGSizeMake(result.width * scale, result.height * scale);
-            
-            if (result.height == 1136)
-                return YES;
-        }
-    }
-    
-    return NO;
-}
-
-
-
-#pragma mark -
 #pragma mark Application Lifecycle
 
 

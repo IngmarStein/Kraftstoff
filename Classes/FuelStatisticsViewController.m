@@ -11,8 +11,6 @@
 
 
 // Coordinates for the content area
-CGFloat StatisticsViewWidth = 480.0;
-CGFloat StatisticsViewHeight = 300.0;
 CGFloat StatisticsHeight = 214.0;
 CGFloat StatisticTransitionDuration = 0.3;
 
@@ -27,19 +25,6 @@ CGFloat StatisticTransitionDuration = 0.3;
 {
     NSInteger invalidationCounter;
     NSInteger expectedCounter;
-}
-
-
-
-#pragma mark -
-#pragma mark iPhone 5 and iOS7 Support
-
-
-
-+ (void)initialize
-{
-    if ([AppDelegate isLongPhone])
-        StatisticsViewWidth = 568.0;
 }
 
 

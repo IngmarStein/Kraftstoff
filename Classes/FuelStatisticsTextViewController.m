@@ -74,13 +74,12 @@ static CGFloat const GridTextHeight = 23.0;
 
 @implementation FuelStatisticsTextViewController
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     // Initialize contents of background view
-    UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+    UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
     {
         [self drawBackground];
 
@@ -96,28 +95,6 @@ static CGFloat const GridTextHeight = 23.0;
     if (visible)
         [self.scrollView flashScrollIndicators];
 }
-
-
-
-#pragma mark -
-#pragma mark iPhone 5 Support
-
-
-
-+ (void)initialize
-{
-    GridRightBorder    = 464.0;
-    GridWidth          = 448.0;
-    GridDesColumnWidth = (240.0 - GridLeftBorder);
-
-    if ([AppDelegate isLongPhone]) {
-
-        GridRightBorder    += 88.0;
-        GridWidth          += 88.0;
-        GridDesColumnWidth += 44.0;
-    }
-}
-
 
 
 #pragma mark -
@@ -230,7 +207,7 @@ static CGFloat const GridTextHeight = 23.0;
 
         CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, height), NO, 0.0);
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (self.view.bounds.size.width, height), NO, 0.0);
         {
             [self drawStatisticsForState:state withHeight:height];
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -254,10 +231,10 @@ static CGFloat const GridTextHeight = 23.0;
 
     // Background colors
     [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
+    CGContextFillRect (cgContext, self.view.bounds);
 
     [[UIColor blackColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28));
+    CGContextFillRect (cgContext, CGRectMake(0, 0, self.view.bounds.size.width, 28));
 }
 
 
@@ -266,7 +243,7 @@ static CGFloat const GridTextHeight = 23.0;
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
     [[UIColor clearColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake (0, 0, StatisticsViewWidth, height));
+    CGContextFillRect (cgContext, CGRectMake (0, 0, self.view.bounds.size.width, height));
 
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
     NSDictionary *labelAttributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]};
@@ -283,7 +260,7 @@ static CGFloat const GridTextHeight = 23.0;
             NSString *text = NSLocalizedString(@"Not enough data to display statistics", @"");
             CGSize size = [text sizeWithAttributes:valueAttributes];
 
-            x = floor ((StatisticsViewWidth -  size.width)/2.0);
+            x = floor ((self.view.bounds.size.width -  size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0 - 65.0);
 
             [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];

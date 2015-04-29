@@ -130,7 +130,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphRightBorder
 {
-    return StatisticGraphRightBorder + ([AppDelegate isLongPhone] ? 88.0 : 0.0);
+    return StatisticGraphRightBorder;
 }
 
 - (CGFloat)graphTopBorder
@@ -145,7 +145,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphWidth
 {
-    return StatisticGraphWidth + ([AppDelegate isLongPhone] ? 88.0 : 0.0);
+    return StatisticGraphWidth;
 }
 
 - (CGFloat)graphHeight
@@ -410,7 +410,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     // Create image data from resampled data
     if (state.contentImage == nil) {
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+        UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
         {
             [self drawFlatStatisticsForState:state];
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -435,10 +435,10 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     // Background colors
     [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
+    CGContextFillRect (cgContext, self.view.bounds);
 
     [[UIColor blackColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28.0));
+    CGContextFillRect (cgContext, CGRectMake(0, 0, self.view.bounds.size.width, 28.0));
 
 
     // Contents if there is a valid state
@@ -458,7 +458,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
             NSString *text = NSLocalizedString(@"Not enough data to display statistics", @"");
             CGSize size    = [text sizeWithAttributes:attributes];
 
-            x = floor ((StatisticsViewWidth - size.width)/2.0);
+            x = floor ((self.view.bounds.size.width - size.width)/2.0);
             y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0);
 
             [text drawAtPoint:CGPointMake (x, y) withAttributes:attributes];
@@ -483,7 +483,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
             [path removeAllPoints];
             [path moveToPoint:CGPointMake (self.graphLeftBorder,  0.25)];
-            [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, 0.25)];
+            [path addLineToPoint:CGPointMake (self.view.bounds.size.width - self.graphLeftBorder, 0.25)];
 
             CGContextSaveGState (cgContext);
             {
@@ -614,12 +614,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         [path removeAllPoints];
         [path moveToPoint:CGPointMake (self.graphLeftBorder, self.graphTopBorder + 0.25)];
-        [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphTopBorder + 0.25)];
+        [path addLineToPoint:CGPointMake (self.view.bounds.size.width - self.graphLeftBorder, self.graphTopBorder + 0.25)];
         [path stroke];
 
         [path removeAllPoints];
         [path moveToPoint:CGPointMake (self.graphLeftBorder, self.graphBottomBorder + 0.25)];
-        [path addLineToPoint:CGPointMake (StatisticsViewWidth - self.graphLeftBorder, self.graphBottomBorder + 0.25)];
+        [path addLineToPoint:CGPointMake (self.view.bounds.size.width - self.graphLeftBorder, self.graphBottomBorder + 0.25)];
         [path stroke];
 
 
@@ -678,7 +678,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     // Cache Miss => draw prelimary contents
     } else {
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+        UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
         {
             [self drawFlatStatisticsForState:nil];
             image = UIGraphicsGetImageFromCurrentImageContext();
@@ -803,7 +803,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                     lensLocation.y = rint (self.graphTopBorder + self.graphHeight * cell->data [minIndex].y);
 
                     // Image with value information
-                    UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
+                    UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
                     {
                         NSString *valueString = [NSString stringWithFormat:
                                                     [self averageFormatString:NO],
@@ -872,8 +872,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     if (infoRect.origin.x < self.graphLeftBorder)
         infoRect.origin.x = self.graphLeftBorder;
 
-    if (infoRect.origin.x > StatisticsViewWidth - self.graphLeftBorder - infoRect.size.width)
-        infoRect.origin.x = StatisticsViewWidth - self.graphLeftBorder - infoRect.size.width;
+    if (infoRect.origin.x > self.view.bounds.size.width - self.graphLeftBorder - infoRect.size.width)
+        infoRect.origin.x = self.view.bounds.size.width - self.graphLeftBorder - infoRect.size.width;
 
     // Info box
     path = [UIBezierPath bezierPathWithRoundedRect:infoRect

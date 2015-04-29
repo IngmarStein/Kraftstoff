@@ -65,12 +65,6 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
 @property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 
-#pragma mark Hardware/Software Version Check
-
-+ (BOOL)isLongPhone;
-
-
-
 #pragma mark Color Gradients
 
 // Create a shadow layer that fades downwards / or upwards

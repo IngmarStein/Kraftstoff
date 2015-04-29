@@ -32,6 +32,16 @@
     return self;
 }
 
+- (void)viewDidLayoutSubviews {
+	[super viewDidLayoutSubviews];
+
+	for (NSInteger page = 0; page < _pageControl.numberOfPages; page++) {
+		UIViewController *controller = self.childViewControllers[page];
+		controller.view.frame = [self frameForPage:page];
+	}
+
+	_scrollView.contentSize = CGSizeMake (_scrollView.frame.size.width * _pageControl.numberOfPages, _scrollView.frame.size.height);
+}
 
 - (void)viewDidLoad
 {
@@ -54,17 +64,14 @@
         controller.selectedCar = self.selectedCar;
 
         [self addChildViewController:controller];
-        controller.view.frame = [self frameForPage:page];
 
         [_scrollView addSubview:controller.view];
     }
 
     // Configure scroll view
-    _scrollView.contentSize = CGSizeMake (StatisticsViewWidth * _pageControl.numberOfPages, StatisticsViewHeight);
     _scrollView.scrollsToTop = NO;
 
-    // Enlarge scrollView, hide pageControl
-    _scrollView.frame = self.view.frame;
+    // Hide pageControl
     _pageControl.hidden = YES;
 
     // Select preferred page
@@ -192,7 +199,7 @@
 
         NSInteger page = (_pageControl.currentPage + i) % _pageControl.numberOfPages;
 
-        FuelStatisticsViewController *controller = (self.childViewControllers)[page];
+        FuelStatisticsViewController *controller = self.childViewControllers[page];
         [controller setDisplayedNumberOfMonths:numberOfMonths];
     }
 }
@@ -226,7 +233,7 @@
 {
     if (pageControlUsed == NO) {
 
-        NSInteger newPage = floor ((_scrollView.contentOffset.x - StatisticsViewWidth*0.5) / StatisticsViewWidth) + 1;
+        NSInteger newPage = floor ((_scrollView.contentOffset.x - _scrollView.frame.size.width*0.5) / _scrollView.frame.size.width) + 1;
         newPage = [self.scrollView pageForVisiblePage:newPage];
 
         if (_pageControl.currentPage != newPage) {
