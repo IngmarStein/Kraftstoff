@@ -10,12 +10,10 @@
 
 
 // Coordinates for statistics graph
-static CGFloat const StatisticGraphLeftBorder = 10.0;
-static CGFloat const StatisticGraphRightBorder = 430.0;
+static CGFloat const StatisticGraphMargin = 10.0;
+static CGFloat const StatisticGraphYAxisLabelWidth = 50.0;
+static CGFloat const StatisticGraphXAxisLabelHeight = 32.0;
 static CGFloat const StatisticGraphTopBorder = 58.0;
-static CGFloat const StatisticGraphBottomBorder = 240.0;
-static CGFloat const StatisticGraphWidth = 420.0;
-static CGFloat const StatisticGraphHeight = 182.0;
 
 // Coordinates for the zoom-track
 static CGFloat const StatisticTrackYPosition = 40.0;
@@ -125,12 +123,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphLeftBorder
 {
-    return StatisticGraphLeftBorder;
+    return StatisticGraphMargin;
 }
 
 - (CGFloat)graphRightBorder
 {
-    return StatisticGraphRightBorder;
+    return self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth;
 }
 
 - (CGFloat)graphTopBorder
@@ -140,17 +138,17 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphBottomBorder
 {
-    return StatisticGraphBottomBorder + 32.0;
+    return self.graphTopBorder + self.graphHeight;
 }
 
 - (CGFloat)graphWidth
 {
-    return StatisticGraphWidth;
+    return self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth - StatisticGraphMargin;
 }
 
 - (CGFloat)graphHeight
 {
-    return StatisticGraphHeight + 32.0;
+    return self.view.bounds.size.height - self.graphTopBorder - StatisticGraphXAxisLabelHeight;
 }
 
 
@@ -503,7 +501,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         CGContextRestoreGState (cgContext);
 
 
-        // Axis decription for horizontal marker lines markers
+        // Axis description for horizontal marker lines markers
         CGContextSaveGState (cgContext);
         {
             NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor whiteColor]};
@@ -571,7 +569,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         CGContextRestoreGState (cgContext);
 
         
-        // Pattern fill below cure
+        // Pattern fill below curve
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
