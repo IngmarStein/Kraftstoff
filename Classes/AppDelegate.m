@@ -170,7 +170,7 @@ CGFloat const StatusBarHeight     = 20.0;
         [progress setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [progress startAnimating];
 
-        importAlert = [[UIAlertView alloc] initWithTitle:_I18N(@"Importing")
+        importAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Importing", @"")
                                                  message:@""
                                                 delegate:nil
                                        cancelButtonTitle:nil
@@ -227,9 +227,9 @@ CGFloat const StatusBarHeight     = 20.0;
     NSString *format;
     
     if (carCount == 1)
-        format = _I18N(((eventCount == 1) ? @"Imported %d car with %d fuel event."  : @"Imported %d car with %d fuel events."));
+        format = NSLocalizedString(((eventCount == 1) ? @"Imported %d car with %d fuel event."  : @"Imported %d car with %d fuel events."), @"");
     else
-        format = _I18N(((eventCount == 1) ? @"Imported %d cars with %d fuel event." : @"Imported %d cars with %d fuel events."));
+        format = NSLocalizedString(((eventCount == 1) ? @"Imported %d cars with %d fuel event." : @"Imported %d cars with %d fuel events."), @"");
 
     return [NSString stringWithFormat:format, carCount, eventCount];
 }
@@ -283,17 +283,17 @@ CGFloat const StatusBarHeight     = 20.0;
                                [self hideImportAlert];
 
                                 NSString *title = (success)
-                                                     ? _I18N(@"Import Finished")
-                                                     : _I18N(@"Import Failed");
+                                                     ? NSLocalizedString(@"Import Finished", @"")
+                                                     : NSLocalizedString(@"Import Failed", @"");
 
                                 NSString *message = (success)
                                                      ? [self pluralizedImportMessageForCarCount:numCars eventCount:numEvents]
-                                                     : _I18N(@"No valid CSV-data could be found.");
+                                                     : NSLocalizedString(@"No valid CSV-data could be found.", @"");
 
                                 [[[UIAlertView alloc] initWithTitle:title
                                                             message:message
                                                            delegate:nil
-                                                  cancelButtonTitle:_I18N(@"OK")
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                                   otherButtonTitles:nil] show];
                             });
 
@@ -303,10 +303,10 @@ CGFloat const StatusBarHeight     = 20.0;
                             ^{
                                 [self hideImportAlert];
 
-                                [[[UIAlertView alloc] initWithTitle:_I18N(@"Import Failed")
-                                                            message:_I18N(@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.")
+                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import Failed", @"")
+                                                            message:NSLocalizedString(@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", @"")
                                                            delegate:nil
-                                                  cancelButtonTitle:_I18N(@"OK")
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", @"")
                                                   otherButtonTitles:nil] show];
                             });
         }
@@ -778,8 +778,8 @@ CGFloat const StatusBarHeight     = 20.0;
                                                                error:&error]) {
 
             errorDescription = [error localizedDescription];
-            [[[UIAlertView alloc] initWithTitle:_I18N(@"Can't Open Database")
-                                        message:_I18N(@"Sorry, the application database cannot be opened. Please quit the application with the Home button.")
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Open Database", @"")
+                                        message:NSLocalizedString(@"Sorry, the application database cannot be opened. Please quit the application with the Home button.", @"")
                                        delegate:self
                               cancelButtonTitle:nil
                               otherButtonTitles:@"Ok", nil] show];
@@ -799,8 +799,8 @@ CGFloat const StatusBarHeight     = 20.0;
         if (![context save:&error]) {
 
             errorDescription = [error localizedDescription];
-            [[[UIAlertView alloc] initWithTitle:_I18N(@"Can't Save Database")
-                                        message:_I18N(@"Sorry, the application database cannot be saved. Please quit the application with the Home button.")
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Save Database", @"")
+                                        message:NSLocalizedString(@"Sorry, the application database cannot be saved. Please quit the application with the Home button.", @"")
                                        delegate:self
                               cancelButtonTitle:nil
                               otherButtonTitles:@"Ok", nil] show];
@@ -1537,12 +1537,12 @@ CGFloat const StatusBarHeight     = 20.0;
 {
     switch (unit) {
 
-        case KSFuelConsumptionLitersPer100km: return _I18N(@"l/100km");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"km/l");
-        case KSFuelConsumptionMilesPerGallonUS: return _I18N(@"mpg");
-        case KSFuelConsumptionMilesPerGallonUK: return _I18N(@"mpg.uk");
-        case KSFuelConsumptionGP10KUS: return _I18N(@"gp10k");
-        case KSFuelConsumptionGP10KUK: return _I18N(@"gp10k.uk");
+        case KSFuelConsumptionLitersPer100km: return NSLocalizedString(@"l/100km", @"");
+        case KSFuelConsumptionKilometersPerLiter: return NSLocalizedString(@"km/l", @"");
+        case KSFuelConsumptionMilesPerGallonUS: return NSLocalizedString(@"mpg", @"");
+        case KSFuelConsumptionMilesPerGallonUK: return NSLocalizedString(@"mpg.uk", @"");
+        case KSFuelConsumptionGP10KUS: return NSLocalizedString(@"gp10k", @"");
+        case KSFuelConsumptionGP10KUK: return NSLocalizedString(@"gp10k.uk", @"");
         default: return @"";
     }
 }
@@ -1552,12 +1552,12 @@ CGFloat const StatusBarHeight     = 20.0;
 {
     switch (unit) {
 
-        case KSFuelConsumptionLitersPer100km: return _I18N(@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
-        case KSFuelConsumptionMilesPerGallonUS: return _I18N(@"Miles per Gallon (US)");
-        case KSFuelConsumptionMilesPerGallonUK: return _I18N(@"Miles per Gallon (UK)");
-        case KSFuelConsumptionGP10KUS: return _I18N(@"Gallons per 10000 Miles (US)");
-        case KSFuelConsumptionGP10KUK: return _I18N(@"Gallons per 10000 Miles (UK)");
+        case KSFuelConsumptionLitersPer100km: return NSLocalizedString(@"Liters per 100 Kilometers", @"");
+        case KSFuelConsumptionKilometersPerLiter: return NSLocalizedString(@"Kilometers per Liter", @"");
+        case KSFuelConsumptionMilesPerGallonUS: return NSLocalizedString(@"Miles per Gallon (US)", @"");
+        case KSFuelConsumptionMilesPerGallonUK: return NSLocalizedString(@"Miles per Gallon (UK)", @"");
+        case KSFuelConsumptionGP10KUS: return NSLocalizedString(@"Gallons per 10000 Miles (US)", @"");
+        case KSFuelConsumptionGP10KUK: return NSLocalizedString(@"Gallons per 10000 Miles (UK)", @"");
         default: return @"";
     }
 }
@@ -1567,12 +1567,12 @@ CGFloat const StatusBarHeight     = 20.0;
 {
     switch (unit) {
 
-        case KSFuelConsumptionLitersPer100km: return _I18N(@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
-        case KSFuelConsumptionMilesPerGallonUS: return _I18N(@"Miles per Gallon (US)");
-        case KSFuelConsumptionMilesPerGallonUK: return _I18N(@"Miles per Gallon (UK)");
-        case KSFuelConsumptionGP10KUS: return _I18N(@"gp10k_short_us");
-        case KSFuelConsumptionGP10KUK: return _I18N(@"gp10k_short_uk");
+        case KSFuelConsumptionLitersPer100km: return NSLocalizedString(@"Liters per 100 Kilometers", @"");
+        case KSFuelConsumptionKilometersPerLiter: return NSLocalizedString(@"Kilometers per Liter", @"");
+        case KSFuelConsumptionMilesPerGallonUS: return NSLocalizedString(@"Miles per Gallon (US)", @"");
+        case KSFuelConsumptionMilesPerGallonUK: return NSLocalizedString(@"Miles per Gallon (UK)", @"");
+        case KSFuelConsumptionGP10KUS: return NSLocalizedString(@"gp10k_short_us", @"");
+        case KSFuelConsumptionGP10KUK: return NSLocalizedString(@"gp10k_short_uk", @"");
         default: return @"";
     }
 }
@@ -1582,12 +1582,12 @@ CGFloat const StatusBarHeight     = 20.0;
 {
     switch (unit) {
 
-        case KSFuelConsumptionLitersPer100km: return _I18N(@"Liters per 100 Kilometers");
-        case KSFuelConsumptionKilometersPerLiter: return _I18N(@"Kilometers per Liter");
+        case KSFuelConsumptionLitersPer100km: return NSLocalizedString(@"Liters per 100 Kilometers", @"");
+        case KSFuelConsumptionKilometersPerLiter: return NSLocalizedString(@"Kilometers per Liter", @"");
         case KSFuelConsumptionMilesPerGallonUS:
-        case KSFuelConsumptionMilesPerGallonUK: return _I18N(@"Miles per Gallon");
+        case KSFuelConsumptionMilesPerGallonUK: return NSLocalizedString(@"Miles per Gallon", @"");
         case KSFuelConsumptionGP10KUS:
-        case KSFuelConsumptionGP10KUK: return _I18N(@"Gallons per 10000 Miles");
+        case KSFuelConsumptionGP10KUK: return NSLocalizedString(@"Gallons per 10000 Miles", @"");
         default: return @"";
     }
 }
@@ -1607,17 +1607,17 @@ CGFloat const StatusBarHeight     = 20.0;
     if (plural) {
 
         switch (unit) {
-            case KSVolumeLiter: return _I18N(@"Liters");
-            case KSVolumeGalUS: return (discernGallons) ? _I18N(@"Gallons (US)") : _I18N(@"Gallons");
-            default: return (discernGallons) ? _I18N(@"Gallons (UK)") : _I18N(@"Gallons");
+            case KSVolumeLiter: return NSLocalizedString(@"Liters", @"");
+            case KSVolumeGalUS: return (discernGallons) ? NSLocalizedString(@"Gallons (US)", @"") : NSLocalizedString(@"Gallons", @"");
+            default: return (discernGallons) ? NSLocalizedString(@"Gallons (UK)", @"") : NSLocalizedString(@"Gallons", @"");
         }
 
     } else {
 
         switch (unit) {
-            case KSVolumeLiter: return _I18N(@"Liter");
-            case KSVolumeGalUS: return (discernGallons) ? _I18N(@"Gallon (US)") : _I18N(@"Gallon");
-            default: return (discernGallons) ? _I18N(@"Gallon (UK)") : _I18N(@"Gallon");
+            case KSVolumeLiter: return NSLocalizedString(@"Liter", @"");
+            case KSVolumeGalUS: return (discernGallons) ? NSLocalizedString(@"Gallon (US)", @"") : NSLocalizedString(@"Gallon", @"");
+            default: return (discernGallons) ? NSLocalizedString(@"Gallon (UK)", @"") : NSLocalizedString(@"Gallon", @"");
         }
     }
 }
@@ -1626,9 +1626,9 @@ CGFloat const StatusBarHeight     = 20.0;
 + (NSString *)fuelPriceUnitDescription:(KSVolume)unit
 {
     if (KSVolumeIsMetric(unit))
-        return _I18N(@"Price per Liter");
+        return NSLocalizedString(@"Price per Liter", @"");
     else
-        return _I18N(@"Price per Gallon");
+        return NSLocalizedString(@"Price per Gallon", @"");
 }
 
 
@@ -1644,9 +1644,9 @@ CGFloat const StatusBarHeight     = 20.0;
 + (NSString *)odometerUnitDescription:(KSDistance)unit pluralization:(BOOL)plural
 {
     if (plural)
-        return (KSDistanceIsMetric(unit)) ? _I18N(@"Kilometers") : _I18N(@"Miles");
+        return (KSDistanceIsMetric(unit)) ? NSLocalizedString(@"Kilometers", @"") : NSLocalizedString(@"Miles", @"");
     else
-        return (KSDistanceIsMetric(unit)) ? _I18N(@"Kilometer")  : _I18N(@"Mile");
+        return (KSDistanceIsMetric(unit)) ? NSLocalizedString(@"Kilometer", @"")  : NSLocalizedString(@"Mile", @"");
 }
 
 @end

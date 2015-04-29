@@ -2,6 +2,7 @@
 //
 // Kraftstoff
 
+#import <UIKit/UIKit.h>
 
 @interface PageCell : UITableViewCell {}
 

@@ -5,6 +5,8 @@
 
 #import "PageViewController.h"
 #import "EditablePageCell.h"
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 
 @interface FuelCalculatorController : PageViewController <EditablePageCellDelegate, UIActionSheetDelegate, NSFetchedResultsControllerDelegate>

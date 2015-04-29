@@ -457,7 +457,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         {
             NSDictionary *attributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor whiteColor]};
 
-            NSString *text = _I18N(@"Not enough data to display statistics");
+            NSString *text = NSLocalizedString(@"Not enough data to display statistics", @"");
             CGSize size    = [text sizeWithAttributes:attributes];
 
             x = floor ((StatisticsViewWidth - size.width)/2.0);

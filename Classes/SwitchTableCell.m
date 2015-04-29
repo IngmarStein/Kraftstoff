@@ -68,7 +68,7 @@ static CGFloat const margin = 8.0;
     BOOL isON = [[self.delegate valueForIdentifier:self.valueIdentifier] boolValue];
 
     [self.valueSwitch setOn:isON];
-    [self.valueLabel setText:_I18N(isON ? @"Yes" : @"No")];
+    [self.valueLabel setText:NSLocalizedString(isON ? @"Yes" : @"No", @"")];
 
     BOOL showAlternate = [[self.delegate valueForIdentifier:@"showValueLabel"] boolValue];
 
@@ -109,7 +109,7 @@ static CGFloat const margin = 8.0;
     BOOL isON = [sender isOn];
 
     [self.delegate valueChanged:@(isON) identifier:self.valueIdentifier];
-    [self.valueLabel setText:_I18N(isON ? @"Yes" : @"No")];
+    [self.valueLabel setText:NSLocalizedString(isON ? @"Yes" : @"No", @"")];
 }
 
 @end

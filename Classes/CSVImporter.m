@@ -223,7 +223,7 @@
         NSString *model = modelForID[carID];
 
         if (model == nil)
-            model = [NSString stringWithFormat:@"%@", _I18N(@"Imported Car")];
+            model = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Imported Car", @"")];
 
         if ([model length] > maximumTextFieldLength)
             model = [model substringToIndex:maximumTextFieldLength];

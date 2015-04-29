@@ -322,10 +322,10 @@
 
 - (void)showRevertActionSheet
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Revert Changes for Event?")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Revert Changes for Event?", @"")
                                                        delegate:self
-                                              cancelButtonTitle:_I18N(@"Cancel")
-                                         destructiveButtonTitle:_I18N(@"Revert")
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
+                                         destructiveButtonTitle:NSLocalizedString(@"Revert", @"")
                                               otherButtonTitles:nil];
     
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
@@ -384,7 +384,7 @@
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                       [[AppDelegate sharedCurrencyFormatter]   stringFromNumber:cost],
-                                      _I18N(@"/"),
+                                      NSLocalizedString(@"/", @""),
                                       [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:consumption],
                                       [AppDelegate consumptionUnitString:consumptionUnit]];
 
@@ -410,7 +410,7 @@
     [self addRowAtIndex:0
               inSection:0
               cellClass:[DateEditTableCell class]
-               cellData:@{@"label": _I18N(@"Date"),
+               cellData:@{@"label": NSLocalizedString(@"Date", @""),
                           @"formatter": [AppDelegate sharedDateTimeFormatter],
                           @"valueIdentifier": @"date"}
           withAnimation:animation];
@@ -420,7 +420,7 @@
     [self addRowAtIndex:1
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label": _I18N(@"Distance"),
+               cellData:@{@"label": NSLocalizedString(@"Distance", @""),
                           @"suffix": [@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
                           @"formatter": [AppDelegate sharedDistanceFormatter],
                           @"valueIdentifier": @"distance"}
@@ -449,7 +449,7 @@
     [self addRowAtIndex:4
               inSection:0
               cellClass:[SwitchTableCell class]
-               cellData:@{@"label": _I18N(@"Full Fill-Up"),
+               cellData:@{@"label": NSLocalizedString(@"Full Fill-Up", @""),
                           @"valueIdentifier": @"filledUp"}
           withAnimation:animation];
 

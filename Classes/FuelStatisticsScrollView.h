@@ -3,6 +3,8 @@
 //  Scrollview that allows infinite circular scrolling through 3 or more pages
 //
 
+#import <UIKit/UIKit.h>
+
 @interface FuelStatisticsScrollView : UIScrollView
 
 // Returns the logical page that is displayed in the currently visible actual page

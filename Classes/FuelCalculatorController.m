@@ -57,7 +57,7 @@ typedef enum
     // Title bar
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(endEditingMode:)];
     self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction:)];
-    self.title = _I18N(@"Fill-Up");
+    self.title = NSLocalizedString(@"Fill-Up", @"");
 
     // Remove tint from bavigation bar
     self.navigationController.navigationBar.tintColor = nil;
@@ -284,7 +284,7 @@ typedef enum
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                         [[AppDelegate sharedCurrencyFormatter]   stringFromNumber:cost],
-                                        _I18N(@"/"),
+                                        NSLocalizedString(@"/", @""),
                                         [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:consumption],
                                         [AppDelegate consumptionUnitString:consumptionUnit]];
 
@@ -332,7 +332,7 @@ typedef enum
         [self addRowAtIndex:0 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":_I18N(@"Distance"),
+                   cellData:@{@"label":NSLocalizedString(@"Distance", @""),
                               @"suffix":[@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
                               @"formatter":[AppDelegate sharedDistanceFormatter],
                               @"valueIdentifier":@"distance"}
@@ -396,7 +396,7 @@ typedef enum
             [self addRowAtIndex:0
                       inSection:0
                       cellClass:[CarTableCell class]
-                       cellData:@{@"label":_I18N(@"Car"),
+                       cellData:@{@"label":NSLocalizedString(@"Car", @""),
                                   @"valueIdentifier":@"car",
                                   @"fetchedObjects":self.fetchedResultsController.fetchedObjects}
                   withAnimation:animation];
@@ -413,7 +413,7 @@ typedef enum
     [self addRowAtIndex:(self.car) ? 1 : 0
               inSection:0
               cellClass:[DateEditTableCell class]
-               cellData:@{@"label":_I18N(@"Date"),
+               cellData:@{@"label":NSLocalizedString(@"Date", @""),
                           @"formatter":[AppDelegate sharedDateTimeFormatter],
                           @"valueIdentifier":@"date",
                           @"valueTimestamp":@"lastChangeDate",
@@ -432,7 +432,7 @@ typedef enum
         [self addRowAtIndex:(self.car) ? 5 : 4
                   inSection:0
                   cellClass:[SwitchTableCell class]
-                   cellData:@{@"label":_I18N(@"Full Fill-Up"),
+                   cellData:@{@"label":NSLocalizedString(@"Full Fill-Up", @""),
                               @"valueIdentifier":@"filledUp"}
               withAnimation:animation];
 
@@ -775,7 +775,7 @@ typedef enum
                                 [distanceFormatter stringFromNumber:[AppDelegate distanceForKilometers:convDistance withUnit:odometerUnit]],
                                 [AppDelegate odometerUnitString:odometerUnit]];
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Convert from odometer reading into distance? Please choose the distance driven:")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Convert from odometer reading into distance? Please choose the distance driven:", @"")
                                                        delegate:self
                                               cancelButtonTitle:rawButton
                                          destructiveButtonTitle:convButton

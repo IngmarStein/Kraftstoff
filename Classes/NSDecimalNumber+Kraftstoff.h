@@ -2,6 +2,7 @@
 //
 // Kraftstoff
 
+#import <Foundation/Foundation.h>
 
 @interface NSDecimalNumber (Kraftstoff)
 

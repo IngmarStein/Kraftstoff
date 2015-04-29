@@ -2,6 +2,7 @@
 //
 // TableView cells with four labels for information.
 
+#import <UIKit/UIKit.h>
 
 @interface QuadInfoCell : UITableViewCell
 

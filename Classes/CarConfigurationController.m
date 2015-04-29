@@ -58,7 +58,7 @@
                                                                             target:self
                                                                             action:@selector(handleCancel:)];
 
-    item.title = (editingExistingObject) ? _I18N(@"Edit Car") : _I18N(@"New Car");
+    item.title = (editingExistingObject) ? NSLocalizedString(@"Edit Car", @"") : NSLocalizedString(@"New Car", @"");
 
     [self setToolbarItems:@[item] animated:NO];
 
@@ -167,7 +167,7 @@
     [self addRowAtIndex:3
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label":           _I18N(@"Odometer Reading"),
+               cellData:@{@"label":           NSLocalizedString(@"Odometer Reading", @""),
                            @"suffix":          suffix,
                            @"formatter":       [AppDelegate sharedDistanceFormatter],
                            @"valueIdentifier":@"odometer"}
@@ -187,7 +187,7 @@
     [self addRowAtIndex:0
               inSection:0
               cellClass:[TextEditTableCell class]
-               cellData:@{@"label":           _I18N(@"Name"),
+               cellData:@{@"label":           NSLocalizedString(@"Name", @""),
                            @"valueIdentifier":@"name"}
           withAnimation:UITableViewRowAnimationNone];
 
@@ -197,7 +197,7 @@
     [self addRowAtIndex:1
               inSection:0
               cellClass:[TextEditTableCell class]
-               cellData:@{@"label":             _I18N(@"License Plate"),
+               cellData:@{@"label":             NSLocalizedString(@"License Plate", @""),
                            @"valueIdentifier":   @"plate",
                            @"autocapitalizeAll":@YES}
           withAnimation:UITableViewRowAnimationNone];
@@ -212,7 +212,7 @@
     [self addRowAtIndex:2
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Odometer Type"),
+               cellData:@{@"label":           NSLocalizedString(@"Odometer Type", @""),
                            @"valueIdentifier":@"odometerUnit",
                            @"labels":          pickerLabels}
           withAnimation:UITableViewRowAnimationNone];
@@ -231,7 +231,7 @@
     [self addRowAtIndex:4
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Fuel Unit"),
+               cellData:@{@"label":           NSLocalizedString(@"Fuel Unit", @""),
                            @"valueIdentifier":@"fuelUnit",
                            @"labels":          pickerLabels}
           withAnimation:UITableViewRowAnimationNone];
@@ -257,7 +257,7 @@
     [self addRowAtIndex:5
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Mileage"),
+               cellData:@{@"label":           NSLocalizedString(@"Mileage", @""),
                            @"valueIdentifier":@"fuelConsumptionUnit",
                            @"labels":          pickerLabels,
                            @"shortLabels":     pickerShortLabels}
@@ -380,12 +380,12 @@
 {
     isShowingCancelSheet = YES;
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:editingExistingObject ? _I18N(@"Revert Changes for Car?")
-                                                                                      : _I18N(@"Delete the newly created Car?")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:editingExistingObject ? NSLocalizedString(@"Revert Changes for Car?", @"")
+                                                                                      : NSLocalizedString(@"Delete the newly created Car?", @"")
                                                        delegate:self
-                                              cancelButtonTitle: _I18N(@"Cancel")
-                                         destructiveButtonTitle:editingExistingObject ? _I18N(@"Revert")
-                                                                                      : _I18N(@"Delete")
+                                              cancelButtonTitle: NSLocalizedString(@"Cancel", @"")
+                                         destructiveButtonTitle:editingExistingObject ? NSLocalizedString(@"Revert", @"")
+                                                                                      : NSLocalizedString(@"Delete", @"")
                                               otherButtonTitles:nil];
 
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;

@@ -2,6 +2,7 @@
 //
 // Kraftstoff
 
+#import <UIKit/UIKit.h>
 
 @interface PageViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 {

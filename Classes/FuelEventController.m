@@ -292,10 +292,10 @@
 
     NSMutableString *dataString = [NSMutableString stringWithCapacity:4096];
 
-    [dataString appendString:_I18N(@"yyyy-MM-dd")];
+    [dataString appendString:NSLocalizedString(@"yyyy-MM-dd", @"")];
     [dataString appendString:@";"];
 
-    [dataString appendString:_I18N(@"HH:mm")];
+    [dataString appendString:NSLocalizedString(@"HH:mm", @"")];
     [dataString appendString:@";"];
 
     [dataString appendString:[AppDelegate odometerUnitDescription:odometerUnit pluralization:YES]];
@@ -304,7 +304,7 @@
     [dataString appendString:[AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:YES]];
     [dataString appendString:@";"];
 
-    [dataString appendString:_I18N(@"Full Fill-Up")];
+    [dataString appendString:NSLocalizedString(@"Full Fill-Up", @"")];
     [dataString appendString:@";"];
 
     [dataString appendString:[AppDelegate fuelPriceUnitDescription:fuelUnit]];
@@ -339,7 +339,7 @@
          [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
          [numberFormatter stringFromNumber:[AppDelegate distanceForKilometers:distance withUnit:odometerUnit]],
          [numberFormatter stringFromNumber:[AppDelegate volumeForLiters:fuelVolume withUnit:fuelUnit]],
-         [[managedObject valueForKey:@"filledUp"] boolValue] ? _I18N(@"Yes") : _I18N(@"No"),
+         [[managedObject valueForKey:@"filledUp"] boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @""),
          [numberFormatter stringFromNumber:[AppDelegate pricePerUnit:price withUnit:fuelUnit]],
 
          [[managedObject valueForKey:@"filledUp"] boolValue]
@@ -373,15 +373,15 @@
 
         switch (fetchCount) {
 
-            case 0:  period = _I18N(@""); break;
-            case 1:  period = [NSString stringWithFormat:_I18N(@"on %@"), from]; break;
-            default:period = [NSString stringWithFormat:_I18N(@"in the period from %@ to %@"), from, to]; break;
+            case 0:  period = NSLocalizedString(@"", @""); break;
+            case 1:  period = [NSString stringWithFormat:NSLocalizedString(@"on %@", @""), from]; break;
+            default:period = [NSString stringWithFormat:NSLocalizedString(@"in the period from %@ to %@", @""), from, to]; break;
         }
 
-        count = [NSString stringWithFormat:_I18N(((fetchCount == 1) ? @"%d item" : @"%d items")), fetchCount];
+        count = [NSString stringWithFormat:NSLocalizedString(((fetchCount == 1) ? @"%d item" : @"%d items"), @""), fetchCount];
     }
 
-    return [NSString stringWithFormat:_I18N(@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n"),
+    return [NSString stringWithFormat:NSLocalizedString(@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", @""),
             [_selectedCar valueForKey:@"name"],
             [_selectedCar valueForKey:@"numberPlate"],
             period,
@@ -405,11 +405,11 @@
 
     if ([data writeToURL:[self exportURL] options:NSDataWritingFileProtectionComplete error:&error] == NO) {
 
-        [[[UIAlertView alloc] initWithTitle:_I18N(@"Export Failed")
-                                    message:_I18N(@"Sorry, could not save the CSV-data for export.")
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Export Failed", @"")
+                                    message:NSLocalizedString(@"Sorry, could not save the CSV-data for export.", @"")
                                    delegate:self
                           cancelButtonTitle:nil
-                          otherButtonTitles:_I18N(@"OK"), nil] show];
+                          otherButtonTitles:NSLocalizedString(@"OK", @""), nil] show];
         return;
     }
 
@@ -422,11 +422,11 @@
 
     if ([openInController presentOpenInMenuFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES] == NO) {
 
-        [[[UIAlertView alloc] initWithTitle:_I18N(@"Open In Failed")
-                                    message:_I18N(@"Sorry, there seems to be no compatible App to open the data.")
+        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Open In Failed", @"")
+                                    message:NSLocalizedString(@"Sorry, there seems to be no compatible App to open the data.", @"")
                                    delegate:self
                           cancelButtonTitle:nil
-                          otherButtonTitles:_I18N(@"OK"), nil] show];
+                          otherButtonTitles:NSLocalizedString(@"OK", @""), nil] show];
 
         openInController = nil;
         return;
@@ -458,7 +458,7 @@
 
         // Setup the message
         [mailComposeController setMailComposeDelegate:self];
-        [mailComposeController setSubject:[NSString stringWithFormat:_I18N(@"Your fuel data for %@"), [_selectedCar valueForKey:@"numberPlate"]]];
+        [mailComposeController setSubject:[NSString stringWithFormat:NSLocalizedString(@"Your fuel data for %@", @""), [_selectedCar valueForKey:@"numberPlate"]]];
         [mailComposeController setMessageBody:[self exportTextDescription] isHTML:NO];
         [mailComposeController addAttachmentData:[self exportTextData] mimeType:@"text" fileName:[self exportFilename]];
 
@@ -477,10 +477,10 @@
 
         if (result == MFMailComposeResultFailed)
         {
-            [[[UIAlertView alloc] initWithTitle:_I18N(@"Sending Failed")
-                                        message:_I18N(@"The exported fuel data could not be sent.")
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sending Failed", @"")
+                                        message:NSLocalizedString(@"The exported fuel data could not be sent.", @"")
                                        delegate:self
-                              cancelButtonTitle:_I18N(@"OK")
+                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
                               otherButtonTitles:nil] show];
         }
     }];
@@ -501,16 +501,16 @@
     NSString *firstButton, *secondButton;
 
     if ([MFMailComposeViewController canSendMail]) {
-        firstButton  = _I18N(@"Send as Email");
-        secondButton = _I18N(@"Open in ...");
+        firstButton  = NSLocalizedString(@"Send as Email", @"");
+        secondButton = NSLocalizedString(@"Open in ...", @"");
     } else {
-        firstButton  = _I18N(@"Open in ...");
+        firstButton  = NSLocalizedString(@"Open in ...", @"");
         secondButton = nil;
     }
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Export Fuel Data in CSV Format")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Export Fuel Data in CSV Format", @"")
                                                        delegate:self
-                                              cancelButtonTitle:_I18N(@"Cancel")
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
                                          destructiveButtonTitle:nil
                                               otherButtonTitles:firstButton, secondButton, nil];
 
@@ -525,7 +525,7 @@
 
     if (buttonIndex != [actionSheet cancelButtonIndex]) {
 
-        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:_I18N(@"Open in ...")])
+        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Open in ...", @"")])
             dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
         else
             dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
@@ -620,8 +620,8 @@
 
     } else {
 
-        consumptionDescription = _I18N(@"-");
-        tableCell.botRightAccessibilityLabel = _I18N(@"fuel mileage not available");
+        consumptionDescription = NSLocalizedString(@"-", @"");
+        tableCell.botRightAccessibilityLabel = NSLocalizedString(@"fuel mileage not available", @"");
     }
 
     label = [tableCell botRightLabel];

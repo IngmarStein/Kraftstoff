@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		28860BE50F44EE6400985440 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28860BE40F44EE6400985440 /* CoreData.framework */; };
-		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
 		4D0B2FFE1780D2B500644289 /* FuelStatisticsScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */; };
@@ -32,7 +28,6 @@
 		4D23F76C12F1C8CD004700B2 /* RadioButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D23F76B12F1C8CD004700B2 /* RadioButton.png */; };
 		4D2CD38E13E70E7B00B08A49 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CD38D13E70E7B00B08A49 /* CSVParser.m */; };
 		4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */; };
-		4D2DB7921236C42D005CA94B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D2DB7911236C42D005CA94B /* QuartzCore.framework */; };
 		4D3F1983176A6CA8003FE2C7 /* TableBackgroundFlat-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F1981176A6CA8003FE2C7 /* TableBackgroundFlat-568h@2x.png */; };
 		4D3F1984176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F1982176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png */; };
 		4D3F1986176B0AEB003FE2C7 /* TableBackgroundFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F1985176B0AEB003FE2C7 /* TableBackgroundFlat.png */; };
@@ -56,7 +51,6 @@
 		4D94081B1769081B00267667 /* SelectedCellShadeFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D9408171769065100267667 /* SelectedCellShadeFlat.png */; };
 		4D94081C1769081E00267667 /* SelectedCellShadeFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D9408181769065100267667 /* SelectedCellShadeFlat@2x.png */; };
 		4D959D07142AA0EB0079A61A /* FuelEventEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D959D09142AA0EB0079A61A /* FuelEventEditor.xib */; };
-		4D9C88D11319968D00B3EC56 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9C88D01319968D00B3EC56 /* MessageUI.framework */; };
 		4DA3BB5312F9D9B4000DBBB2 /* QuadInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */; };
 		4DA74B64176A3A7C0042DC79 /* EditFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B66176A3A7C0042DC79 /* EditFlat.png */; };
 		4DA74B67176A3A8B0042DC79 /* EditFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B69176A3A8B0042DC79 /* EditFlat@2x.png */; };
@@ -73,7 +67,6 @@
 		4DD538D8143853E4003ED398 /* Zapfhahn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD538D6143853E4003ED398 /* Zapfhahn@2x.png */; };
 		4DD538DB143853ED003ED398 /* Cars.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD538D9143853ED003ED398 /* Cars.png */; };
 		4DD538DC143853ED003ED398 /* Cars@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DD538DA143853ED003ED398 /* Cars@2x.png */; };
-		4DD5EE7A136DA20B00A2EF99 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD5EE79136DA20B00A2EF99 /* CoreText.framework */; };
 		4DD5EE7D136DC90A00A2EF99 /* PickerImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DD5EE7C136DC90A00A2EF99 /* PickerImageView.m */; };
 		4DDC187A1429EC8200383F92 /* FuelEventEditorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DDC18791429EC8200383F92 /* FuelEventEditorController.m */; };
 		4DE0454F123FA7AB009B19E3 /* FuelEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE0454D123FA7AB009B19E3 /* FuelEventController.m */; };
@@ -83,14 +76,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		28860BE40F44EE6400985440 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		28A0AAE50D9B0CCF005BE974 /* kraftstoff_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = kraftstoff_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		28C286DF0D94DF7D0034E888 /* CarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CarViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		28C286E00D94DF7D0034E888 /* CarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D092C7B13956FB000760FB7 /* TextEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TextEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -121,7 +109,6 @@
 		4D2CD38C13E70E7B00B08A49 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		4D2CD38D13E70E7B00B08A49 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
 		4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Kraftstoffrechner.xcdatamodel; sourceTree = "<group>"; };
-		4D2DB7911236C42D005CA94B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kraftstoff-Info.plist"; sourceTree = "<group>"; };
 		4D3F1981176A6CA8003FE2C7 /* TableBackgroundFlat-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TableBackgroundFlat-568h@2x.png"; sourceTree = "<group>"; };
 		4D3F1982176A6CA8003FE2C7 /* TableBackgroundFlat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "TableBackgroundFlat@2x.png"; sourceTree = "<group>"; };
@@ -162,7 +149,6 @@
 		4D9408171769065100267667 /* SelectedCellShadeFlat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SelectedCellShadeFlat.png; sourceTree = "<group>"; };
 		4D9408181769065100267667 /* SelectedCellShadeFlat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectedCellShadeFlat@2x.png"; sourceTree = "<group>"; };
 		4D959D08142AA0EB0079A61A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/FuelEventEditor.xib; sourceTree = "<group>"; };
-		4D9C88D01319968D00B3EC56 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = QuadInfoCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuadInfoCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DA74B65176A3A7C0042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/EditFlat.png; sourceTree = "<group>"; };
@@ -191,7 +177,6 @@
 		4DD538D6143853E4003ED398 /* Zapfhahn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Zapfhahn@2x.png"; sourceTree = "<group>"; };
 		4DD538D9143853ED003ED398 /* Cars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cars.png; sourceTree = "<group>"; };
 		4DD538DA143853ED003ED398 /* Cars@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Cars@2x.png"; sourceTree = "<group>"; };
-		4DD5EE79136DA20B00A2EF99 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		4DD5EE7B136DC90A00A2EF99 /* PickerImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PickerImageView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DD5EE7C136DC90A00A2EF99 /* PickerImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PickerImageView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DDC18781429EC8200383F92 /* FuelEventEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuelEventEditorController.h; sourceTree = "<group>"; };
@@ -211,13 +196,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
-				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				4D9C88D11319968D00B3EC56 /* MessageUI.framework in Frameworks */,
-				2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */,
-				28860BE50F44EE6400985440 /* CoreData.framework in Frameworks */,
-				4D2DB7921236C42D005CA94B /* QuartzCore.framework in Frameworks */,
-				4DD5EE7A136DA20B00A2EF99 /* CoreText.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +233,6 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			comments = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040000 in Other C Flags wegen Bug in SDK. Alternativ: System Default statt LLVM Compiler";
@@ -270,7 +247,6 @@
 				4DF6DACB13C2868300703A1F /* AppWindow.h */,
 				4DF6DACC13C2868300703A1F /* AppWindow.m */,
 				4D1899B514328AC0001434BD /* main.m */,
-				28A0AAE50D9B0CCF005BE974 /* kraftstoff_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -287,20 +263,6 @@
 				4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				4DD5EE79136DA20B00A2EF99 /* CoreText.framework */,
-				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
-				28860BE40F44EE6400985440 /* CoreData.framework */,
-				4D2DB7911236C42D005CA94B /* QuartzCore.framework */,
-				4D9C88D01319968D00B3EC56 /* MessageUI.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		4D0B2FFD1780D1F900644289 /* Content Controllers */ = {
@@ -611,7 +573,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0630;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "kraftstoff" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -870,10 +832,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = kraftstoff;
 			};
 			name = Debug;
@@ -885,10 +844,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = kraftstoff_Prefix.pch;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = kraftstoff;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -897,17 +853,18 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Michael Schmidt (YT2G4V93TH)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Michael Schmidt (YT2G4V93TH)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				PROVISIONING_PROFILE = "B6DA2EA4-7413-4C4F-90F6-46F4B52B1612";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B6DA2EA4-7413-4C4F-90F6-46F4B52B1612";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -915,18 +872,18 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Michael Schmidt (V3YNQKY4J7)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Michael Schmidt (V3YNQKY4J7)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "17B2C853-A41D-41B7-B268-4525ECCA05DC";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "17B2C853-A41D-41B7-B268-4525ECCA05DC";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

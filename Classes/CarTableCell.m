@@ -7,7 +7,7 @@
 #import "FuelCalculatorController.h"
 #import "PickerImageView.h"
 #import "AppDelegate.h"
-
+#import <CoreText/CoreText.h>
 
 // Standard cell geometry
 static CGFloat const PickerViewCellWidth        = 290.0;

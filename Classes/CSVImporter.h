@@ -2,6 +2,8 @@
 //
 // Kraftstoff
 
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
 @interface CSVImporter : NSObject
 

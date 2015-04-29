@@ -35,7 +35,7 @@ static NSInteger maxEditHelpCounter = 1;
     changeIsUserDriven = NO;
 
     // Navigation Bar
-    self.title = _I18N(@"Cars");
+    self.title = NSLocalizedString(@"Cars", @"");
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self
@@ -541,9 +541,9 @@ static NSInteger maxEditHelpCounter = 1;
 
     } else {
 
-        avgConsumption = [NSString stringWithFormat:@"%@", _I18N(@"-")];
+        avgConsumption = [NSString stringWithFormat:@"%@", NSLocalizedString(@"-", @"")];
 
-        tableCell.topRightAccessibilityLabel = _I18N(@"fuel mileage not available");
+        tableCell.topRightAccessibilityLabel = NSLocalizedString(@"fuel mileage not available", @"");
         tableCell.botRightAccessibilityLabel = nil;
     }
 
