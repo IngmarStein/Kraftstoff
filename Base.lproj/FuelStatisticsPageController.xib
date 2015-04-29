@@ -16,14 +16,14 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="300"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <pageControl clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="4" currentPage="1" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Page Control">
-                    <rect key="frame" x="0.0" y="266" width="480" height="36"/>
+                <pageControl clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="4" currentPage="1" translatesAutoresizingMaskIntoConstraints="NO" id="4" userLabel="Page Control">
+                    <rect key="frame" x="213" y="266" width="55" height="36"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <action selector="pageAction:" destination="-1" eventType="valueChanged" id="6"/>
                     </connections>
                 </pageControl>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Scroll View" customClass="FuelStatisticsScrollView">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7" userLabel="Scroll View" customClass="FuelStatisticsScrollView">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="268"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
@@ -32,6 +32,15 @@
                 </scrollView>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="centerX" secondItem="4" secondAttribute="centerX" id="C9a-0D-xz9"/>
+                <constraint firstAttribute="trailing" secondItem="7" secondAttribute="trailing" id="EE7-LK-unx"/>
+                <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" constant="-2" id="Int-FY-11e"/>
+                <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="32" id="V9L-Sq-fRL"/>
+                <constraint firstItem="7" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="VFR-fE-vUC"/>
+                <constraint firstItem="4" firstAttribute="top" secondItem="7" secondAttribute="bottom" constant="-2" id="oZi-Ki-iN3"/>
+                <constraint firstItem="7" firstAttribute="top" secondItem="1" secondAttribute="top" id="uer-lO-VFc"/>
+            </constraints>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>

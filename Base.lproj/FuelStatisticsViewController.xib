@@ -35,14 +35,14 @@
                     <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" fixedFrame="YES" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="5" userLabel="Statistics Label (∅ 4.1 l/100km)">
-                    <rect key="frame" x="248.99999982199517" y="5" width="221" height="22"/>
+                    <rect key="frame" x="249" y="5" width="221" height="22"/>
                     <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </label>
                 <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1000" contentMode="left" fixedFrame="YES" text="Center" textAlignment="center" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="29" userLabel="Center Label">
-                    <rect key="frame" x="10" y="5" width="459.99999982199517" height="22"/>
+                    <rect key="frame" x="10" y="5" width="460" height="22"/>
                     <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="17"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
