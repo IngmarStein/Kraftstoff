@@ -520,10 +520,6 @@
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
-				Japanese,
-				French,
-				German,
-				en,
 				de,
 				Base,
 			);
