@@ -34,7 +34,7 @@
 
 
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
     if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
 
@@ -787,6 +787,12 @@
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationFade];
             break;
+
+		case NSFetchedResultsChangeMove:
+		case NSFetchedResultsChangeUpdate:
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+						  withRowAnimation:UITableViewRowAnimationFade];
+			break;
     }
 }
 

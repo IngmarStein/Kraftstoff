@@ -49,7 +49,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
 
@@ -205,7 +205,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
             if ([recentEvents count]) {
 
-                NSManagedObject *recentEvent = [AppDelegate existingObject:[recentEvents objectAtIndex:0] inManagedObjectContext:sampleContext];
+                NSManagedObject *recentEvent = [AppDelegate existingObject:recentEvents[0] inManagedObjectContext:sampleContext];
 
                 if (recentEvent)
                     recentFillupDate = [recentEvent valueForKey:@"timestamp"];

@@ -22,7 +22,7 @@
 
 
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
     if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
 

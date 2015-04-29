@@ -755,6 +755,12 @@ static NSInteger maxEditHelpCounter = 1;
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationFade];
             break;
+
+		case NSFetchedResultsChangeMove:
+		case NSFetchedResultsChangeUpdate:
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+						  withRowAnimation:UITableViewRowAnimationFade];
+			break;
     }
 }
 

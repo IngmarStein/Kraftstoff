@@ -14,10 +14,7 @@
 
 static CGFloat const GridLeftBorder =  16.0;
 static CGFloat       GridRightBorder = 464.0;
-static CGFloat const GridTopBorder = 68.0;
-static CGFloat const GridBottomBorder = 253.0;
 static CGFloat       GridWidth = 448.0;
-static CGFloat const GridHeight = 185.0;
 
 static CGFloat       GridDesColumnWidth = (240.0 - GridLeftBorder);
 static CGFloat const GridTextXMargin = 10.0;

@@ -26,7 +26,7 @@ const CGFloat PageCellDefaultRowHeight = 44.0;
 }
 
 
-- (id)init
+- (instancetype)init
 {
 	if ((self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:[[self class] reuseIdentifier]])) {
 

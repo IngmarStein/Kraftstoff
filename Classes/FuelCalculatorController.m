@@ -16,13 +16,13 @@
 #import "NSDate+Kraftstoff.h"
 
 
-typedef enum
+typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 {
     FCDistanceRow = 1,
     FCPriceRow    = 2,
     FCAmountRow   = 4,
     FCAllDataRows = 7,
-} FuelCalculatorDataRow;
+};
 
 
 @implementation FuelCalculatorController

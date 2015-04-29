@@ -11,7 +11,7 @@
 @synthesize cellClass;
 @synthesize cellData;
 
-- (id)initWithCellClass:(Class)class andData:(id)object
+- (instancetype)initWithCellClass:(Class)class andData:(id)object
 {
 	if ((self = [super init])) {
 

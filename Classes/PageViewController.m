@@ -9,12 +9,6 @@
 #import "AppDelegate.h"
 
 
-static CGFloat const PageViewSectionGroupHeaderHeight = 36.0;
-static CGFloat const PageViewSectionPlainHeaderHeight = 22.0;
-static CGFloat const PageViewSectionGroupHeaderMargin = 20.0;
-static CGFloat const PageViewSectionPlainHeaderMargin =  5.0;
-
-
 @implementation PageViewController
 
 

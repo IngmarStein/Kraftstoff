@@ -14,7 +14,7 @@
 }
 
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)enlargeTopRightLabel
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)enlargeTopRightLabel
 {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 

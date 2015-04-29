@@ -8,13 +8,13 @@
 
 @class CarConfigurationController;
 
-typedef enum
+typedef NS_ENUM(NSUInteger, CarConfigurationResult)
 {
     CarConfigurationCanceled,
     CarConfigurationCreateSucceded,
     CarConfigurationEditSucceded,
     CarConfigurationAborted,
-} CarConfigurationResult;
+};
 
 
 @protocol CarConfigurationControllerDelegate

@@ -10,12 +10,12 @@
 + (NSString *)simplifyCSVHeaderName:(NSString *)header;
 
 // Setup a CSV parser with a given input string
-- (id)initWithString:(NSString *)inputCSVString;
+- (instancetype)initWithString:(NSString *)inputCSVString NS_DESIGNATED_INITIALIZER;
 
 // Reset the parser to the beginning of the input string
 - (void)revertToBeginning;
 
 // Parse the next CSV-table from the input string
-- (NSArray *)parseTable;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSArray *parseTable;
 
 @end

@@ -22,7 +22,7 @@
 
 @interface EditablePageCell : PageCell <UITextFieldDelegate> {}
 
-- (UIColor *)invalidTextColor;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) UIColor *invalidTextColor;
 
 @property (nonatomic, strong) EditablePageCellTextField *textField;
 @property (nonatomic, strong) NSString                  *valueIdentifier;

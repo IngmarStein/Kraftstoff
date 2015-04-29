@@ -20,8 +20,6 @@ static CGFloat const StatisticGraphHeight = 182.0;
 // Coordinates for the zoom-track
 static CGFloat const StatisticTrackYPosition = 40.0;
 static CGFloat const StatisticTrackThickness = 4.0;
-static CGFloat const StatisticTrackInfoXMargin = 9.0;
-static CGFloat const StatisticTrackInfoYMargin = 3.0;
 static CGFloat const StatisticTrackInfoXMarginFlat = 4.0;
 static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
@@ -65,7 +63,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 @implementation FuelStatisticsSamplingData
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init])) {
 
@@ -100,11 +98,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 // Provided by subclasses for statistics
 @interface FuelStatisticsGraphViewController (private)
 
-- (CGGradientRef)curveGradient;
+@property (NS_NONATOMIC_IOSONLY, readonly) CGGradientRef curveGradient;
 
 - (NSNumberFormatter*)averageFormatter:(BOOL)precise;
 - (NSString *)averageFormatString:(BOOL)avgPrefix;
-- (NSString *)noAverageString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *noAverageString;
 
 - (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car;
 - (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car;
