@@ -211,7 +211,6 @@
 			isa = PBXGroup;
 			children = (
 				4D3F199B176B2B5F003FE2C7 /* Media.xcassets */,
-				4D18471F123CF8B1008D7454 /* Bitmaps */,
 				4D19186E13BF9A0100ADAED6 /* XIBs */,
 				4DCFE36C138EE2930051FEC9 /* Localizable.strings */,
 				4D1B06D114339BB70069B20A /* InfoPlist.strings */,
@@ -233,14 +232,6 @@
 				4D8DF13C150CE7E00088DDDC /* FuelStatisticsGraphViewController.m */,
 			);
 			name = "Content Controllers";
-			sourceTree = "<group>";
-		};
-		4D18471F123CF8B1008D7454 /* Bitmaps */ = {
-			isa = PBXGroup;
-			children = (
-				4D3F1988176B29BB003FE2C7 /* Help */,
-			);
-			name = Bitmaps;
 			sourceTree = "<group>";
 		};
 		4D1899AA14328864001434BD /* NumberCell */ = {
@@ -334,13 +325,6 @@
 				4D0C9CF21392904200430C04 /* MainWindow.xib */,
 			);
 			name = XIBs;
-			sourceTree = "<group>";
-		};
-		4D3F1988176B29BB003FE2C7 /* Help */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Help;
 			sourceTree = "<group>";
 		};
 		4D630C0812EEEE3400134FD7 /* Car Configurator */ = {
