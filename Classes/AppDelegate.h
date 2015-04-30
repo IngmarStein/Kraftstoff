@@ -8,15 +8,6 @@
 #define kraftstoffDeviceShakeNotification @"kraftstoffDeviceShakeNotification"
 
 
-// Shadow heights used within the app
-extern CGFloat const TableBotShadowHeight;
-extern CGFloat const TableTopShadowHeight;
-
-// Standard heights for UI elements
-extern CGFloat const TabBarHeight;
-extern CGFloat const StatusBarHeight;
-
-
 // Unit Constants
 typedef NS_ENUM(NSInteger, KSDistance)
 {

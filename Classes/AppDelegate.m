@@ -11,16 +11,6 @@
 #import "kraftstoff-Swift.h"
 
 
-// Shadow heights used within the app
-CGFloat const TableBotShadowHeight = 4.0;
-CGFloat const TableTopShadowHeight = 4.0;
-
-// Standard heights for UI elements
-CGFloat const TabBarHeight        = 49.0;
-CGFloat const StatusBarHeight     = 20.0;
-
-
-
 @implementation AppDelegate
 {
     NSString    *errorDescription;
