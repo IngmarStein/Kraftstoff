@@ -4,9 +4,8 @@
 
 
 #import "ConsumptionTableCell.h"
-#import "ConsumptionLabel.h"
 #import "AppDelegate.h"
-
+#import "kraftstoff-Swift.h"
 
 // Standard cell geometry
 static CGFloat const ConsumptionRowHeight = 50.0;
@@ -51,8 +50,9 @@ static CGFloat const cellVMargin          =  1.0;
 {
 	[super configureForData:dataObject viewController:viewController tableView:tableView indexPath:indexPath];
 
-    self.coloredLabel.text             = ((NSDictionary *)dataObject)[@"label"];
-    self.coloredLabel.highlightStrings = ((NSDictionary *)dataObject)[@"highlightStrings"];
+	NSDictionary *dictionary = (NSDictionary *)dataObject;
+    self.coloredLabel.highlightStrings = dictionary[@"highlightStrings"];
+	self.coloredLabel.text             = dictionary[@"label"];
 }
 
 
