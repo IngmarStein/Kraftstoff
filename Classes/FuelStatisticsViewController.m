@@ -81,10 +81,6 @@ CGFloat StatisticTransitionDuration = 0.3;
             [button setAttributedTitle:label forState:UIControlStateHighlighted];
             [button setAttributedTitle:labelSelected forState:UIControlStateSelected];
 
-            [button setBackgroundImage:nil forState:UIControlStateNormal];
-            [button setBackgroundImage:nil forState:UIControlStateHighlighted];
-            [button setBackgroundImage:nil forState:UIControlStateSelected];
-
             [button setShowsTouchWhenHighlighted:NO];
 
             button.titleLabel.shadowColor = nil;
