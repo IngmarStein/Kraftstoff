@@ -138,6 +138,7 @@ static NSInteger maxEditHelpCounter = 1;
     // Number of cars determins the help badge
     NSString *helpImageName = nil;
     CGRect helpViewFrame;
+	UIViewContentMode helpViewContentMode;
 
     NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];
 
@@ -145,6 +146,7 @@ static NSInteger maxEditHelpCounter = 1;
 
         helpImageName = @"StartFlat";
         helpViewFrame = CGRectMake (0, 0, self.view.bounds.size.width, 70);
+		helpViewContentMode = UIViewContentModeRight;
 
         [defaults setObject:@0 forKey:@"editHelpCounter"];
 
@@ -156,6 +158,7 @@ static NSInteger maxEditHelpCounter = 1;
 
             [defaults setObject:@(++editCounter) forKey:@"editHelpCounter"];
             helpImageName = @"EditFlat";
+			helpViewContentMode = UIViewContentModeLeft;
             helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, self.view.bounds.size.width, 92);
         }
     }
@@ -165,14 +168,15 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (helpImageName == nil || (helpView && CGRectEqualToRect (helpView.frame, helpViewFrame) == NO)) {
 
-        if (animated)
+		if (animated) {
             [UIView animateWithDuration:0.33
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations: ^{ helpView.alpha = 0.0; }
                              completion: ^(BOOL finished){ [helpView removeFromSuperview]; }];
-        else
+		} else {
             [helpView removeFromSuperview];
+		}
 
         helpView = nil;
     }
@@ -182,12 +186,13 @@ static NSInteger maxEditHelpCounter = 1;
 
         if (helpView == nil) {
 
-            UIImage *helpImage  = [[UIImage imageNamed:helpImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            UIImage *helpImage  = [[UIImage imageNamed:NSLocalizedString(helpImageName, @"")] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
             helpView       = [[UIImageView alloc] initWithImage:helpImage];
             helpView.tag   = 100;
             helpView.frame = helpViewFrame;
             helpView.alpha = (animated) ? 0.0 : 1.0;
+			helpView.contentMode = helpViewContentMode;
 
             [self.view addSubview:helpView];
 

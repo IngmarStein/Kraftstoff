@@ -38,10 +38,6 @@
 		4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */; };
 		4D959D07142AA0EB0079A61A /* FuelEventEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D959D09142AA0EB0079A61A /* FuelEventEditor.xib */; };
 		4DA3BB5312F9D9B4000DBBB2 /* QuadInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */; };
-		4DA74B64176A3A7C0042DC79 /* EditFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B66176A3A7C0042DC79 /* EditFlat.png */; };
-		4DA74B67176A3A8B0042DC79 /* EditFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B69176A3A8B0042DC79 /* EditFlat@2x.png */; };
-		4DA74B74176A3C300042DC79 /* StartFlat.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B76176A3C300042DC79 /* StartFlat.png */; };
-		4DA74B77176A3C380042DC79 /* StartFlat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4DA74B79176A3C380042DC79 /* StartFlat@2x.png */; };
 		4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
@@ -109,14 +105,6 @@
 		4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsTextViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = QuadInfoCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuadInfoCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4DA74B65176A3A7C0042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/EditFlat.png; sourceTree = "<group>"; };
-		4DA74B68176A3A8B0042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = "en.lproj/EditFlat@2x.png"; sourceTree = "<group>"; };
-		4DA74B6E176A3B5E0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/EditFlat.png; sourceTree = "<group>"; };
-		4DA74B6F176A3B5E0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/EditFlat@2x.png"; sourceTree = "<group>"; };
-		4DA74B75176A3C300042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = en.lproj/StartFlat.png; sourceTree = "<group>"; };
-		4DA74B78176A3C380042DC79 /* en */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = en; path = "en.lproj/StartFlat@2x.png"; sourceTree = "<group>"; };
-		4DA74B7A176A3C7A0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = de.lproj/StartFlat.png; sourceTree = "<group>"; };
-		4DA74B7B176A3C7A0042DC79 /* de */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = de; path = "de.lproj/StartFlat@2x.png"; sourceTree = "<group>"; };
 		4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NonRotatingTabBarController.h; sourceTree = "<group>"; };
 		4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonRotatingTabBarController.m; sourceTree = "<group>"; };
 		4DAC5622130317DD00D02BEC /* PageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -351,10 +339,6 @@
 		4D3F1988176B29BB003FE2C7 /* Help */ = {
 			isa = PBXGroup;
 			children = (
-				4DA74B66176A3A7C0042DC79 /* EditFlat.png */,
-				4DA74B69176A3A8B0042DC79 /* EditFlat@2x.png */,
-				4DA74B76176A3C300042DC79 /* StartFlat.png */,
-				4DA74B79176A3C380042DC79 /* StartFlat@2x.png */,
 			);
 			name = Help;
 			sourceTree = "<group>";
@@ -524,9 +508,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DA74B67176A3A8B0042DC79 /* EditFlat@2x.png in Resources */,
 				4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */,
-				4DA74B64176A3A7C0042DC79 /* EditFlat.png in Resources */,
 				4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */,
 				4D0C9CF01392904200430C04 /* MainWindow.xib in Resources */,
 				4D0C9CF6139290CC00430C04 /* FuelCalculator.xib in Resources */,
@@ -538,8 +520,6 @@
 				4D959D07142AA0EB0079A61A /* FuelEventEditor.xib in Resources */,
 				4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */,
 				9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */,
-				4DA74B74176A3C300042DC79 /* StartFlat.png in Resources */,
-				4DA74B77176A3C380042DC79 /* StartFlat@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,42 +661,6 @@
 				9504F3BC1AF141BD003FF5B8 /* Base */,
 			);
 			name = FuelEventEditor.xib;
-			sourceTree = "<group>";
-		};
-		4DA74B66176A3A7C0042DC79 /* EditFlat.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DA74B65176A3A7C0042DC79 /* en */,
-				4DA74B6E176A3B5E0042DC79 /* de */,
-			);
-			name = EditFlat.png;
-			sourceTree = "<group>";
-		};
-		4DA74B69176A3A8B0042DC79 /* EditFlat@2x.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DA74B68176A3A8B0042DC79 /* en */,
-				4DA74B6F176A3B5E0042DC79 /* de */,
-			);
-			name = "EditFlat@2x.png";
-			sourceTree = "<group>";
-		};
-		4DA74B76176A3C300042DC79 /* StartFlat.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DA74B75176A3C300042DC79 /* en */,
-				4DA74B7A176A3C7A0042DC79 /* de */,
-			);
-			name = StartFlat.png;
-			sourceTree = "<group>";
-		};
-		4DA74B79176A3C380042DC79 /* StartFlat@2x.png */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4DA74B78176A3C380042DC79 /* en */,
-				4DA74B7B176A3C7A0042DC79 /* de */,
-			);
-			name = "StartFlat@2x.png";
 			sourceTree = "<group>";
 		};
 		4DCFE36C138EE2930051FEC9 /* Localizable.strings */ = {
