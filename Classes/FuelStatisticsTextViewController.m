@@ -52,8 +52,6 @@ static CGFloat const GridTextHeight = 23.0;
 
 @implementation FuelStatisticsData
 
-@synthesize contentImage;
-
 - (void)discardContent;
 {
     self.contentImage = nil;

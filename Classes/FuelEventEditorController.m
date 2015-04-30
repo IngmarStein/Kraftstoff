@@ -4,7 +4,6 @@
 
 
 #import "AppDelegate.h"
-#import "AppWindow.h"
 #import "FuelEventEditorController.h"
 #import "FuelEventController.h"
 #import "CarTableCell.h"

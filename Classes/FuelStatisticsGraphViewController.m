@@ -705,7 +705,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-@synthesize zooming;
+@synthesize zooming = _zooming;
 
 - (void)setZooming:(BOOL)flag
 {

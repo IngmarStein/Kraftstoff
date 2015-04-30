@@ -9,11 +9,6 @@
 
 @implementation PickerImageView
 
-@synthesize textualDescription;
-@synthesize pickerView;
-@synthesize rowIndex;
-
-
 - (BOOL)isAccessibilityElement
 {
     return YES;
@@ -22,7 +17,7 @@
 
 - (NSString *)accessibilityLabel
 {
-    return textualDescription;
+    return self.textualDescription;
 }
 
 @end

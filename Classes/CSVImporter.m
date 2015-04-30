@@ -147,7 +147,7 @@
 
         // CSV file in new format: plate is second part of filename
         //     for unknown format: use the whole filename if it is a single component
-        if ([nameComponents count] <= 2)
+        if (nameComponents.count <= 2)
         {
             NSString *part = [nameComponents lastObject];
 
@@ -183,7 +183,7 @@
     if (first[@"NAME"] == nil)
         return NO;
 
-    NSInteger previousCarIDCount = [carIDs count];
+    NSInteger previousCarIDCount = carIDs.count;
 
     for (NSDictionary *record in records)
     {
@@ -552,7 +552,7 @@
         if (CSVTable == nil)
             break;
 
-        if ([CSVTable count] == 0)
+        if (CSVTable.count == 0)
             continue;
 
         [self importCarIDs:CSVTable];

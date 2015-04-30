@@ -24,11 +24,6 @@
     MFMailComposeViewController *mailComposeController;
 }
 
-@synthesize fetchRequest = _fetchRequest;
-@synthesize fetchedResultsController = _fetchedResultsController;
-
-
-
 #pragma mark -
 #pragma mark View Lifecycle
 

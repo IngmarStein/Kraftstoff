@@ -14,29 +14,24 @@ static CGFloat const margin = 8.0;
 @implementation EditablePageCell
 
 
-@synthesize textField;
-@synthesize valueIdentifier;
-@synthesize delegate;
-
-
 - (void)finishConstruction
 {
 	[super finishConstruction];
 
     // Create textfield
-    textField = [[EditablePageCellTextField alloc] initWithFrame:CGRectZero];
+    self.textField = [[EditablePageCellTextField alloc] initWithFrame:CGRectZero];
 
-	textField.font                     = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
-	textField.textAlignment            = NSTextAlignmentRight;
-	textField.autocapitalizationType   = UITextAutocapitalizationTypeNone;
-	textField.autocorrectionType       = UITextAutocorrectionTypeNo;
-	textField.backgroundColor          = [UIColor clearColor];
-	textField.clearButtonMode          = UITextFieldViewModeWhileEditing;
-	textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-	textField.autoresizingMask         = UIViewAutoresizingFlexibleWidth;
-	textField.userInteractionEnabled   = NO;
+	self.textField.font                     = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
+	self.textField.textAlignment            = NSTextAlignmentRight;
+	self.textField.autocapitalizationType   = UITextAutocapitalizationTypeNone;
+	self.textField.autocorrectionType       = UITextAutocorrectionTypeNo;
+	self.textField.backgroundColor          = [UIColor clearColor];
+	self.textField.clearButtonMode          = UITextFieldViewModeWhileEditing;
+	self.textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+	self.textField.autoresizingMask         = UIViewAutoresizingFlexibleWidth;
+	self.textField.userInteractionEnabled   = NO;
 
-	[self.contentView addSubview:textField];
+	[self.contentView addSubview:self.textField];
 
 
     // Configure the default textlabel
@@ -51,7 +46,7 @@ static CGFloat const margin = 8.0;
 
 - (NSString *)accessibilityLabel
 {
-	return [NSString stringWithFormat:@"%@ %@", self.textLabel.text, textField.text];
+	return [NSString stringWithFormat:@"%@ %@", self.textLabel.text, self.textField.text];
 }
 
 
@@ -66,8 +61,8 @@ static CGFloat const margin = 8.0;
     self.delegate         = viewController;
     self.valueIdentifier  = ((NSDictionary *)dataObject)[@"valueIdentifier"];
 
-	textField.placeholder = ((NSDictionary *)dataObject)[@"placeholder"];
-	textField.delegate    = self;
+	self.textField.placeholder = ((NSDictionary *)dataObject)[@"placeholder"];
+	self.textField.delegate    = self;
 }
 
 

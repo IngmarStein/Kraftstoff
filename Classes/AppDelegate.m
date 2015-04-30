@@ -1025,7 +1025,7 @@ CGFloat const StatusBarHeight     = 20.0;
                                                                         inManagedObjectContext:moc]
                                      inManagedObjectContext:moc];
 
-        if ([olderEvents count]) {
+        if (olderEvents.count) {
 
             NSManagedObject *olderEvent = olderEvents[0];
 
@@ -1049,7 +1049,7 @@ CGFloat const StatusBarHeight     = 20.0;
                                                                           inManagedObjectContext:moc]
                                        inManagedObjectContext:moc];
 
-        if ([youngerEvents count]) {
+        if (youngerEvents.count) {
 
             NSDecimalNumber *deltaCost = (filledUp)
                 ? [[NSDecimalNumber zero] decimalNumberBySubtracting:inheritedCost]

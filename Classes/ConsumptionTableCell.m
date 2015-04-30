@@ -13,11 +13,13 @@ static CGFloat const ConsumptionRowHeight = 50.0;
 static CGFloat const cellHMargin          = 10.0;
 static CGFloat const cellVMargin          =  1.0;
 
+@interface ConsumptionTableCell ()
+
+@property (nonatomic, strong) ConsumptionLabel *coloredLabel;
+
+@end
 
 @implementation ConsumptionTableCell
-
-@synthesize coloredLabel;
-
 
 + (CGFloat)rowHeight
 {
@@ -31,17 +33,17 @@ static CGFloat const cellVMargin          =  1.0;
 
     self.selectionStyle = UITableViewCellSelectionStyleNone;
 
-    coloredLabel = [[ConsumptionLabel alloc] initWithFrame:CGRectZero];
+    self.coloredLabel = [[ConsumptionLabel alloc] initWithFrame:CGRectZero];
 
-	coloredLabel.textAlignment             = NSTextAlignmentCenter;
-    coloredLabel.adjustsFontSizeToFitWidth = YES;
-	coloredLabel.font                      = [UIFont fontWithName:@"HelveticaNeue" size:20];
-	coloredLabel.minimumScaleFactor        = 12.0/[coloredLabel.font pointSize];
-    coloredLabel.backgroundColor           = [UIColor clearColor];
-	coloredLabel.highlightedTextColor      = [UIColor colorWithWhite:0.5 alpha:1.0];
-	coloredLabel.textColor                 = [UIColor blackColor];
+	self.coloredLabel.textAlignment             = NSTextAlignmentCenter;
+    self.coloredLabel.adjustsFontSizeToFitWidth = YES;
+	self.coloredLabel.font                      = [UIFont fontWithName:@"HelveticaNeue" size:20];
+	self.coloredLabel.minimumScaleFactor        = 12.0/[self.coloredLabel.font pointSize];
+    self.coloredLabel.backgroundColor           = [UIColor clearColor];
+	self.coloredLabel.highlightedTextColor      = [UIColor colorWithWhite:0.5 alpha:1.0];
+	self.coloredLabel.textColor                 = [UIColor blackColor];
 
-    [self.contentView addSubview:coloredLabel];
+    [self.contentView addSubview:self.coloredLabel];
 }
 
 

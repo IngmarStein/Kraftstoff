@@ -13,22 +13,17 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 @implementation PickerTableCell
 
-@synthesize picker;
-@synthesize pickerLabels;
-@synthesize pickerShortLabels;
-
-
 - (void)finishConstruction
 {
 	[super finishConstruction];
 
     self.picker = [[UIPickerView alloc] init];
 
-    picker.showsSelectionIndicator = YES;
-    picker.dataSource              = self;
-    picker.delegate                = self;
+    self.picker.showsSelectionIndicator = YES;
+    self.picker.dataSource              = self;
+    self.picker.delegate                = self;
 
-    self.textField.inputView = picker;
+    self.textField.inputView = self.picker;
 }
 
 
@@ -39,21 +34,21 @@ static CGFloat const PickerViewCellHeight =  44.0;
     // Array of picker labels
     self.pickerLabels = ((NSDictionary *)dataObject)[@"labels"];
     self.pickerShortLabels = ((NSDictionary *)dataObject)[@"shortLabels"];
-    [picker reloadAllComponents];
+    [self.picker reloadAllComponents];
 
     // (Re-)configure initial selected row
     NSInteger initialIndex = [[self.delegate valueForIdentifier:self.valueIdentifier] integerValue];
 
-    [picker selectRow:initialIndex inComponent:0 animated:NO];
-    [picker reloadComponent:0];
+    [self.picker selectRow:initialIndex inComponent:0 animated:NO];
+    [self.picker reloadComponent:0];
 
-    self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[initialIndex];
+    self.textFieldProxy.text = ((self.pickerShortLabels) ? self.pickerShortLabels : self.pickerLabels)[initialIndex];
 }
 
 
 - (void)selectRow:(NSInteger)row
 {
-    self.textFieldProxy.text = ((pickerShortLabels) ? pickerShortLabels : pickerLabels)[row];
+    self.textFieldProxy.text = ((self.pickerShortLabels) ? self.pickerShortLabels : self.pickerLabels)[row];
 
     [self.delegate valueChanged:@((int)row) identifier:self.valueIdentifier];
 }
@@ -73,7 +68,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return [pickerLabels count];
+	return self.pickerLabels.count;
 }
 
 
@@ -103,7 +98,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return pickerLabels[row];
+    return self.pickerLabels[row];
 }
 
 
@@ -114,7 +109,7 @@ static CGFloat const PickerViewCellHeight =  44.0;
     if (!label)
         label = [[UILabel alloc] init];
 
-    label.font = [UIFont boldSystemFontOfSize:(pickerShortLabels ? 18 : 20)];
+    label.font = [UIFont boldSystemFontOfSize:(self.pickerShortLabels ? 18 : 20)];
     label.frame = CGRectMake (0.0f, 0.0f, PickerViewCellWidth-20, PickerViewCellHeight);
     label.backgroundColor = [UIColor clearColor];
     

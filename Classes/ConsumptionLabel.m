@@ -10,9 +10,6 @@
 
 @implementation ConsumptionLabel
 
-@synthesize highlightStrings;
-
-
 - (void)drawRect:(CGRect)rect
 {
     // Clear background
@@ -39,7 +36,7 @@
     NSDictionary *normalAttributes = @{NSFontAttributeName:actualFont, NSForegroundColorAttributeName:self.textColor};
     NSDictionary *highightAttributes = @{NSFontAttributeName:actualFont, NSForegroundColorAttributeName:self.highlightedTextColor};
 
-    for (NSString *subString in highlightStrings) {
+    for (NSString *subString in _highlightStrings) {
 
         NSRange range = [text rangeOfString:subString];
 

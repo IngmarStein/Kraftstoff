@@ -120,12 +120,12 @@
 
 - (PageCellDescription*)cellDescriptionForRow:(NSInteger)rowIndex inSection:(NSInteger)sectionIndex
 {
-    if ([tableSections count] <= sectionIndex)
+    if (tableSections.count <= sectionIndex)
         return nil;
 
     NSArray *section = tableSections[sectionIndex];
 
-    if ([section count] <= rowIndex)
+    if (section.count <= rowIndex)
         return nil;
 
     return section[rowIndex];
@@ -238,7 +238,7 @@
     if (animation != UITableViewRowAnimationNone) {
 
         // If necessary update position for former bottom row of the section
-        if (tableView.style == UITableViewStyleGrouped)
+        if (self.tableView.style == UITableViewStyleGrouped)
             if (rowIndex == [tableSection count] - 1 && rowIndex > 0)
                 [self setData:[self dataForRow:rowIndex-1 inSection:sectionIndex]
                        forRow:rowIndex-1
@@ -278,59 +278,57 @@
 #pragma mark -
 #pragma mark Properties
 
-
-
-@synthesize tableView;
+@synthesize tableView = _tableView;
 
 - (UITableView *)tableView
 {
-    return tableView;
+    return _tableView;
 }
 
 
 - (void)setTableView:(UITableView *)newTableView
 {
-    tableView = newTableView;
+    _tableView = newTableView;
 
-    [tableView setDelegate:self];
-    [tableView setDataSource:self];
+    [_tableView setDelegate:self];
+    [_tableView setDataSource:self];
 
     if (!self.nibName && !self.view)
         self.view = newTableView;
 }
 
 
-@synthesize constantRowHeight;
+@synthesize constantRowHeight = _constantRowHeight;
 
 - (void)setConstantRowHeight:(BOOL)newValue
 {
-    constantRowHeight = newValue;
+    _constantRowHeight = newValue;
 
     // Force change of delegate to indicate changes
-    tableView.delegate = nil;
-    tableView.delegate = self;
+    self.tableView.delegate = nil;
+    self.tableView.delegate = self;
 }
 
 
-@synthesize useCustomHeaders;
+@synthesize useCustomHeaders = _useCustomHeaders;
 
 - (void)setUseCustomHeaders:(BOOL)newValue
 {
-    useCustomHeaders = newValue;
+    _useCustomHeaders = newValue;
 
     // Force change of delegate to indicate changes
-    tableView.delegate = nil;
-    tableView.delegate = self;
+    self.tableView.delegate = nil;
+    self.tableView.delegate = self;
 }
 
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
-        return !constantRowHeight;
+        return !self.constantRowHeight;
 
     if (aSelector == @selector(tableView:viewForHeaderInSection:) || aSelector == @selector(tableView:heightForHeaderInSection:))
-        return useCustomHeaders;
+        return _useCustomHeaders;
 
     return [super respondsToSelector:aSelector];
 }
@@ -402,7 +400,7 @@
 {
     PageCellDescription *description = [self cellDescriptionForRow:indexPath.row inSection:indexPath.section];
 
-    PageCell *cell = (PageCell*)[tableView dequeueReusableCellWithIdentifier:[description.cellClass reuseIdentifier]];
+    PageCell *cell = (PageCell*)[aTableView dequeueReusableCellWithIdentifier:[description.cellClass reuseIdentifier]];
 
     if (cell == nil)
         cell = [[description.cellClass alloc] init];

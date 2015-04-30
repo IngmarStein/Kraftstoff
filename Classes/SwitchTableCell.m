@@ -11,12 +11,6 @@ static CGFloat const margin = 8.0;
 
 @implementation SwitchTableCell
 
-@synthesize valueSwitch;
-@synthesize valueLabel;
-@synthesize valueIdentifier;
-@synthesize delegate;
-
-
 - (void)finishConstruction
 {
 	[super finishConstruction];
@@ -26,23 +20,23 @@ static CGFloat const margin = 8.0;
 
     // Create switch
     self.valueSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
-    [valueSwitch addTarget:self action:@selector(switchToggledAction:) forControlEvents:UIControlEventValueChanged];
+    [self.valueSwitch addTarget:self action:@selector(switchToggledAction:) forControlEvents:UIControlEventValueChanged];
 
-	[self.contentView addSubview:valueSwitch];
+	[self.contentView addSubview:self.valueSwitch];
 
     // Configure the alternate textlabel
     self.valueLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 
-    valueLabel.font             = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
-	valueLabel.textAlignment    = NSTextAlignmentRight;
-	valueLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	valueLabel.backgroundColor  = [UIColor clearColor];
-	valueLabel.textColor        = [UIColor blackColor];
+    self.valueLabel.font             = [UIFont fontWithName:@"HelveticaNeue-Light" size:17.0];
+	self.valueLabel.textAlignment    = NSTextAlignmentRight;
+	self.valueLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	self.valueLabel.backgroundColor  = [UIColor clearColor];
+	self.valueLabel.textColor        = [UIColor blackColor];
 
-    valueLabel.hidden                 = YES;
-	valueLabel.userInteractionEnabled = NO;
+    self.valueLabel.hidden                 = YES;
+	self.valueLabel.userInteractionEnabled = NO;
 
-    [self.contentView addSubview:valueLabel];
+    [self.contentView addSubview:self.valueLabel];
 
     // Configure the default textlabel
     UILabel *label = self.textLabel;

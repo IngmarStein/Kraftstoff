@@ -16,7 +16,7 @@
                 <outlet property="window" destination="2" id="5"/>
             </connections>
         </customObject>
-        <window clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="2" customClass="AppWindow">
+        <window clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="2" customClass="AppWindow" customModule="kraftstoff" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask"/>
             <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>

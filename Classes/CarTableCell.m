@@ -25,10 +25,6 @@ static NSDictionary *suffixAttributesDict       = nil;
 
 @implementation CarTableCell
 
-@synthesize carPicker;
-@synthesize fetchedObjects;
-
-
 + (void)initialize
 {
     CFStringRef font = CFSTR ("Helvetica");
@@ -61,11 +57,11 @@ static NSDictionary *suffixAttributesDict       = nil;
 
     self.carPicker = [[UIPickerView alloc] init];
 
-    carPicker.showsSelectionIndicator = YES;
-    carPicker.dataSource              = self;
-    carPicker.delegate                = self;
+    self.carPicker.showsSelectionIndicator = YES;
+    self.carPicker.dataSource              = self;
+    self.carPicker.delegate                = self;
 
-    self.textField.inputView = carPicker;
+    self.textField.inputView = self.carPicker;
 }
 
 
@@ -74,7 +70,7 @@ static NSDictionary *suffixAttributesDict       = nil;
     [super prepareForReuse];
 
 	self.fetchedObjects = nil;
-    [carPicker reloadAllComponents];
+    [self.carPicker reloadAllComponents];
 }
 
 
@@ -93,10 +89,10 @@ static NSDictionary *suffixAttributesDict       = nil;
         initialIndex = 0;
 
     // (Re-)configure car picker and select the initial item
-    [carPicker reloadAllComponents];
-    [carPicker selectRow:initialIndex inComponent:0 animated:NO];
+    [self.carPicker reloadAllComponents];
+    [self.carPicker selectRow:initialIndex inComponent:0 animated:NO];
 
-    [self selectCar:fetchedObjects[initialIndex]];
+    [self selectCar:self.fetchedObjects[initialIndex]];
 }
 
 
@@ -139,7 +135,7 @@ static NSDictionary *suffixAttributesDict       = nil;
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    [self selectCar:fetchedObjects[row]];
+    [self selectCar:self.fetchedObjects[row]];
 }
 
 
@@ -188,7 +184,7 @@ static NSDictionary *suffixAttributesDict       = nil;
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     // Strings to be displayed
-    NSManagedObject *managedObject = fetchedObjects[row];
+    NSManagedObject *managedObject = self.fetchedObjects[row];
     NSString *name = [managedObject valueForKey:@"name"];
     NSString *info = [managedObject valueForKey:@"numberPlate"];
 

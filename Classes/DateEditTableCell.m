@@ -12,11 +12,6 @@
 
 @implementation DateEditTableCell
 
-@synthesize valueTimestamp;
-@synthesize dateFormatter;
-@synthesize autoRefreshedDate;
-
-
 - (void)finishConstruction
 {
 	[super finishConstruction];
@@ -140,7 +135,7 @@
     // Optional:update selected value to current time when no change was done in the last 5 minutes
     NSDate *selectedDate = nil;
 
-    if (autoRefreshedDate) {
+    if (self.autoRefreshedDate) {
 
         NSDate *now            = [NSDate date];
         NSDate *lastChangeDate = [self.delegate valueForIdentifier:self.valueTimestamp];
