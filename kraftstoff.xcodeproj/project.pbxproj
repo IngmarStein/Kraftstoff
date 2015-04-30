@@ -78,7 +78,6 @@
 		4D19187013BF9A8200ADAED6 /* SwitchTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SwitchTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D1B06D014339BB70069B20A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D1B06D214339BBD0069B20A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		4D2199BD124608EE00FCED15 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		4D2CD38C13E70E7B00B08A49 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
 		4D2CD38D13E70E7B00B08A49 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
 		4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Kraftstoffrechner.xcdatamodel; sourceTree = "<group>"; };
@@ -251,7 +250,6 @@
 		4D18471F123CF8B1008D7454 /* Bitmaps */ = {
 			isa = PBXGroup;
 			children = (
-				4D2199BD124608EE00FCED15 /* iTunesArtwork */,
 				4D3F1988176B29BB003FE2C7 /* Help */,
 			);
 			name = Bitmaps;
