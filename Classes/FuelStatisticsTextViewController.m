@@ -6,10 +6,7 @@
 #import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsTextViewController.h"
-
-#import "NSDate+Kraftstoff.h"
-#import "NSDecimalNumber+Kraftstoff.h"
-
+#import "kraftstoff-Swift.h"
 
 
 static CGFloat const GridMargin =  16.0;

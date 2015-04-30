@@ -11,8 +11,7 @@
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
 #import "SwitchTableCell.h"
-
-#import "NSDate+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 @implementation FuelEventEditorController

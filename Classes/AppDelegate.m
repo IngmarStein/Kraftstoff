@@ -8,8 +8,7 @@
 #import "FuelCalculatorController.h"
 #import "CSVParser.h"
 #import "CSVImporter.h"
-
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 // Shadow heights used within the app

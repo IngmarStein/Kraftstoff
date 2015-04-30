@@ -6,8 +6,7 @@
 #import "DateEditTableCell.h"
 #import "FuelCalculatorController.h"
 #import "AppDelegate.h"
-
-#import "NSDate+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 @implementation DateEditTableCell

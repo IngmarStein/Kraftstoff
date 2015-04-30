@@ -6,8 +6,7 @@
 #import "AppDelegate.h"
 #import "FuelEventController.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
-
-#import "NSDate+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 // Coordinates for the content area

@@ -7,9 +7,7 @@
 #import "CSVParser.h"
 #import "AppDelegate.h"
 #import "TextEditTableCell.h"
-
-#import "NSDate+Kraftstoff.h"
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 

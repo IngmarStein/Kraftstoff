@@ -9,8 +9,7 @@
 #import "QuadInfoCell.h"
 #import "DemoData.h"
 #import "TextEditTableCell.h"
-
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 static NSInteger maxEditHelpCounter = 1;
