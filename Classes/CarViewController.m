@@ -46,12 +46,18 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.longPressRecognizer.delegate = self;
 
-    // reset tint color
+    // Reset tint color
     self.navigationController.navigationBar.tintColor = nil;
 
     // Background image
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"TableBackgroundFlat"]];
-    self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
+	UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
+	backgroundView.backgroundColor = [UIColor colorWithRed:0.935 green:0.935 blue:0.956 alpha:1.0];
+	UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Pumps"]];
+	backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
+	[backgroundView addSubview:backgroundImage];
+	[backgroundView addConstraint:[NSLayoutConstraint constraintWithItem:backgroundView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:backgroundImage attribute:NSLayoutAttributeBottom multiplier:1.0 constant:90.0]];
+	[backgroundView addConstraint:[NSLayoutConstraint constraintWithItem:backgroundView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:backgroundImage attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+	self.tableView.backgroundView = backgroundView;
 
     _managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
 
