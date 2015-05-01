@@ -7,6 +7,7 @@
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsGraphViewController.h"
 #import "AppDelegate.h"
+#import "kraftstoff-Swift.h"
 
 
 // Coordinates for statistics graph
@@ -354,12 +355,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     if (state->dataCount < 3 || [firstDate timeIntervalSinceDate:lastDate] < 604800) {
 
-        dateFormatter = [AppDelegate sharedDateTimeFormatter];
+        dateFormatter = [Formatters sharedDateTimeFormatter];
         midDate = nil;
 
     } else {
 
-        dateFormatter = [AppDelegate sharedDateFormatter];
+        dateFormatter = [Formatters sharedDateFormatter];
         midDate = [NSDate dateWithTimeInterval:[firstDate timeIntervalSinceDate:lastDate]/2.0 sinceDate:lastDate];
     }
 
@@ -781,7 +782,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                     zoomIndex = minIndex;
 
                     // Date information
-                    NSDateFormatter *df = [AppDelegate sharedLongDateFormatter];
+                    NSDateFormatter *df = [Formatters sharedLongDateFormatter];
 
                     if (cell->lensDate [minIndex][0] == cell->lensDate [minIndex][1])
                         self.centerLabel.text = [df stringFromDate:[NSDate dateWithTimeIntervalSince1970:cell->lensDate [minIndex][0]]];
@@ -920,7 +921,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car
 {
-    return [AppDelegate sharedFuelVolumeFormatter];
+    return [Formatters sharedFuelVolumeFormatter];
 }
 
 
@@ -942,7 +943,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
-    return [AppDelegate sharedFuelVolumeFormatter];
+    return [Formatters sharedFuelVolumeFormatter];
 }
 
 
@@ -978,7 +979,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car
 {
-    return (precise) ? [AppDelegate sharedPreciseCurrencyFormatter] : [AppDelegate sharedCurrencyFormatter];
+    return (precise) ? [Formatters sharedPreciseCurrencyFormatter] : [Formatters sharedCurrencyFormatter];
 }
 
 
@@ -995,14 +996,14 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     KSVolume fuelUnit = (KSVolume)[[car valueForKey:@"fuelUnit"] integerValue];
 
     return [NSString stringWithFormat:@"%@/%@",
-            [[AppDelegate sharedCurrencyFormatter] currencySymbol],
+            [[Formatters sharedCurrencyFormatter] currencySymbol],
             [AppDelegate fuelUnitString:fuelUnit]];
 }
 
 
 - (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
-    return [AppDelegate sharedAxisCurrencyFormatter];
+    return [Formatters sharedAxisCurrencyFormatter];
 }
 
 
@@ -1039,9 +1040,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
-        return [AppDelegate sharedCurrencyFormatter];
+        return [Formatters sharedCurrencyFormatter];
     else
-        return [AppDelegate sharedDistanceFormatter];
+        return [Formatters sharedDistanceFormatter];
 }
 
 
@@ -1052,7 +1053,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     if (KSDistanceIsMetric (distanceUnit))
         return [NSString stringWithFormat:@"%@%%@/100km", avgPrefix ? @"∅ " : @""];
     else
-        return [NSString stringWithFormat:@"%@%%@ mi/%@", avgPrefix ? @"∅ " : @"", [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
+        return [NSString stringWithFormat:@"%@%%@ mi/%@", avgPrefix ? @"∅ " : @"", [[Formatters sharedCurrencyFormatter] currencySymbol]];
 }
 
 
@@ -1061,7 +1062,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     return [NSString stringWithFormat:KSDistanceIsMetric (distanceUnit) ? @"%@/100km" : @"mi/%@",
-            [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
+            [[Formatters sharedCurrencyFormatter] currencySymbol]];
 }
 
 
@@ -1070,9 +1071,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
-        return [AppDelegate sharedAxisCurrencyFormatter];
+        return [Formatters sharedAxisCurrencyFormatter];
     else
-        return [AppDelegate sharedDistanceFormatter];
+        return [Formatters sharedDistanceFormatter];
 }
 
 
@@ -1081,7 +1082,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
     if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
         return NAN;
 
-    NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
+    NSDecimalNumberHandler *handler = [Formatters sharedConsumptionRoundingHandler];
     KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     NSDecimalNumber *price = [managedObject valueForKey:@"price"];

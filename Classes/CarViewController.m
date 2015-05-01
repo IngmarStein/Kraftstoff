@@ -537,7 +537,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     if ([distance   compare:[NSDecimalNumber zero]] == NSOrderedDescending && [fuelVolume compare:[NSDecimalNumber zero]] == NSOrderedDescending) {
 
-        avgConsumption = [[AppDelegate sharedFuelVolumeFormatter]
+        avgConsumption = [[Formatters sharedFuelVolumeFormatter]
                                 stringFromNumber:
                                     [AppDelegate consumptionForKilometers:distance
                                                                    Liters:fuelVolume

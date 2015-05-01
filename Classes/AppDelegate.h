@@ -72,25 +72,6 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
 
 
 
-#pragma mark Shared Data Formatters
-
-+ (NSDateFormatter *)sharedLongDateFormatter;
-+ (NSDateFormatter *)sharedDateFormatter;
-+ (NSDateFormatter *)sharedDateTimeFormatter;
-
-+ (NSNumberFormatter *)sharedDistanceFormatter;
-+ (NSNumberFormatter *)sharedFuelVolumeFormatter;
-+ (NSNumberFormatter *)sharedPreciseFuelVolumeFormatter;
-+ (NSNumberFormatter *)sharedCurrencyFormatter;
-+ (NSNumberFormatter *)sharedEditPreciseCurrencyFormatter;
-+ (NSNumberFormatter *)sharedPreciseCurrencyFormatter;
-+ (NSNumberFormatter *)sharedAxisCurrencyFormatter;
-
-+ (NSDecimalNumberHandler *)sharedConsumptionRoundingHandler;
-+ (NSDecimalNumberHandler *)sharedPriceRoundingHandler;
-
-
-
 #pragma mark Core Data Support
 
 - (BOOL)saveContext:(NSManagedObjectContext *)context;

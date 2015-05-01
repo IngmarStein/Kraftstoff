@@ -459,7 +459,7 @@
                     price = [NSDecimalNumber zero];
                 else
                     price = [price decimalNumberByDividingBy:volume
-                                                withBehavior:[AppDelegate sharedPriceRoundingHandler]];
+                                                withBehavior:[Formatters sharedPriceRoundingHandler]];
             }
             else if (price)
             {

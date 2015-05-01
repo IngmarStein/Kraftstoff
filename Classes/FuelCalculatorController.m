@@ -264,14 +264,14 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
     NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:kilometers Liters:liters inUnit:consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
-                                        [[AppDelegate sharedCurrencyFormatter]   stringFromNumber:cost],
+                                        [[Formatters sharedCurrencyFormatter]   stringFromNumber:cost],
                                         NSLocalizedString(@"/", @""),
-                                        [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:consumption],
+                                        [[Formatters sharedFuelVolumeFormatter] stringFromNumber:consumption],
                                         [AppDelegate consumptionUnitString:consumptionUnit]];
 
 
     // Substrings for highlighting
-    NSArray *highlightStrings = @[[[AppDelegate sharedCurrencyFormatter] currencySymbol],
+    NSArray *highlightStrings = @[[[Formatters sharedCurrencyFormatter] currencySymbol],
                                   [AppDelegate consumptionUnitString:consumptionUnit]];
 
     [self addSectionAtIndex:1 withAnimation:animation];
@@ -315,7 +315,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
                   cellClass:[NumberEditTableCell class]
                    cellData:@{@"label":NSLocalizedString(@"Distance", @""),
                               @"suffix":[@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
-                              @"formatter":[AppDelegate sharedDistanceFormatter],
+                              @"formatter":[Formatters sharedDistanceFormatter],
                               @"valueIdentifier":@"distance"}
               withAnimation:animation];
     }
@@ -331,8 +331,8 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
                   inSection:0
                   cellClass:[NumberEditTableCell class]
                    cellData:@{@"label":[AppDelegate fuelPriceUnitDescription:fuelUnit],
-                              @"formatter":[AppDelegate sharedEditPreciseCurrencyFormatter],
-                              @"alternateFormatter":[AppDelegate sharedPreciseCurrencyFormatter],
+                              @"formatter":[Formatters sharedEditPreciseCurrencyFormatter],
+                              @"alternateFormatter":[Formatters sharedPreciseCurrencyFormatter],
                               @"valueIdentifier":@"price"}
               withAnimation:animation];
     }
@@ -350,8 +350,8 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
                    cellData:@{@"label":[AppDelegate fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
                               @"suffix":[@" " stringByAppendingString:[AppDelegate fuelUnitString:fuelUnit]],
                               @"formatter":KSVolumeIsMetric (fuelUnit)
-                                                ? [AppDelegate sharedFuelVolumeFormatter]
-                                                : [AppDelegate sharedPreciseFuelVolumeFormatter],
+                                                ? [Formatters sharedFuelVolumeFormatter]
+                                                : [Formatters sharedPreciseFuelVolumeFormatter],
                               @"valueIdentifier":@"fuelVolume"}
               withAnimation:animation];
     }
@@ -395,7 +395,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
               inSection:0
               cellClass:[DateEditTableCell class]
                cellData:@{@"label":NSLocalizedString(@"Date", @""),
-                          @"formatter":[AppDelegate sharedDateTimeFormatter],
+                          @"formatter":[Formatters sharedDateTimeFormatter],
                           @"valueIdentifier":@"date",
                           @"valueTimestamp":@"lastChangeDate",
                           @"autorefresh":@YES}
@@ -746,7 +746,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
     NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
 
-    NSNumberFormatter *distanceFormatter = [AppDelegate sharedDistanceFormatter];
+    NSNumberFormatter *distanceFormatter = [Formatters sharedDistanceFormatter];
 
     NSString *rawButton = [NSString stringWithFormat:@"%@ %@",
                                 [distanceFormatter stringFromNumber:[AppDelegate distanceForKilometers:rawDistance  withUnit:odometerUnit]],

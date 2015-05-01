@@ -344,9 +344,9 @@ static CGFloat const GridTextHeight = 23.0;
             NSString *text;
             CGSize size;
 
-            NSNumberFormatter *nf = [AppDelegate sharedFuelVolumeFormatter];
-            NSNumberFormatter *cf = [AppDelegate sharedCurrencyFormatter];
-            NSNumberFormatter *pcf = [AppDelegate sharedPreciseCurrencyFormatter];
+            NSNumberFormatter *nf = [Formatters sharedFuelVolumeFormatter];
+            NSNumberFormatter *cf = [Formatters sharedCurrencyFormatter];
+            NSNumberFormatter *pcf = [Formatters sharedPreciseCurrencyFormatter];
             NSDecimalNumber *val, *val2, *zero = [NSDecimalNumber zero];
 
             KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[state->car valueForKey:@"fuelConsumptionUnit"] integerValue];
@@ -440,7 +440,7 @@ static CGFloat const GridTextHeight = 23.0;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
-                text = [NSString stringWithFormat:@"%@ %@", [[AppDelegate sharedDistanceFormatter] stringFromNumber:val], odometerUnitString];
+                text = [NSString stringWithFormat:@"%@ %@", [[Formatters sharedDistanceFormatter] stringFromNumber:val], odometerUnitString];
                 x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }

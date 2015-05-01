@@ -8,6 +8,7 @@
 #import "NumberEditTableCell.h"
 #import "PickerTableCell.h"
 #import "AppDelegate.h"
+#import "kraftstoff-Swift.h"
 
 @interface CarConfigurationController () <EditablePageCellDelegate>
 
@@ -156,7 +157,7 @@
               cellClass:[NumberEditTableCell class]
                cellData:@{@"label":           NSLocalizedString(@"Odometer Reading", @""),
                            @"suffix":          suffix,
-                           @"formatter":       [AppDelegate sharedDistanceFormatter],
+                           @"formatter":       [Formatters sharedDistanceFormatter],
                            @"valueIdentifier":@"odometer"}
           withAnimation:animation];
 }

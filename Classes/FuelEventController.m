@@ -8,6 +8,7 @@
 #import "FuelStatisticsPageController.h"
 #import "FuelEventEditorController.h"
 #import "AppDelegate.h"
+#import "kraftstoff-Swift.h"
 
 
 @implementation FuelEventController
@@ -568,7 +569,7 @@
 
     // Timestamp
     label      = [tableCell topLeftLabel];
-    label.text = [[AppDelegate sharedDateFormatter] stringForObjectValue:[managedObject valueForKey:@"timestamp"]];
+    label.text = [[Formatters sharedDateFormatter] stringForObjectValue:[managedObject valueForKey:@"timestamp"]];
     tableCell.topLeftAccessibilityLabel = nil;
 
 
@@ -582,14 +583,14 @@
 
     label = [tableCell botLeftLabel];
     label.text = [NSString stringWithFormat:@"%@ %@",
-                    [[AppDelegate sharedDistanceFormatter] stringFromNumber:convertedDistance],
+                    [[Formatters sharedDistanceFormatter] stringFromNumber:convertedDistance],
                     [AppDelegate odometerUnitString:odometerUnit]];
     tableCell.botLeftAccessibilityLabel = nil;
 
 
     // Price
     label = [tableCell topRightLabel];
-    label.text = [[AppDelegate sharedCurrencyFormatter] stringFromNumber:[fuelVolume decimalNumberByMultiplyingBy:price]];
+    label.text = [[Formatters sharedCurrencyFormatter] stringFromNumber:[fuelVolume decimalNumberByMultiplyingBy:price]];
     tableCell.topRightAccessibilityLabel = label.text;
 
 
@@ -605,7 +606,7 @@
                                                               Liters:fuelVolume
                                                               inUnit:consumptionUnit];
 
-        consumptionDescription = [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:avg];
+        consumptionDescription = [[Formatters sharedFuelVolumeFormatter] stringFromNumber:avg];
 
         tableCell.botRightAccessibilityLabel = [NSString stringWithFormat:@", %@ %@",
                                                     consumptionDescription,
