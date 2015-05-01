@@ -277,7 +277,7 @@ static NSInteger maxEditHelpCounter = 1;
         [newManagedObject setValue:controller.plate forKey:@"numberPlate"];
         [newManagedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
 
-        [newManagedObject setValue:[AppDelegate kilometersForDistance:controller.odometer
+        [newManagedObject setValue:[Units kilometersForDistance:controller.odometer
                                                              withUnit:(KSDistance)[controller.odometerUnit integerValue]]
                             forKey:@"odometer"];
 
@@ -298,7 +298,7 @@ static NSInteger maxEditHelpCounter = 1;
         [_editedObject setValue:controller.plate forKey:@"numberPlate"];
         [_editedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
 
-        NSDecimalNumber *odometer = [AppDelegate kilometersForDistance:controller.odometer
+        NSDecimalNumber *odometer = [Units kilometersForDistance:controller.odometer
                                                               withUnit:(KSDistance)[controller.odometerUnit integerValue]];
 
         odometer = [odometer max:[_editedObject valueForKey:@"distanceTotalSum"]];
@@ -433,7 +433,7 @@ static NSInteger maxEditHelpCounter = 1;
                 configurator.plate = @"";
 
             configurator.odometerUnit = [_editedObject valueForKey:@"odometerUnit"];
-            configurator.odometer     = [AppDelegate distanceForKilometers:[_editedObject valueForKey:@"odometer"]
+            configurator.odometer     = [Units distanceForKilometers:[_editedObject valueForKey:@"odometer"]
                                                                   withUnit:[[_editedObject valueForKey:@"odometerUnit"] integerValue]];
 
             configurator.fuelUnit            = [_editedObject valueForKey:@"fuelUnit"];
@@ -539,12 +539,12 @@ static NSInteger maxEditHelpCounter = 1;
 
         avgConsumption = [[Formatters sharedFuelVolumeFormatter]
                                 stringFromNumber:
-                                    [AppDelegate consumptionForKilometers:distance
-                                                                   Liters:fuelVolume
+                                    [Units consumptionForKilometers:distance
+                                                                   liters:fuelVolume
                                                                    inUnit:consumptionUnit]];
 
         tableCell.topRightAccessibilityLabel = avgConsumption;
-        tableCell.botRightAccessibilityLabel = [AppDelegate consumptionUnitAccesibilityDescription:consumptionUnit];
+        tableCell.botRightAccessibilityLabel = [Units consumptionUnitAccesibilityDescription:consumptionUnit];
 
     } else {
 
@@ -558,7 +558,7 @@ static NSInteger maxEditHelpCounter = 1;
     label.text = avgConsumption;
 
     label      = [tableCell botRightLabel];
-    label.text = [AppDelegate consumptionUnitString:consumptionUnit];
+    label.text = [Units consumptionUnitString:consumptionUnit];
 }
 
 

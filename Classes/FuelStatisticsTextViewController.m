@@ -137,8 +137,8 @@ static CGFloat const GridTextHeight = 23.0;
             NSDecimalNumber *inheritedDistance = [managedObject valueForKey:@"inheritedDistance"];
             NSDecimalNumber *inheritedFuelVolume = [managedObject valueForKey:@"inheritedFuelVolume"];
 
-            NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:[distance decimalNumberByAdding:inheritedDistance]
-                                                                          Liters:[fuelVolume decimalNumberByAdding:inheritedFuelVolume]
+            NSDecimalNumber *consumption = [Units consumptionForKilometers:[distance decimalNumberByAdding:inheritedDistance]
+                                                                          liters:[fuelVolume decimalNumberByAdding:inheritedFuelVolume]
                                                                           inUnit:consumptionUnit];
 
             state->avgConsumption = [state->avgConsumption decimalNumberByAdding:consumption];
@@ -162,8 +162,8 @@ static CGFloat const GridTextHeight = 23.0;
 
     // Compute average consumption
     if ([state->totalDistance isEqualToNumber:@(0)] == NO && [state->totalFuelVolume isEqualToNumber:@(0)] == NO)
-        state->avgConsumption = [AppDelegate consumptionForKilometers:state->totalDistance
-                                                               Liters:state->totalFuelVolume
+        state->avgConsumption = [Units consumptionForKilometers:state->totalDistance
+                                                               liters:state->totalFuelVolume
                                                                inUnit:consumptionUnit];
 }
 
@@ -350,13 +350,13 @@ static CGFloat const GridTextHeight = 23.0;
             NSDecimalNumber *val, *val2, *zero = [NSDecimalNumber zero];
 
             KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[state->car valueForKey:@"fuelConsumptionUnit"] integerValue];
-            NSString *consumptionUnitString = [AppDelegate consumptionUnitString:consumptionUnit];
+            NSString *consumptionUnitString = [Units consumptionUnitString:consumptionUnit];
 
             KSDistance odometerUnit  = (KSDistance)[[state->car valueForKey:@"odometerUnit"] integerValue];
-            NSString *odometerUnitString = [AppDelegate odometerUnitString:odometerUnit];
+            NSString *odometerUnitString = [Units odometerUnitString:odometerUnit];
 
             KSVolume fuelUnit = (KSVolume)[[state->car valueForKey:@"fuelUnit"] integerValue];
-            NSString *fuelUnitString = [AppDelegate fuelUnitString:fuelUnit];
+            NSString *fuelUnitString = [Units fuelUnitString:fuelUnit];
 
             NSInteger numberOfDays = [NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate];
 
@@ -439,7 +439,7 @@ static CGFloat const GridTextHeight = 23.0;
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
-                val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
+                val = [Units distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                 text = [NSString stringWithFormat:@"%@ %@", [[Formatters sharedDistanceFormatter] stringFromNumber:val], odometerUnitString];
                 x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
@@ -454,7 +454,7 @@ static CGFloat const GridTextHeight = 23.0;
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
-                val = [AppDelegate volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
+                val = [Units volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
                 text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], fuelUnitString];
                 x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
@@ -485,7 +485,7 @@ static CGFloat const GridTextHeight = 23.0;
 
                 if (state->numberOfFillups > 0) {
 
-                    val = [AppDelegate volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
+                    val = [Units volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
                     val = [val decimalNumberByDividingBy:[NSDecimalNumber decimalNumberWithMantissa:state->numberOfFillups exponent:0 isNegative:NO]];
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], fuelUnitString];
                 }
@@ -500,14 +500,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:NO]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [Units odometerUnitDescription:odometerUnit pluralization:NO]];
                 size = [text sizeWithAttributes:labelAttributes];
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalDistance] == NSOrderedAscending) {
 
-                    val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
+                    val = [Units distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                     val = [state->totalCost decimalNumberByDividingBy:val];
                     text = [NSString stringWithFormat:@"%@/%@", [pcf stringFromNumber:val], odometerUnitString];
                 }
@@ -522,14 +522,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:NO]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [Units fuelUnitDescription:fuelUnit discernGallons:YES pluralization:NO]];
                 size = [text sizeWithAttributes:labelAttributes];
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalFuelVolume] == NSOrderedAscending) {
 
-                    val = [AppDelegate volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
+                    val = [Units volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
                     val = [state->totalCost decimalNumberByDividingBy:val];
                     text = [NSString stringWithFormat:@"%@/%@", [pcf stringFromNumber:val], fuelUnitString];
                 }
@@ -588,14 +588,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"event", @"")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [Units odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"event", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (state->numberOfFillups > 0) {
 
-                    val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
+                    val = [Units distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                     val2 = [NSDecimalNumber decimalNumberWithMantissa:state->numberOfFillups exponent:0 isNegative:NO];
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:[val decimalNumberByDividingBy:val2]], odometerUnitString];
                 }
@@ -610,14 +610,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"day", @"")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [Units odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"day", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (numberOfDays > 0) {
 
-                    val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
+                    val = [Units distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                     val2 = [NSDecimalNumber decimalNumberWithMantissa:numberOfDays exponent:0 isNegative:NO];
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:[val decimalNumberByDividingBy:val2]], odometerUnitString];
                 }
@@ -632,14 +632,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], [cf currencySymbol]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [Units odometerUnitDescription:odometerUnit pluralization:YES], [cf currencySymbol]];
                 size = [text sizeWithAttributes:labelAttributes];
                 x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalCost] == NSOrderedAscending) {
 
-                    val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
+                    val = [Units distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                     val = [val decimalNumberByDividingBy:state->totalCost];
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], odometerUnitString];
                 }

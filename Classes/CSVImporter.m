@@ -239,9 +239,9 @@
         NSManagedObject *newCar = [self addCarWithName:model
                                                  order:[carForID count]
                                                  plate:plate
-                                          odometerUnit:[AppDelegate distanceUnitFromLocale]
-                                            volumeUnit:[AppDelegate volumeUnitFromLocale]
-                                   fuelConsumptionUnit:[AppDelegate fuelConsumptionUnitFromLocale]
+                                          odometerUnit:[Units distanceUnitFromLocale]
+                                            volumeUnit:[Units volumeUnitFromLocale]
+                                   fuelConsumptionUnit:[Units fuelConsumptionUnitFromLocale]
                                              inContext:managedObjectContext];
 
         carForID[carID] = newCar;
@@ -270,16 +270,16 @@
         return distance;
     
     // consumption with parsed distance
-    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers:distance
-                                                                      Liters:liters
+    NSDecimalNumber *rawConsumption  = [Units consumptionForKilometers:distance
+                                                                      liters:liters
                                                                       inUnit:KSFuelConsumptionLitersPer100km];
     
     if ([rawConsumption isEqual:[NSDecimalNumber notANumber]])
         return distance;
     
     // consumption with increased distance
-    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers:convDistance
-                                                                      Liters:liters
+    NSDecimalNumber *convConsumption = [Units consumptionForKilometers:convDistance
+                                                                      liters:liters
                                                                       inUnit:KSFuelConsumptionLitersPer100km];
     
     if ([convConsumption isEqual:[NSDecimalNumber notANumber]])
@@ -417,7 +417,7 @@
                 distance = [self scanNumberWithString:record[distanceKey]];
 
                 if (distance)
-                    distance = [AppDelegate kilometersForDistance:distance withUnit:distanceUnit];
+                    distance = [Units kilometersForDistance:distance withUnit:distanceUnit];
             }
             else
             {
@@ -425,7 +425,7 @@
 
                 if (newOdometer)
                 {
-                    newOdometer = [AppDelegate kilometersForDistance:newOdometer withUnit:odometerUnit];
+                    newOdometer = [Units kilometersForDistance:newOdometer withUnit:odometerUnit];
                     distance    = [newOdometer decimalNumberBySubtracting:odometer];
                     odometer    = newOdometer;
                 }
@@ -439,14 +439,14 @@
                 volume = [self scanNumberWithString:record[volumeKey]];
 
                 if (volume)
-                    volume = [AppDelegate litersForVolume:volume withUnit:volumeUnit];
+                    volume = [Units litersForVolume:volume withUnit:volumeUnit];
             }
             else
             {
                 volume = [self scanNumberWithString:record[volumeAmountKey]];
 
                 if (volume)
-                    volume = [AppDelegate litersForVolume:volume withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
+                    volume = [Units litersForVolume:volume withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
             }
 
 
@@ -464,9 +464,9 @@
             else if (price)
             {
                 if (volumeUnit != KSVolumeInvalid)
-                    price = [AppDelegate pricePerLiter:price withUnit:volumeUnit];
+                    price = [Units pricePerLiter:price withUnit:volumeUnit];
                 else
-                    price = [AppDelegate pricePerLiter:price withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
+                    price = [Units pricePerLiter:price withUnit:[self scanVolumeUnitWithString:record[volumeUnitKey]]];
             }
 
 
@@ -789,7 +789,7 @@
 
     if ([string isEqualToString:@"G"]) {
         // TankPro seems to export both gallons simply as "G" => search locale for feasible guess
-        if ([AppDelegate volumeUnitFromLocale] == KSVolumeGalUS)
+        if ([Units volumeUnitFromLocale] == KSVolumeGalUS)
             return KSVolumeGalUS;
         else
             return KSVolumeGalUK;
@@ -810,7 +810,7 @@
         if (range.location != NSNotFound)
             return KSVolumeGalUK;
 
-        if ([AppDelegate volumeUnitFromLocale] == KSVolumeGalUS)
+        if ([Units volumeUnitFromLocale] == KSVolumeGalUS)
             return KSVolumeGalUS;
         else
             return KSVolumeGalUK;

@@ -192,9 +192,9 @@
     
     self.title  = [[Formatters sharedDateFormatter] stringFromDate:[_event valueForKey:@"timestamp"]];
     _date       = [_event valueForKey:@"timestamp"];
-    _distance   = [AppDelegate distanceForKilometers:[_event valueForKey:@"distance"] withUnit:odometerUnit];
-    _price      = [AppDelegate pricePerUnit:[_event valueForKey:@"price"] withUnit:fuelUnit];
-    _fuelVolume = [AppDelegate volumeForLiters:[_event valueForKey:@"fuelVolume"] withUnit:fuelUnit];
+    _distance   = [Units distanceForKilometers:[_event valueForKey:@"distance"] withUnit:odometerUnit];
+    _price      = [Units pricePerUnit:[_event valueForKey:@"price"] withUnit:fuelUnit];
+    _fuelVolume = [Units volumeForLiters:[_event valueForKey:@"fuelVolume"] withUnit:fuelUnit];
     _filledUp   = [[_event valueForKey:@"filledUp"] boolValue];
 
     dataChanged = NO;
@@ -373,19 +373,19 @@
     // Compute the average consumption
     NSDecimalNumber *cost = [_fuelVolume decimalNumberByMultiplyingBy:_price];
 
-    NSDecimalNumber *liters      = [AppDelegate litersForVolume:_fuelVolume withUnit:fuelUnit];
-    NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance:_distance withUnit:odometerUnit];
-    NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:kilometers Liters:liters inUnit:consumptionUnit];
+    NSDecimalNumber *liters      = [Units litersForVolume:_fuelVolume withUnit:fuelUnit];
+    NSDecimalNumber *kilometers  = [Units kilometersForDistance:_distance withUnit:odometerUnit];
+    NSDecimalNumber *consumption = [Units consumptionForKilometers:kilometers liters:liters inUnit:consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                       [[Formatters sharedCurrencyFormatter]   stringFromNumber:cost],
                                       NSLocalizedString(@"/", @""),
                                       [[Formatters sharedFuelVolumeFormatter] stringFromNumber:consumption],
-                                      [AppDelegate consumptionUnitString:consumptionUnit]];
+                                      [Units consumptionUnitString:consumptionUnit]];
 
     // Substrings for highlighting
     NSArray *highlightStrings = @[[[Formatters sharedCurrencyFormatter] currencySymbol],
-                                  [AppDelegate consumptionUnitString:consumptionUnit]];
+                                  [Units consumptionUnitString:consumptionUnit]];
 
     [self addSectionAtIndex:1 withAnimation:animation];
 
@@ -416,7 +416,7 @@
               inSection:0
               cellClass:[NumberEditTableCell class]
                cellData:@{@"label": NSLocalizedString(@"Distance", @""),
-                          @"suffix": [@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
+                          @"suffix": [@" " stringByAppendingString:[Units odometerUnitString:odometerUnit]],
                           @"formatter": [Formatters sharedDistanceFormatter],
                           @"valueIdentifier": @"distance"}
           withAnimation:animation];
@@ -426,7 +426,7 @@
     [self addRowAtIndex:2
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label": [AppDelegate fuelPriceUnitDescription:fuelUnit],
+               cellData:@{@"label": [Units fuelPriceUnitDescription:fuelUnit],
                           @"formatter": [Formatters sharedEditPreciseCurrencyFormatter],
                           @"alternateFormatter": [Formatters sharedPreciseCurrencyFormatter],
                           @"valueIdentifier": @"price"}
@@ -435,8 +435,8 @@
     [self addRowAtIndex:3
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label": [AppDelegate fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
-                          @"suffix": [@" " stringByAppendingString:[AppDelegate fuelUnitString:fuelUnit]],
+               cellData:@{@"label": [Units fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
+                          @"suffix": [@" " stringByAppendingString:[Units fuelUnitString:fuelUnit]],
                           @"formatter": KSVolumeIsMetric (fuelUnit) ? [Formatters sharedFuelVolumeFormatter] : [Formatters sharedPreciseFuelVolumeFormatter],
                           @"valueIdentifier": @"fuelVolume"}
           withAnimation:animation];

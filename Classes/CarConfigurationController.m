@@ -147,7 +147,7 @@
 
 - (void)createOdometerRowWithAnimation:(UITableViewRowAnimation)animation
 {
-    NSString *suffix = [@" " stringByAppendingString:[AppDelegate odometerUnitString:(KSDistance)[self.odometerUnit integerValue]]];
+    NSString *suffix = [@" " stringByAppendingString:[Units odometerUnitString:(KSDistance)[self.odometerUnit integerValue]]];
 
     if (self.odometer == nil)
         self.odometer = [NSDecimalNumber zero];
@@ -192,10 +192,10 @@
 
 
     if (self.odometerUnit == nil)
-        self.odometerUnit = @([AppDelegate distanceUnitFromLocale]);
+        self.odometerUnit = @([Units distanceUnitFromLocale]);
 
-    pickerLabels = @[[AppDelegate odometerUnitDescription:KSDistanceKilometer   pluralization:YES],
-                     [AppDelegate odometerUnitDescription:KSDistanceStatuteMile pluralization:YES]];
+    pickerLabels = @[[Units odometerUnitDescription:KSDistanceKilometer   pluralization:YES],
+                     [Units odometerUnitDescription:KSDistanceStatuteMile pluralization:YES]];
 
     [self addRowAtIndex:2
               inSection:0
@@ -210,11 +210,11 @@
 
 
     if (self.fuelUnit == nil)
-        self.fuelUnit = @([AppDelegate volumeUnitFromLocale]);
+        self.fuelUnit = @([Units volumeUnitFromLocale]);
 
-    pickerLabels = @[[AppDelegate fuelUnitDescription:KSVolumeLiter discernGallons:YES pluralization:YES],
-                     [AppDelegate fuelUnitDescription:KSVolumeGalUS discernGallons:YES pluralization:YES],
-                     [AppDelegate fuelUnitDescription:KSVolumeGalUK discernGallons:YES pluralization:YES]];
+    pickerLabels = @[[Units fuelUnitDescription:KSVolumeLiter discernGallons:YES pluralization:YES],
+                     [Units fuelUnitDescription:KSVolumeGalUS discernGallons:YES pluralization:YES],
+                     [Units fuelUnitDescription:KSVolumeGalUK discernGallons:YES pluralization:YES]];
 
     [self addRowAtIndex:4
               inSection:0
@@ -226,21 +226,21 @@
 
 
     if (self.fuelConsumptionUnit == nil)
-        self.fuelConsumptionUnit = @([AppDelegate fuelConsumptionUnitFromLocale]);
+        self.fuelConsumptionUnit = @([Units fuelConsumptionUnitFromLocale]);
 
-    pickerLabels = @[[AppDelegate consumptionUnitDescription:KSFuelConsumptionLitersPer100km],
-                     [AppDelegate consumptionUnitDescription:KSFuelConsumptionKilometersPerLiter],
-                     [AppDelegate consumptionUnitDescription:KSFuelConsumptionMilesPerGallonUS],
-                     [AppDelegate consumptionUnitDescription:KSFuelConsumptionMilesPerGallonUK],
-                     [AppDelegate consumptionUnitDescription:KSFuelConsumptionGP10KUS],
-                     [AppDelegate consumptionUnitDescription:KSFuelConsumptionGP10KUK]];
+    pickerLabels = @[[Units consumptionUnitDescription:KSFuelConsumptionLitersPer100km],
+                     [Units consumptionUnitDescription:KSFuelConsumptionKilometersPerLiter],
+                     [Units consumptionUnitDescription:KSFuelConsumptionMilesPerGallonUS],
+                     [Units consumptionUnitDescription:KSFuelConsumptionMilesPerGallonUK],
+                     [Units consumptionUnitDescription:KSFuelConsumptionGP10KUS],
+                     [Units consumptionUnitDescription:KSFuelConsumptionGP10KUK]];
 
-    pickerShortLabels = @[[AppDelegate consumptionUnitShortDescription:KSFuelConsumptionLitersPer100km],
-                          [AppDelegate consumptionUnitShortDescription:KSFuelConsumptionKilometersPerLiter],
-                          [AppDelegate consumptionUnitShortDescription:KSFuelConsumptionMilesPerGallonUS],
-                          [AppDelegate consumptionUnitShortDescription:KSFuelConsumptionMilesPerGallonUK],
-                          [AppDelegate consumptionUnitShortDescription:KSFuelConsumptionGP10KUS],
-                          [AppDelegate consumptionUnitShortDescription:KSFuelConsumptionGP10KUK]];
+    pickerShortLabels = @[[Units consumptionUnitShortDescription:KSFuelConsumptionLitersPer100km],
+                          [Units consumptionUnitShortDescription:KSFuelConsumptionKilometersPerLiter],
+                          [Units consumptionUnitShortDescription:KSFuelConsumptionMilesPerGallonUS],
+                          [Units consumptionUnitShortDescription:KSFuelConsumptionMilesPerGallonUK],
+                          [Units consumptionUnitShortDescription:KSFuelConsumptionGP10KUS],
+                          [Units consumptionUnitShortDescription:KSFuelConsumptionGP10KUK]];
 
     [self addRowAtIndex:5
               inSection:0
@@ -468,7 +468,7 @@
             if (oldUnit != newUnit) {
 
                 self.odometerUnit = (NSNumber*)newValue;
-                self.odometer     = [AppDelegate distanceForKilometers:[AppDelegate kilometersForDistance:self.odometer
+                self.odometer     = [Units distanceForKilometers:[Units kilometersForDistance:self.odometer
                                                                                                   withUnit:oldUnit]
                                                               withUnit:newUnit];
 

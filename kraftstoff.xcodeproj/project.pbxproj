@@ -48,6 +48,7 @@
 		955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */; };
 		955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */; };
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
+		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 /* End PBXBuildFile section */
 
@@ -130,6 +131,7 @@
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
+		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -188,8 +190,9 @@
 				1D3623250D0F684500981E51 /* AppDelegate.m */,
 				955B46151AF208A000A62D3B /* AppWindow.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
-				4D1899B514328AC0001434BD /* main.m */,
 				955B46141AF2089F00A62D3B /* kraftstoff-Bridging-Header.h */,
+				4D1899B514328AC0001434BD /* main.m */,
+				959A61B71AF4159600BDF116 /* Units.swift */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				4D2CD38E13E70E7B00B08A49 /* CSVParser.m in Sources */,
 				955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */,
 				4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */,
+				959A61B81AF4159600BDF116 /* Units.swift in Sources */,
 				4DDC187A1429EC8200383F92 /* FuelEventEditorController.m in Sources */,
 				4D1899B614328AC0001434BD /* main.m in Sources */,
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,

@@ -250,29 +250,29 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 
     } else {
 
-        odometerUnit    = [AppDelegate distanceUnitFromLocale];
-        fuelUnit        = [AppDelegate volumeUnitFromLocale];
-        consumptionUnit = [AppDelegate fuelConsumptionUnitFromLocale];
+        odometerUnit    = [Units distanceUnitFromLocale];
+        fuelUnit        = [Units volumeUnitFromLocale];
+        consumptionUnit = [Units fuelConsumptionUnitFromLocale];
     }
 
 
     // Compute the average consumption
     NSDecimalNumber *cost = [self.fuelVolume decimalNumberByMultiplyingBy:self.price];
 
-    NSDecimalNumber *liters      = [AppDelegate litersForVolume:self.fuelVolume withUnit:fuelUnit];
-    NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
-    NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:kilometers Liters:liters inUnit:consumptionUnit];
+    NSDecimalNumber *liters      = [Units litersForVolume:self.fuelVolume withUnit:fuelUnit];
+    NSDecimalNumber *kilometers  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
+    NSDecimalNumber *consumption = [Units consumptionForKilometers:kilometers liters:liters inUnit:consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                         [[Formatters sharedCurrencyFormatter]   stringFromNumber:cost],
                                         NSLocalizedString(@"/", @""),
                                         [[Formatters sharedFuelVolumeFormatter] stringFromNumber:consumption],
-                                        [AppDelegate consumptionUnitString:consumptionUnit]];
+                                        [Units consumptionUnitString:consumptionUnit]];
 
 
     // Substrings for highlighting
     NSArray *highlightStrings = @[[[Formatters sharedCurrencyFormatter] currencySymbol],
-                                  [AppDelegate consumptionUnitString:consumptionUnit]];
+                                  [Units consumptionUnitString:consumptionUnit]];
 
     [self addSectionAtIndex:1 withAnimation:animation];
 
@@ -297,8 +297,8 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 
     } else {
 
-        odometerUnit = [AppDelegate distanceUnitFromLocale];
-        fuelUnit     = [AppDelegate volumeUnitFromLocale];
+        odometerUnit = [Units distanceUnitFromLocale];
+        fuelUnit     = [Units volumeUnitFromLocale];
     }
 
     int rowOffset = (self.fetchedResultsController.fetchedObjects.count < 2) ? 1 : 2;
@@ -314,7 +314,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
                   inSection:0
                   cellClass:[NumberEditTableCell class]
                    cellData:@{@"label":NSLocalizedString(@"Distance", @""),
-                              @"suffix":[@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
+                              @"suffix":[@" " stringByAppendingString:[Units odometerUnitString:odometerUnit]],
                               @"formatter":[Formatters sharedDistanceFormatter],
                               @"valueIdentifier":@"distance"}
               withAnimation:animation];
@@ -330,7 +330,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
         [self addRowAtIndex:1 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":[AppDelegate fuelPriceUnitDescription:fuelUnit],
+                   cellData:@{@"label":[Units fuelPriceUnitDescription:fuelUnit],
                               @"formatter":[Formatters sharedEditPreciseCurrencyFormatter],
                               @"alternateFormatter":[Formatters sharedPreciseCurrencyFormatter],
                               @"valueIdentifier":@"price"}
@@ -347,8 +347,8 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
         [self addRowAtIndex:2 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":[AppDelegate fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
-                              @"suffix":[@" " stringByAppendingString:[AppDelegate fuelUnitString:fuelUnit]],
+                   cellData:@{@"label":[Units fuelUnitDescription:fuelUnit discernGallons:NO pluralization:YES],
+                              @"suffix":[@" " stringByAppendingString:[Units fuelUnitString:fuelUnit]],
                               @"formatter":KSVolumeIsMetric (fuelUnit)
                                                 ? [Formatters sharedFuelVolumeFormatter]
                                                 : [Formatters sharedPreciseFuelVolumeFormatter],
@@ -669,7 +669,7 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
     // 1.) entered "distance" must be larger than car odometer
     KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
     
-    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+    NSDecimalNumber *rawDistance  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
     
     if ([[NSDecimalNumber zero] compare:convDistance] != NSOrderedAscending)
@@ -677,27 +677,27 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
     
     
     // 2.) consumption with converted distances is more 'logical'
-    NSDecimalNumber *liters = [AppDelegate litersForVolume:self.fuelVolume withUnit:(KSVolume)[[self.car valueForKey:@"fuelUnit"] integerValue]];
+    NSDecimalNumber *liters = [Units litersForVolume:self.fuelVolume withUnit:(KSVolume)[[self.car valueForKey:@"fuelUnit"] integerValue]];
     
     if ([[NSDecimalNumber zero] compare:liters] != NSOrderedAscending)
         return NO;
     
-    NSDecimalNumber *rawConsumption  = [AppDelegate consumptionForKilometers:rawDistance
-                                                                      Liters:liters
+    NSDecimalNumber *rawConsumption  = [Units consumptionForKilometers:rawDistance
+                                                                      liters:liters
                                                                       inUnit:KSFuelConsumptionLitersPer100km];
     
     if ([rawConsumption isEqual:[NSDecimalNumber notANumber]])
         return NO;
     
-    NSDecimalNumber *convConsumption = [AppDelegate consumptionForKilometers:convDistance
-                                                                      Liters:liters
+    NSDecimalNumber *convConsumption = [Units consumptionForKilometers:convDistance
+                                                                      liters:liters
                                                                       inUnit:KSFuelConsumptionLitersPer100km];
     
     if ([convConsumption isEqual:[NSDecimalNumber notANumber]])
         return NO;
     
-    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForKilometers:[self.car valueForKey:@"distanceTotalSum"]
-                                                                     Liters:[self.car valueForKey:@"fuelVolumeTotalSum"]
+    NSDecimalNumber *avgConsumption = [Units consumptionForKilometers:[self.car valueForKey:@"distanceTotalSum"]
+                                                                     liters:[self.car valueForKey:@"fuelVolumeTotalSum"]
                                                                      inUnit:KSFuelConsumptionLitersPer100km];
     
     NSDecimalNumber *loBound, *hiBound;
@@ -743,18 +743,18 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 {
     KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
 
-    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+    NSDecimalNumber *rawDistance  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
     NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
 
     NSNumberFormatter *distanceFormatter = [Formatters sharedDistanceFormatter];
 
     NSString *rawButton = [NSString stringWithFormat:@"%@ %@",
-                                [distanceFormatter stringFromNumber:[AppDelegate distanceForKilometers:rawDistance  withUnit:odometerUnit]],
-                                [AppDelegate odometerUnitString:odometerUnit]];
+                                [distanceFormatter stringFromNumber:[Units distanceForKilometers:rawDistance  withUnit:odometerUnit]],
+                                [Units odometerUnitString:odometerUnit]];
 
     NSString *convButton = [NSString stringWithFormat:@"%@ %@",
-                                [distanceFormatter stringFromNumber:[AppDelegate distanceForKilometers:convDistance withUnit:odometerUnit]],
-                                [AppDelegate odometerUnitString:odometerUnit]];
+                                [distanceFormatter stringFromNumber:[Units distanceForKilometers:convDistance withUnit:odometerUnit]],
+                                [Units odometerUnitString:odometerUnit]];
 
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Convert from odometer reading into distance? Please choose the distance driven:", @"")
                                                        delegate:self
@@ -777,10 +777,10 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 
         // Replace distance in table with difference to car odometer
         KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
-        NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+        NSDecimalNumber *rawDistance  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
         NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
         
-        self.distance = [AppDelegate distanceForKilometers:convDistance withUnit:odometerUnit];
+        self.distance = [Units distanceForKilometers:convDistance withUnit:odometerUnit];
         [self valueChanged:self.distance identifier:@"distance"];
         
         [self recreateDistanceRowWithAnimation:UITableViewRowAnimationRight];

@@ -292,19 +292,19 @@
     [dataString appendString:NSLocalizedString(@"HH:mm", @"")];
     [dataString appendString:@";"];
 
-    [dataString appendString:[AppDelegate odometerUnitDescription:odometerUnit pluralization:YES]];
+    [dataString appendString:[Units odometerUnitDescription:odometerUnit pluralization:YES]];
     [dataString appendString:@";"];
 
-    [dataString appendString:[AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:YES]];
+    [dataString appendString:[Units fuelUnitDescription:fuelUnit discernGallons:YES pluralization:YES]];
     [dataString appendString:@";"];
 
     [dataString appendString:NSLocalizedString(@"Full Fill-Up", @"")];
     [dataString appendString:@";"];
 
-    [dataString appendString:[AppDelegate fuelPriceUnitDescription:fuelUnit]];
+    [dataString appendString:[Units fuelPriceUnitDescription:fuelUnit]];
     [dataString appendString:@";"];
 
-    [dataString appendString:[AppDelegate consumptionUnitDescription:consumptionUnit]];
+    [dataString appendString:[Units consumptionUnitDescription:consumptionUnit]];
     [dataString appendString:@"\n"];
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -331,15 +331,15 @@
         [dataString appendFormat:@"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
 
          [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
-         [numberFormatter stringFromNumber:[AppDelegate distanceForKilometers:distance withUnit:odometerUnit]],
-         [numberFormatter stringFromNumber:[AppDelegate volumeForLiters:fuelVolume withUnit:fuelUnit]],
+         [numberFormatter stringFromNumber:[Units distanceForKilometers:distance withUnit:odometerUnit]],
+         [numberFormatter stringFromNumber:[Units volumeForLiters:fuelVolume withUnit:fuelUnit]],
          [[managedObject valueForKey:@"filledUp"] boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @""),
-         [numberFormatter stringFromNumber:[AppDelegate pricePerUnit:price withUnit:fuelUnit]],
+         [numberFormatter stringFromNumber:[Units pricePerUnit:price withUnit:fuelUnit]],
 
          [[managedObject valueForKey:@"filledUp"] boolValue]
          ? [numberFormatter stringFromNumber:
-            [AppDelegate consumptionForKilometers:[distance   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
-                                           Liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
+            [Units consumptionForKilometers:[distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
+                                           liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
                                            inUnit:consumptionUnit]]
                                 : @" "
          ];
@@ -579,12 +579,12 @@
     if (odometerUnit == KSDistanceKilometer)
         convertedDistance = distance;
     else
-        convertedDistance = [distance decimalNumberByDividingBy:[AppDelegate kilometersPerStatuteMile]];
+        convertedDistance = [distance decimalNumberByDividingBy:[Units kilometersPerStatuteMile]];
 
     label = [tableCell botLeftLabel];
     label.text = [NSString stringWithFormat:@"%@ %@",
                     [[Formatters sharedDistanceFormatter] stringFromNumber:convertedDistance],
-                    [AppDelegate odometerUnitString:odometerUnit]];
+                    [Units odometerUnitString:odometerUnit]];
     tableCell.botLeftAccessibilityLabel = nil;
 
 
@@ -602,15 +602,15 @@
         distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
         fuelVolume = [fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
 
-        NSDecimalNumber *avg = [AppDelegate consumptionForKilometers:distance
-                                                              Liters:fuelVolume
+        NSDecimalNumber *avg = [Units consumptionForKilometers:distance
+                                                              liters:fuelVolume
                                                               inUnit:consumptionUnit];
 
         consumptionDescription = [[Formatters sharedFuelVolumeFormatter] stringFromNumber:avg];
 
         tableCell.botRightAccessibilityLabel = [NSString stringWithFormat:@", %@ %@",
                                                     consumptionDescription,
-                                                    [AppDelegate consumptionUnitAccesibilityDescription:consumptionUnit]];
+                                                    [Units consumptionUnitAccesibilityDescription:consumptionUnit]];
 
     } else {
 
@@ -619,7 +619,7 @@
     }
 
     label = [tableCell botRightLabel];
-    label.text = [NSString stringWithFormat:@"%@ %@", consumptionDescription, [AppDelegate consumptionUnitString:consumptionUnit]];
+    label.text = [NSString stringWithFormat:@"%@ %@", consumptionDescription, [Units consumptionUnitString:consumptionUnit]];
 }
 
 
