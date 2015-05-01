@@ -63,7 +63,7 @@
 
     dispatch_once (&pred, ^{
         
-        [_window makeKeyAndVisible];
+        [self.window makeKeyAndVisible];
 
         // Switch once to the car view for new users
         if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil) {
@@ -72,8 +72,10 @@
 
             if ([defaults boolForKey:@"firstStartup"]) {
 
-                if ([[defaults stringForKey:@"preferredCarID"] isEqualToString:@""])
-                    _tabBarController.selectedIndex = 1;
+				if ([[defaults stringForKey:@"preferredCarID"] isEqualToString:@""]) {
+					UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+                    tabBarController.selectedIndex = 1;
+				}
 
                 [defaults setObject:@NO forKey:@"firstStartup"];
             }

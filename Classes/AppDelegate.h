@@ -47,8 +47,7 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 
-@property (nonatomic, strong) IBOutlet UIWindow *window;
-@property (nonatomic, weak)   IBOutlet UITabBarController *tabBarController;
+@property (nonatomic, strong) UIWindow *window;
 
 // CoreData support
 @property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
