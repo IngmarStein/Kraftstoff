@@ -31,21 +31,17 @@ CGFloat StatisticTransitionDuration = 0.3;
 #pragma mark -
 #pragma mark View Lifecycle
 
-
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-
-        _contentCache            = [[NSMutableDictionary alloc] init];
-        _displayedNumberOfMonths = 0;
-        invalidationCounter      = 0;
-        expectedCounter          = 0;
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		_contentCache            = [[NSMutableDictionary alloc] init];
+		_displayedNumberOfMonths = 0;
+		invalidationCounter      = 0;
+		expectedCounter          = 0;
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {

@@ -32,11 +32,6 @@
 	self = [super initWithCoder:coder];
 	if (self) {
 		self.restorationClass = [self class];
-
-		_statisticsController = [[FuelStatisticsPageController alloc]
-								 initWithNibName:@"FuelStatisticsPageController"
-								 bundle:nil];
-
 	}
 	return self;
 }
@@ -45,7 +40,9 @@
 {
     [super viewDidLoad];
 
-    isObservingRotationEvents  = NO;
+	_statisticsController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsPageController"];
+
+	isObservingRotationEvents  = NO;
     isPerformingRotation       = NO;
     isShowingExportSheet       = NO;
     isShowingAlert             = NO;

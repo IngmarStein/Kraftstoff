@@ -6,14 +6,32 @@
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 
 
+@protocol FuelStatisticsViewControllerDelegate
+
+@property (NS_NONATOMIC_IOSONLY, readonly) CGGradientRef curveGradient;
+
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car;
+- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(NSManagedObject *)car;
+- (NSString *)noAverageStringForCar:(NSManagedObject *)car;
+
+- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car;
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car;
+
+@optional
+- (CGFloat)graphRightBorder:(CGFloat)rightBorder forCar:(NSManagedObject *)car;
+- (CGFloat)graphWidth:(CGFloat)graphWidth forCar:(NSManagedObject *)car;
+
+@end
+
 #pragma mark -
-#pragma mark Base Class for Graphical Statistics View Controller
+#pragma mark Graphical Statistics View Controller
 
 
 @interface FuelStatisticsGraphViewController : FuelStatisticsViewController
 
 @property (nonatomic) BOOL zooming;
 @property (nonatomic, strong) UILongPressGestureRecognizer *zoomRecognizer;
+@property (nonatomic, strong) NSObject<FuelStatisticsViewControllerDelegate> *delegate;
 
 // Location and dimension of actual graph, customizable by subclasses
 @property (readonly, nonatomic) CGFloat graphRightBorder;
@@ -24,16 +42,15 @@
 
 @end
 
-
 #pragma mark -
-#pragma mark Subclasses for Different Statistic Graphs
+#pragma mark Delegates for Different Statistic Graphs
 
 
-@interface FuelStatisticsViewController_AvgConsumption : FuelStatisticsGraphViewController
+@interface FuelStatisticsViewControllerDelegateAvgConsumption : NSObject<FuelStatisticsViewControllerDelegate>
 @end
 
-@interface FuelStatisticsViewController_PriceAmount : FuelStatisticsGraphViewController
+@interface FuelStatisticsViewControllerDelegatePriceAmount : NSObject<FuelStatisticsViewControllerDelegate>
 @end
 
-@interface FuelStatisticsViewController_PriceDistance : FuelStatisticsGraphViewController
+@interface FuelStatisticsViewControllerDelegatePriceDistance : NSObject<FuelStatisticsViewControllerDelegate>
 @end

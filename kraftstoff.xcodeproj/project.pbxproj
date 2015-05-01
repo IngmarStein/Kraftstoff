@@ -11,8 +11,6 @@
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
 		4D0B2FFE1780D2B500644289 /* FuelStatisticsScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */; };
-		4D0C9D051392912B00430C04 /* FuelStatisticsPageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9D071392912B00430C04 /* FuelStatisticsPageController.xib */; };
-		4D0C9D0F1392917F00430C04 /* FuelStatisticsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4D0C9D111392917F00430C04 /* FuelStatisticsViewController.xib */; };
 		4D184724123CF970008D7454 /* CarConfigurationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D184722123CF970008D7454 /* CarConfigurationController.m */; };
 		4D1899B614328AC0001434BD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D1899B514328AC0001434BD /* main.m */; };
 		4D19187113BF9A8300ADAED6 /* SwitchTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D19187013BF9A8200ADAED6 /* SwitchTableCell.m */; };
@@ -122,12 +120,9 @@
 		4DE5E431139A2D4E007EDB10 /* PickerTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PickerTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DE963B712CD045C007E7E16 /* FuelStatisticsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FuelStatisticsViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DE963B812CD045C007E7E16 /* FuelStatisticsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		9504F3BA1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelStatisticsPageController.xib; sourceTree = "<group>"; };
-		9504F3BB1AF141BD003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/FuelStatisticsViewController.xib; sourceTree = "<group>"; };
-		9504F3C31AF14204003FF5B8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/FuelStatisticsViewController.strings; sourceTree = "<group>"; };
 		9504F3C71AF144E8003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		950C99581AF36F0C00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		955B46141AF2089F00A62D3B /* kraftstoff-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kraftstoff-Bridging-Header.h"; sourceTree = "<group>"; };
 		955B46151AF208A000A62D3B /* AppWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppWindow.swift; path = Classes/AppWindow.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -202,7 +197,6 @@
 				9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */,
 				4D3F199B176B2B5F003FE2C7 /* Media.xcassets */,
 				950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */,
-				4D19186E13BF9A0100ADAED6 /* XIBs */,
 				4DCFE36C138EE2930051FEC9 /* Localizable.strings */,
 				4D1B06D114339BB70069B20A /* InfoPlist.strings */,
 				4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */,
@@ -300,15 +294,6 @@
 				4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */,
 			);
 			name = Extensions;
-			sourceTree = "<group>";
-		};
-		4D19186E13BF9A0100ADAED6 /* XIBs */ = {
-			isa = PBXGroup;
-			children = (
-				4D0C9D071392912B00430C04 /* FuelStatisticsPageController.xib */,
-				4D0C9D111392917F00430C04 /* FuelStatisticsViewController.xib */,
-			);
-			name = XIBs;
 			sourceTree = "<group>";
 		};
 		4D630C0812EEEE3400134FD7 /* Car Configurator */ = {
@@ -477,9 +462,7 @@
 			files = (
 				4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */,
 				4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */,
-				4D0C9D051392912B00430C04 /* FuelStatisticsPageController.xib in Resources */,
 				950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */,
-				4D0C9D0F1392917F00430C04 /* FuelStatisticsViewController.xib in Resources */,
 				4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */,
 				9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */,
 			);
@@ -550,23 +533,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		4D0C9D071392912B00430C04 /* FuelStatisticsPageController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9504F3BA1AF141BD003FF5B8 /* Base */,
-			);
-			name = FuelStatisticsPageController.xib;
-			sourceTree = "<group>";
-		};
-		4D0C9D111392917F00430C04 /* FuelStatisticsViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9504F3BB1AF141BD003FF5B8 /* Base */,
-				9504F3C31AF14204003FF5B8 /* de */,
-			);
-			name = FuelStatisticsViewController.xib;
-			sourceTree = "<group>";
-		};
 		4D1B06D114339BB70069B20A /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -597,7 +563,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				950C99551AF3696D00AC8749 /* Base */,
-				950C99581AF36F0C00AC8749 /* de */,
+				950C995A1AF37DFD00AC8749 /* de */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";

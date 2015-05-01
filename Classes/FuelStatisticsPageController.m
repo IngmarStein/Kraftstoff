@@ -21,15 +21,13 @@
 #pragma mark View Lifecycle
 
 
-
-- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	}
+	return self;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -54,13 +52,30 @@
 
         switch (page) {
 
-            case 0:controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
-            case 1:controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
-            case 2:controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
-            case 3:controller = [FuelStatisticsTextViewController alloc]; break;
+			case 0: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegatePriceDistance alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 1: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegateAvgConsumption alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 2: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegatePriceAmount alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 3: {
+				controller = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsTextViewController"];
+				break;
+			}
         }
 
-        controller = [controller initWithNibName:@"FuelStatisticsViewController" bundle:nil];
         controller.selectedCar = self.selectedCar;
 
         [self addChildViewController:controller];

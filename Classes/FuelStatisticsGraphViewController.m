@@ -93,22 +93,6 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-// Provided by subclasses for statistics
-@interface FuelStatisticsGraphViewController (private)
-
-@property (NS_NONATOMIC_IOSONLY, readonly) CGGradientRef curveGradient;
-
-- (NSNumberFormatter*)averageFormatter:(BOOL)precise;
-- (NSString *)averageFormatString:(BOOL)avgPrefix;
-@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *noAverageString;
-
-- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car;
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car;
-
-@end
-
-
-
 @implementation FuelStatisticsGraphViewController
 {
     NSInteger zoomIndex;
@@ -128,7 +112,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphRightBorder
 {
-    return self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth;
+	CGFloat rightBorder = self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth;
+	if ([self.delegate respondsToSelector:@selector(graphRightBorder:forCar:)]) {
+		return [self.delegate graphRightBorder:rightBorder forCar:self.selectedCar];
+	} else {
+		return rightBorder;
+	}
 }
 
 - (CGFloat)graphTopBorder
@@ -143,7 +132,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (CGFloat)graphWidth
 {
-    return self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth - StatisticGraphMargin;
+    CGFloat width = self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth - StatisticGraphMargin;
+	if ([self.delegate respondsToSelector:@selector(graphWidth:forCar:)]) {
+		return [self.delegate graphWidth:width forCar:self.selectedCar];
+	} else {
+		return width;
+	}
 }
 
 - (CGFloat)graphHeight
@@ -203,7 +197,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         if (managedObject) {
 
-            CGFloat value = [self valueForManagedObject:managedObject forCar:car];
+            CGFloat value = [self.delegate valueForManagedObject:managedObject forCar:car];
 
             if (!isnan (value)) {
 
@@ -297,7 +291,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
         if (managedObject) {
 
-            CGFloat value = [self valueForManagedObject:managedObject forCar:car];
+            CGFloat value = [self.delegate valueForManagedObject:managedObject forCar:car];
 
             if (!isnan (value)) {
 
@@ -336,7 +330,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         }
 
     // Markers for vertical axis
-    NSNumberFormatter *numberFormatter = [self axisFormatterForCar:car];
+    NSNumberFormatter *numberFormatter = [self.delegate axisFormatterForCar:car];
 
     state->hMarkPositions [0] = 1.0 - (1.0  * valStretchFactorForDisplay);
     state->hMarkNames [0] = [numberFormatter stringFromNumber:@(valMin + valRange)];
@@ -597,7 +591,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
             // Color gradient
             [path addClip];
             CGContextDrawLinearGradient (cgContext,
-                                         [self curveGradient],
+                                         [self.delegate curveGradient],
                                          CGPointMake (0, self.graphBottomBorder - 6),
                                          CGPointMake (0, minY),
                                          kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
@@ -655,9 +649,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     // Update summary in top right of view
     if (average != nil && !isnan ([average floatValue]))
-        self.rightLabel.text = [NSString stringWithFormat:[self averageFormatString:YES], [[self averageFormatter:NO] stringFromNumber:average]];
+        self.rightLabel.text = [NSString stringWithFormat:[self.delegate averageFormatString:YES forCar:self.selectedCar], [[self.delegate averageFormatter:NO forCar:self.selectedCar] stringFromNumber:average]];
     else
-        self.rightLabel.text = [self noAverageString];
+        self.rightLabel.text = [self.delegate noAverageStringForCar:self.selectedCar];
 
     // Update image contents on cache hit
     if (image != nil && average != nil) {
@@ -804,8 +798,8 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                     UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
                     {
                         NSString *valueString = [NSString stringWithFormat:
-                                                    [self averageFormatString:NO],
-                                                        [[self averageFormatter:YES]
+                                                    [self.delegate averageFormatString:NO forCar:self.selectedCar],
+                                                        [[self.delegate averageFormatter:YES forCar:self.selectedCar]
                                                             stringFromNumber:@(cell->lensValue [minIndex])]];
 
                         [self drawFlatLensWithBGImage:cell.contentImage lensLocation:lensLocation info:valueString];
@@ -897,24 +891,24 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-@implementation FuelStatisticsViewController_AvgConsumption
+@implementation FuelStatisticsViewControllerDelegateAvgConsumption
 
 
 
-- (CGFloat)graphRightBorder
+- (CGFloat)graphRightBorder:(CGFloat)rightBorder forCar:(NSManagedObject *)car
 {
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
     
-    return [super graphRightBorder] - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
+    return rightBorder - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
 }
 
 
 
-- (CGFloat)graphWidth
+- (CGFloat)graphWidth:(CGFloat)graphWidth forCar:(NSManagedObject *)car
 {
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
     
-    return [super graphWidth] - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
+    return graphWidth - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0);
 }
 
 
@@ -924,23 +918,23 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter:(BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car
 {
     return [AppDelegate sharedFuelVolumeFormatter];
 }
 
 
-- (NSString *)averageFormatString:(BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(NSManagedObject *)car
 {
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     return [NSString stringWithFormat:@"%@%%@ %@", avgPrefix ? @"∅ " : @"", [AppDelegate consumptionUnitString:consumptionUnit]];
 }
 
 
-- (NSString *)noAverageString
+- (NSString *)noAverageStringForCar:(NSManagedObject *)car
 {
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[self.selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
 
     return [AppDelegate consumptionUnitString:consumptionUnit];
 }
@@ -973,7 +967,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-@implementation FuelStatisticsViewController_PriceAmount
+@implementation FuelStatisticsViewControllerDelegatePriceAmount
 
 
 - (CGGradientRef)curveGradient
@@ -982,23 +976,23 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter:(BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car
 {
     return (precise) ? [AppDelegate sharedPreciseCurrencyFormatter] : [AppDelegate sharedCurrencyFormatter];
 }
 
 
-- (NSString *)averageFormatString:(BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(NSManagedObject *)car
 {
-    KSVolume fuelUnit = (KSVolume)[[self.selectedCar valueForKey:@"fuelUnit"] integerValue];
+    KSVolume fuelUnit = (KSVolume)[[car valueForKey:@"fuelUnit"] integerValue];
 
     return [NSString stringWithFormat:@"%@%%@/%@", avgPrefix ? @"∅ " : @"", [AppDelegate fuelUnitString:fuelUnit]];
 }
 
 
-- (NSString *)noAverageString
+- (NSString *)noAverageStringForCar:(NSManagedObject *)car
 {
-    KSVolume fuelUnit = (KSVolume)[[self.selectedCar valueForKey:@"fuelUnit"] integerValue];
+    KSVolume fuelUnit = (KSVolume)[[car valueForKey:@"fuelUnit"] integerValue];
 
     return [NSString stringWithFormat:@"%@/%@",
             [[AppDelegate sharedCurrencyFormatter] currencySymbol],
@@ -1031,7 +1025,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 
 
-@implementation FuelStatisticsViewController_PriceDistance
+@implementation FuelStatisticsViewControllerDelegatePriceDistance
 
 
 - (CGGradientRef)curveGradient
@@ -1040,9 +1034,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (NSNumberFormatter*)averageFormatter:(BOOL)precise
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car
 {
-    KSDistance distanceUnit = (KSDistance)[[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
         return [AppDelegate sharedCurrencyFormatter];
@@ -1051,9 +1045,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (NSString *)averageFormatString:(BOOL)avgPrefix
+- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(NSManagedObject *)car
 {
-    KSDistance distanceUnit = (KSDistance)[[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
         return [NSString stringWithFormat:@"%@%%@/100km", avgPrefix ? @"∅ " : @""];
@@ -1062,9 +1056,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (NSString *)noAverageString
+- (NSString *)noAverageStringForCar:(NSManagedObject *)car
 {
-    KSDistance distanceUnit = (KSDistance)[[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     return [NSString stringWithFormat:KSDistanceIsMetric (distanceUnit) ? @"%@/100km" : @"mi/%@",
             [[AppDelegate sharedCurrencyFormatter] currencySymbol]];
@@ -1073,7 +1067,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
 - (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car
 {
-    KSDistance distanceUnit = (KSDistance)[[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     if (KSDistanceIsMetric (distanceUnit))
         return [AppDelegate sharedAxisCurrencyFormatter];
@@ -1088,7 +1082,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
         return NAN;
 
     NSDecimalNumberHandler *handler = [AppDelegate sharedConsumptionRoundingHandler];
-    KSDistance distanceUnit = (KSDistance)[[self.selectedCar valueForKey:@"odometerUnit"] integerValue];
+    KSDistance distanceUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
 
     NSDecimalNumber *price = [managedObject valueForKey:@"price"];
 
