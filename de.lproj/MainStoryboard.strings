@@ -1,0 +1,18 @@
+
+/* Class = "UIViewController"; title = "Cars"; ObjectID = "6xE-Uc-v14"; */
+"6xE-Uc-v14.title" = "Fahrzeuge";
+
+/* Class = "UIViewController"; title = "Fill-Up"; ObjectID = "9ok-pF-7av"; */
+"9ok-pF-7av.title" = "Tanken";
+
+/* Class = "UITabBarItem"; title = "Cars"; ObjectID = "WJK-es-b4F"; */
+"WJK-es-b4F.title" = "Fahrzeuge";
+
+/* Class = "UINavigationController"; title = "Fill-Up"; ObjectID = "haJ-RV-g4q"; */
+"haJ-RV-g4q.title" = "Tanken";
+
+/* Class = "UINavigationController"; title = "Cars"; ObjectID = "jIJ-Qn-vtb"; */
+"jIJ-Qn-vtb.title" = "Fahrzeuge";
+
+/* Class = "UITabBarItem"; title = "Fill-Up"; ObjectID = "tX0-HD-RL4"; */
+"tX0-HD-RL4.title" = "Tanken";

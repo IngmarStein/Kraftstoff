@@ -27,21 +27,35 @@
 #pragma mark Application Lifecycle
 
 
+- (instancetype)init {
+	self = [super init];
+	if (self) {
+		[[NSUserDefaults standardUserDefaults] registerDefaults:
+			@{@"statisticTimeSpan":@6,
+			@"preferredStatisticsPage":@1,
+			@"preferredCarID":@"",
+			@"recentDistance":[NSDecimalNumber zero],
+			@"recentPrice":[NSDecimalNumber zero],
+			@"recentFuelVolume":[NSDecimalNumber zero],
+			@"recentFilledUp":@YES,
+			@"editHelpCounter":@0,
+			@"firstStartup":@YES}];
+	}
 
-- (void)awakeFromNib
-{
-    [[NSUserDefaults standardUserDefaults] registerDefaults:
-        @{@"statisticTimeSpan":@6,
-          @"preferredStatisticsPage":@1,
-          @"preferredCarID":@"",
-          @"recentDistance":[NSDecimalNumber zero],
-          @"recentPrice":[NSDecimalNumber zero],
-          @"recentFuelVolume":[NSDecimalNumber zero],
-          @"recentFilledUp":@YES,
-          @"editHelpCounter":@0,
-          @"firstStartup":@YES}];
+	return self;
 }
 
+- (UIWindow *)window
+{
+	static UIWindow *appWindow = nil;
+	static dispatch_once_t pred;
+
+	dispatch_once (&pred, ^{
+		appWindow = [[AppWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	});
+
+	return appWindow;
+}
 
 - (void)commonLaunchInitialization:(NSDictionary *)launchOptions
 {
