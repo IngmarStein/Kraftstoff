@@ -4,7 +4,6 @@
 
 
 #import "AppDelegate.h"
-#import "AppWindow.h"
 #import "FuelEventEditorController.h"
 #import "FuelEventController.h"
 #import "CarTableCell.h"
@@ -12,8 +11,7 @@
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
 #import "SwitchTableCell.h"
-
-#import "NSDate+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 @implementation FuelEventEditorController
@@ -29,18 +27,14 @@
 #pragma mark View Lifecycle
 
 
-
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.restorationIdentifier = @"FuelEventEditor";
-        self.restorationClass = [self class];
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.restorationClass = [self class];
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -95,7 +89,8 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    FuelEventEditorController *controller = [[self alloc] initWithNibName:@"FuelEventEditor" bundle:nil];
+	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+    FuelEventEditorController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventEditor"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
     controller.event                = [appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventEventID]];
 
@@ -322,10 +317,10 @@
 
 - (void)showRevertActionSheet
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Revert Changes for Event?")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Revert Changes for Event?", @"")
                                                        delegate:self
-                                              cancelButtonTitle:_I18N(@"Cancel")
-                                         destructiveButtonTitle:_I18N(@"Revert")
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
+                                         destructiveButtonTitle:NSLocalizedString(@"Revert", @"")
                                               otherButtonTitles:nil];
     
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
@@ -384,7 +379,7 @@
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                       [[AppDelegate sharedCurrencyFormatter]   stringFromNumber:cost],
-                                      _I18N(@"/"),
+                                      NSLocalizedString(@"/", @""),
                                       [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:consumption],
                                       [AppDelegate consumptionUnitString:consumptionUnit]];
 
@@ -410,7 +405,7 @@
     [self addRowAtIndex:0
               inSection:0
               cellClass:[DateEditTableCell class]
-               cellData:@{@"label": _I18N(@"Date"),
+               cellData:@{@"label": NSLocalizedString(@"Date", @""),
                           @"formatter": [AppDelegate sharedDateTimeFormatter],
                           @"valueIdentifier": @"date"}
           withAnimation:animation];
@@ -420,7 +415,7 @@
     [self addRowAtIndex:1
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label": _I18N(@"Distance"),
+               cellData:@{@"label": NSLocalizedString(@"Distance", @""),
                           @"suffix": [@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
                           @"formatter": [AppDelegate sharedDistanceFormatter],
                           @"valueIdentifier": @"distance"}
@@ -449,7 +444,7 @@
     [self addRowAtIndex:4
               inSection:0
               cellClass:[SwitchTableCell class]
-               cellData:@{@"label": _I18N(@"Full Fill-Up"),
+               cellData:@{@"label": NSLocalizedString(@"Full Fill-Up", @""),
                           @"valueIdentifier": @"filledUp"}
           withAnimation:animation];
 

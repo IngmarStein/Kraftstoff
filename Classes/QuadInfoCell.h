@@ -2,10 +2,11 @@
 //
 // TableView cells with four labels for information.
 
+#import <UIKit/UIKit.h>
 
 @interface QuadInfoCell : UITableViewCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)largeRightLabel;
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)largeRightLabel NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, strong, readonly) UILabel *topLeftLabel;
 @property (nonatomic, strong, readonly) UILabel *botLeftLabel;

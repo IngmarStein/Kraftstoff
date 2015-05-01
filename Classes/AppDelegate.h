@@ -2,40 +2,33 @@
 //
 // Kraftstoff
 
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
 #define kraftstoffDeviceShakeNotification @"kraftstoffDeviceShakeNotification"
 
 
-// Shadow heights used within the app
-extern CGFloat const TableBotShadowHeight;
-extern CGFloat const TableTopShadowHeight;
-
-// Standard heights for UI elements
-extern CGFloat const TabBarHeight;
-extern CGFloat const StatusBarHeight;
-
-
 // Unit Constants
-typedef enum
+typedef NS_ENUM(NSInteger, KSDistance)
 {
     KSDistanceInvalid = -1,
     KSDistanceKilometer,
     KSDistanceStatuteMile,
-} KSDistance;
+};
 
 #define KSDistanceIsMetric(x) ((x) == KSDistanceKilometer)
 
-typedef enum
+typedef NS_ENUM(NSInteger, KSVolume)
 {
     KSVolumeInvalid = -1,
     KSVolumeLiter,
     KSVolumeGalUS,
     KSVolumeGalUK,
-} KSVolume;
+};
 
 #define KSVolumeIsMetric(x) ((x) == KSVolumeLiter)
 
-typedef enum
+typedef NS_ENUM(NSInteger, KSFuelConsumption)
 {
     KSFuelConsumptionInvalid = -1,
     KSFuelConsumptionLitersPer100km,
@@ -44,7 +37,7 @@ typedef enum
     KSFuelConsumptionMilesPerGallonUK,
     KSFuelConsumptionGP10KUS,
     KSFuelConsumptionGP10KUK,
-} KSFuelConsumption;
+};
 
 #define KSFuelConsumptionIsMetric(x)     ((x) == KSFuelConsumptionLitersPer100km || (x) == KSFuelConsumptionKilometersPerLiter)
 #define KSFuelConsumptionIsEfficiency(x) ((x) == KSFuelConsumptionKilometersPerLiter || (x) == KSFuelConsumptionMilesPerGallonUS || (x) == KSFuelConsumptionMilesPerGallonUK)
@@ -63,12 +56,6 @@ typedef enum
 @property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 
-#pragma mark Hardware/Software Version Check
-
-+ (BOOL)isLongPhone;
-
-
-
 #pragma mark Color Gradients
 
 // Create a shadow layer that fades downwards / or upwards
@@ -77,12 +64,12 @@ typedef enum
                         lightFactor:(CGFloat)lightFactor
                       fadeDownwards:(BOOL)downwards;
 
-+ (CGGradientRef)backGradient;
-+ (CGGradientRef)blueGradient;
-+ (CGGradientRef)greenGradient;
-+ (CGGradientRef)orangeGradient;
-+ (CGGradientRef)infoGradient;
-+ (CGGradientRef)knobGradient;
++ (CGGradientRef)backGradient CF_RETURNS_NOT_RETAINED;
++ (CGGradientRef)blueGradient CF_RETURNS_NOT_RETAINED;
++ (CGGradientRef)greenGradient CF_RETURNS_NOT_RETAINED;
++ (CGGradientRef)orangeGradient CF_RETURNS_NOT_RETAINED;
++ (CGGradientRef)infoGradient CF_RETURNS_NOT_RETAINED;
++ (CGGradientRef)knobGradient CF_RETURNS_NOT_RETAINED;
 
 
 

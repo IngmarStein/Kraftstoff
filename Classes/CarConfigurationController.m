@@ -9,37 +9,23 @@
 #import "PickerTableCell.h"
 #import "AppDelegate.h"
 
+@interface CarConfigurationController () <EditablePageCellDelegate>
+
+@end
 
 @implementation CarConfigurationController
-
-@synthesize name;
-@synthesize plate;
-@synthesize odometerUnit;
-@synthesize odometer;
-@synthesize fuelUnit;
-@synthesize fuelConsumptionUnit;
-
-@synthesize editingExistingObject;
-@synthesize delegate;
-
-
 
 #pragma mark -
 #pragma mark View Lifecycle
 
-
-
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.restorationIdentifier = @"CarConfigurationController";
-        self.restorationClass = [self class];
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.restorationClass = [self class];
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -58,7 +44,7 @@
                                                                             target:self
                                                                             action:@selector(handleCancel:)];
 
-    item.title = (editingExistingObject) ? _I18N(@"Edit Car") : _I18N(@"New Car");
+    item.title = self.editingExistingObject ? NSLocalizedString(@"Edit Car", @"") : NSLocalizedString(@"New Car", @"");
 
     [self setToolbarItems:@[item] animated:NO];
 
@@ -104,7 +90,8 @@
 
 + (UIViewController*) viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    CarConfigurationController *controller = [[self alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+    CarConfigurationController *controller = [storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
     controller.editingExistingObject = [coder decodeBoolForKey:kSRConfiguratorEditMode];
 
     return controller;
@@ -115,15 +102,15 @@
 {
     NSIndexPath *indexPath = (isShowingCancelSheet) ? previousSelectionIndex : [self.tableView indexPathForSelectedRow];
 
-    [coder encodeObject:delegate             forKey:kSRConfiguratorDelegate];
-    [coder encodeBool:   editingExistingObject   forKey:kSRConfiguratorEditMode];
+    [coder encodeObject:self.delegate             forKey:kSRConfiguratorDelegate];
+    [coder encodeBool:   self.editingExistingObject   forKey:kSRConfiguratorEditMode];
     [coder encodeBool:   isShowingCancelSheet forKey:kSRConfiguratorCancelSheet];
     [coder encodeBool:   dataChanged          forKey:kSRConfiguratorDataChanged];
     [coder encodeObject:indexPath            forKey:kSRConfiguratorPreviousSelectionIndex];
-    [coder encodeObject:name                 forKey:kSRConfiguratorName];
-    [coder encodeObject:plate                forKey:kSRConfiguratorPlate];
-    [coder encodeObject:fuelUnit             forKey:kSRConfiguratorFuelUnit];
-    [coder encodeObject:fuelConsumptionUnit  forKey:kSRConfiguratorFuelConsumptionUnit];
+    [coder encodeObject:self.name                 forKey:kSRConfiguratorName];
+    [coder encodeObject:self.plate                forKey:kSRConfiguratorPlate];
+    [coder encodeObject:self.fuelUnit             forKey:kSRConfiguratorFuelUnit];
+    [coder encodeObject:self.fuelConsumptionUnit  forKey:kSRConfiguratorFuelConsumptionUnit];
 
     [super encodeRestorableStateWithCoder:coder];
 }
@@ -131,14 +118,14 @@
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    delegate               = [coder decodeObjectForKey:kSRConfiguratorDelegate];
+    self.delegate               = [coder decodeObjectForKey:kSRConfiguratorDelegate];
     isShowingCancelSheet   = [coder decodeBoolForKey:   kSRConfiguratorCancelSheet];
     dataChanged            = [coder decodeBoolForKey:   kSRConfiguratorDataChanged];
     previousSelectionIndex = [coder decodeObjectForKey:kSRConfiguratorPreviousSelectionIndex];
-    name                   = [coder decodeObjectForKey:kSRConfiguratorName];
-    plate                  = [coder decodeObjectForKey:kSRConfiguratorPlate];
-    fuelUnit               = [coder decodeObjectForKey:kSRConfiguratorFuelUnit];
-    fuelConsumptionUnit    = [coder decodeObjectForKey:kSRConfiguratorFuelConsumptionUnit];
+    self.name                   = [coder decodeObjectForKey:kSRConfiguratorName];
+    self.plate                  = [coder decodeObjectForKey:kSRConfiguratorPlate];
+    self.fuelUnit               = [coder decodeObjectForKey:kSRConfiguratorFuelUnit];
+    self.fuelConsumptionUnit    = [coder decodeObjectForKey:kSRConfiguratorFuelConsumptionUnit];
 
     [self.tableView reloadData];
 
@@ -161,13 +148,13 @@
 {
     NSString *suffix = [@" " stringByAppendingString:[AppDelegate odometerUnitString:(KSDistance)[self.odometerUnit integerValue]]];
 
-    if (odometer == nil)
+    if (self.odometer == nil)
         self.odometer = [NSDecimalNumber zero];
 
     [self addRowAtIndex:3
               inSection:0
               cellClass:[NumberEditTableCell class]
-               cellData:@{@"label":           _I18N(@"Odometer Reading"),
+               cellData:@{@"label":           NSLocalizedString(@"Odometer Reading", @""),
                            @"suffix":          suffix,
                            @"formatter":       [AppDelegate sharedDistanceFormatter],
                            @"valueIdentifier":@"odometer"}
@@ -181,29 +168,29 @@
 
     [self addSectionAtIndex:0 withAnimation:UITableViewRowAnimationNone];
 
-    if (name == nil)
+    if (self.name == nil)
         self.name = @"";
 
     [self addRowAtIndex:0
               inSection:0
               cellClass:[TextEditTableCell class]
-               cellData:@{@"label":           _I18N(@"Name"),
+               cellData:@{@"label":           NSLocalizedString(@"Name", @""),
                            @"valueIdentifier":@"name"}
           withAnimation:UITableViewRowAnimationNone];
 
-    if (plate == nil)
+    if (self.plate == nil)
         self.plate = @"";
 
     [self addRowAtIndex:1
               inSection:0
               cellClass:[TextEditTableCell class]
-               cellData:@{@"label":             _I18N(@"License Plate"),
+               cellData:@{@"label":             NSLocalizedString(@"License Plate", @""),
                            @"valueIdentifier":   @"plate",
                            @"autocapitalizeAll":@YES}
           withAnimation:UITableViewRowAnimationNone];
 
 
-    if (odometerUnit == nil)
+    if (self.odometerUnit == nil)
         self.odometerUnit = @([AppDelegate distanceUnitFromLocale]);
 
     pickerLabels = @[[AppDelegate odometerUnitDescription:KSDistanceKilometer   pluralization:YES],
@@ -212,7 +199,7 @@
     [self addRowAtIndex:2
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Odometer Type"),
+               cellData:@{@"label":           NSLocalizedString(@"Odometer Type", @""),
                            @"valueIdentifier":@"odometerUnit",
                            @"labels":          pickerLabels}
           withAnimation:UITableViewRowAnimationNone];
@@ -221,7 +208,7 @@
     [self createOdometerRowWithAnimation:UITableViewRowAnimationNone];
 
 
-    if (fuelUnit == nil)
+    if (self.fuelUnit == nil)
         self.fuelUnit = @([AppDelegate volumeUnitFromLocale]);
 
     pickerLabels = @[[AppDelegate fuelUnitDescription:KSVolumeLiter discernGallons:YES pluralization:YES],
@@ -231,13 +218,13 @@
     [self addRowAtIndex:4
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Fuel Unit"),
+               cellData:@{@"label":           NSLocalizedString(@"Fuel Unit", @""),
                            @"valueIdentifier":@"fuelUnit",
                            @"labels":          pickerLabels}
           withAnimation:UITableViewRowAnimationNone];
 
 
-    if (fuelConsumptionUnit == nil)
+    if (self.fuelConsumptionUnit == nil)
         self.fuelConsumptionUnit = @([AppDelegate fuelConsumptionUnitFromLocale]);
 
     pickerLabels = @[[AppDelegate consumptionUnitDescription:KSFuelConsumptionLitersPer100km],
@@ -257,7 +244,7 @@
     [self addRowAtIndex:5
               inSection:0
               cellClass:[PickerTableCell class]
-               cellData:@{@"label":           _I18N(@"Mileage"),
+               cellData:@{@"label":           NSLocalizedString(@"Mileage", @""),
                            @"valueIdentifier":@"fuelConsumptionUnit",
                            @"labels":          pickerLabels,
                            @"shortLabels":     pickerShortLabels}
@@ -358,20 +345,20 @@
     BOOL showCancelSheet = YES;
 
     // In editing mode show alert panel on any change
-    if (editingExistingObject == YES && dataChanged == NO)
+    if (self.editingExistingObject && !dataChanged)
         showCancelSheet = NO;
 
     // In create mode show alert panel on textual changes
-    if (editingExistingObject == NO
-        && [name isEqualToString:@""] == YES
-        && [plate isEqualToString:@""] == YES
-        && [odometer compare:[NSDecimalNumber zero]] == NSOrderedSame)
+    if (!self.editingExistingObject
+        && [self.name isEqualToString:@""] == YES
+        && [self.plate isEqualToString:@""] == YES
+        && [self.odometer compare:[NSDecimalNumber zero]] == NSOrderedSame)
         showCancelSheet = NO;
 
     if (showCancelSheet)
         [self showCancelSheet];
     else
-        [delegate carConfigurationController:self
+        [self.delegate carConfigurationController:self
                          didFinishWithResult:CarConfigurationCanceled];
 }
 
@@ -380,12 +367,12 @@
 {
     isShowingCancelSheet = YES;
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:editingExistingObject ? _I18N(@"Revert Changes for Car?")
-                                                                                      : _I18N(@"Delete the newly created Car?")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:self.editingExistingObject ? NSLocalizedString(@"Revert Changes for Car?", @"")
+                                                                                      : NSLocalizedString(@"Delete the newly created Car?", @"")
                                                        delegate:self
-                                              cancelButtonTitle: _I18N(@"Cancel")
-                                         destructiveButtonTitle:editingExistingObject ? _I18N(@"Revert")
-                                                                                      : _I18N(@"Delete")
+                                              cancelButtonTitle: NSLocalizedString(@"Cancel", @"")
+                                         destructiveButtonTitle:self.editingExistingObject ? NSLocalizedString(@"Revert", @"")
+                                                                                      : NSLocalizedString(@"Delete", @"")
                                               otherButtonTitles:nil];
 
     sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
@@ -398,7 +385,7 @@
     isShowingCancelSheet = NO;
 
     if (buttonIndex != actionSheet.cancelButtonIndex)
-        [delegate carConfigurationController:self didFinishWithResult:CarConfigurationCanceled];
+        [self.delegate carConfigurationController:self didFinishWithResult:CarConfigurationCanceled];
     else
         [self selectRowAtIndexPath:previousSelectionIndex];
 
@@ -414,8 +401,8 @@
 {
     [self dismissKeyboardWithCompletion: ^{
 
-        [delegate carConfigurationController:self
-                         didFinishWithResult:editingExistingObject ? CarConfigurationEditSucceded
+        [self.delegate carConfigurationController:self
+                         didFinishWithResult:self.editingExistingObject ? CarConfigurationEditSucceded
                                                                  : CarConfigurationCreateSucceded];
     }];
 }
@@ -439,17 +426,17 @@
 - (id)valueForIdentifier:(NSString *)valueIdentifier
 {
     if ([valueIdentifier isEqualToString:@"name"])
-        return name;
+        return self.name;
     else if ([valueIdentifier isEqualToString:@"plate"])
-        return plate;
+        return self.plate;
     else if ([valueIdentifier isEqualToString:@"odometerUnit"])
-        return odometerUnit;
+        return self.odometerUnit;
     else if ([valueIdentifier isEqualToString:@"odometer"])
-        return odometer;
+        return self.odometer;
     else if ([valueIdentifier isEqualToString:@"fuelUnit"])
-        return fuelUnit;
+        return self.fuelUnit;
     else if ([valueIdentifier isEqualToString:@"fuelConsumptionUnit"])
-        return fuelConsumptionUnit;
+        return self.fuelConsumptionUnit;
 
     return nil;
 }

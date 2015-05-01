@@ -4,6 +4,8 @@
 
 
 #import "FuelStatisticsPageController.h"
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 #import <MessageUI/MessageUI.h>
 
 

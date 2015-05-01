@@ -7,10 +7,8 @@
 #import "CarViewController.h"
 #import "FuelEventController.h"
 #import "QuadInfoCell.h"
-#import "DemoData.h"
 #import "TextEditTableCell.h"
-
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 static NSInteger maxEditHelpCounter = 1;
@@ -35,7 +33,7 @@ static NSInteger maxEditHelpCounter = 1;
     changeIsUserDriven = NO;
 
     // Navigation Bar
-    self.title = _I18N(@"Cars");
+    self.title = NSLocalizedString(@"Cars", @"");
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self
@@ -48,14 +46,18 @@ static NSInteger maxEditHelpCounter = 1;
 
     self.longPressRecognizer.delegate = self;
 
-    // reset tint color
+    // Reset tint color
     self.navigationController.navigationBar.tintColor = nil;
 
     // Background image
-    NSString *imageName = [NSString stringWithFormat:@"TableBackgroundFlat%@", ([AppDelegate isLongPhone] ? @"-568h" : @"")];
-
-    self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
-    self.tableView.backgroundView.contentMode = UIViewContentModeBottom;
+	UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectZero];
+	backgroundView.backgroundColor = [UIColor colorWithRed:0.935 green:0.935 blue:0.956 alpha:1.0];
+	UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Pumps"]];
+	backgroundImage.translatesAutoresizingMaskIntoConstraints = NO;
+	[backgroundView addSubview:backgroundImage];
+	[backgroundView addConstraint:[NSLayoutConstraint constraintWithItem:backgroundView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:backgroundImage attribute:NSLayoutAttributeBottom multiplier:1.0 constant:90.0]];
+	[backgroundView addConstraint:[NSLayoutConstraint constraintWithItem:backgroundView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:backgroundImage attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+	self.tableView.backgroundView = backgroundView;
 
     _managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
 
@@ -141,13 +143,15 @@ static NSInteger maxEditHelpCounter = 1;
     // Number of cars determins the help badge
     NSString *helpImageName = nil;
     CGRect helpViewFrame;
+	UIViewContentMode helpViewContentMode;
 
     NSUInteger carCount = [[[self fetchedResultsController] fetchedObjects] count];
 
     if (self.editing == NO && carCount == 0) {
 
         helpImageName = @"StartFlat";
-        helpViewFrame = CGRectMake (0, 0, 320, 70);
+        helpViewFrame = CGRectMake (0, 0, self.view.bounds.size.width, 70);
+		helpViewContentMode = UIViewContentModeRight;
 
         [defaults setObject:@0 forKey:@"editHelpCounter"];
 
@@ -159,7 +163,8 @@ static NSInteger maxEditHelpCounter = 1;
 
             [defaults setObject:@(++editCounter) forKey:@"editHelpCounter"];
             helpImageName = @"EditFlat";
-            helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, 320, 92);
+			helpViewContentMode = UIViewContentModeLeft;
+            helpViewFrame = CGRectMake (0, carCount * 91.0 - 16, self.view.bounds.size.width, 92);
         }
     }
 
@@ -168,14 +173,15 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (helpImageName == nil || (helpView && CGRectEqualToRect (helpView.frame, helpViewFrame) == NO)) {
 
-        if (animated)
+		if (animated) {
             [UIView animateWithDuration:0.33
                                   delay:0.0
                                 options:UIViewAnimationOptionCurveEaseOut
                              animations: ^{ helpView.alpha = 0.0; }
                              completion: ^(BOOL finished){ [helpView removeFromSuperview]; }];
-        else
+		} else {
             [helpView removeFromSuperview];
+		}
 
         helpView = nil;
     }
@@ -185,12 +191,13 @@ static NSInteger maxEditHelpCounter = 1;
 
         if (helpView == nil) {
 
-            UIImage *helpImage  = [[UIImage imageNamed:helpImageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            UIImage *helpImage  = [[UIImage imageNamed:NSLocalizedString(helpImageName, @"")] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
             helpView       = [[UIImageView alloc] initWithImage:helpImage];
             helpView.tag   = 100;
             helpView.frame = helpViewFrame;
             helpView.alpha = (animated) ? 0.0 : 1.0;
+			helpView.contentMode = helpViewContentMode;
 
             [self.view addSubview:helpView];
 
@@ -343,7 +350,7 @@ static NSInteger maxEditHelpCounter = 1;
 {
     [self setEditing:NO animated:YES];
 
-    CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+    CarConfigurationController *configurator = [self.storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
     configurator.delegate = self;
     configurator.editingExistingObject = NO;
 
@@ -411,7 +418,7 @@ static NSInteger maxEditHelpCounter = 1;
             self.editedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
             // Present modal car configurator
-            CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+            CarConfigurationController *configurator = [self.storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
             configurator.delegate = self;
             configurator.editingExistingObject = YES;
 
@@ -541,9 +548,9 @@ static NSInteger maxEditHelpCounter = 1;
 
     } else {
 
-        avgConsumption = [NSString stringWithFormat:@"%@", _I18N(@"-")];
+        avgConsumption = [NSString stringWithFormat:@"%@", NSLocalizedString(@"-", @"")];
 
-        tableCell.topRightAccessibilityLabel = _I18N(@"fuel mileage not available");
+        tableCell.topRightAccessibilityLabel = NSLocalizedString(@"fuel mileage not available", @"");
         tableCell.botRightAccessibilityLabel = nil;
     }
 
@@ -686,7 +693,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (_fuelEventController == nil || _fuelEventController.selectedCar != selectedCar) {
 
-        _fuelEventController = [[FuelEventController alloc] initWithNibName:@"FuelEventController" bundle:nil];
+		_fuelEventController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
         _fuelEventController.managedObjectContext = _managedObjectContext;
         _fuelEventController.selectedCar          = selectedCar;
     }
@@ -755,6 +762,12 @@ static NSInteger maxEditHelpCounter = 1;
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationFade];
             break;
+
+		case NSFetchedResultsChangeMove:
+		case NSFetchedResultsChangeUpdate:
+			[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+						  withRowAnimation:UITableViewRowAnimationFade];
+			break;
     }
 }
 

@@ -2,9 +2,9 @@
 //
 // Kraftstoff
 
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 
-extern CGFloat StatisticsViewWidth;
-extern CGFloat StatisticsViewHeight;
 extern CGFloat StatisticsHeight;
 extern CGFloat StatisticTransitionDuration;
 

@@ -21,17 +21,25 @@
 #pragma mark View Lifecycle
 
 
-
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+	}
+	return self;
 }
 
+- (void)viewDidLayoutSubviews {
+	[super viewDidLayoutSubviews];
+
+	for (NSInteger page = 0; page < _pageControl.numberOfPages; page++) {
+		UIViewController *controller = self.childViewControllers[page];
+		controller.view.frame = [self frameForPage:page];
+	}
+
+	_scrollView.contentSize = CGSizeMake (_scrollView.frame.size.width * _pageControl.numberOfPages, _scrollView.frame.size.height);
+}
 
 - (void)viewDidLoad
 {
@@ -44,28 +52,42 @@
 
         switch (page) {
 
-            case 0:controller = [FuelStatisticsViewController_PriceDistance  alloc]; break;
-            case 1:controller = [FuelStatisticsViewController_AvgConsumption alloc]; break;
-            case 2:controller = [FuelStatisticsViewController_PriceAmount alloc]; break;
-            case 3:controller = [FuelStatisticsTextViewController alloc]; break;
+			case 0: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegatePriceDistance alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 1: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegateAvgConsumption alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 2: {
+				FuelStatisticsGraphViewController *graphViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsGraphViewController"];
+				graphViewController.delegate = [[FuelStatisticsViewControllerDelegatePriceAmount alloc] init];
+				controller = graphViewController;
+				break;
+			}
+			case 3: {
+				controller = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelStatisticsTextViewController"];
+				break;
+			}
         }
 
-        controller = [controller initWithNibName:@"FuelStatisticsViewController" bundle:nil];
         controller.selectedCar = self.selectedCar;
 
         [self addChildViewController:controller];
-        controller.view.frame = [self frameForPage:page];
 
         [_scrollView addSubview:controller.view];
     }
 
     // Configure scroll view
-    _scrollView.contentSize = CGSizeMake (StatisticsViewWidth * _pageControl.numberOfPages, StatisticsViewHeight);
     _scrollView.scrollsToTop = NO;
 
-    // Enlarge scrollView, hide pageControl
-    _scrollView.frame = self.view.frame;
-    _pageControl.hidden = YES;
+    // Hide pageControl
+    //_pageControl.hidden = YES;
 
     // Select preferred page
     dispatch_async (dispatch_get_main_queue(), ^{
@@ -192,7 +214,7 @@
 
         NSInteger page = (_pageControl.currentPage + i) % _pageControl.numberOfPages;
 
-        FuelStatisticsViewController *controller = (self.childViewControllers)[page];
+        FuelStatisticsViewController *controller = self.childViewControllers[page];
         [controller setDisplayedNumberOfMonths:numberOfMonths];
     }
 }
@@ -226,7 +248,7 @@
 {
     if (pageControlUsed == NO) {
 
-        NSInteger newPage = floor ((_scrollView.contentOffset.x - StatisticsViewWidth*0.5) / StatisticsViewWidth) + 1;
+        NSInteger newPage = floor ((_scrollView.contentOffset.x - _scrollView.frame.size.width*0.5) / _scrollView.frame.size.width) + 1;
         newPage = [self.scrollView pageForVisiblePage:newPage];
 
         if (_pageControl.currentPage != newPage) {

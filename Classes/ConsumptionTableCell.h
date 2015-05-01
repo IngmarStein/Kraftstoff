@@ -4,8 +4,8 @@
 
 
 #import "PageCell.h"
-#import "ConsumptionLabel.h"
 
+@class ConsumptionLabel;
 
 @interface ConsumptionTableCell : PageCell {}
 

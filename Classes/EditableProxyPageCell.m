@@ -8,24 +8,22 @@
 
 @implementation EditableProxyPageCell
 
-@synthesize textFieldProxy;
-
 - (void)finishConstruction
 {
 	[super finishConstruction];
 
     // Create a proxy overlay for the textfield that is used to display the textField contents
     // without a flashing cursor and no Cut&Paste possibilities
-    textFieldProxy = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.textFieldProxy = [[UILabel alloc] initWithFrame:CGRectZero];
 
-    textFieldProxy.font                   = self.textField.font;
-	textFieldProxy.textAlignment          = NSTextAlignmentRight;
-	textFieldProxy.backgroundColor        = [UIColor clearColor];
-	textFieldProxy.autoresizingMask       = UIViewAutoresizingFlexibleWidth;
-	textFieldProxy.userInteractionEnabled = NO;
-    textFieldProxy.isAccessibilityElement = NO;
+    self.textFieldProxy.font                   = self.textField.font;
+	self.textFieldProxy.textAlignment          = NSTextAlignmentRight;
+	self.textFieldProxy.backgroundColor        = [UIColor clearColor];
+	self.textFieldProxy.autoresizingMask       = UIViewAutoresizingFlexibleWidth;
+	self.textFieldProxy.userInteractionEnabled = NO;
+    self.textFieldProxy.isAccessibilityElement = NO;
 
-	[self.contentView addSubview:textFieldProxy];
+	[self.contentView addSubview:self.textFieldProxy];
 
     // Hide the textfield used for keyboard interaction
     self.textField.hidden = YES;

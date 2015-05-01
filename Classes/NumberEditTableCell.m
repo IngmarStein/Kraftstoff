@@ -9,11 +9,6 @@
 
 @implementation NumberEditTableCell
 
-@synthesize textFieldSuffix;
-@synthesize numberFormatter;
-@synthesize alternateNumberFormatter;
-
-
 - (void)finishConstruction
 {
 	[super finishConstruction];

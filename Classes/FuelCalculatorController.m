@@ -4,7 +4,6 @@
 
 
 #import "AppDelegate.h"
-#import "AppWindow.h"
 #import "FuelCalculatorController.h"
 #import "FuelEventController.h"
 #import "CarTableCell.h"
@@ -12,37 +11,19 @@
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
 #import "SwitchTableCell.h"
+#import "kraftstoff-Swift.h"
 
-#import "NSDate+Kraftstoff.h"
 
-
-typedef enum
+typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
 {
     FCDistanceRow = 1,
     FCPriceRow    = 2,
     FCAmountRow   = 4,
     FCAllDataRows = 7,
-} FuelCalculatorDataRow;
+};
 
 
 @implementation FuelCalculatorController
-
-@synthesize managedObjectContext;
-@synthesize fetchedResultsController;
-
-@synthesize restoredSelectionIndex;
-@synthesize car;
-@synthesize lastChangeDate;
-@synthesize date;
-@synthesize distance;
-@synthesize price;
-@synthesize fuelVolume;
-@synthesize filledUp;
-
-@synthesize doneButton;
-@synthesize saveButton;
-
-
 
 #pragma mark -
 #pragma mark View Lifecycle
@@ -57,7 +38,7 @@ typedef enum
     // Title bar
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(endEditingMode:)];
     self.saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(saveAction:)];
-    self.title = _I18N(@"Fill-Up");
+    self.title = NSLocalizedString(@"Fill-Up", @"");
 
     // Remove tint from bavigation bar
     self.navigationController.navigationBar.tintColor = nil;
@@ -101,7 +82,7 @@ typedef enum
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    NSIndexPath *indexPath = restoredSelectionIndex;
+    NSIndexPath *indexPath = self.restoredSelectionIndex;
 
     if (indexPath == nil)
         indexPath = [self.tableView indexPathForSelectedRow];
@@ -118,7 +99,7 @@ typedef enum
 
 - (void)decodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    restoredSelectionIndex = [coder decodeObjectForKey:kSRCalculatorSelectedIndex];
+    self.restoredSelectionIndex = [coder decodeObjectForKey:kSRCalculatorSelectedIndex];
     isShowingConvertSheet = [coder decodeBoolForKey:kSRCalculatorConvertSheet];
     
     if ([coder decodeBoolForKey:kSRCalculatorEditing]) {
@@ -130,8 +111,8 @@ typedef enum
 
         } else {
 
-            [self selectRowAtIndexPath:restoredSelectionIndex];
-            restoredSelectionIndex = nil;
+            [self selectRowAtIndexPath:self.restoredSelectionIndex];
+            self.restoredSelectionIndex = nil;
         }
     }
 
@@ -155,7 +136,7 @@ typedef enum
         
         if (enabled) {
 
-            self.navigationItem.leftBarButtonItem = doneButton;
+            self.navigationItem.leftBarButtonItem = self.doneButton;
             self.navigationItem.rightBarButtonItem = nil;
 
             [self removeSectionAtIndex:1 withAnimation:animation];
@@ -209,7 +190,7 @@ typedef enum
 
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
-    if ([distance compare:zero] == NSOrderedSame && [fuelVolume compare:zero] == NSOrderedSame && [price compare:zero] == NSOrderedSame)
+    if ([self.distance compare:zero] == NSOrderedSame && [self.fuelVolume compare:zero] == NSOrderedSame && [self.price compare:zero] == NSOrderedSame)
         return;
 
     [UIView animateWithDuration:0.3
@@ -247,7 +228,7 @@ typedef enum
     if (self.editing)
         return NO;
     
-    if (! ([distance compare:zero] == NSOrderedDescending && [fuelVolume compare:zero] == NSOrderedDescending))
+    if (! ([self.distance compare:zero] == NSOrderedDescending && [self.fuelVolume compare:zero] == NSOrderedDescending))
         return NO;
     
     return YES;
@@ -276,15 +257,15 @@ typedef enum
 
 
     // Compute the average consumption
-    NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
+    NSDecimalNumber *cost = [self.fuelVolume decimalNumberByMultiplyingBy:self.price];
 
-    NSDecimalNumber *liters      = [AppDelegate litersForVolume:fuelVolume withUnit:fuelUnit];
-    NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
+    NSDecimalNumber *liters      = [AppDelegate litersForVolume:self.fuelVolume withUnit:fuelUnit];
+    NSDecimalNumber *kilometers  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
     NSDecimalNumber *consumption = [AppDelegate consumptionForKilometers:kilometers Liters:liters inUnit:consumptionUnit];
 
     NSString *consumptionString = [NSString stringWithFormat:@"%@ %@ %@ %@",
                                         [[AppDelegate sharedCurrencyFormatter]   stringFromNumber:cost],
-                                        _I18N(@"/"),
+                                        NSLocalizedString(@"/", @""),
                                         [[AppDelegate sharedFuelVolumeFormatter] stringFromNumber:consumption],
                                         [AppDelegate consumptionUnitString:consumptionUnit]];
 
@@ -320,11 +301,11 @@ typedef enum
         fuelUnit     = [AppDelegate volumeUnitFromLocale];
     }
 
-    int rowOffset = ([self.fetchedResultsController.fetchedObjects count] < 2) ? 1 : 2;
+    int rowOffset = (self.fetchedResultsController.fetchedObjects.count < 2) ? 1 : 2;
 
     if (rowMask & FCDistanceRow) {
 
-        if (distance == nil)
+        if (self.distance == nil)
             self.distance = [NSDecimalNumber decimalNumberWithDecimal:
                                 [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentDistance"]
                                     decimalValue]];
@@ -332,7 +313,7 @@ typedef enum
         [self addRowAtIndex:0 + rowOffset
                   inSection:0
                   cellClass:[NumberEditTableCell class]
-                   cellData:@{@"label":_I18N(@"Distance"),
+                   cellData:@{@"label":NSLocalizedString(@"Distance", @""),
                               @"suffix":[@" " stringByAppendingString:[AppDelegate odometerUnitString:odometerUnit]],
                               @"formatter":[AppDelegate sharedDistanceFormatter],
                               @"valueIdentifier":@"distance"}
@@ -341,7 +322,7 @@ typedef enum
 
     if (rowMask & FCPriceRow) {
 
-        if (price == nil)
+        if (self.price == nil)
             self.price = [NSDecimalNumber decimalNumberWithDecimal:
                             [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentPrice"]
                                 decimalValue]];
@@ -358,7 +339,7 @@ typedef enum
 
     if (rowMask & FCAmountRow) {
 
-        if (fuelVolume == nil)
+        if (self.fuelVolume == nil)
             self.fuelVolume = [NSDecimalNumber decimalNumberWithDecimal:
                                 [[[NSUserDefaults standardUserDefaults] objectForKey:@"recentFuelVolume"]
                                     decimalValue]];
@@ -384,7 +365,7 @@ typedef enum
     // Car selector (optional)
     self.car = nil;
     
-    if ([self.fetchedResultsController.fetchedObjects count] > 0) {
+    if (self.fetchedResultsController.fetchedObjects.count > 0) {
 
         self.car = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:
                         [[NSUserDefaults standardUserDefaults] objectForKey:@"preferredCarID"]];
@@ -396,7 +377,7 @@ typedef enum
             [self addRowAtIndex:0
                       inSection:0
                       cellClass:[CarTableCell class]
-                       cellData:@{@"label":_I18N(@"Car"),
+                       cellData:@{@"label":NSLocalizedString(@"Car", @""),
                                   @"valueIdentifier":@"car",
                                   @"fetchedObjects":self.fetchedResultsController.fetchedObjects}
                   withAnimation:animation];
@@ -404,16 +385,16 @@ typedef enum
 
 
     // Date selector
-    if (date == nil)
+    if (self.date == nil)
         self.date = [NSDate dateWithoutSeconds:[NSDate date]];
 
-    if (lastChangeDate == nil)
+    if (self.lastChangeDate == nil)
         self.lastChangeDate = [NSDate date];
 
     [self addRowAtIndex:(self.car) ? 1 : 0
               inSection:0
               cellClass:[DateEditTableCell class]
-               cellData:@{@"label":_I18N(@"Date"),
+               cellData:@{@"label":NSLocalizedString(@"Date", @""),
                           @"formatter":[AppDelegate sharedDateTimeFormatter],
                           @"valueIdentifier":@"date",
                           @"valueTimestamp":@"lastChangeDate",
@@ -432,7 +413,7 @@ typedef enum
         [self addRowAtIndex:(self.car) ? 5 : 4
                   inSection:0
                   cellClass:[SwitchTableCell class]
-                   cellData:@{@"label":_I18N(@"Full Fill-Up"),
+                   cellData:@{@"label":NSLocalizedString(@"Full Fill-Up", @""),
                               @"valueIdentifier":@"filledUp"}
               withAnimation:animation];
 
@@ -561,7 +542,7 @@ typedef enum
     else
         noChangeInterval = -1;
 
-    if (lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0) {
+    if (self.lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0) {
 
         // Reset date to current time
         NSDate *now         = [NSDate date];
@@ -634,12 +615,12 @@ typedef enum
                          // Add new event object
                          changeIsUserDriven = YES;
 
-                         [AppDelegate addToArchiveWithCar:car
-                                                     date:date
-                                                 distance:distance
-                                                    price:price
-                                               fuelVolume:fuelVolume
-                                                 filledUp:filledUp
+                         [AppDelegate addToArchiveWithCar:self.car
+                                                     date:self.date
+                                                 distance:self.distance
+                                                    price:self.price
+                                               fuelVolume:self.fuelVolume
+                                                 filledUp:self.filledUp
                                    inManagedObjectContext:self.managedObjectContext
                                       forceOdometerUpdate:NO];
 
@@ -660,16 +641,16 @@ typedef enum
 {
     BOOL saveValid = YES;
 
-    if (car == nil)
+    if (self.car == nil)
         saveValid = NO;
     
-    else if ([distance compare:[NSDecimalNumber zero]] == NSOrderedSame || [fuelVolume compare:[NSDecimalNumber zero]] == NSOrderedSame)
+    else if ([self.distance compare:[NSDecimalNumber zero]] == NSOrderedSame || [self.fuelVolume compare:[NSDecimalNumber zero]] == NSOrderedSame)
         saveValid = NO;
 
-    else if (date == nil || [AppDelegate managedObjectContext:self.managedObjectContext containsEventWithCar:car andDate:date])
+    else if (self.date == nil || [AppDelegate managedObjectContext:self.managedObjectContext containsEventWithCar:self.car andDate:self.date])
         saveValid = NO;
 
-    self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil;
+    self.navigationItem.rightBarButtonItem = saveValid ? self.saveButton : nil;
 }
 
 
@@ -686,17 +667,17 @@ typedef enum
         return NO;
     
     // 1.) entered "distance" must be larger than car odometer
-    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
     
-    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
-    NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
+    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+    NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
     
     if ([[NSDecimalNumber zero] compare:convDistance] != NSOrderedAscending)
         return NO;
     
     
     // 2.) consumption with converted distances is more 'logical'
-    NSDecimalNumber *liters = [AppDelegate litersForVolume:fuelVolume withUnit:(KSVolume)[[car valueForKey:@"fuelUnit"] integerValue]];
+    NSDecimalNumber *liters = [AppDelegate litersForVolume:self.fuelVolume withUnit:(KSVolume)[[self.car valueForKey:@"fuelUnit"] integerValue]];
     
     if ([[NSDecimalNumber zero] compare:liters] != NSOrderedAscending)
         return NO;
@@ -715,8 +696,8 @@ typedef enum
     if ([convConsumption isEqual:[NSDecimalNumber notANumber]])
         return NO;
     
-    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForKilometers:[car valueForKey:@"distanceTotalSum"]
-                                                                     Liters:[car valueForKey:@"fuelVolumeTotalSum"]
+    NSDecimalNumber *avgConsumption = [AppDelegate consumptionForKilometers:[self.car valueForKey:@"distanceTotalSum"]
+                                                                     Liters:[self.car valueForKey:@"fuelVolumeTotalSum"]
                                                                      inUnit:KSFuelConsumptionLitersPer100km];
     
     NSDecimalNumber *loBound, *hiBound;
@@ -743,11 +724,11 @@ typedef enum
     
     
     // 3.) the event must be the youngest one
-    NSArray *youngerEvents = [AppDelegate objectsForFetchRequest:[AppDelegate fetchRequestForEventsForCar:car
-                                                                                                 afterDate:date
-                                                                                               dateMatches:NO
-                                                                                    inManagedObjectContext:managedObjectContext]
-                                          inManagedObjectContext:managedObjectContext];
+    NSArray *youngerEvents = [AppDelegate objectsForFetchRequest:[AppDelegate fetchRequestForEventsForCar:self.car
+																								afterDate:self.date
+																							  dateMatches:NO
+																				   inManagedObjectContext:self.managedObjectContext]
+                                          inManagedObjectContext:self.managedObjectContext];
     
     if ([youngerEvents count] > 0)
         return NO;
@@ -760,10 +741,10 @@ typedef enum
 
 - (void)showOdometerConversionAlert
 {
-    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
+    KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
 
-    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
-    NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
+    NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+    NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
 
     NSNumberFormatter *distanceFormatter = [AppDelegate sharedDistanceFormatter];
 
@@ -775,7 +756,7 @@ typedef enum
                                 [distanceFormatter stringFromNumber:[AppDelegate distanceForKilometers:convDistance withUnit:odometerUnit]],
                                 [AppDelegate odometerUnitString:odometerUnit]];
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:_I18N(@"Convert from odometer reading into distance? Please choose the distance driven:")
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Convert from odometer reading into distance? Please choose the distance driven:", @"")
                                                        delegate:self
                                               cancelButtonTitle:rawButton
                                          destructiveButtonTitle:convButton
@@ -795,9 +776,9 @@ typedef enum
     if (buttonIndex != actionSheet.cancelButtonIndex) {
 
         // Replace distance in table with difference to car odometer
-        KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
-        NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:distance withUnit:odometerUnit];
-        NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[car valueForKey:@"odometer"]];
+        KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
+        NSDecimalNumber *rawDistance  = [AppDelegate kilometersForDistance:self.distance withUnit:odometerUnit];
+        NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
         
         self.distance = [AppDelegate distanceForKilometers:convDistance withUnit:odometerUnit];
         [self valueChanged:self.distance identifier:@"distance"];
@@ -836,25 +817,25 @@ typedef enum
 - (id)valueForIdentifier:(NSString *)valueIdentifier
 {
     if ([valueIdentifier isEqualToString:@"car"])
-        return car;
+        return self.car;
 
     else if ([valueIdentifier isEqualToString:@"date"])
-        return date;
+        return self.date;
 
     else if ([valueIdentifier isEqualToString:@"lastChangeDate"])
-        return lastChangeDate;
+        return self.lastChangeDate;
 
     else if ([valueIdentifier isEqualToString:@"distance"])
-        return distance;
+        return self.distance;
 
     else if ([valueIdentifier isEqualToString:@"price"])
-        return price;
+        return self.price;
 
     else if ([valueIdentifier isEqualToString:@"fuelVolume"])
-        return fuelVolume;
+        return self.fuelVolume;
 
     else if ([valueIdentifier isEqualToString:@"filledUp"])
-        return @(filledUp);
+        return @(self.filledUp);
 
     return nil;
 }

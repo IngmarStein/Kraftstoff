@@ -6,6 +6,11 @@
 #import "QuadInfoCell.h"
 #import "AppDelegate.h"
 
+@interface QuadInfoCell ()
+
+@property (nonatomic, strong) UIView *separatorView;
+
+@end
 
 @implementation QuadInfoCell
 {
@@ -14,7 +19,7 @@
 }
 
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)enlargeTopRightLabel
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier enlargeTopRightLabel:(BOOL)enlargeTopRightLabel
 {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 
@@ -60,11 +65,10 @@
         [self.contentView addSubview:_botRightLabel];
 
 
-        UIImageView *imageView;
+		_separatorView = [[UIView alloc] initWithFrame:CGRectZero];
+		_separatorView.backgroundColor = [UIColor colorWithWhite:200.0/255.0 alpha:1.0];
+		[self.contentView addSubview:_separatorView];
 
-        imageView = [[UIImageView alloc] init];
-        imageView.image = [UIImage imageNamed:@"CellShadeFlat"];
-        self.backgroundView = imageView;
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 
@@ -126,12 +130,14 @@
     // y position and height of top right label
     CGFloat iYStart = large ?  17.0 :  20.0;
     CGFloat iHeight = large ?  36.0 :  30.0;
+	CGFloat separatorHeight = 1.0 / [UIScreen mainScreen].scale;
 
     // compute label frames
     _topLeftLabel.frame  = CGRectMake(margin,                      20,       width - iWidth - 20, 30);
     _botLeftLabel.frame  = CGRectMake(margin,                      52,       width - iWidth - 20, 20);
     _topRightLabel.frame = CGRectMake(width - iWidth - editOffset, iYStart, iWidth - margin,      iHeight);
     _botRightLabel.frame = CGRectMake(width - iWidth - editOffset, 52,      iWidth - margin,      20);
+	_separatorView.frame = CGRectMake(0, self.frame.size.height - separatorHeight, self.frame.size.width, separatorHeight);
 
     // hide right labels in editing modes
     [UIView animateWithDuration:0.5

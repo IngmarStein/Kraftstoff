@@ -7,9 +7,7 @@
 #import "CSVParser.h"
 #import "AppDelegate.h"
 #import "TextEditTableCell.h"
-
-#import "NSDate+Kraftstoff.h"
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 
@@ -22,7 +20,7 @@
 }
 
 
-- (id)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -147,7 +145,7 @@
 
         // CSV file in new format: plate is second part of filename
         //     for unknown format: use the whole filename if it is a single component
-        if ([nameComponents count] <= 2)
+        if (nameComponents.count <= 2)
         {
             NSString *part = [nameComponents lastObject];
 
@@ -183,7 +181,7 @@
     if (first[@"NAME"] == nil)
         return NO;
 
-    NSInteger previousCarIDCount = [carIDs count];
+    NSInteger previousCarIDCount = carIDs.count;
 
     for (NSDictionary *record in records)
     {
@@ -223,7 +221,7 @@
         NSString *model = modelForID[carID];
 
         if (model == nil)
-            model = [NSString stringWithFormat:@"%@", _I18N(@"Imported Car")];
+            model = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Imported Car", @"")];
 
         if ([model length] > maximumTextFieldLength)
             model = [model substringToIndex:maximumTextFieldLength];
@@ -552,7 +550,7 @@
         if (CSVTable == nil)
             break;
 
-        if ([CSVTable count] == 0)
+        if (CSVTable.count == 0)
             continue;
 
         [self importCarIDs:CSVTable];

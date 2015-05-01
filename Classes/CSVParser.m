@@ -26,7 +26,7 @@
 }
 
 
-- (id)initWithString:(NSString *)inputCSVString
+- (instancetype)initWithString:(NSString *)inputCSVString
 {
     if ((self = [super init])) {
 

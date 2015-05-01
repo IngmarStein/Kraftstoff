@@ -2,6 +2,8 @@
 //
 // Kraftstoff
 
+#import <UIKit/UIKit.h>
+#import <CoreData/CoreData.h>
 #import "FuelStatisticsScrollView.h"
 
 @interface FuelStatisticsPageController : UIViewController

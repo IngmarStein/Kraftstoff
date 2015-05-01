@@ -1,0 +1,48 @@
+
+/* Class = "UITableViewController"; title = "Cars"; ObjectID = "6xE-Uc-v14"; */
+"6xE-Uc-v14.title" = "Fahrzeuge";
+
+/* Class = "UIButton"; normalTitle = "6M"; ObjectID = "998-xZ-2CZ"; */
+"998-xZ-2CZ.normalTitle" = "6M";
+
+/* Class = "UIButton"; normalTitle = "5Y"; ObjectID = "9fS-rb-iex"; */
+"9fS-rb-iex.normalTitle" = "5J";
+
+/* Class = "UIViewController"; title = "Fill-Up"; ObjectID = "9ok-pF-7av"; */
+"9ok-pF-7av.title" = "Tanken";
+
+/* Class = "UIButton"; normalTitle = "10Y"; ObjectID = "F5h-PL-W0V"; */
+"F5h-PL-W0V.normalTitle" = "10J";
+
+/* Class = "UIButton"; normalTitle = "1Y"; ObjectID = "IjA-lG-IAF"; */
+"IjA-lG-IAF.normalTitle" = "1J";
+
+/* Class = "UIButton"; normalTitle = "2Y"; ObjectID = "P4A-2e-38M"; */
+"P4A-2e-38M.normalTitle" = "2J";
+
+/* Class = "UILabel"; text = "Statistics"; ObjectID = "Rk6-Nm-3ol"; */
+"Rk6-Nm-3ol.text" = "Statistics";
+
+/* Class = "UIButton"; normalTitle = "3M"; ObjectID = "TKR-tx-YNP"; */
+"TKR-tx-YNP.normalTitle" = "3M";
+
+/* Class = "UITabBarItem"; title = "Cars"; ObjectID = "WJK-es-b4F"; */
+"WJK-es-b4F.title" = "Fahrzeuge";
+
+/* Class = "UINavigationController"; title = "Fill-Up"; ObjectID = "haJ-RV-g4q"; */
+"haJ-RV-g4q.title" = "Tanken";
+
+/* Class = "UIButton"; normalTitle = "1M"; ObjectID = "hu3-U7-ETq"; */
+"hu3-U7-ETq.normalTitle" = "1M";
+
+/* Class = "UINavigationController"; title = "Cars"; ObjectID = "jIJ-Qn-vtb"; */
+"jIJ-Qn-vtb.title" = "Fahrzeuge";
+
+/* Class = "UILabel"; text = "CarName"; ObjectID = "kej-pI-VdQ"; */
+"kej-pI-VdQ.text" = "CarName";
+
+/* Class = "UILabel"; text = "Center"; ObjectID = "qcD-yX-Req"; */
+"qcD-yX-Req.text" = "Center";
+
+/* Class = "UITabBarItem"; title = "Fill-Up"; ObjectID = "tX0-HD-RL4"; */
+"tX0-HD-RL4.title" = "Tanken";

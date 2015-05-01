@@ -6,13 +6,10 @@
 #import "AppDelegate.h"
 #import "FuelEventController.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
-
-#import "NSDate+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
 // Coordinates for the content area
-CGFloat StatisticsViewWidth = 480.0;
-CGFloat StatisticsViewHeight = 300.0;
 CGFloat StatisticsHeight = 214.0;
 CGFloat StatisticTransitionDuration = 0.3;
 
@@ -32,36 +29,19 @@ CGFloat StatisticTransitionDuration = 0.3;
 
 
 #pragma mark -
-#pragma mark iPhone 5 and iOS7 Support
-
-
-
-+ (void)initialize
-{
-    if ([AppDelegate isLongPhone])
-        StatisticsViewWidth = 568.0;
-}
-
-
-
-#pragma mark -
 #pragma mark View Lifecycle
 
-
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-
-        _contentCache            = [[NSMutableDictionary alloc] init];
-        _displayedNumberOfMonths = 0;
-        invalidationCounter      = 0;
-        expectedCounter          = 0;
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		_contentCache            = [[NSMutableDictionary alloc] init];
+		_displayedNumberOfMonths = 0;
+		invalidationCounter      = 0;
+		expectedCounter          = 0;
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -96,10 +76,6 @@ CGFloat StatisticTransitionDuration = 0.3;
             [button setAttributedTitle:label forState:UIControlStateNormal];
             [button setAttributedTitle:label forState:UIControlStateHighlighted];
             [button setAttributedTitle:labelSelected forState:UIControlStateSelected];
-
-            [button setBackgroundImage:nil forState:UIControlStateNormal];
-            [button setBackgroundImage:nil forState:UIControlStateHighlighted];
-            [button setBackgroundImage:nil forState:UIControlStateSelected];
 
             [button setShowsTouchWhenHighlighted:NO];
 
@@ -205,7 +181,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
             if ([recentEvents count]) {
 
-                NSManagedObject *recentEvent = [AppDelegate existingObject:[recentEvents objectAtIndex:0] inManagedObjectContext:sampleContext];
+                NSManagedObject *recentEvent = [AppDelegate existingObject:recentEvents[0] inManagedObjectContext:sampleContext];
 
                 if (recentEvent)
                     recentFillupDate = [recentEvent valueForKey:@"timestamp"];

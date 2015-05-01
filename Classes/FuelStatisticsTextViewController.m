@@ -6,20 +6,10 @@
 #import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsTextViewController.h"
-
-#import "NSDate+Kraftstoff.h"
-#import "NSDecimalNumber+Kraftstoff.h"
+#import "kraftstoff-Swift.h"
 
 
-
-static CGFloat const GridLeftBorder =  16.0;
-static CGFloat       GridRightBorder = 464.0;
-static CGFloat const GridTopBorder = 68.0;
-static CGFloat const GridBottomBorder = 253.0;
-static CGFloat       GridWidth = 448.0;
-static CGFloat const GridHeight = 185.0;
-
-static CGFloat       GridDesColumnWidth = (240.0 - GridLeftBorder);
+static CGFloat const GridMargin =  16.0;
 static CGFloat const GridTextXMargin = 10.0;
 static CGFloat const GridTextYMargin = 3.0;
 static CGFloat const GridTextHeight = 23.0;
@@ -59,8 +49,6 @@ static CGFloat const GridTextHeight = 23.0;
 
 @implementation FuelStatisticsData
 
-@synthesize contentImage;
-
 - (void)discardContent;
 {
     self.contentImage = nil;
@@ -73,54 +61,21 @@ static CGFloat const GridTextHeight = 23.0;
 #pragma mark -
 #pragma mark Textual Statistics View Controller
 
+@interface FuelStatisticsTextViewController ()
 
+@property (nonatomic) CGFloat gridLeftBorder;
+@property (nonatomic) CGFloat gridRightBorder;
+@property (nonatomic) CGFloat gridDesColumnWidth;
+
+@end
 
 @implementation FuelStatisticsTextViewController
-
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-    // Initialize contents of background view
-    UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, StatisticsViewHeight), YES, 0.0);
-    {
-        [self drawBackground];
-
-        UIImageView *imageView = (UIImageView*)self.view;
-        imageView.image = UIGraphicsGetImageFromCurrentImageContext();
-    }
-    UIGraphicsEndImageContext();
-}
-
 
 - (void)noteStatisticsPageBecomesVisible:(BOOL)visible
 {
     if (visible)
         [self.scrollView flashScrollIndicators];
 }
-
-
-
-#pragma mark -
-#pragma mark iPhone 5 Support
-
-
-
-+ (void)initialize
-{
-    GridRightBorder    = 464.0;
-    GridWidth          = 448.0;
-    GridDesColumnWidth = (240.0 - GridLeftBorder);
-
-    if ([AppDelegate isLongPhone]) {
-
-        GridRightBorder    += 88.0;
-        GridWidth          += 88.0;
-        GridDesColumnWidth += 44.0;
-    }
-}
-
 
 
 #pragma mark -
@@ -233,7 +188,7 @@ static CGFloat const GridTextHeight = 23.0;
 
         CGFloat height = (state->numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10;
 
-        UIGraphicsBeginImageContextWithOptions (CGSizeMake (StatisticsViewWidth, height), NO, 0.0);
+        UIGraphicsBeginImageContextWithOptions (CGSizeMake (self.view.bounds.size.width, height), NO, 0.0);
         {
             [self drawStatisticsForState:state withHeight:height];
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -249,7 +204,24 @@ static CGFloat const GridTextHeight = 23.0;
 #pragma mark -
 #pragma mark Graph Display
 
+- (void)viewDidLayoutSubviews
+{
+	[super viewDidLayoutSubviews];
 
+	self.gridLeftBorder = GridMargin;
+	self.gridRightBorder = self.view.bounds.size.width - GridMargin;
+	self.gridDesColumnWidth = (self.view.bounds.size.width - GridMargin - GridMargin) / 2.0;
+
+	// Initialize contents of background view
+	UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, YES, 0.0);
+	{
+		[self drawBackground];
+
+		UIImageView *imageView = (UIImageView*)self.view;
+		imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+	}
+	UIGraphicsEndImageContext();
+}
 
 - (void)drawBackground
 {
@@ -257,10 +229,10 @@ static CGFloat const GridTextHeight = 23.0;
 
     // Background colors
     [[UIColor colorWithWhite:0.082 alpha:1.0] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, StatisticsViewHeight));
+    CGContextFillRect (cgContext, self.view.bounds);
 
     [[UIColor blackColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake(0, 0, StatisticsViewWidth, 28));
+    CGContextFillRect (cgContext, CGRectMake(0, 0, self.view.bounds.size.width, 28));
 }
 
 
@@ -269,7 +241,7 @@ static CGFloat const GridTextHeight = 23.0;
     CGContextRef cgContext = UIGraphicsGetCurrentContext();
 
     [[UIColor clearColor] setFill];
-    CGContextFillRect (cgContext, CGRectMake (0, 0, StatisticsViewWidth, height));
+    CGContextFillRect (cgContext, CGRectMake (0, 0, self.view.bounds.size.width, height));
 
     UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
     NSDictionary *labelAttributes = @{NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor colorWithWhite:0.78 alpha:1.0]};
@@ -283,11 +255,11 @@ static CGFloat const GridTextHeight = 23.0;
         {
             [[UIColor whiteColor] setFill];
 
-            NSString *text = _I18N(@"Not enough data to display statistics");
+            NSString *text = NSLocalizedString(@"Not enough data to display statistics", @"");
             CGSize size = [text sizeWithAttributes:valueAttributes];
 
-            x = floor ((StatisticsViewWidth -  size.width)/2.0);
-            y = floor ((320.0 - (size.height - font.descender))/2.0 - 18.0 - 65.0);
+            x = floor ((self.view.bounds.size.width -  size.width)/2.0);
+            y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0);
 
             [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
         }
@@ -304,8 +276,8 @@ static CGFloat const GridTextHeight = 23.0;
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint:    CGPointMake (GridLeftBorder,  1.0)];
-            [path addLineToPoint:CGPointMake (GridRightBorder, 1.0)];
+            [path moveToPoint:   CGPointMake (self.gridLeftBorder,  1.0)];
+            [path addLineToPoint:CGPointMake (self.gridRightBorder, 1.0)];
 
             CGFloat lastY;
 
@@ -333,8 +305,8 @@ static CGFloat const GridTextHeight = 23.0;
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint:   CGPointMake (GridLeftBorder,  0.25)];
-            [path addLineToPoint:CGPointMake (GridRightBorder, 0.25)];
+            [path moveToPoint:   CGPointMake (self.gridLeftBorder,  0.25)];
+            [path addLineToPoint:CGPointMake (self.gridRightBorder, 0.25)];
 
             CGFloat lastY;
 
@@ -357,8 +329,8 @@ static CGFloat const GridTextHeight = 23.0;
         CGContextSaveGState (cgContext);
         {
             [path removeAllPoints];
-            [path moveToPoint:   CGPointMake (GridLeftBorder + GridDesColumnWidth + 0.25, 0.0)];
-            [path addLineToPoint:CGPointMake (GridLeftBorder + GridDesColumnWidth + 0.25, GridTextHeight*16)];
+            [path moveToPoint:   CGPointMake (self.gridLeftBorder + self.gridDesColumnWidth + 0.25, 0.0)];
+            [path addLineToPoint:CGPointMake (self.gridLeftBorder + self.gridDesColumnWidth + 0.25, GridTextHeight*16)];
             [path stroke];
         }
         CGContextRestoreGState (cgContext);
@@ -392,13 +364,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y = GridTextYMargin;
 
-                text = _I18N(@"days");
+                text = NSLocalizedString(@"days", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%ld", (long)[NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate]];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -406,13 +378,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"avg_efficiency" : @"avg_consumption");
+                text = NSLocalizedString(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"avg_efficiency" : @"avg_consumption", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:state->avgConsumption], consumptionUnitString];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -420,13 +392,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"max_efficiency" : @"min_consumption");
+                text = NSLocalizedString(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"max_efficiency" : @"min_consumption", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:state->bestConsumption], consumptionUnitString];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -434,13 +406,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"min_efficiency" : @"max_consumption");
+                text = NSLocalizedString(KSFuelConsumptionIsEfficiency (consumptionUnit) ? @"min_efficiency" : @"max_consumption", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:state->worstConsumption], consumptionUnitString];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -448,13 +420,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(@"ttl_cost");
+                text = NSLocalizedString(@"ttl_cost", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%@", [cf stringFromNumber:state->totalCost]];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -462,14 +434,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(@"ttl_distance");
+                text = NSLocalizedString(@"ttl_distance", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 val = [AppDelegate distanceForKilometers:state->totalDistance withUnit:odometerUnit];
                 text = [NSString stringWithFormat:@"%@ %@", [[AppDelegate sharedDistanceFormatter] stringFromNumber:val], odometerUnitString];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -477,14 +449,14 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(@"ttl_volume");
+                text = NSLocalizedString(@"ttl_volume", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 val = [AppDelegate volumeForLiters:state->totalFuelVolume withUnit:fuelUnit];
                 text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], fuelUnitString];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -492,13 +464,13 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(@"ttl_events");
+                text = NSLocalizedString(@"ttl_events", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 text = [NSString stringWithFormat:@"%ld", (long)state->numberOfFillups];
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -506,9 +478,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = _I18N(@"volume_event");
+                text = NSLocalizedString(@"volume_event", @"");
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (state->numberOfFillups > 0) {
@@ -518,9 +490,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], fuelUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -528,9 +500,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"cost_per_x"), [AppDelegate odometerUnitDescription:odometerUnit pluralization:NO]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:NO]];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalDistance] == NSOrderedAscending) {
@@ -540,9 +512,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@/%@", [pcf stringFromNumber:val], odometerUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -550,9 +522,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"cost_per_x"), [AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:NO]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), [AppDelegate fuelUnitDescription:fuelUnit discernGallons:YES pluralization:NO]];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalFuelVolume] == NSOrderedAscending) {
@@ -562,9 +534,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@/%@", [pcf stringFromNumber:val], fuelUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -572,9 +544,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"cost_per_x"), _I18N(@"day")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), NSLocalizedString(@"day", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (numberOfDays > 0) {
@@ -584,9 +556,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@", [cf stringFromNumber:val]];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -594,9 +566,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"cost_per_x"), _I18N(@"event")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"cost_per_x", @""), NSLocalizedString(@"event", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (state->numberOfFillups > 0) {
@@ -606,9 +578,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@", [cf stringFromNumber:val]];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -616,9 +588,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"x_per_y"), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], _I18N(@"event")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"event", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (state->numberOfFillups > 0) {
@@ -628,9 +600,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:[val decimalNumberByDividingBy:val2]], odometerUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -638,9 +610,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"x_per_y"), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], _I18N(@"day")];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], NSLocalizedString(@"day", @"")];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if (numberOfDays > 0) {
@@ -650,9 +622,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:[val decimalNumberByDividingBy:val2]], odometerUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
 
@@ -660,9 +632,9 @@ static CGFloat const GridTextHeight = 23.0;
             {
                 y += GridTextHeight;
 
-                text = [NSString stringWithFormat:_I18N(@"x_per_y"), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], [cf currencySymbol]];
+                text = [NSString stringWithFormat:NSLocalizedString(@"x_per_y", @""), [AppDelegate odometerUnitDescription:odometerUnit pluralization:YES], [cf currencySymbol]];
                 size = [text sizeWithAttributes:labelAttributes];
-                x = GridLeftBorder + GridDesColumnWidth - size.width - GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:labelAttributes];
 
                 if ([zero compare:state->totalCost] == NSOrderedAscending) {
@@ -672,9 +644,9 @@ static CGFloat const GridTextHeight = 23.0;
                     text = [NSString stringWithFormat:@"%@ %@", [nf stringFromNumber:val], odometerUnitString];
                 }
                 else
-                    text = _I18N(@"-");
+                    text = NSLocalizedString(@"-", @"");
 
-                x = GridLeftBorder + GridDesColumnWidth + GridTextXMargin;
+                x = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin;
                 [text drawAtPoint:CGPointMake (x, y) withAttributes:valueAttributes];
             }
         }
