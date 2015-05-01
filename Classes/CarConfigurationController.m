@@ -18,19 +18,14 @@
 #pragma mark -
 #pragma mark View Lifecycle
 
-
-
-- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.restorationIdentifier = @"CarConfigurationController";
-        self.restorationClass = [self class];
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.restorationClass = [self class];
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -95,7 +90,8 @@
 
 + (UIViewController*) viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    CarConfigurationController *controller = [[self alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+    CarConfigurationController *controller = [storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
     controller.editingExistingObject = [coder decodeBoolForKey:kSRConfiguratorEditMode];
 
     return controller;

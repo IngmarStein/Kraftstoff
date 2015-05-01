@@ -27,23 +27,19 @@
 #pragma mark -
 #pragma mark View Lifecycle
 
-
-
-- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.restorationClass = [self class];
 
-        self.restorationIdentifier = @"FuelEventController";
-        self.restorationClass = [self class];
+		_statisticsController = [[FuelStatisticsPageController alloc]
+								 initWithNibName:@"FuelStatisticsPageController"
+								 bundle:nil];
 
-        _statisticsController = [[FuelStatisticsPageController alloc]
-                                        initWithNibName:@"FuelStatisticsPageController"
-                                                 bundle:nil];
-    }
-
-    return self;
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -143,7 +139,8 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    FuelEventController *controller = [[self alloc] initWithNibName:@"FuelEventController" bundle:nil];
+	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+    FuelEventController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
     controller.selectedCar = [appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventSelectedCarID]];
 
@@ -701,7 +698,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FuelEventEditorController *editController = [[FuelEventEditorController alloc] initWithNibName:@"FuelEventEditor" bundle:nil];
+    FuelEventEditorController *editController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelEventEditor"];
 
     editController.managedObjectContext =  _managedObjectContext;
     editController.event = [self.fetchedResultsController objectAtIndexPath:indexPath];

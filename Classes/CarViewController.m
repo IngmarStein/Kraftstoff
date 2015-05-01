@@ -350,7 +350,7 @@ static NSInteger maxEditHelpCounter = 1;
 {
     [self setEditing:NO animated:YES];
 
-    CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+    CarConfigurationController *configurator = [self.storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
     configurator.delegate = self;
     configurator.editingExistingObject = NO;
 
@@ -418,7 +418,7 @@ static NSInteger maxEditHelpCounter = 1;
             self.editedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
             // Present modal car configurator
-            CarConfigurationController *configurator = [[CarConfigurationController alloc] initWithNibName:@"CarConfigurationController" bundle:nil];
+            CarConfigurationController *configurator = [self.storyboard instantiateViewControllerWithIdentifier:@"CarConfigurationController"];
             configurator.delegate = self;
             configurator.editingExistingObject = YES;
 
@@ -693,7 +693,7 @@ static NSInteger maxEditHelpCounter = 1;
 
     if (_fuelEventController == nil || _fuelEventController.selectedCar != selectedCar) {
 
-        _fuelEventController = [[FuelEventController alloc] initWithNibName:@"FuelEventController" bundle:nil];
+		_fuelEventController = [self.storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
         _fuelEventController.managedObjectContext = _managedObjectContext;
         _fuelEventController.selectedCar          = selectedCar;
     }

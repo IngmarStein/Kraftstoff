@@ -27,18 +27,14 @@
 #pragma mark View Lifecycle
 
 
-
-- (instancetype)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
-
-        self.restorationIdentifier = @"FuelEventEditor";
-        self.restorationClass = [self class];
-    }
-
-    return self;
+	self = [super initWithCoder:coder];
+	if (self) {
+		self.restorationClass = [self class];
+	}
+	return self;
 }
-
 
 - (void)viewDidLoad
 {
@@ -93,7 +89,8 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    FuelEventEditorController *controller = [[self alloc] initWithNibName:@"FuelEventEditor" bundle:nil];
+	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+    FuelEventEditorController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventEditor"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
     controller.event                = [appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventEventID]];
 
