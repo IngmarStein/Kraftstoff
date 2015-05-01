@@ -57,18 +57,9 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
 
 #pragma mark Color Gradients
 
-// Create a shadow layer that fades downwards / or upwards
-+ (CAGradientLayer*)shadowWithFrame:(CGRect)frame
-                         darkFactor:(CGFloat)darkFactor
-                        lightFactor:(CGFloat)lightFactor
-                      fadeDownwards:(BOOL)downwards;
-
-+ (CGGradientRef)backGradient CF_RETURNS_NOT_RETAINED;
 + (CGGradientRef)blueGradient CF_RETURNS_NOT_RETAINED;
 + (CGGradientRef)greenGradient CF_RETURNS_NOT_RETAINED;
 + (CGGradientRef)orangeGradient CF_RETURNS_NOT_RETAINED;
-+ (CGGradientRef)infoGradient CF_RETURNS_NOT_RETAINED;
-+ (CGGradientRef)knobGradient CF_RETURNS_NOT_RETAINED;
 
 
 

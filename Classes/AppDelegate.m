@@ -315,46 +315,6 @@
 #pragma mark Shared Color Gradients
 
 
-
-+ (CAGradientLayer*)shadowWithFrame:(CGRect)frame
-                         darkFactor:(CGFloat)darkFactor
-                        lightFactor:(CGFloat)lightFactor
-                      fadeDownwards:(BOOL)downwards
-{
-    CAGradientLayer *newShadow = [[CAGradientLayer alloc] init];
-
-    UIColor *darkColor = [UIColor colorWithWhite:0.0 alpha:darkFactor];
-    UIColor *lightColor = [UIColor colorWithWhite:lightFactor alpha:0.0];
-
-    newShadow.frame = frame;
-    newShadow.backgroundColor = [UIColor clearColor].CGColor;
-    newShadow.colors = downwards ? @[(id)[darkColor CGColor], (id)[lightColor CGColor]]
-                                 : @[(id)[lightColor CGColor], (id)[darkColor CGColor]];
-    return newShadow;
-}
-
-
-+ (CGGradientRef)backGradient
-{
-    static CGGradientRef backGradient = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 25.0/255.0, 1.0,  25.0/255.0, 1.0,  40.0/255.0, 1.0,  117.0/255.0, 1.0 };
-        static CGFloat colorLocations  [4] = { 0.0, 0.5, 0.5, 1.0 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-
-        backGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, colorLocations, 4);
-        CGColorSpaceRelease (colorSpace);
-    });
-
-    return backGradient;
-
-}
-
-
 + (CGGradientRef)blueGradient
 {
     static CGGradientRef blueGradient = NULL;
@@ -410,45 +370,6 @@
 
     return orangeGradient;
 }
-
-
-+ (CGGradientRef)infoGradient
-{
-    static CGGradientRef infoGradient = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 0.97, 0.97, 0.97, 1.0,  0.80, 0.80, 0.80, 1.0 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-
-        infoGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, NULL, 2);
-        CGColorSpaceRelease (colorSpace);
-    });
-
-    return infoGradient;
-}
-
-
-+ (CGGradientRef)knobGradient
-{
-    static CGGradientRef knobGradient = NULL;
-    static dispatch_once_t pred;
-
-    dispatch_once (&pred, ^{
-
-        static CGFloat colorComponents [8] = { 1.0, 0.964, 0.078, 1.0,  1.0, 0.756, 0.188, 1.0 };
-
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-
-        knobGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponents, NULL, 2);
-        CGColorSpaceRelease (colorSpace);
-    });
-
-    return knobGradient;
-}
-
 
 
 #pragma mark -
