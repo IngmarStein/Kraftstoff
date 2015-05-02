@@ -717,7 +717,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="PMo-oN-QYv">
             <objects>
-                <tabBarController id="Bla-8M-9aI" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Bla-8M-9aI" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="0A0-n5-DU4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>

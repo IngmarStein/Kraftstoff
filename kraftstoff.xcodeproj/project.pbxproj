@@ -29,7 +29,6 @@
 		4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF13C150CE7E00088DDDC /* FuelStatisticsGraphViewController.m */; };
 		4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */; };
 		4DA3BB5312F9D9B4000DBBB2 /* QuadInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */; };
-		4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
 		4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA531367154C00AE03CC /* DateEditTableCell.m */; };
@@ -98,8 +97,6 @@
 		4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsTextViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = QuadInfoCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuadInfoCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NonRotatingTabBarController.h; sourceTree = "<group>"; };
-		4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NonRotatingTabBarController.m; sourceTree = "<group>"; };
 		4DAC5622130317DD00D02BEC /* PageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DAC5623130317DD00D02BEC /* PageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC562813032B0F00D02BEC /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -296,8 +293,6 @@
 			children = (
 				955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */,
 				955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */,
-				4DAAF49F15B4A41B0016FAD6 /* NonRotatingTabBarController.h */,
-				4DAAF4A015B4A41B0016FAD6 /* NonRotatingTabBarController.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -533,7 +528,6 @@
 				4D1899B614328AC0001434BD /* main.m in Sources */,
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,
 				4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */,
-				4DAAF4A115B4A41B0016FAD6 /* NonRotatingTabBarController.m in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
