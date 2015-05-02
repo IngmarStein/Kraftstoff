@@ -368,31 +368,27 @@
 {
     isShowingCancelSheet = YES;
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:self.editingExistingObject ? NSLocalizedString(@"Revert Changes for Car?", @"")
-                                                                                      : NSLocalizedString(@"Delete the newly created Car?", @"")
-                                                       delegate:self
-                                              cancelButtonTitle: NSLocalizedString(@"Cancel", @"")
-                                         destructiveButtonTitle:self.editingExistingObject ? NSLocalizedString(@"Revert", @"")
-                                                                                      : NSLocalizedString(@"Delete", @"")
-                                              otherButtonTitles:nil];
-
-    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [sheet showInView:self.view];
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:self.editingExistingObject ? NSLocalizedString(@"Revert Changes for Car?", @"") : NSLocalizedString(@"Delete the newly created Car?", @"")
+																			 message:nil
+																	  preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"")
+														   style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingCancelSheet = NO;
+															 [self selectRowAtIndexPath:previousSelectionIndex];
+															 previousSelectionIndex = nil;
+														 }];
+	UIAlertAction *destructiveAction = [UIAlertAction actionWithTitle:self.editingExistingObject ? NSLocalizedString(@"Revert", @"") : NSLocalizedString(@"Delete", @"")
+																style:UIAlertActionStyleDestructive
+															  handler:^(UIAlertAction * action) {
+																  self->isShowingCancelSheet = NO;
+																  [self.delegate carConfigurationController:self didFinishWithResult:CarConfigurationCanceled];
+																  previousSelectionIndex = nil;
+															  }];
+	[alertController addAction:cancelAction];
+	[alertController addAction:destructiveAction];
+	[self presentViewController:alertController animated:YES completion:NULL];
 }
-
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    isShowingCancelSheet = NO;
-
-    if (buttonIndex != actionSheet.cancelButtonIndex)
-        [self.delegate carConfigurationController:self didFinishWithResult:CarConfigurationCanceled];
-    else
-        [self selectRowAtIndexPath:previousSelectionIndex];
-
-    previousSelectionIndex = nil;
-}
-
 
 #pragma mark -
 #pragma mark Save Button

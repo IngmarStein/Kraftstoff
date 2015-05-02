@@ -7,7 +7,7 @@
 #import "EditablePageCell.h"
 
 
-@interface FuelEventEditorController : PageViewController <UIViewControllerRestoration, EditablePageCellDelegate, NSFetchedResultsControllerDelegate, UIActionSheetDelegate>
+@interface FuelEventEditorController : PageViewController <UIViewControllerRestoration, EditablePageCellDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 

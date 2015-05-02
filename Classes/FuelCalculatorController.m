@@ -756,39 +756,37 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
                                 [distanceFormatter stringFromNumber:[Units distanceForKilometers:convDistance withUnit:odometerUnit]],
                                 [Units odometerUnitString:odometerUnit]];
 
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Convert from odometer reading into distance? Please choose the distance driven:", @"")
-                                                       delegate:self
-                                              cancelButtonTitle:rawButton
-                                         destructiveButtonTitle:convButton
-                                              otherButtonTitles:nil];
-    
-    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Convert from odometer reading into distance? Please choose the distance driven:", @"")
+																			 message:nil
+																	  preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:rawButton
+														   style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingConvertSheet = NO;
+															 [self setEditing:NO animated:YES];
+														 }];
+	UIAlertAction *destructiveAction = [UIAlertAction actionWithTitle:convButton
+																style:UIAlertActionStyleDestructive
+															  handler:^(UIAlertAction * action) {
+																  self->isShowingConvertSheet = NO;
 
-    isShowingConvertSheet = YES;
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+																  // Replace distance in table with difference to car odometer
+																  KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
+																  NSDecimalNumber *rawDistance  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
+																  NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
+
+																  self.distance = [Units distanceForKilometers:convDistance withUnit:odometerUnit];
+																  [self valueChanged:self.distance identifier:@"distance"];
+
+																  [self recreateDistanceRowWithAnimation:UITableViewRowAnimationRight];
+
+																  [self setEditing:NO animated:YES];
+															  }];
+	[alertController addAction:cancelAction];
+	[alertController addAction:destructiveAction];
+	isShowingConvertSheet = YES;
+	[self presentViewController:alertController animated:YES completion:NULL];
 }
-
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    isShowingConvertSheet = NO;
-
-    if (buttonIndex != actionSheet.cancelButtonIndex) {
-
-        // Replace distance in table with difference to car odometer
-        KSDistance odometerUnit = (KSDistance)[[self.car valueForKey:@"odometerUnit"] integerValue];
-        NSDecimalNumber *rawDistance  = [Units kilometersForDistance:self.distance withUnit:odometerUnit];
-        NSDecimalNumber *convDistance = [rawDistance decimalNumberBySubtracting:[self.car valueForKey:@"odometer"]];
-        
-        self.distance = [Units distanceForKilometers:convDistance withUnit:odometerUnit];
-        [self valueChanged:self.distance identifier:@"distance"];
-        
-        [self recreateDistanceRowWithAnimation:UITableViewRowAnimationRight];
-    }
-    
-    [self setEditing:NO animated:YES];
-}
-
 
 
 #pragma mark -

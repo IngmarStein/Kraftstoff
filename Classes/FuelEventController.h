@@ -9,7 +9,7 @@
 #import <MessageUI/MessageUI.h>
 
 
-@interface FuelEventController : UITableViewController <UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIAlertViewDelegate, UIDocumentInteractionControllerDelegate>
+@interface FuelEventController : UITableViewController <UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObject              *selectedCar;
 @property (nonatomic, strong) NSManagedObjectContext       *managedObjectContext;

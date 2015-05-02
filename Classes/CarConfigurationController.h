@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, CarConfigurationResult)
 @end
 
 
-@interface CarConfigurationController : PageViewController <UIViewControllerRestoration, UIActionSheetDelegate>
+@interface CarConfigurationController : PageViewController <UIViewControllerRestoration>
 {
     BOOL         isShowingCancelSheet;
     BOOL         dataChanged;

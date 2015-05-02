@@ -317,30 +317,29 @@
 
 - (void)showRevertActionSheet
 {
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Revert Changes for Event?", @"")
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
-                                         destructiveButtonTitle:NSLocalizedString(@"Revert", @"")
-                                              otherButtonTitles:nil];
-    
-    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    
-    isShowingCancelSheet = YES;
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Revert Changes for Event?", @"")
+																			 message:nil
+																	  preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"")
+														   style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingCancelSheet = NO;
+															 [self selectRowAtIndexPath:restoredSelectionIndex];
+															 restoredSelectionIndex = nil;
+														 }];
+	UIAlertAction *destructiveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Revert", @"")
+																style:UIAlertActionStyleDestructive
+															  handler:^(UIAlertAction * action) {
+																  self->isShowingCancelSheet = NO;
+																  [self endEditingModeAndRevertCompletion];
+																  restoredSelectionIndex = nil;
+															  }];
+	[alertController addAction:cancelAction];
+	[alertController addAction:destructiveAction];
+
+	isShowingCancelSheet = YES;
+	[self presentViewController:alertController animated:YES completion:NULL];
 }
-
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == actionSheet.cancelButtonIndex)
-        [self selectRowAtIndexPath:restoredSelectionIndex];
-    else
-        [self endEditingModeAndRevertCompletion];
- 
-    isShowingCancelSheet   = NO;
-    restoredSelectionIndex = nil;
-}
-
 
 - (void)endEditingModeAndRevertCompletion
 {

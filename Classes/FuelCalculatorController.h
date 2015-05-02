@@ -9,7 +9,7 @@
 #import <CoreData/CoreData.h>
 
 
-@interface FuelCalculatorController : PageViewController <EditablePageCellDelegate, UIActionSheetDelegate, NSFetchedResultsControllerDelegate>
+@interface FuelCalculatorController : PageViewController <EditablePageCellDelegate, NSFetchedResultsControllerDelegate>
 {
     BOOL changeIsUserDriven;
     BOOL isShowingConvertSheet;

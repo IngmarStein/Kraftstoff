@@ -13,7 +13,6 @@
 
 @implementation AppDelegate
 {
-    NSString    *errorDescription;
     UIAlertView *importAlert;
 }
 
@@ -270,11 +269,14 @@
                                                      ? [self pluralizedImportMessageForCarCount:numCars eventCount:numEvents]
                                                      : NSLocalizedString(@"No valid CSV-data could be found.", @"");
 
-                                [[[UIAlertView alloc] initWithTitle:title
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", @"")
-                                                  otherButtonTitles:nil] show];
+								UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+																										 message:message
+																								  preferredStyle:UIAlertControllerStyleAlert];
+								UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																						style:UIAlertActionStyleDefault
+																					  handler:^(UIAlertAction * action) {}];
+								[alertController addAction:defaultAction];
+								[self.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
                             });
 
         } else {
@@ -283,11 +285,14 @@
                             ^{
                                 [self hideImportAlert];
 
-                                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Import Failed", @"")
-                                                            message:NSLocalizedString(@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", @"")
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", @"")
-                                                  otherButtonTitles:nil] show];
+								UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Import Failed", @"")
+																										 message:NSLocalizedString(@"Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", @"")
+																								  preferredStyle:UIAlertControllerStyleAlert];
+								UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																						style:UIAlertActionStyleDefault
+																					  handler:^(UIAlertAction * action) {}];
+								[alertController addAction:defaultAction];
+								[self.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
                             });
         }
     }];
@@ -376,14 +381,6 @@
 #pragma mark Core Data Support
 
 
-
-- (void)alertView:(UIAlertView*)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    [NSException raise:NSGenericException format:@"%@", errorDescription];
-    abort();
-}
-
-
 - (NSManagedObjectContext *)managedObjectContext
 {
     if (_managedObjectContext == nil) {
@@ -430,12 +427,17 @@
                                                              options:options
                                                                error:&error]) {
 
-            errorDescription = [error localizedDescription];
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Open Database", @"")
-                                        message:NSLocalizedString(@"Sorry, the application database cannot be opened. Please quit the application with the Home button.", @"")
-                                       delegate:self
-                              cancelButtonTitle:nil
-                              otherButtonTitles:@"Ok", nil] show];
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Can't Open Database", @"")
+																					 message:NSLocalizedString(@"Sorry, the application database cannot be opened. Please quit the application with the Home button.", @"")
+																			  preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																	style:UIAlertActionStyleDefault
+																  handler:^(UIAlertAction * action) {
+																	  [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
+																	  abort();
+																  }];
+			[alertController addAction:defaultAction];
+			[self.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
         }
     }
 
@@ -451,12 +453,17 @@
 
         if (![context save:&error]) {
 
-            errorDescription = [error localizedDescription];
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Can't Save Database", @"")
-                                        message:NSLocalizedString(@"Sorry, the application database cannot be saved. Please quit the application with the Home button.", @"")
-                                       delegate:self
-                              cancelButtonTitle:nil
-                              otherButtonTitles:@"Ok", nil] show];
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Can't Save Database", @"")
+																					 message:NSLocalizedString(@"Sorry, the application database cannot be saved. Please quit the application with the Home button.", @"")
+																			  preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																	style:UIAlertActionStyleDefault
+																  handler:^(UIAlertAction * action) {
+																	  [NSException raise:NSGenericException format:@"%@", [error localizedDescription]];
+																	  abort();
+																  }];
+			[alertController addAction:defaultAction];
+			[self.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
         }
 
         return YES;

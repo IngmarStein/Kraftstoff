@@ -10,13 +10,18 @@
 #import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
+@interface FuelEventController ()
+
+@property (nonatomic, assign) BOOL isShowingAlert;
+
+@end
+
 
 @implementation FuelEventController
 {
     BOOL isObservingRotationEvents;
     BOOL isPerformingRotation;
     BOOL isShowingExportSheet;
-    BOOL isShowingAlert;
     BOOL restoreExportSheet;
     BOOL restoreOpenIn;
     BOOL restoreMailComposer;
@@ -46,7 +51,7 @@
 	isObservingRotationEvents  = NO;
     isPerformingRotation       = NO;
     isShowingExportSheet       = NO;
-    isShowingAlert             = NO;
+    self.isShowingAlert        = NO;
     restoreExportSheet         = NO;
     restoreOpenIn              = NO;
     restoreMailComposer        = NO;
@@ -220,7 +225,7 @@
     if (mailComposeController != nil)
         return;
 
-    if (isShowingExportSheet || isPerformingRotation || isShowingAlert || !isObservingRotationEvents)
+    if (isShowingExportSheet || isPerformingRotation || self.isShowingAlert || !isObservingRotationEvents)
         return;
 
     // Switch view controllers according rotation state
@@ -399,11 +404,15 @@
 
     if ([data writeToURL:[self exportURL] options:NSDataWritingFileProtectionComplete error:&error] == NO) {
 
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Export Failed", @"")
-                                    message:NSLocalizedString(@"Sorry, could not save the CSV-data for export.", @"")
-                                   delegate:self
-                          cancelButtonTitle:nil
-                          otherButtonTitles:NSLocalizedString(@"OK", @""), nil] show];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Export Failed", @"")
+																				 message:NSLocalizedString(@"Sorry, could not save the CSV-data for export.", @"")
+																		  preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																style:UIAlertActionStyleDefault
+															  handler:^(UIAlertAction * action) { self.isShowingAlert = NO; }];
+		[alertController addAction:defaultAction];
+		self.isShowingAlert = YES;
+		[self presentViewController:alertController animated:YES completion:NULL];
         return;
     }
 
@@ -416,11 +425,15 @@
 
     if ([openInController presentOpenInMenuFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES] == NO) {
 
-        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Open In Failed", @"")
-                                    message:NSLocalizedString(@"Sorry, there seems to be no compatible App to open the data.", @"")
-                                   delegate:self
-                          cancelButtonTitle:nil
-                          otherButtonTitles:NSLocalizedString(@"OK", @""), nil] show];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Open In Failed", @"")
+																				 message:NSLocalizedString(@"Sorry, there seems to be no compatible app to open the data.", @"")
+																		  preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																style:UIAlertActionStyleDefault
+															  handler:^(UIAlertAction * action) { self.isShowingAlert = NO; }];
+		[alertController addAction:defaultAction];
+		self.isShowingAlert = YES;
+		[self presentViewController:alertController animated:YES completion:NULL];
 
         openInController = nil;
         return;
@@ -469,13 +482,16 @@
 
         mailComposeController = nil;
 
-        if (result == MFMailComposeResultFailed)
-        {
-            [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sending Failed", @"")
-                                        message:NSLocalizedString(@"The exported fuel data could not be sent.", @"")
-                                       delegate:self
-                              cancelButtonTitle:NSLocalizedString(@"OK", @"")
-                              otherButtonTitles:nil] show];
+        if (result == MFMailComposeResultFailed) {
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Sending Failed", @"")
+																					 message:NSLocalizedString(@"The exported fuel data could not be sent.", @"")
+																			  preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", @"")
+																	style:UIAlertActionStyleDefault
+																  handler:^(UIAlertAction * action) { self.isShowingAlert = NO; }];
+			[alertController addAction:defaultAction];
+			self.isShowingAlert = YES;
+			[self presentViewController:alertController animated:YES completion:NULL];
         }
     }];
 }
@@ -492,58 +508,34 @@
     isShowingExportSheet = YES;
     restoreExportSheet   = NO;
 
-    NSString *firstButton, *secondButton;
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Export Fuel Data in CSV Format", @"")
+																			 message:nil
+																	  preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"")
+														   style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingExportSheet = NO;
+														 }];
+	UIAlertAction *mailAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Send as Email", @"")
+														   style:UIAlertActionStyleDefault
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingExportSheet = NO;
+															 dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
+														 }];
+	UIAlertAction *openInAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Open in ...", @"")
+														   style:UIAlertActionStyleDefault
+														 handler:^(UIAlertAction * action) {
+															 self->isShowingExportSheet = NO;
+															 dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
+														 }];
+	if ([MFMailComposeViewController canSendMail]) {
+		[alertController addAction:mailAction];
+	}
+	[alertController addAction:openInAction];
+	[alertController addAction:cancelAction];
 
-    if ([MFMailComposeViewController canSendMail]) {
-        firstButton  = NSLocalizedString(@"Send as Email", @"");
-        secondButton = NSLocalizedString(@"Open in ...", @"");
-    } else {
-        firstButton  = NSLocalizedString(@"Open in ...", @"");
-        secondButton = nil;
-    }
-
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Export Fuel Data in CSV Format", @"")
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
-                                         destructiveButtonTitle:nil
-                                              otherButtonTitles:firstButton, secondButton, nil];
-
-    sheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-    [sheet showFromTabBar:self.tabBarController.tabBar];
+	[self presentViewController:alertController animated:YES completion:NULL];
 }
-
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    isShowingExportSheet = NO;
-
-    if (buttonIndex != [actionSheet cancelButtonIndex]) {
-
-        if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Open in ...", @"")])
-            dispatch_async(dispatch_get_main_queue(), ^{ [self showOpenIn:nil]; });
-        else
-            dispatch_async(dispatch_get_main_queue(), ^{ [self showMailComposer:nil]; });
-    }
-}
-
-
-
-#pragma mark -
-#pragma mark UIAlertViewDelegate
-
-
-
-- (void)willPresentAlertView:(UIAlertView *)alertView
-{
-    isShowingAlert = YES;
-}
-
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    isShowingAlert = NO;
-}
-
 
 
 #pragma mark -
