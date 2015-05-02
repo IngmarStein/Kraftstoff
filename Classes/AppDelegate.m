@@ -10,16 +10,18 @@
 #import "CSVImporter.h"
 #import "kraftstoff-Swift.h"
 
+@interface AppDelegate ()
+
+@property (nonatomic, strong) UIAlertController *importAlert;
+
+@end
+
 
 @implementation AppDelegate
-{
-    UIAlertView *importAlert;
-}
 
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
 
 
 #pragma mark -
@@ -143,28 +145,29 @@
 
 - (void)showImportAlert
 {
-    if (importAlert == nil) {
+    if (self.importAlert == nil) {
 
-        UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake (125, 50, 30, 30)];
+		self.importAlert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Importing", @"")
+															   message:@""
+													preferredStyle:UIAlertControllerStyleAlert];
+
+        UIActivityIndicatorView *progress = [[UIActivityIndicatorView alloc] initWithFrame:self.importAlert.view.bounds];
+		progress.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		progress.userInteractionEnabled = NO;
         [progress setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
         [progress startAnimating];
 
-        importAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Importing", @"")
-                                                 message:@""
-                                                delegate:nil
-                                       cancelButtonTitle:nil
-                                       otherButtonTitles:nil];
+        [self.importAlert.view addSubview:progress];
 
-        [importAlert addSubview:progress];
-        [importAlert show];
+		[self.window.rootViewController presentViewController:self.importAlert animated:YES completion:NULL];
     }
 }
 
 
 - (void)hideImportAlert
 {
-    [importAlert dismissWithClickedButtonIndex:0 animated:YES];
-    importAlert = nil;
+	[self.window.rootViewController dismissViewControllerAnimated:YES completion:NULL];
+	self.importAlert = nil;
 }
 
 
@@ -217,7 +220,7 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     // Ugly, but don't allow nested imports
-    if (importAlert) {
+    if (self.importAlert) {
         [self removeFileItemAtURL:url];
         return NO;
     }
