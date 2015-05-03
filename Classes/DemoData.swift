@@ -125,7 +125,7 @@ let demoData = [
     DemoDataItem(date: "2013-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389 ),
 ]
 
-@objc class DemoData {
+@objc final class DemoData {
    
 	static func addDemoEventsForCar(car: NSManagedObject, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
