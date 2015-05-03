@@ -61,7 +61,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath!) {
+	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]

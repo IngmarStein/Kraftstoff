@@ -32,7 +32,7 @@ class DateEditTableCell: EditableProxyPageCell {
 		self.textFieldProxy.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath!) {
+	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
