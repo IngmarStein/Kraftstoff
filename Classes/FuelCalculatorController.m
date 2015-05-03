@@ -6,7 +6,6 @@
 #import "AppDelegate.h"
 #import "FuelCalculatorController.h"
 #import "FuelEventController.h"
-#import "ConsumptionTableCell.h"
 #import "kraftstoff-Swift.h"
 
 

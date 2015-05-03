@@ -6,7 +6,6 @@
 #import "AppDelegate.h"
 #import "FuelEventEditorController.h"
 #import "FuelEventController.h"
-#import "ConsumptionTableCell.h"
 #import "kraftstoff-Swift.h"
 
 @interface FuelEventEditorController () <EditablePageCellDelegate>
