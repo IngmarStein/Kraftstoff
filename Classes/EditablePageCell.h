@@ -4,8 +4,8 @@
 
 
 #import "PageCell.h"
-#import "EditablePageCellTextField.h"
 
+@class EditablePageCellTextField;
 
 @protocol EditablePageCellDelegate
 

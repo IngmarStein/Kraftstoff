@@ -6,6 +6,7 @@
 #import "EditablePageCell.h"
 #import "FuelCalculatorController.h"
 #import "AppDelegate.h"
+#import "kraftstoff-Swift.h"
 
 
 static CGFloat const margin = 8.0;

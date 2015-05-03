@@ -5,9 +5,9 @@
 
 #import "CarTableCell.h"
 #import "FuelCalculatorController.h"
-#import "PickerImageView.h"
 #import "AppDelegate.h"
 #import <CoreText/CoreText.h>
+#import "kraftstoff-Swift.h"
 
 // Standard cell geometry
 static CGFloat const PickerViewCellWidth        = 290.0;
@@ -217,9 +217,9 @@ static NSDictionary *suffixAttributesDict       = nil;
         imageView       = (PickerImageView*)view;
         imageView.image = image;
 
-    }
-    else
+	} else {
         imageView = [[PickerImageView alloc] initWithImage:image];
+	}
 
     imageView.userInteractionEnabled = YES;
     imageView.pickerView = pickerView;
@@ -227,7 +227,8 @@ static NSDictionary *suffixAttributesDict       = nil;
 
 
     // Description for accessibility
-    imageView.textualDescription = [NSString stringWithFormat:@"%@ %@", name, info];
+	imageView.isAccessibilityElement = YES;
+    imageView.accessibilityLabel = [NSString stringWithFormat:@"%@ %@", name, info];
 
     return imageView;
 }

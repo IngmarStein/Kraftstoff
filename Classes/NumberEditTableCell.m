@@ -5,6 +5,7 @@
 
 #import "NumberEditTableCell.h"
 #import "FuelCalculatorController.h"
+#import "kraftstoff-Swift.h"
 
 
 @implementation NumberEditTableCell

@@ -4,7 +4,7 @@
 
 
 #import "EditableProxyPageCell.h"
-
+#import "kraftstoff-Swift.h"
 
 @implementation EditableProxyPageCell
 
