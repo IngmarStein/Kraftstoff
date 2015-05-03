@@ -61,10 +61,12 @@ class DateEditTableCell: EditableProxyPageCell {
 	func datePickerValueChanged(sender: UIDatePicker) {
 		let selectedDate = NSDate.dateWithoutSeconds(sender.date)
 
-		if !self.delegate.valueForIdentifier(self.valueIdentifier).isEqualToDate(selectedDate) {
+		if !(self.delegate.valueForIdentifier(self.valueIdentifier)?.isEqualToDate(selectedDate) ?? false) {
 			self.textFieldProxy.text = self.dateFormatter.stringFromDate(selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier:self.valueIdentifier)
-			self.delegate.valueChanged(NSDate(), identifier:self.valueTimestamp)
+			if let timestamp = self.valueTimestamp {
+				self.delegate.valueChanged(NSDate(), identifier:timestamp)
+			}
 			updateTextFieldColorForValue(selectedDate)
 		}
 	}
@@ -102,13 +104,13 @@ class DateEditTableCell: EditableProxyPageCell {
 
 	//MARK: - UITextFieldDelegate
 
-	override func textFieldDidBeginEditing(textField: UITextField) {
+	func textFieldDidBeginEditing(textField: UITextField) {
 		// Optional:update selected value to current time when no change was done in the last 5 minutes
 		var selectedDate: NSDate?
 
 		if self.autoRefreshedDate {
 			let now = NSDate()
-			if let lastChangeDate = self.delegate.valueForIdentifier(self.valueTimestamp) as? NSDate {
+			if let timestamp = self.valueTimestamp, lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? NSDate {
 				let noChangeInterval = now.timeIntervalSinceDate(lastChangeDate)
 				if noChangeInterval >= 300 || noChangeInterval < 0 {
 					selectedDate = now

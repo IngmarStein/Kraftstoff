@@ -7,7 +7,6 @@
 #import "FuelCalculatorController.h"
 #import "FuelEventController.h"
 #import "ConsumptionTableCell.h"
-#import "NumberEditTableCell.h"
 #import "kraftstoff-Swift.h"
 
 
@@ -19,6 +18,9 @@ typedef NS_ENUM(NSUInteger, FuelCalculatorDataRow)
     FCAllDataRows = 7,
 };
 
+@interface FuelCalculatorController () <EditablePageCellDelegate>
+
+@end
 
 @implementation FuelCalculatorController
 

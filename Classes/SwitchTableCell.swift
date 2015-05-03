@@ -65,7 +65,7 @@ class SwitchTableCell: PageCell {
 		self.delegate         = viewController as? EditablePageCellDelegate
 		self.valueIdentifier  = dictionary["valueIdentifier"] as? String
 
-		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier).boolValue ?? false
+		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier)?.boolValue ?? false
 
 		self.valueSwitch.on = isON
 		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment:"")

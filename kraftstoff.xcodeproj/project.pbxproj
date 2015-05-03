@@ -16,7 +16,6 @@
 		4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
 		4D58AD2512B00C4A002B7A71 /* FuelStatisticsPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D58AD2312B00C4A002B7A71 /* FuelStatisticsPageController.m */; };
-		4D5C57CD13047AAA009C545E /* NumberEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D5C57CC13047AAA009C545E /* NumberEditTableCell.m */; };
 		4D630C4112EEF86400134FD7 /* FuelCalculatorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D630C4012EEF86400134FD7 /* FuelCalculatorController.m */; };
 		4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8329E5140129A500E4F22F /* CSVImporter.m */; };
 		4D84D8AC136AAC95000F431F /* ConsumptionTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D84D8AB136AAC95000F431F /* ConsumptionTableCell.m */; };
@@ -24,7 +23,6 @@
 		4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
-		4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA641368601D00AE03CC /* EditablePageCell.m */; };
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
 		4DDC187A1429EC8200383F92 /* FuelEventEditorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DDC18791429EC8200383F92 /* FuelEventEditorController.m */; };
 		4DE0454F123FA7AB009B19E3 /* FuelEventController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DE0454D123FA7AB009B19E3 /* FuelEventController.m */; };
@@ -48,6 +46,8 @@
 		95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717A1AF6482200DF261C /* CarTableCell.swift */; };
 		95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717C1AF6551200DF261C /* DateEditTableCell.swift */; };
 		95C0717F1AF65A0100DF261C /* EditableProxyPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717E1AF65A0100DF261C /* EditableProxyPageCell.swift */; };
+		95C071811AF65DE900DF261C /* NumberEditTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071801AF65DE900DF261C /* NumberEditTableCell.swift */; };
+		95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071821AF66B2500DF261C /* EditablePageCell.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,8 +70,6 @@
 		4D58AD2212B00C4A002B7A71 /* FuelStatisticsPageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FuelStatisticsPageController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D58AD2312B00C4A002B7A71 /* FuelStatisticsPageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsPageController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D5B94E216484CC2008BDDD7 /* Kraftstoffrechner 1.0.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Kraftstoffrechner 1.0.10.xcdatamodel"; sourceTree = "<group>"; };
-		4D5C57CB13047AAA009C545E /* NumberEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = NumberEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		4D5C57CC13047AAA009C545E /* NumberEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NumberEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D630C3F12EEF86400134FD7 /* FuelCalculatorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = FuelCalculatorController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D630C4012EEF86400134FD7 /* FuelCalculatorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelCalculatorController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D8329E4140129A500E4F22F /* CSVImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVImporter.h; sourceTree = "<group>"; };
@@ -87,8 +85,6 @@
 		4DAC5623130317DD00D02BEC /* PageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC562813032B0F00D02BEC /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DAC562913032B1000D02BEC /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4DB4DA631368601D00AE03CC /* EditablePageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EditablePageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		4DB4DA641368601D00AE03CC /* EditablePageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditablePageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DCFE36B138EE2930051FEC9 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DCFE36D138EE2AB0051FEC9 /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		4DDC18781429EC8200383F92 /* FuelEventEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuelEventEditorController.h; sourceTree = "<group>"; };
@@ -118,6 +114,8 @@
 		95C0717A1AF6482200DF261C /* CarTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarTableCell.swift; sourceTree = "<group>"; };
 		95C0717C1AF6551200DF261C /* DateEditTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateEditTableCell.swift; sourceTree = "<group>"; };
 		95C0717E1AF65A0100DF261C /* EditableProxyPageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableProxyPageCell.swift; sourceTree = "<group>"; };
+		95C071801AF65DE900DF261C /* NumberEditTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberEditTableCell.swift; sourceTree = "<group>"; };
+		95C071821AF66B2500DF261C /* EditablePageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditablePageCell.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -214,8 +212,7 @@
 		4D1899AA14328864001434BD /* NumberCell */ = {
 			isa = PBXGroup;
 			children = (
-				4D5C57CB13047AAA009C545E /* NumberEditTableCell.h */,
-				4D5C57CC13047AAA009C545E /* NumberEditTableCell.m */,
+				95C071801AF65DE900DF261C /* NumberEditTableCell.swift */,
 			);
 			name = NumberCell;
 			sourceTree = "<group>";
@@ -352,8 +349,7 @@
 		4DCEA6D613832FE1005F8ECE /* Cells for PageTables */ = {
 			isa = PBXGroup;
 			children = (
-				4DB4DA631368601D00AE03CC /* EditablePageCell.h */,
-				4DB4DA641368601D00AE03CC /* EditablePageCell.m */,
+				95C071821AF66B2500DF261C /* EditablePageCell.swift */,
 				95C0717E1AF65A0100DF261C /* EditableProxyPageCell.swift */,
 				95C071761AF638EF00DF261C /* EditablePageCellTextField.swift */,
 				4D1899AC14328868001434BD /* CarSelectionCell */,
@@ -479,6 +475,7 @@
 				4DE0454F123FA7AB009B19E3 /* FuelEventController.m in Sources */,
 				955B46161AF208A000A62D3B /* AppWindow.swift in Sources */,
 				4D58AD2512B00C4A002B7A71 /* FuelStatisticsPageController.m in Sources */,
+				95C071811AF65DE900DF261C /* NumberEditTableCell.swift in Sources */,
 				4DE963BA12CD045C007E7E16 /* FuelStatisticsViewController.m in Sources */,
 				95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */,
 				4D630C4112EEF86400134FD7 /* FuelCalculatorController.m in Sources */,
@@ -487,9 +484,7 @@
 				952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
 				4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */,
-				4D5C57CD13047AAA009C545E /* NumberEditTableCell.m in Sources */,
 				95C071791AF6399900DF261C /* PickerImageView.swift in Sources */,
-				4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */,
 				4D84D8AC136AAC95000F431F /* ConsumptionTableCell.m in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,
@@ -506,6 +501,7 @@
 				4D1899B614328AC0001434BD /* main.m in Sources */,
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,
 				4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */,
+				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

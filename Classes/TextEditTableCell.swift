@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TextEditTableCell: EditablePageCell, UITextFieldDelegate {
+class TextEditTableCell: EditablePageCell {
 	static let maximumTextFieldLength = 15
 
 	override init() {
@@ -39,21 +39,21 @@ class TextEditTableCell: EditablePageCell, UITextFieldDelegate {
 
 	//MARK: - UITextFieldDelegate
 
-	override func textFieldShouldReturn(textField: UITextField) -> Bool {
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
 		// Let delegate handle switching to next textfield
 		self.delegate.focusNextFieldForValueIdentifier?(self.valueIdentifier)
 
 		return false
 	}
 
-	override func textFieldShouldClear(textField: UITextField) -> Bool {
+	func textFieldShouldClear(textField: UITextField) -> Bool {
 		// Propagate cleared value to the delegate
 		self.delegate.valueChanged("", identifier:self.valueIdentifier)
 
 		return true
 	}
 
-	override func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
 		let newValue = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString:string)
 
 		// Don't allow too large strings
