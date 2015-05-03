@@ -4,9 +4,7 @@
 
 
 #import "CarConfigurationController.h"
-#import "TextEditTableCell.h"
 #import "NumberEditTableCell.h"
-#import "PickerTableCell.h"
 #import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 

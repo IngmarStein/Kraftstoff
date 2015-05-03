@@ -10,7 +10,6 @@
 #import "ConsumptionTableCell.h"
 #import "DateEditTableCell.h"
 #import "NumberEditTableCell.h"
-#import "SwitchTableCell.h"
 #import "kraftstoff-Swift.h"
 
 

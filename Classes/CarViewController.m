@@ -6,7 +6,6 @@
 #import "AppDelegate.h"
 #import "CarViewController.h"
 #import "FuelEventController.h"
-#import "TextEditTableCell.h"
 #import "kraftstoff-Swift.h"
 
 
@@ -423,12 +422,12 @@ static NSInteger maxEditHelpCounter = 1;
 
             configurator.name = [_editedObject valueForKey:@"name"];
 
-            if ([configurator.name length] > maximumTextFieldLength)
+            if ([configurator.name length] > [TextEditTableCell maximumTextFieldLength])
                 configurator.name = @"";
 
             configurator.plate = [_editedObject valueForKey:@"numberPlate"];
 
-            if ([configurator.plate length] > maximumTextFieldLength)
+            if ([configurator.plate length] > [TextEditTableCell maximumTextFieldLength])
                 configurator.plate = @"";
 
             configurator.odometerUnit = [_editedObject valueForKey:@"odometerUnit"];

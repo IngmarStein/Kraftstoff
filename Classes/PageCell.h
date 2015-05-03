@@ -10,6 +10,8 @@
 
 + (NSString *)reuseIdentifier;
 
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 // Overridepoint for subclasses:called once after allocation of cells
 - (void)finishConstruction;
 

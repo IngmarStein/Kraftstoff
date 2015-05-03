@@ -6,7 +6,6 @@
 #import "CSVImporter.h"
 #import "CSVParser.h"
 #import "AppDelegate.h"
-#import "TextEditTableCell.h"
 #import "kraftstoff-Swift.h"
 
 
@@ -125,8 +124,8 @@
 
             if ([part length] > 0)
             {
-                if ([part length] > maximumTextFieldLength)
-                    part = [part substringToIndex:maximumTextFieldLength];
+                if ([part length] > [TextEditTableCell maximumTextFieldLength])
+                    part = [part substringToIndex:[TextEditTableCell maximumTextFieldLength]];
 
                 return part;
             }
@@ -151,8 +150,8 @@
 
             if ([part length] > 0)
             {
-                if ([part length] > maximumTextFieldLength)
-                    part = [part substringToIndex:maximumTextFieldLength];
+                if ([part length] > [TextEditTableCell maximumTextFieldLength])
+                    part = [part substringToIndex:[TextEditTableCell maximumTextFieldLength]];
 
                 return part;
             }
@@ -223,8 +222,8 @@
         if (model == nil)
             model = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Imported Car", @"")];
 
-        if ([model length] > maximumTextFieldLength)
-            model = [model substringToIndex:maximumTextFieldLength];
+        if ([model length] > [TextEditTableCell maximumTextFieldLength])
+            model = [model substringToIndex:[TextEditTableCell maximumTextFieldLength]];
 
 
         NSString *plate = plateForID[carID];
@@ -232,8 +231,8 @@
         if (plate == nil)
             plate = @"";
 
-        if ([plate length] > maximumTextFieldLength)
-            plate = [plate substringToIndex:maximumTextFieldLength];
+        if ([plate length] > [TextEditTableCell maximumTextFieldLength])
+            plate = [plate substringToIndex:[TextEditTableCell maximumTextFieldLength]];
 
 
         NSManagedObject *newCar = [self addCarWithName:model
