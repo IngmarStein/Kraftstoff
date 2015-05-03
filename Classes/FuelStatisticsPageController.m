@@ -7,7 +7,7 @@
 #import "FuelStatisticsGraphViewController.h"
 #import "FuelStatisticsTextViewController.h"
 #import "AppDelegate.h"
-
+#import "kraftstoff-Swift.h"
 
 
 @implementation FuelStatisticsPageController

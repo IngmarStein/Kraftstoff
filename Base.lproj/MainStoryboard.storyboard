@@ -90,7 +90,7 @@
                                 <rect key="frame" x="273" y="566" width="55" height="36"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </pageControl>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZVC-3g-g1m" userLabel="Scroll View" customClass="FuelStatisticsScrollView">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZVC-3g-g1m" userLabel="Scroll View" customClass="FuelStatisticsScrollView" customModule="kraftstoff" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="568"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>

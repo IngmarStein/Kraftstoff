@@ -10,7 +10,6 @@
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
 		28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* CarViewController.m */; };
 		4D092C7D13956FB000760FB7 /* TextEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D092C7C13956FB000760FB7 /* TextEditTableCell.m */; };
-		4D0B2FFE1780D2B500644289 /* FuelStatisticsScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */; };
 		4D184724123CF970008D7454 /* CarConfigurationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D184722123CF970008D7454 /* CarConfigurationController.m */; };
 		4D1899B614328AC0001434BD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D1899B514328AC0001434BD /* main.m */; };
 		4D19187113BF9A8300ADAED6 /* SwitchTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D19187013BF9A8200ADAED6 /* SwitchTableCell.m */; };
@@ -48,6 +47,7 @@
 		955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */; };
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
+		95C0716B1AF602C000DF261C /* FuelStatisticsScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,8 +59,6 @@
 		28C286E00D94DF7D0034E888 /* CarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D092C7B13956FB000760FB7 /* TextEditTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = TextEditTableCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D092C7C13956FB000760FB7 /* TextEditTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TextEditTableCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4D0B2FFB1780D1EE00644289 /* FuelStatisticsScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FuelStatisticsScrollView.h; sourceTree = "<group>"; };
-		4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FuelStatisticsScrollView.m; sourceTree = "<group>"; };
 		4D184721123CF970008D7454 /* CarConfigurationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CarConfigurationController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D184722123CF970008D7454 /* CarConfigurationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CarConfigurationController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4D1899B514328AC0001434BD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -129,6 +127,7 @@
 		955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
+		95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsScrollView.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -402,8 +401,7 @@
 			children = (
 				4D58AD2212B00C4A002B7A71 /* FuelStatisticsPageController.h */,
 				4D58AD2312B00C4A002B7A71 /* FuelStatisticsPageController.m */,
-				4D0B2FFB1780D1EE00644289 /* FuelStatisticsScrollView.h */,
-				4D0B2FFC1780D1EE00644289 /* FuelStatisticsScrollView.m */,
+				95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */,
 				4D0B2FFD1780D1F900644289 /* Content Controllers */,
 			);
 			name = "FuelEvent Statistics";
@@ -507,7 +505,6 @@
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
 				4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */,
 				4D5C57CA13046B76009C545E /* PageCellDescription.m in Sources */,
-				4D0B2FFE1780D2B500644289 /* FuelStatisticsScrollView.m in Sources */,
 				4D5C57CD13047AAA009C545E /* NumberEditTableCell.m in Sources */,
 				4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */,
 				4DB4DA651368601D00AE03CC /* EditablePageCell.m in Sources */,
@@ -524,6 +521,7 @@
 				955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */,
 				4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */,
 				959A61B81AF4159600BDF116 /* Units.swift in Sources */,
+				95C0716B1AF602C000DF261C /* FuelStatisticsScrollView.swift in Sources */,
 				4DDC187A1429EC8200383F92 /* FuelEventEditorController.m in Sources */,
 				4D1899B614328AC0001434BD /* main.m in Sources */,
 				4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */,

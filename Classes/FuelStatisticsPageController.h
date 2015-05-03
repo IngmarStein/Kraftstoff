@@ -4,7 +4,8 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
-#import "FuelStatisticsScrollView.h"
+
+@class FuelStatisticsScrollView;
 
 @interface FuelStatisticsPageController : UIViewController
 

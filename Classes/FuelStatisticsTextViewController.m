@@ -708,7 +708,7 @@ static CGFloat const GridTextHeight = 23.0;
 
         return YES;
 
-    // Cache Miss => draw prelimary contents
+    // Cache Miss => draw preliminary contents
     } else {
 
         [UIView animateWithDuration:StatisticTransitionDuration
