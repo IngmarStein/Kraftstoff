@@ -27,7 +27,6 @@
 		4D84D8AF136B17BF000F431F /* CarTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D84D8AE136B17BF000F431F /* CarTableCell.m */; };
 		4D8DF13D150CE7E00088DDDC /* FuelStatisticsGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF13C150CE7E00088DDDC /* FuelStatisticsGraphViewController.m */; };
 		4D8DF146150D58D20088DDDC /* FuelStatisticsTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */; };
-		4DA3BB5312F9D9B4000DBBB2 /* QuadInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */; };
 		4DAC5626130317DD00D02BEC /* PageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC5623130317DD00D02BEC /* PageCell.m */; };
 		4DAC562A13032B1300D02BEC /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DAC562913032B1000D02BEC /* PageViewController.m */; };
 		4DB4DA541367154C00AE03CC /* DateEditTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4DA531367154C00AE03CC /* DateEditTableCell.m */; };
@@ -48,6 +47,7 @@
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		95C0716B1AF602C000DF261C /* FuelStatisticsScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */; };
+		95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716C1AF6066100DF261C /* QuadInfoCell.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 /* End PBXBuildFile section */
 
@@ -93,8 +93,6 @@
 		4D8DF13F150D03FB0088DDDC /* FuelStatisticsViewControllerPrivateMethods.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FuelStatisticsViewControllerPrivateMethods.h; sourceTree = "<group>"; };
 		4D8DF144150D58D20088DDDC /* FuelStatisticsTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuelStatisticsTextViewController.h; sourceTree = "<group>"; };
 		4D8DF145150D58D20088DDDC /* FuelStatisticsTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = FuelStatisticsTextViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = QuadInfoCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuadInfoCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC5622130317DD00D02BEC /* PageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageCell.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4DAC5623130317DD00D02BEC /* PageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PageCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		4DAC562813032B0F00D02BEC /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PageViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -128,6 +126,7 @@
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsScrollView.swift; sourceTree = "<group>"; };
+		95C0716C1AF6066100DF261C /* QuadInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadInfoCell.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -336,8 +335,7 @@
 		4D8079DD12A5A0100082C40A /* InfoTables */ = {
 			isa = PBXGroup;
 			children = (
-				4DA3BB5112F9D9B4000DBBB2 /* QuadInfoCell.h */,
-				4DA3BB5212F9D9B4000DBBB2 /* QuadInfoCell.m */,
+				95C0716C1AF6066100DF261C /* QuadInfoCell.swift */,
 			);
 			name = InfoTables;
 			sourceTree = "<group>";
@@ -492,13 +490,13 @@
 			files = (
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				28C286E10D94DF7D0034E888 /* CarViewController.m in Sources */,
+				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
 				4D184724123CF970008D7454 /* CarConfigurationController.m in Sources */,
 				4DE0454F123FA7AB009B19E3 /* FuelEventController.m in Sources */,
 				955B46161AF208A000A62D3B /* AppWindow.swift in Sources */,
 				4D58AD2512B00C4A002B7A71 /* FuelStatisticsPageController.m in Sources */,
 				4DE963BA12CD045C007E7E16 /* FuelStatisticsViewController.m in Sources */,
 				4D630C4112EEF86400134FD7 /* FuelCalculatorController.m in Sources */,
-				4DA3BB5312F9D9B4000DBBB2 /* QuadInfoCell.m in Sources */,
 				955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */,
 				4DAC5626130317DD00D02BEC /* PageCell.m in Sources */,
 				952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */,

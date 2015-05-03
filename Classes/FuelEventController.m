@@ -4,7 +4,6 @@
 
 
 #import "FuelEventController.h"
-#import "QuadInfoCell.h"
 #import "FuelStatisticsPageController.h"
 #import "FuelEventEditorController.h"
 #import "AppDelegate.h"
