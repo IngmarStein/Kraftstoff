@@ -194,11 +194,11 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--) {
 
-        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
+        FuelEvent *managedObject = (FuelEvent *)[AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
         if (managedObject) {
 
-            CGFloat value = [self.delegate valueForManagedObject:managedObject forCar:car];
+            CGFloat value = [self.delegate valueForFuelEvent:managedObject forCar:car];
 
             if (!isnan (value)) {
 
@@ -214,12 +214,12 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                 if (valLastIndex < 0) {
 
                     valLastIndex = i;
-                    lastDate = [managedObject valueForKey:@"timestamp"];
+                    lastDate = managedObject.timestamp;
 
                 } else {
 
                     valFirstIndex = i;
-                    firstDate = [managedObject valueForKey:@"timestamp"];
+                    firstDate = managedObject.timestamp;
                 }
             }
         }
@@ -288,16 +288,16 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 
     for (NSInteger i = valLastIndex; i >= valFirstIndex; i--) {
 
-        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
+        FuelEvent *managedObject = (FuelEvent *)[AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
         if (managedObject) {
 
-            CGFloat value = [self.delegate valueForManagedObject:managedObject forCar:car];
+            CGFloat value = [self.delegate valueForFuelEvent:managedObject forCar:car];
 
             if (!isnan (value)) {
 
                 // Collect sample data
-                NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate:[managedObject valueForKey:@"timestamp"]];
+                NSTimeInterval sampleInterval = [firstDate timeIntervalSinceDate:managedObject.timestamp];
                 NSInteger sampleIndex = (NSInteger)rint ((MAX_SAMPLES-1) * (1.0 - sampleInterval/rangeInterval));
 
                 if (valRange < 0.0001)
@@ -306,7 +306,7 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
                     samples [sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay;
 
                 // Collect lens data
-                state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [[managedObject valueForKey:@"timestamp"] timeIntervalSince1970];
+                state->lensDate  [sampleIndex][(samplesCount [sampleIndex] != 0)] = [managedObject.timestamp timeIntervalSince1970];
                 state->lensValue [sampleIndex] += value;
 
                 samplesCount [sampleIndex] += 1;
@@ -947,14 +947,14 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(Car *)car
+- (CGFloat)valueForFuelEvent:(FuelEvent *)fuelEvent forCar:(Car *)car
 {
-    if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
+    if (!fuelEvent.filledUp)
         return NAN;
 
     KSFuelConsumption consumptionUnit = car.ksFuelConsumptionUnit;
-    NSDecimalNumber *distance = [[managedObject valueForKey:@"distance"]   decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
-    NSDecimalNumber *fuelVolume = [[managedObject valueForKey:@"fuelVolume"] decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
+    NSDecimalNumber *distance = [fuelEvent.distance decimalNumberByAdding:fuelEvent.inheritedDistance];
+    NSDecimalNumber *fuelVolume = [fuelEvent.fuelVolume decimalNumberByAdding:fuelEvent.inheritedFuelVolume];
 
     return [[Units consumptionForKilometers:distance liters:fuelVolume inUnit:consumptionUnit] floatValue];
 }
@@ -1007,9 +1007,9 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(Car *)car
+- (CGFloat)valueForFuelEvent:(FuelEvent *)managedObject forCar:(Car *)car
 {
-    NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+    NSDecimalNumber *price = managedObject.price;
 
     if ([price compare:[NSDecimalNumber zero]] == NSOrderedSame)
         return NAN;
@@ -1077,22 +1077,22 @@ static CGFloat const StatisticTrackInfoYMarginFlat = 3.0;
 }
 
 
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(Car *)car
+- (CGFloat)valueForFuelEvent:(FuelEvent *)managedObject forCar:(Car *)car
 {
-    if ([[managedObject valueForKey:@"filledUp"] boolValue] == NO)
+    if (!managedObject.filledUp)
         return NAN;
 
     NSDecimalNumberHandler *handler = [Formatters sharedConsumptionRoundingHandler];
 	KSDistance distanceUnit = car.ksOdometerUnit;
 
-    NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+    NSDecimalNumber *price = managedObject.price;
 
-    NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-    NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+    NSDecimalNumber *distance = managedObject.distance;
+    NSDecimalNumber *fuelVolume = managedObject.fuelVolume;
     NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
 
-    distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
-    cost     = [cost     decimalNumberByAdding:[managedObject valueForKey:@"inheritedCost"]];
+    distance = [distance decimalNumberByAdding:managedObject.inheritedDistance];
+    cost     = [cost     decimalNumberByAdding:managedObject.inheritedCost];
 
     if ([cost compare:[NSDecimalNumber zero]] == NSOrderedSame)
         return NAN;

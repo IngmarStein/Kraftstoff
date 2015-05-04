@@ -5,6 +5,7 @@
 
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 
+@class FuelEvent;
 
 @protocol FuelStatisticsViewControllerDelegate
 
@@ -15,7 +16,7 @@
 - (NSString *)noAverageStringForCar:(Car *)car;
 
 - (NSNumberFormatter*)axisFormatterForCar:(Car *)car;
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(Car *)car;
+- (CGFloat)valueForFuelEvent:(FuelEvent *)fuelEvent forCar:(Car *)car;
 
 @optional
 - (CGFloat)graphRightBorder:(CGFloat)rightBorder forCar:(Car *)car;

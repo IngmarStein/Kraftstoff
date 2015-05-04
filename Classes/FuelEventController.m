@@ -55,7 +55,7 @@
     restoreMailComposer        = NO;
 
     // Configure root view
-    self.title = [_selectedCar valueForKey:@"name"];
+    self.title = _selectedCar.name;
 
     // Export button in navigation bar
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -268,7 +268,7 @@
 
 - (NSString *)exportFilename
 {
-    NSString *rawFilename = [NSString stringWithFormat:@"%@__%@.csv", [_selectedCar valueForKey:@"name"], [_selectedCar valueForKey:@"numberPlate"]];
+    NSString *rawFilename = [NSString stringWithFormat:@"%@__%@.csv", _selectedCar.name, _selectedCar.numberPlate];
     NSCharacterSet* illegalCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
 
     return [[rawFilename componentsSeparatedByCharactersInSet:illegalCharacters] componentsJoinedByString:@""];
@@ -283,9 +283,9 @@
 
 - (NSData*)exportTextData
 {
-    KSDistance odometerUnit = (KSDistance)[[_selectedCar valueForKey:@"odometerUnit"] integerValue];
-    KSVolume fuelUnit = (KSVolume)[[_selectedCar valueForKey:@"fuelUnit"] integerValue];
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[_selectedCar valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSDistance odometerUnit = _selectedCar.ksOdometerUnit;
+    KSVolume fuelUnit = _selectedCar.ksFuelUnit;
+    KSFuelConsumption consumptionUnit = _selectedCar.ksFuelConsumptionUnit;
 
     NSMutableString *dataString = [NSMutableString stringWithCapacity:4096];
 
@@ -311,38 +311,38 @@
     [dataString appendString:@"\n"];
 
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd';'HH:mm"];
-    [dateFormatter setLocale:[NSLocale systemLocale]];
+    dateFormatter.dateFormat = @"yyyy-MM-dd';'HH:mm";
+    dateFormatter.locale = [NSLocale systemLocale];
 
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-    [numberFormatter setNumberStyle:kCFNumberFormatterDecimalStyle];
-    [numberFormatter setLocale:[NSLocale currentLocale]];
-    [numberFormatter setUsesGroupingSeparator:NO];
-    [numberFormatter setAlwaysShowsDecimalSeparator:YES];
-    [numberFormatter setMinimumFractionDigits:2];
+	numberFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+    numberFormatter.locale = [NSLocale currentLocale];
+    numberFormatter.usesGroupingSeparator = NO;
+	numberFormatter.alwaysShowsDecimalSeparator = YES;
+    numberFormatter.minimumFractionDigits = 2;
 
     NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
 
     for (NSUInteger i = 0; i < [fetchedObjects count]; i++) {
 
-        NSManagedObject *managedObject = fetchedObjects[i];
+        FuelEvent *managedObject = fetchedObjects[i];
 
-        NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
-        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+        NSDecimalNumber *distance = managedObject.distance;
+        NSDecimalNumber *fuelVolume = managedObject.fuelVolume;
+        NSDecimalNumber *price = managedObject.price;
 
         [dataString appendFormat:@"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
 
-         [dateFormatter stringFromDate:[managedObject valueForKey:@"timestamp"]],
+         [dateFormatter stringFromDate:managedObject.timestamp],
          [numberFormatter stringFromNumber:[Units distanceForKilometers:distance withUnit:odometerUnit]],
          [numberFormatter stringFromNumber:[Units volumeForLiters:fuelVolume withUnit:fuelUnit]],
-         [[managedObject valueForKey:@"filledUp"] boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @""),
+         managedObject.filledUp ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @""),
          [numberFormatter stringFromNumber:[Units pricePerUnit:price withUnit:fuelUnit]],
 
-         [[managedObject valueForKey:@"filledUp"] boolValue]
+         managedObject.filledUp
          ? [numberFormatter stringFromNumber:
-            [Units consumptionForKilometers:[distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]]
-                                           liters:[fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]]
+            [Units consumptionForKilometers:[distance decimalNumberByAdding:managedObject.inheritedDistance]
+                                           liters:[fuelVolume decimalNumberByAdding:managedObject.inheritedFuelVolume]
                                            inUnit:consumptionUnit]]
                                 : @" "
          ];
@@ -365,8 +365,10 @@
         NSArray *fetchedObjects = [self.fetchedResultsController fetchedObjects];
         NSUInteger fetchCount = [fetchedObjects count];
 
-        NSString *from = [outputFormatter stringFromDate:[[fetchedObjects lastObject] valueForKey:@"timestamp"]];
-        NSString *to = [outputFormatter stringFromDate:[fetchedObjects[0] valueForKey:@"timestamp"]];
+		FuelEvent *last = fetchedObjects.lastObject;
+		FuelEvent *first = fetchedObjects.firstObject;
+        NSString *from = [outputFormatter stringFromDate:last.timestamp];
+        NSString *to = [outputFormatter stringFromDate:first.timestamp];
 
         switch (fetchCount) {
 
@@ -379,8 +381,8 @@
     }
 
     return [NSString stringWithFormat:NSLocalizedString(@"Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", @""),
-            [_selectedCar valueForKey:@"name"],
-            [_selectedCar valueForKey:@"numberPlate"],
+            _selectedCar.name,
+            _selectedCar.numberPlate,
             period,
             count];
 }
@@ -463,7 +465,7 @@
 
         // Setup the message
         [mailComposeController setMailComposeDelegate:self];
-        [mailComposeController setSubject:[NSString stringWithFormat:NSLocalizedString(@"Your fuel data for %@", @""), [_selectedCar valueForKey:@"numberPlate"]]];
+        [mailComposeController setSubject:[NSString stringWithFormat:NSLocalizedString(@"Your fuel data for %@", @""), _selectedCar.numberPlate]];
         [mailComposeController setMessageBody:[self exportTextDescription] isHTML:NO];
         [mailComposeController addAttachmentData:[self exportTextData] mimeType:@"text" fileName:[self exportFilename]];
 
@@ -544,22 +546,22 @@
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
     QuadInfoCell *tableCell = (QuadInfoCell*)cell;
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    FuelEvent *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    Car *car = [managedObject valueForKey:@"car"];
-    NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-    NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
-    NSDecimalNumber *price = [managedObject valueForKey:@"price"];
+    Car *car = managedObject.car;
+    NSDecimalNumber *distance = managedObject.distance;
+    NSDecimalNumber *fuelVolume = managedObject.fuelVolume;
+    NSDecimalNumber *price = managedObject.price;
 
-    KSDistance        odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSDistance        odometerUnit = car.ksOdometerUnit;
+    KSFuelConsumption consumptionUnit = car.ksFuelConsumptionUnit;
 
     UILabel *label;
 
 
     // Timestamp
     label      = [tableCell topLeftLabel];
-    label.text = [[Formatters sharedDateFormatter] stringForObjectValue:[managedObject valueForKey:@"timestamp"]];
+    label.text = [[Formatters sharedDateFormatter] stringForObjectValue:managedObject.timestamp];
     tableCell.topLeftAccessibilityLabel = nil;
 
 
@@ -587,10 +589,10 @@
     // Consumption combined with inherited data from earlier events
     NSString *consumptionDescription;
 
-    if ([[managedObject valueForKey:@"filledUp"] boolValue]) {
+    if (managedObject.filledUp) {
 
-        distance = [distance decimalNumberByAdding:[managedObject valueForKey:@"inheritedDistance"]];
-        fuelVolume = [fuelVolume decimalNumberByAdding:[managedObject valueForKey:@"inheritedFuelVolume"]];
+        distance = [distance decimalNumberByAdding:managedObject.inheritedDistance];
+        fuelVolume = [fuelVolume decimalNumberByAdding:managedObject.inheritedFuelVolume];
 
         NSDecimalNumber *avg = [Units consumptionForKilometers:distance
                                                               liters:fuelVolume

@@ -88,7 +88,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 {
     [super viewWillAppear:animated];
 
-    _leftLabel.text  = [NSString stringWithFormat:@"%@", [_selectedCar valueForKey:@"name"]];
+    _leftLabel.text  = [NSString stringWithFormat:@"%@", _selectedCar.name];
     _rightLabel.text = @"";
 
     [self setDisplayedNumberOfMonths:[[NSUserDefaults standardUserDefaults] integerForKey:@"statisticTimeSpan"]];
@@ -181,10 +181,10 @@ CGFloat StatisticTransitionDuration = 0.3;
 
             if ([recentEvents count]) {
 
-                NSManagedObject *recentEvent = [AppDelegate existingObject:recentEvents[0] inManagedObjectContext:sampleContext];
+                FuelEvent *recentEvent = (FuelEvent *)[AppDelegate existingObject:recentEvents[0] inManagedObjectContext:sampleContext];
 
                 if (recentEvent)
-                    recentFillupDate = [recentEvent valueForKey:@"timestamp"];
+                    recentFillupDate = recentEvent.timestamp;
             }
 
             // Fetch events for the selected time period

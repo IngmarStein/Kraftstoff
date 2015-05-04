@@ -39,7 +39,7 @@
 
 
 
-- (NSManagedObject *)addCarWithName:(NSString *)name
+- (Car *)addCarWithName:(NSString *)name
                              order:(NSInteger)order
                              plate:(NSString *)plate
                       odometerUnit:(KSDistance)odometerUnit
@@ -48,23 +48,23 @@
                          inContext:(NSManagedObjectContext *)managedObjectContext
 {
     // Create and configure new car object
-    NSManagedObject *newCar = [NSEntityDescription insertNewObjectForEntityForName:@"car"
+    Car *newCar = [NSEntityDescription insertNewObjectForEntityForName:@"car"
                                                             inManagedObjectContext:managedObjectContext];
 
-    [newCar setValue:@(order)                    forKey:@"order"];
-    [newCar setValue:[NSDate date]               forKey:@"timestamp"];
-    [newCar setValue:name                        forKey:@"Name"];
-    [newCar setValue:plate                       forKey:@"numberPlate"];
-    [newCar setValue:@((int)odometerUnit)        forKey:@"odometerUnit"];
-    [newCar setValue:[NSDecimalNumber zero]      forKey:@"odometer"];
-    [newCar setValue:@((int)volumeUnit)          forKey:@"fuelUnit"];
-    [newCar setValue:@((int)fuelConsumptionUnit) forKey:@"fuelConsumptionUnit"];
+    newCar.order = (int32_t)order;
+    newCar.timestamp = [NSDate date];
+    newCar.name = name;
+    newCar.numberPlate = plate;
+    newCar.odometerUnit = (int)odometerUnit;
+    newCar.odometer = [NSDecimalNumber zero];
+    newCar.fuelUnit = (int)volumeUnit;
+    newCar.fuelConsumptionUnit = (int)fuelConsumptionUnit;
 
     return newCar;
 }
 
 
-- (NSManagedObject *)addEventForCar:(Car *)car
+- (FuelEvent *)addEventForCar:(Car *)car
                               date:(NSDate *)date
                           distance:(NSDecimalNumber *)distance
                              price:(NSDecimalNumber *)price
@@ -75,31 +75,31 @@
                           filledUp:(BOOL)filledUp
                          inContext:(NSManagedObjectContext *)managedObjectContext
 {
-    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent"
+    FuelEvent *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent"
                                                               inManagedObjectContext:managedObjectContext];
 
-    [newEvent setValue:car        forKey:@"car"];
-    [newEvent setValue:date       forKey:@"timestamp"];
-    [newEvent setValue:distance   forKey:@"distance"];
-    [newEvent setValue:price      forKey:@"price"];
-    [newEvent setValue:fuelVolume forKey:@"fuelVolume"];
+    newEvent.car = car;
+    newEvent.timestamp = date;
+    newEvent.distance = distance;
+    newEvent.price = price;
+	newEvent.fuelVolume = fuelVolume;
 
     if (filledUp == NO)
-        [newEvent setValue:@(filledUp) forKey:@"filledUp"];
+		newEvent.filledUp = filledUp;
 
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
     if ([inheritedCost isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedCost forKey:@"inheritedCost"];
+        newEvent.inheritedCost = inheritedCost;
 
     if ([inheritedDistance isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedDistance forKey:@"inheritedDistance"];
+        newEvent.inheritedDistance = inheritedDistance;
 
     if ([inheritedFuelVolume isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedFuelVolume forKey:@"inheritedFuelVolume"];
+        newEvent.inheritedFuelVolume = inheritedFuelVolume;
 
-    [car setValue:[[car valueForKey:@"distanceTotalSum"]   decimalNumberByAdding:distance]   forKey:@"distanceTotalSum"];
-    [car setValue:[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberByAdding:fuelVolume] forKey:@"fuelVolumeTotalSum"];
+    car.distanceTotalSum = [car.distanceTotalSum decimalNumberByAdding:distance];
+    car.fuelVolumeTotalSum = [car.fuelVolumeTotalSum decimalNumberByAdding:fuelVolume];
 
     return newEvent;
 }
@@ -235,23 +235,23 @@
             plate = [plate substringToIndex:[TextEditTableCell maximumTextFieldLength]];
 
 
-        NSManagedObject *newCar = [self addCarWithName:model
-                                                 order:[carForID count]
-                                                 plate:plate
-                                          odometerUnit:[Units distanceUnitFromLocale]
-                                            volumeUnit:[Units volumeUnitFromLocale]
-                                   fuelConsumptionUnit:[Units fuelConsumptionUnitFromLocale]
-                                             inContext:managedObjectContext];
+        Car *newCar = [self addCarWithName:model
+									 order:[carForID count]
+									 plate:plate
+							  odometerUnit:[Units distanceUnitFromLocale]
+								volumeUnit:[Units volumeUnitFromLocale]
+					   fuelConsumptionUnit:[Units fuelConsumptionUnitFromLocale]
+								 inContext:managedObjectContext];
 
         carForID[carID] = newCar;
     }
 
 
     // Now update order attribute of old car objects
-    for (NSManagedObject *oldCar in fetchedCarObjects)
+    for (Car *oldCar in fetchedCarObjects)
     {
-        NSInteger order = [[oldCar valueForKey:@"order"] integerValue];
-        [oldCar setValue:@(order+[carForID count]) forKey:@"order"];
+        NSInteger order = oldCar.order;
+        oldCar.order = (int32_t)(order+[carForID count]);
     }
 
     return [carForID count];
@@ -518,7 +518,7 @@
 
         // Fixup car odometer
         if (detectedEvents)
-            [car setValue:[odometer max:[car valueForKey:@"distanceTotalSum"]] forKey:@"odometer"];
+            car.odometer = [odometer max:car.distanceTotalSum];
     }
 
     return YES;

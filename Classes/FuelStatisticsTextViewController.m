@@ -103,22 +103,22 @@ static CGFloat const GridTextHeight = 23.0;
     state->numberOfFillups = 0;
     state->numberOfFullFillups = 0;
 
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[car valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = car.ksFuelConsumptionUnit;
 
     for (NSInteger i = [fetchedObjects count] - 1; i >= 0; i--) {
 
-        NSManagedObject *managedObject = [AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
+        FuelEvent *managedObject = (FuelEvent *)[AppDelegate existingObject:fetchedObjects[i] inManagedObjectContext:moc];
 
         if (!managedObject)
             continue;
 
-        NSDecimalNumber *price = [managedObject valueForKey:@"price"];
-        NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
-        NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
+        NSDecimalNumber *price = managedObject.price;
+        NSDecimalNumber *distance = managedObject.distance;
+        NSDecimalNumber *fuelVolume = managedObject.fuelVolume;
         NSDecimalNumber *cost = [fuelVolume decimalNumberByMultiplyingBy:price];
 
         // Collect dates of events
-        NSDate *timestamp = [managedObject valueForKey:@"timestamp"];
+        NSDate *timestamp = managedObject.timestamp;
 
         if ([timestamp compare:state->firstDate] != NSOrderedDescending)
             state->firstDate = timestamp;
@@ -132,10 +132,10 @@ static CGFloat const GridTextHeight = 23.0;
         state->totalDistance = [state->totalDistance decimalNumberByAdding:distance];
 
         // Track consumption
-        if ([[managedObject valueForKey:@"filledUp"] boolValue]) {
+        if (managedObject.filledUp) {
 
-            NSDecimalNumber *inheritedDistance = [managedObject valueForKey:@"inheritedDistance"];
-            NSDecimalNumber *inheritedFuelVolume = [managedObject valueForKey:@"inheritedFuelVolume"];
+            NSDecimalNumber *inheritedDistance = managedObject.inheritedDistance;
+            NSDecimalNumber *inheritedFuelVolume = managedObject.inheritedFuelVolume;
 
             NSDecimalNumber *consumption = [Units consumptionForKilometers:[distance decimalNumberByAdding:inheritedDistance]
                                                                           liters:[fuelVolume decimalNumberByAdding:inheritedFuelVolume]
@@ -349,13 +349,13 @@ static CGFloat const GridTextHeight = 23.0;
             NSNumberFormatter *pcf = [Formatters sharedPreciseCurrencyFormatter];
             NSDecimalNumber *val, *val2, *zero = [NSDecimalNumber zero];
 
-            KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[state->car valueForKey:@"fuelConsumptionUnit"] integerValue];
+            KSFuelConsumption consumptionUnit = state->car.ksFuelConsumptionUnit;
             NSString *consumptionUnitString = [Units consumptionUnitString:consumptionUnit];
 
-            KSDistance odometerUnit  = (KSDistance)[[state->car valueForKey:@"odometerUnit"] integerValue];
+            KSDistance odometerUnit = state->car.ksOdometerUnit;
             NSString *odometerUnitString = [Units odometerUnitString:odometerUnit];
 
-            KSVolume fuelUnit = (KSVolume)[[state->car valueForKey:@"fuelUnit"] integerValue];
+            KSVolume fuelUnit = state->car.ksFuelUnit;
             NSString *fuelUnitString = [Units fuelUnitString:fuelUnit];
 
             NSInteger numberOfDays = [NSDate numberOfCalendarDaysFrom:state->firstDate to:state->lastDate];

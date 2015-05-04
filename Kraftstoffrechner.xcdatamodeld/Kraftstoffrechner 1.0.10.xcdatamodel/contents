@@ -36,7 +36,7 @@
         </relationship>
         <userInfo/>
     </entity>
-    <entity name="fuelEvent" representedClassName="NSManagedObject" syncable="YES">
+    <entity name="fuelEvent" representedClassName="kraftstoff.FuelEvent" syncable="YES">
         <attribute name="distance" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
             <userInfo/>
         </attribute>
