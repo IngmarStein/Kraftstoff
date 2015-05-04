@@ -17,7 +17,7 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 	private let PickerViewCellWidth: CGFloat  = 290.0
 	private let PickerViewCellHeight: CGFloat =  44.0
 
-	override init() {
+	required init() {
 		self.picker = UIPickerView()
 
 		super.init()

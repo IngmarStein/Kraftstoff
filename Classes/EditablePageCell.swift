@@ -27,7 +27,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	weak var delegate: EditablePageCellDelegate!
 
-	override init() {
+	required init() {
 		// Create textfield
 		self.textField = EditablePageCellTextField(frame:CGRectZero)
 

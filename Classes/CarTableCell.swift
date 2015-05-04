@@ -11,7 +11,7 @@ import UIKit
 class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
 	var carPicker: UIPickerView
-	var fetchedObjects: [NSManagedObject]!
+	var fetchedObjects: [Car]!
 
 	// Standard cell geometry
 	private let PickerViewCellWidth: CGFloat        = 290.0
@@ -38,7 +38,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 				kCTForegroundColorAttributeName as String : UIColor.darkGrayColor().CGColor]
 	}()
 
-	override init() {
+	required init() {
 		self.carPicker = UIPickerView()
 
 		super.init()
@@ -66,10 +66,10 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 		let dictionary = object as! [NSObject:AnyObject]
 		// Array of possible cars
-		self.fetchedObjects = dictionary["fetchedObjects"] as? [NSManagedObject]
+		self.fetchedObjects = dictionary["fetchedObjects"] as? [Car]
 
 		// Look for index of selected car
-		let managedObject = self.delegate.valueForIdentifier(self.valueIdentifier) as! NSManagedObject
+		let managedObject = self.delegate.valueForIdentifier(self.valueIdentifier) as! Car
 		let initialIndex = find(self.fetchedObjects, managedObject) ?? 0
 
 		// (Re-)configure car picker and select the initial item
@@ -79,11 +79,9 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		selectCar(self.fetchedObjects[initialIndex])
 	}
 
-	private func selectCar(managedObject: NSManagedObject) {
+	private func selectCar(car: Car) {
 		// Update textfield in cell
-		var description = String(format:"%@ %@",
-                                 managedObject.valueForKey("name") as! String,
-                                 managedObject.valueForKey("numberPlate") as! String)
+		var description = String(format:"%@ %@", car.name, car.numberPlate)
 
 		if count(description) > maximumDescriptionLength {
 			description = String(format:"%@…", description.substringToIndex(advance(description.startIndex, maximumDescriptionLength)))
@@ -92,7 +90,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		self.textFieldProxy.text = description
 
 		// Store selected car in delegate
-		self.delegate.valueChanged(managedObject, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(car, identifier:self.valueIdentifier)
 	}
 
 	//MARK: - UIPickerViewDataSource
@@ -136,8 +134,8 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
 		// Strings to be displayed
 		let managedObject = self.fetchedObjects[row]
-		let name = managedObject.valueForKey("name") as! String
-		let info = managedObject.valueForKey("numberPlate") as! String
+		let name = managedObject.name
+		let info = managedObject.numberPlate
 
 		// Draw strings with attributes into image
 		UIGraphicsBeginImageContextWithOptions (CGSize(width:PickerViewCellWidth, height:PickerViewCellHeight), false, 0.0)

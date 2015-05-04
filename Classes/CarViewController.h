@@ -3,14 +3,14 @@
 // Kraftstoff
 
 
-#import "CarConfigurationController.h"
 #import "FuelEventController.h"
 
+@class Car;
 
-@interface CarViewController : UITableViewController <UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate>
+@interface CarViewController : UITableViewController <UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) NSManagedObject *editedObject;
+@property (nonatomic, strong) Car *editedObject;
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressRecognizer;
 

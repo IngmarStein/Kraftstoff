@@ -19,7 +19,7 @@ class PageCell: UITableViewCell {
 		return NSStringFromClass(self)
 	}
 
-	init() {
+	required init() {
 		super.init(style: .Default, reuseIdentifier: self.dynamicType.reuseIdentifier)
 
 		self.detailTextLabel?.hidden = true

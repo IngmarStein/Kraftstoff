@@ -5,7 +5,6 @@
 
 #import "AppDelegate.h"
 #import "CarViewController.h"
-#import "FuelCalculatorController.h"
 #import "CSVParser.h"
 #import "CSVImporter.h"
 #import "kraftstoff-Swift.h"
@@ -541,7 +540,7 @@
 
 
 
-+ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
++ (NSFetchRequest*)fetchRequestForEventsForCar:(Car *)car
                                        andDate:(NSDate *)date
                                 dateComparator:(NSString *)dateCompare
                                      fetchSize:(NSInteger)fetchSize
@@ -580,7 +579,7 @@
 
 
 
-+ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
++ (NSFetchRequest*)fetchRequestForEventsForCar:(Car *)car
                                      afterDate:(NSDate *)date
                                    dateMatches:(BOOL)dateMatches
                         inManagedObjectContext:(NSManagedObjectContext *)moc
@@ -593,7 +592,7 @@
 }
 
 
-+ (NSFetchRequest*)fetchRequestForEventsForCar:(NSManagedObject *)car
++ (NSFetchRequest*)fetchRequestForEventsForCar:(Car *)car
                                     beforeDate:(NSDate *)date
                                    dateMatches:(BOOL)dateMatches
                         inManagedObjectContext:(NSManagedObjectContext *)moc
@@ -641,7 +640,7 @@
 
 
 + (BOOL)managedObjectContext:(NSManagedObjectContext *)moc
-        containsEventWithCar:(NSManagedObject *)car
+        containsEventWithCar:(Car *)car
                      andDate:(NSDate *)date;
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -679,7 +678,7 @@
 
 
 
-+ (NSManagedObject *)addToArchiveWithCar:(NSManagedObject *)car
++ (NSManagedObject *)addToArchiveWithCar:(Car *)car
                                     date:(NSDate *)date
                                 distance:(NSDecimalNumber *)distance
                                    price:(NSDecimalNumber *)price
@@ -692,8 +691,8 @@
 
 
     // Convert distance and fuelvolume to SI units
-    KSVolume fuelUnit       = (KSVolume)[[car valueForKey:@"fuelUnit"]     integerValue];
-    KSDistance odometerUnit = (KSDistance)[[car valueForKey:@"odometerUnit"] integerValue];
+    KSVolume fuelUnit       = car.ksFuelUnit;
+    KSDistance odometerUnit = car.ksOdometerUnit;
 
     NSDecimalNumber *liters        = [Units litersForVolume:fuelVolume withUnit:fuelUnit];
     NSDecimalNumber *kilometers    = [Units kilometersForDistance:distance withUnit:odometerUnit];
@@ -715,14 +714,14 @@
 
         if (olderEvents.count) {
 
-            NSManagedObject *olderEvent = olderEvents[0];
+            FuelEvent *olderEvent = olderEvents[0];
 
-            if ([[olderEvent valueForKey:@"filledUp"] boolValue] == NO) {
-                NSDecimalNumber *cost = [[olderEvent valueForKey:@"fuelVolume"] decimalNumberByMultiplyingBy:[olderEvent valueForKey:@"price"]];
+            if (olderEvent.filledUp == NO) {
+                NSDecimalNumber *cost = [olderEvent.fuelVolume decimalNumberByMultiplyingBy:olderEvent.price];
 
-                inheritedCost       = [cost decimalNumberByAdding:[olderEvent valueForKey:@"inheritedCost"]];
-                inheritedDistance   = [[olderEvent valueForKey:@"distance"]   decimalNumberByAdding:[olderEvent valueForKey:@"inheritedDistance"]];
-                inheritedFuelVolume = [[olderEvent valueForKey:@"fuelVolume"] decimalNumberByAdding:[olderEvent valueForKey:@"inheritedFuelVolume"]];
+                inheritedCost       = [cost decimalNumberByAdding:olderEvent.inheritedCost];
+                inheritedDistance   = [olderEvent.distance   decimalNumberByAdding:olderEvent.inheritedDistance];
+                inheritedFuelVolume = [olderEvent.fuelVolume decimalNumberByAdding:olderEvent.inheritedFuelVolume];
             }
         }
     }
@@ -753,19 +752,15 @@
 
             for (NSUInteger row = [youngerEvents count]; row > 0; ) {
 
-                NSManagedObject *youngerEvent = youngerEvents[--row];
+                FuelEvent *youngerEvent = youngerEvents[--row];
 
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberByAdding:deltaCost] max:zero]
-                                forKey:@"inheritedCost"];
+				youngerEvent.inheritedCost = [[youngerEvent.inheritedCost decimalNumberByAdding:deltaCost] max:zero];
+				youngerEvent.inheritedDistance = [[youngerEvent.inheritedDistance decimalNumberByAdding:deltaDistance] max:zero];
+				youngerEvent.inheritedFuelVolume = [[youngerEvent.inheritedFuelVolume decimalNumberByAdding:deltaFuelVolume] max:zero];
 
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedDistance"] decimalNumberByAdding:deltaDistance] max:zero]
-                                forKey:@"inheritedDistance"];
-
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberByAdding:deltaFuelVolume] max:zero]
-                                forKey:@"inheritedFuelVolume"];
-
-                if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
+				if (youngerEvent.filledUp) {
                     break;
+				}
             }
         }
 
@@ -776,61 +771,66 @@
 
 
     // Create new managed object for this event
-    NSManagedObject *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent"
-                                                              inManagedObjectContext:moc];
+    FuelEvent *newEvent = [NSEntityDescription insertNewObjectForEntityForName:@"fuelEvent" inManagedObjectContext:moc];
 
-    [newEvent setValue:car           forKey:@"car"];
-    [newEvent setValue:date          forKey:@"timestamp"];
-    [newEvent setValue:kilometers    forKey:@"distance"];
-    [newEvent setValue:pricePerLiter forKey:@"price"];
-    [newEvent setValue:liters        forKey:@"fuelVolume"];
+	newEvent.car = car;
+	newEvent.timestamp = date;
+	newEvent.distance = kilometers;
+	newEvent.price = pricePerLiter;
+	newEvent.fuelVolume = liters;
 
-    if (filledUp == NO)
-        [newEvent setValue:@(filledUp) forKey:@"filledUp"];
+	if (filledUp == NO) {
+        newEvent.filledUp = filledUp;
+	}
 
-    if ([inheritedCost isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedCost forKey:@"inheritedCost"];
+	if ([inheritedCost isEqualToNumber:zero] == NO) {
+		newEvent.inheritedCost = inheritedCost;
+	}
 
-    if ([inheritedDistance isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedDistance forKey:@"inheritedDistance"];
+	if ([inheritedDistance isEqualToNumber:zero] == NO) {
+        newEvent.inheritedDistance = inheritedDistance;
+	}
 
-    if ([inheritedFuelVolume isEqualToNumber:zero] == NO)
-        [newEvent setValue:inheritedFuelVolume forKey:@"inheritedFuelVolume"];
+	if ([inheritedFuelVolume isEqualToNumber:zero] == NO) {
+		newEvent.inheritedFuelVolume = inheritedFuelVolume;
+	}
 
 
     // Conditions for update of global odometer:
     // - when the new event is the youngest one
     // - when sum of all events equals the odometer value
     // - when forced to do so
-    if (!forceOdometerUpdate)
-        if ([[car valueForKey:@"odometer"] compare:[car valueForKey:@"distanceTotalSum"]] != NSOrderedDescending)
+	if (!forceOdometerUpdate) {
+		if ([car.odometer compare:car.distanceTotalSum] != NSOrderedDescending) {
             forceOdometerUpdate = YES;
+		}
+	}
 
     // Update total car statistics
-    [car setValue:[[car valueForKey:@"distanceTotalSum"]   decimalNumberByAdding:kilometers] forKey:@"distanceTotalSum"];
-    [car setValue:[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberByAdding:liters]     forKey:@"fuelVolumeTotalSum"];
+    car.distanceTotalSum = [car.distanceTotalSum decimalNumberByAdding:kilometers];
+	car.fuelVolumeTotalSum = [car.fuelVolumeTotalSum decimalNumberByAdding:liters];
 
     // Update global odometer
-    NSDecimalNumber *newOdometer = [car valueForKey:@"odometer"];
+    NSDecimalNumber *newOdometer = car.odometer;
 
     if (forceOdometerUpdate)
         newOdometer = [newOdometer decimalNumberByAdding:kilometers];
 
-    newOdometer = [newOdometer max:[car valueForKey:@"distanceTotalSum"]];
+    newOdometer = [newOdometer max:car.distanceTotalSum];
 
-    [car setValue:newOdometer forKey:@"odometer"];
+    car.odometer = newOdometer;
 
     return newEvent;
 }
 
 
-+ (void)removeEventFromArchive:(NSManagedObject *)event
++ (void)removeEventFromArchive:(FuelEvent *)event
         inManagedObjectContext:(NSManagedObjectContext *)moc
            forceOdometerUpdate:(BOOL)forceOdometerUpdate
 {
-    NSManagedObject *car = [event valueForKey:@"car"];
-    NSDecimalNumber *distance = [event valueForKey:@"distance"];
-    NSDecimalNumber *fuelVolume = [event valueForKey:@"fuelVolume"];
+	Car *car = event.car;
+    NSDecimalNumber *distance = event.distance;
+    NSDecimalNumber *fuelVolume = event.fuelVolume;
     NSDecimalNumber *zero = [NSDecimalNumber zero];
 
     // catch nil events
@@ -839,7 +839,7 @@
 
     // Event will be deleted:update inherited distance/fuelVolume for younger events
     NSArray *youngerEvents = [self objectsForFetchRequest:[self fetchRequestForEventsForCar:car
-                                                                                  afterDate:[event valueForKey:@"timestamp"]
+                                                                                  afterDate:event.timestamp
                                                                                 dateMatches:NO
                                                                      inManagedObjectContext:moc]
                                    inManagedObjectContext:moc];
@@ -849,11 +849,11 @@
     if (row > 0) {
 
         // Fill-up event deleted => propagate its inherited distance/volume
-        if ([[event valueForKey:@"filledUp"] boolValue]) {
+        if (event.filledUp) {
 
-            NSDecimalNumber *inheritedCost       = [event valueForKey:@"inheritedCost"];
-            NSDecimalNumber *inheritedDistance   = [event valueForKey:@"inheritedDistance"];
-            NSDecimalNumber *inheritedFuelVolume = [event valueForKey:@"inheritedFuelVolume"];
+            NSDecimalNumber *inheritedCost       = event.inheritedCost;
+			NSDecimalNumber *inheritedDistance   = event.inheritedDistance;
+            NSDecimalNumber *inheritedFuelVolume = event.inheritedFuelVolume;
             NSDecimalNumber *zero = [NSDecimalNumber zero];
 
             if ([inheritedCost       compare:zero] == NSOrderedDescending ||
@@ -861,18 +861,13 @@
                 [inheritedFuelVolume compare:zero] == NSOrderedDescending) {
 
                 while (row > 0) {
-                    NSManagedObject *youngerEvent = youngerEvents[--row];
+                    FuelEvent *youngerEvent = youngerEvents[--row];
 
-                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberByAdding:inheritedCost]
-                                    forKey:@"inheritedCost"];
+					youngerEvent.inheritedCost = [youngerEvent.inheritedCost decimalNumberByAdding:inheritedCost];
+					youngerEvent.inheritedDistance = [youngerEvent.inheritedDistance decimalNumberByAdding:inheritedDistance];
+					youngerEvent.inheritedFuelVolume = [youngerEvent.inheritedFuelVolume decimalNumberByAdding:inheritedFuelVolume];
 
-                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedDistance"] decimalNumberByAdding:inheritedDistance]
-                                    forKey:@"inheritedDistance"];
-
-                    [youngerEvent setValue:[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberByAdding:inheritedFuelVolume]
-                                    forKey:@"inheritedFuelVolume"];
-
-                    if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
+                    if (youngerEvent.filledUp)
                         break;
                 }
             }
@@ -882,25 +877,20 @@
 
             while (row > 0) {
 
-                NSManagedObject *youngerEvent = youngerEvents[--row];
-                NSDecimalNumber *cost = [[event valueForKey:@"fuelVolume"] decimalNumberByMultiplyingBy:[event valueForKey:@"price"]];
+                FuelEvent *youngerEvent = youngerEvents[--row];
+                NSDecimalNumber *cost = [event.fuelVolume decimalNumberByMultiplyingBy:event.price];
 
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedCost"] decimalNumberBySubtracting:cost] max:zero]
-                                forKey:@"inheritedCost"];
+				youngerEvent.inheritedCost = [[youngerEvent.inheritedCost decimalNumberBySubtracting:cost] max:zero];
+				youngerEvent.inheritedDistance = [[youngerEvent.inheritedDistance decimalNumberBySubtracting:distance] max:zero];
+				youngerEvent.inheritedFuelVolume = [[youngerEvent.inheritedFuelVolume decimalNumberBySubtracting:fuelVolume] max:zero];
 
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedDistance"]   decimalNumberBySubtracting:distance] max:zero]
-                                forKey:@"inheritedDistance"];
-
-                [youngerEvent setValue:[[[youngerEvent valueForKey:@"inheritedFuelVolume"] decimalNumberBySubtracting:fuelVolume] max:zero]
-                                forKey:@"inheritedFuelVolume"];
-
-                if ([[youngerEvent valueForKey:@"filledUp"] boolValue] == YES)
+                if (youngerEvent.filledUp)
                     break;
             }
         }
-    }
-    else
+	} else {
         forceOdometerUpdate = YES;
+	}
 
 
     // Conditions for update of global odometer:
@@ -908,16 +898,17 @@
     // - when sum of all events equals the odometer value
     // - when forced to do so
     if (!forceOdometerUpdate)
-        if ([[car valueForKey:@"odometer"] compare:[car valueForKey:@"distanceTotalSum"]] != NSOrderedDescending)
+        if ([car.odometer compare:car.distanceTotalSum] != NSOrderedDescending)
             forceOdometerUpdate = YES;
 
     // Update total car statistics
-    [car setValue:[[[car valueForKey:@"distanceTotalSum"]   decimalNumberBySubtracting:distance]   max:zero] forKey:@"distanceTotalSum"];
-    [car setValue:[[[car valueForKey:@"fuelVolumeTotalSum"] decimalNumberBySubtracting:fuelVolume] max:zero] forKey:@"fuelVolumeTotalSum"];
+    car.distanceTotalSum = [[car.distanceTotalSum   decimalNumberBySubtracting:distance]   max:zero];
+	car.fuelVolumeTotalSum = [[car.fuelVolumeTotalSum decimalNumberBySubtracting:fuelVolume] max:zero];
 
     // Update global odometer
-    if (forceOdometerUpdate)
-        [car setValue:[[[car valueForKey:@"odometer"] decimalNumberBySubtracting:distance] max:zero] forKey:@"odometer"];
+	if (forceOdometerUpdate) {
+        car.odometer = [[car.odometer decimalNumberBySubtracting:distance] max:zero];
+	}
 
     // Delete the managed event object
     [moc deleteObject:event];

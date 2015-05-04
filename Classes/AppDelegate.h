@@ -7,6 +7,8 @@
 
 #define kraftstoffDeviceShakeNotification @"kraftstoffDeviceShakeNotification"
 
+@class Car;
+@class FuelEvent;
 
 // Unit Constants
 typedef NS_ENUM(NSInteger, KSDistance)
@@ -76,12 +78,12 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
 
 + (NSFetchRequest *)fetchRequestForCarsInManagedObjectContext:(NSManagedObjectContext *)moc;
 
-+ (NSFetchRequest *)fetchRequestForEventsForCar:(NSManagedObject *)car
++ (NSFetchRequest *)fetchRequestForEventsForCar:(Car *)car
                                       afterDate:(NSDate *)date
                                     dateMatches:(BOOL)dateMatches
                          inManagedObjectContext:(NSManagedObjectContext *)moc;
 
-+ (NSFetchRequest *)fetchRequestForEventsForCar:(NSManagedObject *)car
++ (NSFetchRequest *)fetchRequestForEventsForCar:(Car *)car
                                      beforeDate:(NSDate *)date
                                     dateMatches:(BOOL)dateMatches
                          inManagedObjectContext:(NSManagedObjectContext *)moc;
@@ -92,14 +94,14 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 + (BOOL)managedObjectContext:(NSManagedObjectContext *)managedObjectContext
-        containsEventWithCar:(NSManagedObject *)car
+        containsEventWithCar:(Car *)car
                      andDate:(NSDate *)date;
 
 
 
 #pragma mark Core Data Updates
 
-+ (NSManagedObject *)addToArchiveWithCar:(NSManagedObject *)car
++ (NSManagedObject *)addToArchiveWithCar:(Car *)car
                                     date:(NSDate *)date
                                 distance:(NSDecimalNumber *)distance
                                    price:(NSDecimalNumber *)price
@@ -108,7 +110,7 @@ typedef NS_ENUM(NSInteger, KSFuelConsumption)
                   inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
                      forceOdometerUpdate:(BOOL)forceOdometerUpdate;
 
-+ (void)removeEventFromArchive:(NSManagedObject *)event
++ (void)removeEventFromArchive:(FuelEvent *)event
         inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
            forceOdometerUpdate:(BOOL)forceOdometerUpdate;
 

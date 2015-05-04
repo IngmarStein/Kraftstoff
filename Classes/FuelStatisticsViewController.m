@@ -166,7 +166,7 @@ CGFloat StatisticTransitionDuration = 0.3;
 
         // Get the selected car
         NSError *error = nil;
-        NSManagedObject *sampleCar = [sampleContext existingObjectWithID:selectedCarID error:&error];
+        Car *sampleCar = (Car *)[sampleContext existingObjectWithID:selectedCarID error:&error];
 
         if (sampleCar) {
 

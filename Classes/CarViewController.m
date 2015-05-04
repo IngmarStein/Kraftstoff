@@ -11,6 +11,9 @@
 
 static NSInteger maxEditHelpCounter = 1;
 
+@interface CarViewController () <CarConfigurationControllerDelegate>
+
+@end
 
 @implementation CarViewController
 {
@@ -105,7 +108,7 @@ static NSInteger maxEditHelpCounter = 1;
 {
     [super decodeRestorableStateWithCoder:coder];
 
-    self.editedObject = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRCarViewEditedObject]];
+    self.editedObject = (Car *)[(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRCarViewEditedObject]];
 
     // -> openradar #13438788
     [self.tableView reloadData];
@@ -243,16 +246,15 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)carConfigurationController:(CarConfigurationController*)controller didFinishWithResult:(CarConfigurationResult)result
 {
-    if (result == CarConfigurationCreateSucceded) {
+    if (result == CarConfigurationResultCreateSucceeded) {
 
         BOOL addDemoContents = NO;
 
         // Update order of existing objects
         changeIsUserDriven = YES;
         {
-            for (NSManagedObject *managedObject in [self.fetchedResultsController fetchedObjects]) {
-                NSInteger order = [[managedObject valueForKey:@"order"] integerValue];
-                [managedObject setValue:@(order+1) forKey:@"order"];
+            for (Car *managedObject in [self.fetchedResultsController fetchedObjects]) {
+                managedObject.order = managedObject.order+1;
             }
 
             // Detect demo data request
@@ -266,21 +268,20 @@ static NSInteger maxEditHelpCounter = 1;
         changeIsUserDriven = NO;
 
         // Create a new instance of the entity managed by the fetched results controller.
-        NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"car"
+        Car *newManagedObject = (Car *)[NSEntityDescription insertNewObjectForEntityForName:@"car"
                                                                           inManagedObjectContext:_managedObjectContext];
 
-        [newManagedObject setValue:@0 forKey:@"order"];
-        [newManagedObject setValue:[NSDate date] forKey:@"timestamp"];
-        [newManagedObject setValue:controller.name forKey:@"name"];
-        [newManagedObject setValue:controller.plate forKey:@"numberPlate"];
-        [newManagedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
+        newManagedObject.order = 0;
+        newManagedObject.timestamp = [NSDate date];
+        newManagedObject.name = controller.name;
+        newManagedObject.numberPlate = controller.plate;
+        newManagedObject.odometerUnit = controller.odometerUnit;
 
-        [newManagedObject setValue:[Units kilometersForDistance:controller.odometer
-                                                             withUnit:(KSDistance)[controller.odometerUnit integerValue]]
-                            forKey:@"odometer"];
+        newManagedObject.odometer = [Units kilometersForDistance:controller.odometer
+														withUnit:(KSDistance)[controller.odometerUnit integerValue]];
 
-        [newManagedObject setValue:controller.fuelUnit forKey:@"fuelUnit"];
-        [newManagedObject setValue:controller.fuelConsumptionUnit forKey:@"fuelConsumptionUnit"];
+        newManagedObject.fuelUnit = controller.fuelUnit;
+		newManagedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit;
 
 
         // Add demo contents
@@ -290,20 +291,20 @@ static NSInteger maxEditHelpCounter = 1;
         // Saving here is important here to get a stable objectID for the fuelEvent fetches
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext:_managedObjectContext];
 
-    } else if (result == CarConfigurationEditSucceded) {
+    } else if (result == CarConfigurationResultEditSucceeded) {
 
-        [_editedObject setValue:controller.name forKey:@"name"];
-        [_editedObject setValue:controller.plate forKey:@"numberPlate"];
-        [_editedObject setValue:controller.odometerUnit forKey:@"odometerUnit"];
+        _editedObject.name = controller.name;
+        _editedObject.numberPlate = controller.plate;
+        _editedObject.odometerUnit = controller.odometerUnit;
 
         NSDecimalNumber *odometer = [Units kilometersForDistance:controller.odometer
                                                               withUnit:(KSDistance)[controller.odometerUnit integerValue]];
 
-        odometer = [odometer max:[_editedObject valueForKey:@"distanceTotalSum"]];
+        odometer = [odometer max:_editedObject.distanceTotalSum];
 
-        [_editedObject setValue:odometer forKey:@"odometer"];
-        [_editedObject setValue:controller.fuelUnit forKey:@"fuelUnit"];
-        [_editedObject setValue:controller.fuelConsumptionUnit forKey:@"fuelConsumptionUnit"];
+        _editedObject.odometer = odometer;
+        _editedObject.fuelUnit = controller.fuelUnit;
+        _editedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit;
 
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] saveContext:_managedObjectContext];
 
@@ -314,7 +315,7 @@ static NSInteger maxEditHelpCounter = 1;
     self.editedObject = nil;
     [self checkEnableEditButton];
 
-    [self dismissViewControllerAnimated:(result != CarConfigurationAborted) completion:nil];
+    [self dismissViewControllerAnimated:(result != CarConfigurationResultAborted) completion:nil];
 }
 
 
@@ -420,22 +421,22 @@ static NSInteger maxEditHelpCounter = 1;
             configurator.delegate = self;
             configurator.editingExistingObject = YES;
 
-            configurator.name = [_editedObject valueForKey:@"name"];
+			configurator.name = _editedObject.name;
 
             if ([configurator.name length] > [TextEditTableCell maximumTextFieldLength])
                 configurator.name = @"";
 
-            configurator.plate = [_editedObject valueForKey:@"numberPlate"];
+            configurator.plate = _editedObject.numberPlate;
 
             if ([configurator.plate length] > [TextEditTableCell maximumTextFieldLength])
                 configurator.plate = @"";
 
-            configurator.odometerUnit = [_editedObject valueForKey:@"odometerUnit"];
-            configurator.odometer     = [Units distanceForKilometers:[_editedObject valueForKey:@"odometer"]
-                                                                  withUnit:[[_editedObject valueForKey:@"odometerUnit"] integerValue]];
+            configurator.odometerUnit = @(_editedObject.odometerUnit);
+            configurator.odometer     = [Units distanceForKilometers:_editedObject.odometer
+                                                                  withUnit:_editedObject.ksOdometerUnit];
 
-            configurator.fuelUnit            = [_editedObject valueForKey:@"fuelUnit"];
-            configurator.fuelConsumptionUnit = [_editedObject valueForKey:@"fuelConsumptionUnit"];
+            configurator.fuelUnit            = @(_editedObject.fuelUnit);
+            configurator.fuelConsumptionUnit = @(_editedObject.fuelConsumptionUnit);
 
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:configurator];
             navController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
@@ -462,8 +463,8 @@ static NSInteger maxEditHelpCounter = 1;
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    NSManagedObject *deletedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSInteger deletedObjectOrder = [[deletedObject valueForKey:@"order"] integerValue];
+    Car *deletedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSInteger deletedObjectOrder = deletedObject.order;
 
     // catch nil objects
     if (!deletedObject)
@@ -485,12 +486,12 @@ static NSInteger maxEditHelpCounter = 1;
     // Update order of existing objects
     changeIsUserDriven = YES;
     {
-        for (NSManagedObject *managedObject in [self.fetchedResultsController fetchedObjects]) {
+        for (Car *managedObject in [self.fetchedResultsController fetchedObjects]) {
 
-            NSInteger order = [[managedObject valueForKey:@"order"] integerValue];
+            NSInteger order = managedObject.order;
 
             if (order > deletedObjectOrder)
-                [managedObject setValue:@(order-1) forKey:@"order"];
+                managedObject.order = (int32_t)order-1;
         }
 
         [appDelegate saveContext:_managedObjectContext];
@@ -513,25 +514,25 @@ static NSInteger maxEditHelpCounter = 1;
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
     QuadInfoCell *tableCell = (QuadInfoCell*)cell;
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Car *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     UILabel *label;
 
     // Car and Numberplate
     label      = [tableCell topLeftLabel];
-    label.text = [NSString stringWithFormat:@"%@", [managedObject valueForKey:@"name"]];
+    label.text = [NSString stringWithFormat:@"%@", managedObject.name];
     tableCell.topLeftAccessibilityLabel  = nil;
 
     label      = [tableCell botLeftLabel];
-    label.text = [NSString stringWithFormat:@"%@", [managedObject valueForKey:@"numberPlate"]];
+    label.text = [NSString stringWithFormat:@"%@", managedObject.numberPlate];
     tableCell.topRightAccessibilityLabel = nil;
 
     // Average consumption
     NSString *avgConsumption;
-    KSFuelConsumption consumptionUnit = (KSFuelConsumption)[[managedObject valueForKey:@"fuelConsumptionUnit"] integerValue];
+    KSFuelConsumption consumptionUnit = managedObject.ksFuelConsumptionUnit;
 
-    NSDecimalNumber *distance   = [managedObject valueForKey:@"distanceTotalSum"];
-    NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolumeTotalSum"];
+    NSDecimalNumber *distance   = managedObject.distanceTotalSum;
+    NSDecimalNumber *fuelVolume = managedObject.fuelVolumeTotalSum;
 
     if ([distance   compare:[NSDecimalNumber zero]] == NSOrderedDescending && [fuelVolume compare:[NSDecimalNumber zero]] == NSOrderedDescending) {
 
@@ -623,15 +624,15 @@ static NSInteger maxEditHelpCounter = 1;
 
     for (NSUInteger i = from; i <= to; i++) {
 
-        NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:[basePath indexPathByAddingIndex:i]];
-        NSInteger order = [[managedObject valueForKey:@"order"] integerValue];
+        Car *managedObject = [self.fetchedResultsController objectAtIndexPath:[basePath indexPathByAddingIndex:i]];
+        NSInteger order = managedObject.order;
 
         if (cmpResult == NSOrderedAscending)
             order = (i != from) ? order-1 : to;
         else
             order = (i != to)   ? order+1 : from;
 
-        [managedObject setValue:@(order) forKey:@"order"];
+        managedObject.order = (int32_t)order;
     }
 
     changeIsUserDriven = YES;
@@ -687,7 +688,7 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *selectedCar = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    Car *selectedCar = (Car *)[self.fetchedResultsController objectAtIndexPath:indexPath];
 
     if (_fuelEventController == nil || _fuelEventController.selectedCar != selectedCar) {
 

@@ -14,7 +14,7 @@ class DateEditTableCell: EditableProxyPageCell {
 	var dateFormatter: NSDateFormatter!
 	var autoRefreshedDate = false
 
-	override init() {
+	required init() {
 		super.init()
 
 		NSNotificationCenter.defaultCenter().addObserver(self,

@@ -5,7 +5,6 @@
 
 #import "FuelEventController.h"
 #import "FuelStatisticsPageController.h"
-#import "FuelEventEditorController.h"
 #import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
@@ -144,7 +143,7 @@
 	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
     FuelEventController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
-    controller.selectedCar = [appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventSelectedCarID]];
+    controller.selectedCar = (Car *)[appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventSelectedCarID]];
 
     if (controller.selectedCar == nil)
         return nil;
@@ -547,7 +546,7 @@
     QuadInfoCell *tableCell = (QuadInfoCell*)cell;
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSManagedObject *car = [managedObject valueForKey:@"car"];
+    Car *car = [managedObject valueForKey:@"car"];
     NSDecimalNumber *distance = [managedObject valueForKey:@"distance"];
     NSDecimalNumber *fuelVolume = [managedObject valueForKey:@"fuelVolume"];
     NSDecimalNumber *price = [managedObject valueForKey:@"price"];

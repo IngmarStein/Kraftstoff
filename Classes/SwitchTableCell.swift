@@ -17,7 +17,7 @@ class SwitchTableCell: PageCell {
 
 	weak var delegate: EditablePageCellDelegate?
 
-	override init () {
+	required init () {
 		self.valueSwitch = UISwitch(frame:CGRectZero)
 		self.valueLabel = UILabel(frame:CGRectZero)
 

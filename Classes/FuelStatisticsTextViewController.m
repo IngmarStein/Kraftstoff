@@ -25,7 +25,7 @@ static CGFloat const GridTextHeight = 23.0;
 
 @public
 
-    NSManagedObject *car;
+    Car *car;
 
     NSDate *firstDate;
     NSDate *lastDate;
@@ -84,7 +84,7 @@ static CGFloat const GridTextHeight = 23.0;
 
 
 - (void)resampleFetchedObjects:(NSArray *)fetchedObjects
-                        forCar:(NSManagedObject *)car
+                        forCar:(Car *)car
                       andState:(FuelStatisticsData*)state
         inManagedObjectContext:(NSManagedObjectContext *)moc
 {
@@ -169,7 +169,7 @@ static CGFloat const GridTextHeight = 23.0;
 
 
 - (id<DiscardableDataObject>)computeStatisticsForRecentMonths:(NSInteger)numberOfMonths
-                                                       forCar:(NSManagedObject *)car
+                                                       forCar:(Car *)car
                                                   withObjects:(NSArray *)fetchedObjects
                                        inManagedObjectContext:(NSManagedObjectContext *)moc
 {

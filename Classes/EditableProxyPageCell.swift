@@ -12,7 +12,7 @@ class EditableProxyPageCell: EditablePageCell {
 
 	var textFieldProxy: UILabel
 
-	override init() {
+	required init() {
 		// Create a proxy overlay for the textfield that is used to display the textField contents
 		// without a flashing cursor and no Cut&Paste possibilities
 		self.textFieldProxy = UILabel(frame:CGRectZero)

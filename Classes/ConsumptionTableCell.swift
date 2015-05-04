@@ -21,7 +21,7 @@ class ConsumptionTableCell: PageCell {
 		return ConsumptionRowHeight
 	}
 
-	override init() {
+	required init() {
 		self.coloredLabel = ConsumptionLabel(frame:CGRectZero)
 
 		super.init()

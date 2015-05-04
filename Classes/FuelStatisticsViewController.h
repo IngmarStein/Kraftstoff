@@ -8,6 +8,7 @@
 extern CGFloat StatisticsHeight;
 extern CGFloat StatisticTransitionDuration;
 
+@class Car;
 
 #pragma mark -
 #pragma mark Base Class for Statistics View Controller
@@ -16,7 +17,7 @@ extern CGFloat StatisticTransitionDuration;
 @interface FuelStatisticsViewController : UIViewController
 
 // Set by presenting view controller
-@property (nonatomic, strong) NSManagedObject *selectedCar;
+@property (nonatomic, strong) Car *selectedCar;
 
 @property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityView;
 @property (nonatomic, weak) IBOutlet UILabel *leftLabel;

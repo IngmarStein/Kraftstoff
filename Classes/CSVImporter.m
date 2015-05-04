@@ -64,7 +64,7 @@
 }
 
 
-- (NSManagedObject *)addEventForCar:(NSManagedObject *)car
+- (NSManagedObject *)addEventForCar:(Car *)car
                               date:(NSDate *)date
                           distance:(NSDecimalNumber *)distance
                              price:(NSDecimalNumber *)price
@@ -373,7 +373,7 @@
     // For all cars...
     for (NSNumber *carID in carIDs)
     {
-        NSManagedObject *car = carForID[carID];
+        Car *car = carForID[carID];
 
 
         NSDate *lastDate         = [NSDate distantPast];

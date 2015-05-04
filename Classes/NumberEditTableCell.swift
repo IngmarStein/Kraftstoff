@@ -14,7 +14,7 @@ class NumberEditTableCell: EditablePageCell {
 	var alternateNumberFormatter: NSNumberFormatter?
 	var textFieldSuffix: String?
 
-	override init() {
+	required init() {
 		super.init()
 
 		self.textField.keyboardType = .NumberPad

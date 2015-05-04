@@ -10,16 +10,16 @@
 
 @property (NS_NONATOMIC_IOSONLY, readonly) CGGradientRef curveGradient;
 
-- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(NSManagedObject *)car;
-- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(NSManagedObject *)car;
-- (NSString *)noAverageStringForCar:(NSManagedObject *)car;
+- (NSNumberFormatter*)averageFormatter:(BOOL)precise forCar:(Car *)car;
+- (NSString *)averageFormatString:(BOOL)avgPrefix forCar:(Car *)car;
+- (NSString *)noAverageStringForCar:(Car *)car;
 
-- (NSNumberFormatter*)axisFormatterForCar:(NSManagedObject *)car;
-- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(NSManagedObject *)car;
+- (NSNumberFormatter*)axisFormatterForCar:(Car *)car;
+- (CGFloat)valueForManagedObject:(NSManagedObject *)managedObject forCar:(Car *)car;
 
 @optional
-- (CGFloat)graphRightBorder:(CGFloat)rightBorder forCar:(NSManagedObject *)car;
-- (CGFloat)graphWidth:(CGFloat)graphWidth forCar:(NSManagedObject *)car;
+- (CGFloat)graphRightBorder:(CGFloat)rightBorder forCar:(Car *)car;
+- (CGFloat)graphWidth:(CGFloat)graphWidth forCar:(Car *)car;
 
 @end
 

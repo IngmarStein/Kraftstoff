@@ -11,7 +11,7 @@ import UIKit
 class TextEditTableCell: EditablePageCell {
 	static let maximumTextFieldLength = 15
 
-	override init() {
+	required init() {
 		super.init()
 
 		self.textField.keyboardType  = .ASCIICapable
