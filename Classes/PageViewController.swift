@@ -102,7 +102,7 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 						}
 
 						var insets = self.tableView.contentInset
-						insets.bottom = self.bottomInsetBeforeKeyboard
+						insets.bottom = self.bottomInsetBeforeKeyboard ?? 0.0
 						self.tableView.contentInset = insets
                      }, completion: { finished in
                          self.view.endEditing(true)

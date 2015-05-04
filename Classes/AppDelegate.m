@@ -125,7 +125,7 @@
 - (BOOL)application:(UIApplication *)application shouldRestoreApplicationState:(NSCoder *)coder
 {
     NSInteger bundleVersion = [[[NSBundle mainBundle] infoDictionary][(NSString *)kCFBundleVersionKey] integerValue];
-    NSInteger stateVersion = [[coder decodeObjectForKey:UIApplicationStateRestorationBundleVersionKey] integerValue];
+	NSInteger stateVersion = [[coder decodeObjectOfClass:[NSNumber class] forKey:UIApplicationStateRestorationBundleVersionKey] integerValue];
 
     // we don't restore from iOS6 compatible or future versions of the App
     if (stateVersion >= 1572)

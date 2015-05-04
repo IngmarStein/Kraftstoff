@@ -140,10 +140,10 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-	UIStoryboard *storyboard = [coder decodeObjectForKey:UIStateRestorationViewControllerStoryboardKey];
+	UIStoryboard *storyboard = [coder decodeObjectOfClass:[UIStoryboard class], forKey:UIStateRestorationViewControllerStoryboardKey];
     FuelEventController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
-    controller.selectedCar = (Car *)[appDelegate managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRFuelEventSelectedCarID]];
+	controller.selectedCar = (Car *)[appDelegate managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRFuelEventSelectedCarID]];
 
     if (controller.selectedCar == nil)
         return nil;

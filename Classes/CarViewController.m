@@ -108,7 +108,7 @@ static NSInteger maxEditHelpCounter = 1;
 {
     [super decodeRestorableStateWithCoder:coder];
 
-    self.editedObject = (Car *)[(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:[coder decodeObjectForKey:kSRCarViewEditedObject]];
+	self.editedObject = (Car *)[[UIApplication kraftstoffAppDelegate] managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRCarViewEditedObject]];
 
     // -> openradar #13438788
     [self.tableView reloadData];
@@ -354,6 +354,7 @@ static NSInteger maxEditHelpCounter = 1;
     configurator.editingExistingObject = NO;
 
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:configurator];
+	navController.restorationIdentifier = @"CarConfigurationNavigationController";
     navController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
 
     [self presentViewController:navController animated:YES completion:nil];
@@ -439,6 +440,7 @@ static NSInteger maxEditHelpCounter = 1;
             configurator.fuelConsumptionUnit = @(_editedObject.fuelConsumptionUnit);
 
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:configurator];
+			navController.restorationIdentifier = @"CarConfigurationNavigationController";
             navController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
 
             [self presentViewController:navController animated:YES completion:nil];

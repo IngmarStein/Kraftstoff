@@ -61,16 +61,12 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		recreateTableContents()
 
 		// Configure the navigation bar
-		let item = self.navigationController!.navigationBar.topItem!
-
-		item.leftBarButtonItem  = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"handleSave:")
-		item.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:"handleCancel:")
-		item.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
-
-		setToolbarItems([item], animated:false)
+		self.navigationItem.leftBarButtonItem  = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"handleSave:")
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:"handleCancel:")
+		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
 
 		// Remove tint from navigation bar
-		self.navigationController!.navigationBar.tintColor = nil
+		self.navigationController?.navigationBar.tintColor = nil
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"localeChanged:", name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
@@ -113,14 +109,15 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	}
 
 	override func decodeRestorableStateWithCoder(coder: NSCoder) {
+		//TODO: use decodeObjectOfClass:forKey:
 		self.delegate               = coder.decodeObjectForKey(kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
-		self.isShowingCancelSheet   = coder.decodeBoolForKey(  kSRConfiguratorCancelSheet)
-		self.dataChanged            = coder.decodeBoolForKey(  kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectForKey(kSRConfiguratorPreviousSelectionIndex) as? NSIndexPath
-		self.name                   = coder.decodeObjectForKey(kSRConfiguratorName) as? String
-		self.plate                  = coder.decodeObjectForKey(kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectForKey(kSRConfiguratorFuelUnit) as? NSNumber
-		self.fuelConsumptionUnit    = coder.decodeObjectForKey(kSRConfiguratorFuelConsumptionUnit) as? NSNumber
+		self.isShowingCancelSheet   = coder.decodeBoolForKey(kSRConfiguratorCancelSheet)
+		self.dataChanged            = coder.decodeBoolForKey(kSRConfiguratorDataChanged)
+		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex) as? NSIndexPath
+		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
+		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
+		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit) as? NSNumber
+		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit) as? NSNumber
 
 		self.tableView.reloadData()
 
