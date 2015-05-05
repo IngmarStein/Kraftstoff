@@ -47,15 +47,15 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 			switch page {
 			case 0:
 				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.delegate = FuelStatisticsViewControllerDelegatePriceDistance()
+				graphViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
 				controller = graphViewController
 			case 1:
 				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.delegate = FuelStatisticsViewControllerDelegateAvgConsumption()
+				graphViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
 				controller = graphViewController
 			case 2:
 				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.delegate = FuelStatisticsViewControllerDelegatePriceAmount()
+				graphViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
 				controller = graphViewController
 			case 3:
 				controller = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsTextViewController") as! FuelStatisticsTextViewController

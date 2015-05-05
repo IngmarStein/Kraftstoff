@@ -1,4 +1,4 @@
 #import "FuelStatisticsViewController.h"
-#import "FuelStatisticsGraphViewController.h"
+#import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "CSVImporter.h"
 #import "FuelEventController.h"

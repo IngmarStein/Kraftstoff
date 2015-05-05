@@ -122,7 +122,7 @@
         <!--Fuel Statistics Graph View Controller-->
         <scene sceneID="Rm7-qa-i3v">
             <objects>
-                <viewController storyboardIdentifier="FuelStatisticsGraphViewController" id="9BC-sJ-APF" customClass="FuelStatisticsGraphViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FuelStatisticsGraphViewController" id="9BC-sJ-APF" customClass="FuelStatisticsGraphViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Y9b-LM-0jo"/>
                         <viewControllerLayoutGuide type="bottom" id="KcK-l7-kD5"/>
