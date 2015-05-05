@@ -7,7 +7,7 @@
         <!--Cars-->
         <scene sceneID="hZ6-LZ-BYL">
             <objects>
-                <tableViewController storyboardIdentifier="CarViewController" title="Cars" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6xE-Uc-v14" customClass="CarViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="CarViewController" title="Cars" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6xE-Uc-v14" customClass="CarViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="CarViewTable" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelectionDuringEditing="YES" rowHeight="91" sectionHeaderHeight="22" sectionFooterHeight="22" id="smf-IM-aXr">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

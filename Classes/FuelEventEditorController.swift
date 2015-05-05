@@ -97,15 +97,13 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		let appDelegate = UIApplication.kraftstoffAppDelegate
-
 		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow()
 
 		coder.encodeBool(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
 		coder.encodeBool(dataChanged, forKey:kSRFuelEventDataChanged)
 		coder.encodeObject(indexPath, forKey:kSRFuelEventSelectionIndex)
-		coder.encodeObject(appDelegate.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
-		coder.encodeObject(appDelegate.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
+		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
+		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
 		coder.encodeObject(date, forKey:kSRFuelEventDate)
 		coder.encodeObject(distance, forKey:kSRFuelEventDistance)
 		coder.encodeObject(price, forKey:kSRFuelEventPrice)

@@ -323,7 +323,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		return false
 	}
 
-	func modelIdentifierForManagedObject(object: NSManagedObject) -> String? {
+	static func modelIdentifierForManagedObject(object: NSManagedObject) -> String? {
 		if !object.objectID.temporaryID {
 			return object.objectID.URIRepresentation().absoluteString
 		} else {

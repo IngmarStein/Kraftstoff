@@ -219,7 +219,7 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 		}
 	}
 
-	static func consumptionUnitAccesibilityDescription(unit: KSFuelConsumption) -> String {
+	static func consumptionUnitAccessibilityDescription(unit: KSFuelConsumption) -> String {
 		switch unit {
 		case .LitersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
         case .KilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")

@@ -150,9 +150,7 @@
 
 - (void)encodeRestorableStateWithCoder:(NSCoder *)coder
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
-    [coder encodeObject:[appDelegate modelIdentifierForManagedObject:_selectedCar] forKey:kSRFuelEventSelectedCarID];
+    [coder encodeObject:[AppDelegate modelIdentifierForManagedObject:_selectedCar] forKey:kSRFuelEventSelectedCarID];
     [coder encodeBool:restoreExportSheet||isShowingExportSheet forKey:kSRFuelEventExportSheet];
     [coder encodeBool:restoreOpenIn||(openInController != nil) forKey:kSRFuelEventShowOpenIn];
     [coder encodeBool:restoreMailComposer|(mailComposeController != nil) forKey:kSRFuelEventShowComposer];
@@ -598,7 +596,7 @@
 
         tableCell.botRightAccessibilityLabel = [NSString stringWithFormat:@", %@ %@",
                                                     consumptionDescription,
-                                                    [Units consumptionUnitAccesibilityDescription:consumptionUnit]];
+                                                    [Units consumptionUnitAccessibilityDescription:consumptionUnit]];
 
     } else {
 
@@ -672,7 +670,7 @@
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:idx];
 
-    return [(AppDelegate *)[[UIApplication sharedApplication] delegate] modelIdentifierForManagedObject:object];
+    return [AppDelegate modelIdentifierForManagedObject:object];
 }
 
 

@@ -771,7 +771,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			if !self.car!.objectID.temporaryID {
 				let defaults = NSUserDefaults.standardUserDefaults()
 
-				defaults.setObject(UIApplication.kraftstoffAppDelegate.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
+				defaults.setObject(AppDelegate.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
 				defaults.synchronize()
 			}
 		}
