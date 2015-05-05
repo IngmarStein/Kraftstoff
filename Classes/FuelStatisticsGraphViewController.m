@@ -3,12 +3,12 @@
 // Kraftstoff
 
 
-#import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsGraphViewController.h"
-#import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
+#define KSFuelConsumptionIsGP10K(x)      ((x) == KSFuelConsumptionGP10KUS || (x) == KSFuelConsumptionGP10KUS)
+#define KSDistanceIsMetric(x) ((x) == KSDistanceKilometer)
 
 // Coordinates for statistics graph
 static CGFloat const StatisticGraphMargin = 10.0;

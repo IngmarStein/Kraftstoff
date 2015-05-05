@@ -8,6 +8,30 @@
 
 import UIKit
 
+// Unit Constants
+@objc enum KSDistance: Int {
+	case Invalid = -1
+	case Kilometer
+	case StatuteMile
+}
+
+@objc enum KSVolume: Int {
+	case Invalid = -1
+	case Liter
+	case GalUS
+	case GalUK
+}
+
+@objc enum KSFuelConsumption: Int {
+	case Invalid = -1
+	case LitersPer100km
+	case KilometersPerLiter
+	case MilesPerGallonUS
+	case MilesPerGallonUK
+	case GP10KUS
+	case GP10KUK
+}
+
 func KSDistanceIsMetric(x: KSDistance) -> Bool { return x == .Kilometer }
 
 func KSVolumeIsMetric(x: KSVolume) -> Bool { return x == .Liter }

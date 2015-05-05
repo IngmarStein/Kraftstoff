@@ -3,7 +3,6 @@
 // Kraftstoff
 
 
-#import "AppDelegate.h"
 #import "CarViewController.h"
 #import "FuelEventController.h"
 #import "kraftstoff-Swift.h"
@@ -60,7 +59,7 @@ static NSInteger maxEditHelpCounter = 1;
 	[backgroundView addConstraint:[NSLayoutConstraint constraintWithItem:backgroundView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:backgroundImage attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
 	self.tableView.backgroundView = backgroundView;
 
-    _managedObjectContext = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext];
+    _managedObjectContext = [AppDelegate  managedObjectContext];
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self
@@ -108,7 +107,7 @@ static NSInteger maxEditHelpCounter = 1;
 {
     [super decodeRestorableStateWithCoder:coder];
 
-	self.editedObject = (Car *)[[UIApplication kraftstoffAppDelegate] managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRCarViewEditedObject]];
+	self.editedObject = (Car *)[AppDelegate managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRCarViewEditedObject]];
 
     // -> openradar #13438788
     [self.tableView reloadData];
@@ -655,7 +654,7 @@ static NSInteger maxEditHelpCounter = 1;
 
 - (NSIndexPath *)indexPathForElementWithModelIdentifier:(NSString *)identifier inView:(UIView *)view
 {
-    NSManagedObject *object = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:identifier];
+    NSManagedObject *object = [AppDelegate managedObjectForModelIdentifier:identifier];
 
     return [self.fetchedResultsController indexPathForObject:object];
 }

@@ -3,7 +3,6 @@
 // Kraftstoff
 
 
-#import "AppDelegate.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "FuelStatisticsTextViewController.h"
 #import "kraftstoff-Swift.h"
@@ -14,7 +13,9 @@ static CGFloat const GridTextXMargin = 10.0;
 static CGFloat const GridTextYMargin = 3.0;
 static CGFloat const GridTextHeight = 23.0;
 
-
+#define KSFuelConsumptionIsMetric(x)     ((x) == KSFuelConsumptionLitersPer100km || (x) == KSFuelConsumptionKilometersPerLiter)
+#define KSFuelConsumptionIsEfficiency(x) ((x) == KSFuelConsumptionKilometersPerLiter || (x) == KSFuelConsumptionMilesPerGallonUS || (x) == KSFuelConsumptionMilesPerGallonUK)
+#define KSFuelConsumptionIsGP10K(x)      ((x) == KSFuelConsumptionGP10KUS || (x) == KSFuelConsumptionGP10KUS)
 
 #pragma mark -
 #pragma mark Disposable Sampling Data Objects for ContentCache

@@ -4,7 +4,6 @@
 
 
 #import "FuelEventController.h"
-#import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
 @interface FuelEventController ()
@@ -137,12 +136,10 @@
 
 + (UIViewController*) viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder
 {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
 	UIStoryboard *storyboard = [coder decodeObjectOfClass:[UIStoryboard class] forKey:UIStateRestorationViewControllerStoryboardKey];
     FuelEventController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
-    controller.managedObjectContext = [appDelegate managedObjectContext];
-	controller.selectedCar = (Car *)[appDelegate managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRFuelEventSelectedCarID]];
+    controller.managedObjectContext = [AppDelegate managedObjectContext];
+	controller.selectedCar = (Car *)[AppDelegate managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRFuelEventSelectedCarID]];
 
     if (controller.selectedCar == nil)
         return nil;
@@ -665,7 +662,7 @@
 
 - (NSIndexPath *)indexPathForElementWithModelIdentifier:(NSString *)identifier inView:(UIView *)view
 {
-    NSManagedObject *object = [(AppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectForModelIdentifier:identifier];
+    NSManagedObject *object = [AppDelegate managedObjectForModelIdentifier:identifier];
 
     return [self.fetchedResultsController indexPathForObject:object];
 }

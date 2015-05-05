@@ -5,7 +5,6 @@
 
 #import "CSVImporter.h"
 #import "CSVParser.h"
-#import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
 

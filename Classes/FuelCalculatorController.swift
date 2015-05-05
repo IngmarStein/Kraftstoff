@@ -22,13 +22,6 @@ private struct FuelCalculatorDataRow: RawOptionSetType {
 	static var All: FuelCalculatorDataRow      { return self(0b0111) }
 }
 
-// TODO: move to AppDelegate
-extension UIApplication {
-	static var kraftstoffAppDelegate: AppDelegate {
-		return sharedApplication().delegate as! AppDelegate
-	}
-}
-
 class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate {
 
 	var changeIsUserDriven = false
@@ -51,7 +44,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	required init(coder aDecoder: NSCoder) {
 		// Fetch the cars
-		self.managedObjectContext = UIApplication.kraftstoffAppDelegate.managedObjectContext
+		self.managedObjectContext = AppDelegate.managedObjectContext
 		self.fetchedResultsController = AppDelegate.fetchedResultsControllerForCarsInContext(self.managedObjectContext)
 
 		super.init(coder: aDecoder)
@@ -327,7 +320,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.car = nil
     
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
-			self.car = UIApplication.kraftstoffAppDelegate.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
+			self.car = AppDelegate.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
 
 			if self.car == nil {
 				self.car = self.fetchedResultsController.fetchedObjects!.first as? Car
@@ -539,11 +532,11 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          // Add new event object
                          self.changeIsUserDriven = true
 
-                         AppDelegate.addToArchiveWithCar(self.car,
-                                                     date:self.date,
-                                                 distance:self.distance,
-                                                    price:self.price,
-                                               fuelVolume:self.fuelVolume,
+                         AppDelegate.addToArchiveWithCar(self.car!,
+                                                     date:self.date!,
+                                                 distance:self.distance!,
+                                                    price:self.price!,
+                                               fuelVolume:self.fuelVolume!,
                                                  filledUp:self.filledUp ?? false,
                                    inManagedObjectContext:self.managedObjectContext,
                                       forceOdometerUpdate:false)
@@ -642,8 +635,8 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// 3.) the event must be the youngest one
-		let youngerEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(self.car,
-																								afterDate:self.date,
+		let youngerEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(self.car!,
+																								afterDate:self.date!,
 																							  dateMatches:false,
 																				   inManagedObjectContext:self.managedObjectContext),
 														inManagedObjectContext:self.managedObjectContext)
@@ -778,7 +771,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			if !self.car!.objectID.temporaryID {
 				let defaults = NSUserDefaults.standardUserDefaults()
 
-				defaults.setObject(UIApplication.kraftstoffAppDelegate.modelIdentifierForManagedObject(self.car), forKey:"preferredCarID")
+				defaults.setObject(UIApplication.kraftstoffAppDelegate.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
 				defaults.synchronize()
 			}
 		}
@@ -793,7 +786,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
-				if AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car, andDate:date) {
+				if AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:date) {
 					return false
 				}
 			}

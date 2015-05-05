@@ -3,7 +3,6 @@
 // Kraftstoff
 
 
-#import "AppDelegate.h"
 #import "FuelEventController.h"
 #import "FuelStatisticsViewControllerPrivateMethods.h"
 #import "kraftstoff-Swift.h"
