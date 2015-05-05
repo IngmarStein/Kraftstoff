@@ -3,12 +3,12 @@
 // Kraftstoff
 
 
-#import "FuelStatisticsPageController.h"
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <MessageUI/MessageUI.h>
 
 @class Car;
+@class FuelStatisticsPageController;
 
 @interface FuelEventController : UITableViewController <UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate>
 

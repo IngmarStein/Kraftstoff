@@ -77,7 +77,7 @@
         <!--Fuel Statistics Page Controller-->
         <scene sceneID="ukC-bm-Iud">
             <objects>
-                <viewController storyboardIdentifier="FuelStatisticsPageController" id="LFF-OG-6f5" customClass="FuelStatisticsPageController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FuelStatisticsPageController" id="LFF-OG-6f5" customClass="FuelStatisticsPageController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LhG-lU-tgJ"/>
                         <viewControllerLayoutGuide type="bottom" id="YhN-GQ-o7Y"/>

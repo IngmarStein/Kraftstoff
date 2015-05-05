@@ -4,7 +4,6 @@
 
 
 #import "FuelEventController.h"
-#import "FuelStatisticsPageController.h"
 #import "AppDelegate.h"
 #import "kraftstoff-Swift.h"
 
@@ -140,7 +139,7 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 
-	UIStoryboard *storyboard = [coder decodeObjectOfClass:[UIStoryboard class], forKey:UIStateRestorationViewControllerStoryboardKey];
+	UIStoryboard *storyboard = [coder decodeObjectOfClass:[UIStoryboard class] forKey:UIStateRestorationViewControllerStoryboardKey];
     FuelEventController *controller = [storyboard instantiateViewControllerWithIdentifier:@"FuelEventController"];
     controller.managedObjectContext = [appDelegate managedObjectContext];
 	controller.selectedCar = (Car *)[appDelegate managedObjectForModelIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:kSRFuelEventSelectedCarID]];
