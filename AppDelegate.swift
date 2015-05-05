@@ -507,7 +507,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 			let olderEvent = olderEvents.first!
 
             if !olderEvent.filledUp {
-                let cost = olderEvent.fuelVolume.decimalNumberByMultiplyingBy(olderEvent.price)
+                let cost = olderEvent.cost
 
                 inheritedCost       = cost.decimalNumberByAdding(olderEvent.inheritedCost)
                 inheritedDistance   = olderEvent.distance.decimalNumberByAdding(olderEvent.inheritedDistance)
@@ -648,7 +648,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 				while row > 0 {
 					let youngerEvent = youngerEvents[--row]
-					let cost = event.fuelVolume.decimalNumberByMultiplyingBy(event.price)
+					let cost = event.price
 
 					youngerEvent.inheritedCost = youngerEvent.inheritedCost.decimalNumberBySubtracting(cost).max(zero)
 					youngerEvent.inheritedDistance = youngerEvent.inheritedDistance.decimalNumberBySubtracting(distance).max(zero)

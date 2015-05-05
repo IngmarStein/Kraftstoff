@@ -10,7 +10,7 @@
 
 // Coordinates for the content area
 CGFloat StatisticsHeight = 214.0;
-CGFloat StatisticTransitionDuration = 0.3;
+NSTimeInterval StatisticTransitionDuration = 0.3;
 
 
 

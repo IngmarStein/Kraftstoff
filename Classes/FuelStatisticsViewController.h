@@ -6,7 +6,7 @@
 #import <CoreData/CoreData.h>
 
 extern CGFloat StatisticsHeight;
-extern CGFloat StatisticTransitionDuration;
+extern NSTimeInterval StatisticTransitionDuration;
 
 @class Car;
 

@@ -397,7 +397,7 @@
         <!--Fuel Statistics Text View Controller-->
         <scene sceneID="UeG-4W-HgI">
             <objects>
-                <viewController storyboardIdentifier="FuelStatisticsTextViewController" id="Tv5-C1-vuB" customClass="FuelStatisticsTextViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FuelStatisticsTextViewController" id="Tv5-C1-vuB" customClass="FuelStatisticsTextViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="JOa-2F-h9n"/>
                         <viewControllerLayoutGuide type="bottom" id="MEE-H0-cEa"/>
