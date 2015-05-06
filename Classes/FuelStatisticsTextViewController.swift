@@ -115,12 +115,12 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 				state.avgConsumption = state.avgConsumption + consumption
 
-				if (KSFuelConsumptionIsEfficiency (consumptionUnit)) {
-					state.bestConsumption  = max(consumption, state.bestConsumption)
-					state.worstConsumption = min(consumption, state.worstConsumption)
+				if KSFuelConsumptionIsEfficiency(consumptionUnit) {
+					state.bestConsumption  = max(consumption, state.bestConsumption ?? consumption)
+					state.worstConsumption = min(consumption, state.worstConsumption ?? consumption)
 				} else {
-					state.bestConsumption  = min(consumption, state.bestConsumption)
-					state.worstConsumption = max(consumption, state.worstConsumption)
+					state.bestConsumption  = min(consumption, state.bestConsumption ?? consumption)
+					state.worstConsumption = max(consumption, state.worstConsumption ?? consumption)
 				}
 
 				state.numberOfFullFillups++
@@ -156,7 +156,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			drawStatisticsForState(state, withHeight:height)
             state.contentImage = UIGraphicsGetImageFromCurrentImageContext()
 
-			UIGraphicsEndImageContext();
+			UIGraphicsEndImageContext()
 		}
 
 		return state

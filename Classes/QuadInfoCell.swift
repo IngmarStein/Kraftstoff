@@ -137,7 +137,7 @@ class QuadInfoCell: UITableViewCell {
 		topLeftLabel.frame  = CGRect(x:margin,                      y:20.0,    width: width - iWidth - 20, height: 30.0)
 		botLeftLabel.frame  = CGRect(x:margin,                      y:52.0,    width: width - iWidth - 20, height: 20.0)
 		topRightLabel.frame = CGRect(x:width - iWidth - editOffset, y:iYStart, width: iWidth - margin,     height: iHeight)
-		botRightLabel.frame = CGRect(x:width - iWidth - editOffset, y:52.0,    width: iWidth - margin,     height: 20.0);
+		botRightLabel.frame = CGRect(x:width - iWidth - editOffset, y:52.0,    width: iWidth - margin,     height: 20.0)
 		separatorView.frame = CGRect(x:0.0, y:self.frame.size.height - separatorHeight, width: self.frame.size.width, height: separatorHeight)
 
 		// hide right labels in editing modes

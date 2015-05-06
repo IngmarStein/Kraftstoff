@@ -132,7 +132,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			if isShowingCancelSheet {
 				showRevertActionSheet()
 			} else {
-				selectRowAtIndexPath(restoredSelectionIndex);
+				selectRowAtIndexPath(restoredSelectionIndex)
 				restoredSelectionIndex = nil
 			}
 		}
