@@ -162,7 +162,7 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 
 			// Update all statistics controllers
 			for controller in self.childViewControllers as! [FuelStatisticsViewController] {
-				controller.setDisplayedNumberOfMonths(numberOfMonths)
+				controller.displayedNumberOfMonths = numberOfMonths
 			}
 		}
 	}

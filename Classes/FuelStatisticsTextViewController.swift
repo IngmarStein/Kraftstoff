@@ -136,14 +136,14 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 	}
 
-	override func computeStatisticsForRecentMonths(numberOfMonths: Int, forCar car: Car!, withObjects fetchedObjects: [AnyObject]!, inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject! {
+	override func computeStatisticsForRecentMonths(numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
 
 		// No cache cell exists => resample data and compute average value
 		var state: FuelStatisticsData! = self.contentCache[numberOfMonths] as? FuelStatisticsData
 
 		if state == nil {
 			state = FuelStatisticsData()
-			resampleFetchedObjects(fetchedObjects as! [FuelEvent], forCar:car, andState:state, inManagedObjectContext:moc)
+			resampleFetchedObjects(fetchedObjects, forCar:car, andState:state, inManagedObjectContext:moc)
 		}
 
 		// Create image data from resampled data
