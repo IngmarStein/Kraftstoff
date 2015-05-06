@@ -41,7 +41,7 @@ private let MAX_SAMPLES = 256
 
 //MARK: - Disposable Sampling Data Objects for ContentCache
 
-private class FuelStatisticsSamplingData : NSObject, DiscardableDataObject {
+private class FuelStatisticsSamplingData : DiscardableDataObject {
     // Curve data
 	var data = [CGPoint](count: MAX_SAMPLES, repeatedValue: CGPointZero)
 	var dataCount = 0
@@ -62,7 +62,7 @@ private class FuelStatisticsSamplingData : NSObject, DiscardableDataObject {
 	var contentImage: UIImage!
 	var contentAverage: NSNumber!
 
-	@objc func discardContent() {
+	func discardContent() {
 		self.contentImage = nil
 	}
 }

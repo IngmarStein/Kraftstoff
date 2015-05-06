@@ -40,7 +40,7 @@ func KSFuelConsumptionIsMetric(x: KSFuelConsumption) -> Bool     { return x == .
 func KSFuelConsumptionIsEfficiency(x: KSFuelConsumption) -> Bool { return x == .KilometersPerLiter || x == .MilesPerGallonUS || x == .MilesPerGallonUK }
 func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .GP10KUS || x == .GP10KUS }
 
-@objc final class Units {
+final class Units {
 
 	//MARK: - Unit Guessing from Current Locale
 
