@@ -24,14 +24,29 @@ class Car: NSManagedObject {
     @NSManaged var fuelEvents: NSSet
 
 	var ksFuelUnit: KSVolume {
-		return KSVolume(rawValue: Int(fuelUnit))!
+		get {
+			return KSVolume(rawValue: fuelUnit)!
+		}
+		set {
+			fuelUnit = newValue.rawValue
+		}
 	}
 
 	var ksFuelConsumptionUnit: KSFuelConsumption {
-		return KSFuelConsumption(rawValue: Int(fuelConsumptionUnit))!
+		get {
+			return KSFuelConsumption(rawValue: fuelConsumptionUnit)!
+		}
+		set {
+			fuelConsumptionUnit = newValue.rawValue
+		}
 	}
 
 	var ksOdometerUnit: KSDistance {
-		return KSDistance(rawValue: Int(odometerUnit))!
+		get {
+			return KSDistance(rawValue: odometerUnit)!
+		}
+		set {
+			odometerUnit = newValue.rawValue
+		}
 	}
 }

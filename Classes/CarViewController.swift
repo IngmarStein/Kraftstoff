@@ -233,7 +233,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			newManagedObject.odometerUnit = controller.odometerUnit!.intValue
 
 			newManagedObject.odometer = Units.kilometersForDistance(controller.odometer!,
-														withUnit:KSDistance(rawValue: controller.odometerUnit!.integerValue)!)
+														withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!)
 
 			newManagedObject.fuelUnit = controller.fuelUnit!.intValue
 			newManagedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.intValue
@@ -253,7 +253,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			editedObject.odometerUnit = controller.odometerUnit!.intValue
 
 			let odometer = Units.kilometersForDistance(controller.odometer!,
-                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.integerValue)!).max(editedObject.distanceTotalSum)
+                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!).max(editedObject.distanceTotalSum)
 
 			editedObject.odometer = odometer
 			editedObject.fuelUnit = controller.fuelUnit!.intValue

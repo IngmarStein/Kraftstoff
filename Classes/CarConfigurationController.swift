@@ -133,7 +133,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		let suffix = " ".stringByAppendingString(Units.odometerUnitString(KSDistance(rawValue: self.odometerUnit!.integerValue)!))
+		let suffix = " ".stringByAppendingString(Units.odometerUnitString(KSDistance(rawValue: self.odometerUnit!.intValue)!))
 
 		if self.odometer == nil {
 			self.odometer = NSDecimalNumber.zero()
@@ -176,7 +176,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
           withAnimation:.None)
 
 		if self.odometerUnit == nil {
-			self.odometerUnit = Units.distanceUnitFromLocale.rawValue
+			self.odometerUnit = Int(Units.distanceUnitFromLocale.rawValue)
 		}
 
 		let odometerUnitPickerLabels = [Units.odometerUnitDescription(.Kilometer,   pluralization:true),
@@ -193,7 +193,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		createOdometerRowWithAnimation(.None)
 
 		if self.fuelUnit == nil {
-			self.fuelUnit = Units.volumeUnitFromLocale.rawValue
+			self.fuelUnit = Int(Units.volumeUnitFromLocale.rawValue)
 		}
 
 		let fuelUnitPickerLabels = [Units.fuelUnitDescription(.Liter, discernGallons:true, pluralization:true),
@@ -209,7 +209,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
           withAnimation:.None)
 
 		if self.fuelConsumptionUnit == nil {
-			self.fuelConsumptionUnit = Units.fuelConsumptionUnitFromLocale.rawValue
+			self.fuelConsumptionUnit = Int(Units.fuelConsumptionUnitFromLocale.rawValue)
 		}
 
 		let fuelConsumptionUnitPickerLabels = [Units.consumptionUnitDescription(.LitersPer100km),
@@ -389,8 +389,8 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = KSDistance(rawValue: self.odometerUnit!.integerValue)!
-				let newUnit = KSDistance(rawValue: numberValue.integerValue)!
+				let oldUnit = KSDistance(rawValue: self.odometerUnit!.intValue)!
+				let newUnit = KSDistance(rawValue: numberValue.intValue)!
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue

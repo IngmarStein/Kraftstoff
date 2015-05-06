@@ -9,20 +9,20 @@
 import UIKit
 
 // Unit Constants
-@objc enum KSDistance: Int {
+@objc enum KSDistance: Int32 {
 	case Invalid = -1
 	case Kilometer
 	case StatuteMile
 }
 
-@objc enum KSVolume: Int {
+@objc enum KSVolume: Int32 {
 	case Invalid = -1
 	case Liter
 	case GalUS
 	case GalUK
 }
 
-@objc enum KSFuelConsumption: Int {
+@objc enum KSFuelConsumption: Int32 {
 	case Invalid = -1
 	case LitersPer100km
 	case KilometersPerLiter
