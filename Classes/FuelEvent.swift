@@ -22,6 +22,6 @@ class FuelEvent: NSManagedObject {
     @NSManaged var car: Car
 
 	var cost: NSDecimalNumber {
-		return fuelVolume.decimalNumberByMultiplyingBy(price)
+		return fuelVolume * price
 	}
 }

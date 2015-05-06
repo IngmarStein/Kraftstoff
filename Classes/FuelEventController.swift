@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 import MessageUI
 
 private let kSRFuelEventSelectedCarID     = "FuelEventSelectedCarID"
@@ -299,8 +300,8 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 				managedObject.filledUp ? NSLocalizedString("Yes", comment:"") : NSLocalizedString("No", comment:""),
 				numberFormatter.stringFromNumber(Units.pricePerUnit(price, withUnit:fuelUnit))!,
 				managedObject.filledUp ? numberFormatter.stringFromNumber(
-					Units.consumptionForKilometers(distance.decimalNumberByAdding(managedObject.inheritedDistance),
-                                           liters:fuelVolume.decimalNumberByAdding(managedObject.inheritedFuelVolume),
+					Units.consumptionForKilometers(distance + managedObject.inheritedDistance,
+                                           liters:fuelVolume + managedObject.inheritedFuelVolume,
                                            inUnit:consumptionUnit))!
                                 : " ")
 		}
@@ -477,7 +478,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		if odometerUnit == .Kilometer {
 			convertedDistance = distance
 		} else {
-			convertedDistance = distance.decimalNumberByDividingBy(Units.kilometersPerStatuteMile)
+			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
 		tableCell.botLeftLabel.text = String(format:"%@ %@",
@@ -492,8 +493,8 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		// Consumption combined with inherited data from earlier events
 		let consumptionDescription: String
 		if managedObject.filledUp {
-			let totalDistance = distance.decimalNumberByAdding(managedObject.inheritedDistance)
-			let totalFuelVolume = fuelVolume.decimalNumberByAdding(managedObject.inheritedFuelVolume)
+			let totalDistance = distance + managedObject.inheritedDistance
+			let totalFuelVolume = fuelVolume + managedObject.inheritedFuelVolume
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters:totalFuelVolume, inUnit:consumptionUnit)
 

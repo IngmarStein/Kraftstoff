@@ -125,7 +125,7 @@ let demoData = [
     DemoDataItem(date: "2013-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389 ),
 ]
 
-@objc final class DemoData {
+final class DemoData {
    
 	static func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
@@ -147,8 +147,8 @@ let demoData = [
 				newEvent.setValue(price, forKey:"price")
 				newEvent.setValue(fuelVolume, forKey:"fuelVolume")
 
-				car.distanceTotalSum = car.distanceTotalSum.decimalNumberByAdding(distance)
-				car.fuelVolumeTotalSum = car.fuelVolumeTotalSum.decimalNumberByAdding(fuelVolume)
+				car.distanceTotalSum = car.distanceTotalSum + distance
+				car.fuelVolumeTotalSum = car.fuelVolumeTotalSum + fuelVolume
 			}
 
 			car.odometer = car.distanceTotalSum

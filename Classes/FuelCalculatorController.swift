@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 private struct FuelCalculatorDataRow: RawOptionSetType {
 	private var value: UInt = 0
@@ -224,7 +225,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
 
 		// Compute the average consumption
-		let cost = fuelVolume!.decimalNumberByMultiplyingBy(price!)
+		let cost = fuelVolume! * price!
 
 		let liters      = Units.litersForVolume(fuelVolume!, withUnit:fuelUnit)
 		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
@@ -580,7 +581,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		let odometerUnit = self.car!.ksOdometerUnit
 
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
-		let convDistance = rawDistance.decimalNumberBySubtracting(self.car!.odometer)
+		let convDistance = rawDistance - self.car!.odometer
     
 		if NSDecimalNumber.zero().compare(convDistance) != .OrderedAscending {
 			return false
@@ -597,7 +598,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                                                                       liters:liters,
                                                                       inUnit:.LitersPer100km)
 
-		if rawConsumption.isEqual(NSDecimalNumber.notANumber()) {
+		if rawConsumption == NSDecimalNumber.notANumber() {
 			return false
 		}
 
@@ -605,7 +606,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                                                                       liters:liters,
                                                                       inUnit:.LitersPer100km)
     
-		if convConsumption.isEqual(NSDecimalNumber.notANumber()) {
+		if convConsumption == NSDecimalNumber.notANumber() {
 			return false
 		}
 
@@ -616,12 +617,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
-		if avgConsumption.isEqual(NSDecimalNumber.notANumber()) {
+		if avgConsumption == NSDecimalNumber.notANumber() {
 			loBound = NSDecimalNumber(mantissa: 2, exponent:0, isNegative:false)
 			hiBound = NSDecimalNumber(mantissa:20, exponent:0, isNegative:false)
 		} else {
-			loBound = avgConsumption.decimalNumberByMultiplyingBy(NSDecimalNumber(mantissa:5, exponent: -1, isNegative:false))
-			hiBound = avgConsumption.decimalNumberByMultiplyingBy(NSDecimalNumber(mantissa:5, exponent:  0, isNegative:false))
+			loBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent: -1, isNegative:false)
+			hiBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent:  0, isNegative:false)
 		}
     
 		// conversion only when rawConsumtion <= lowerBound
@@ -652,7 +653,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	func showOdometerConversionAlert() {
 		let odometerUnit = self.car!.ksOdometerUnit
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
-		let convDistance = rawDistance.decimalNumberBySubtracting(self.car!.odometer)
+		let convDistance = rawDistance - self.car!.odometer
 
 		let distanceFormatter = Formatters.sharedDistanceFormatter
 
@@ -678,7 +679,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			// Replace distance in table with difference to car odometer
 			let odometerUnit = self.car!.ksOdometerUnit
 			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
-			let convDistance = rawDistance.decimalNumberBySubtracting(self.car!.odometer)
+			let convDistance = rawDistance - self.car!.odometer
 
 			self.distance = Units.distanceForKilometers(convDistance, withUnit:odometerUnit)
 			self.valueChanged(self.distance, identifier:"distance")

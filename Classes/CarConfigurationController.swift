@@ -8,14 +8,14 @@
 
 import UIKit
 
-@objc enum CarConfigurationResult: Int {
+enum CarConfigurationResult: Int {
 	case Canceled
 	case CreateSucceeded
 	case EditSucceeded
 	case Aborted
 }
 
-@objc protocol CarConfigurationControllerDelegate: class {
+protocol CarConfigurationControllerDelegate: class {
 	func carConfigurationController(controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
 }
 

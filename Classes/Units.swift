@@ -9,20 +9,20 @@
 import UIKit
 
 // Unit Constants
-@objc enum KSDistance: Int32 {
+enum KSDistance: Int32 {
 	case Invalid = -1
 	case Kilometer
 	case StatuteMile
 }
 
-@objc enum KSVolume: Int32 {
+enum KSVolume: Int32 {
 	case Invalid = -1
 	case Liter
 	case GalUS
 	case GalUK
 }
 
-@objc enum KSFuelConsumption: Int32 {
+enum KSFuelConsumption: Int32 {
 	case Invalid = -1
 	case LitersPer100km
 	case KilometersPerLiter
@@ -88,23 +88,23 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 
 	static func litersForVolume(volume: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return volume.decimalNumberByMultiplyingBy(litersPerUSGallon)
-        case .GalUK: return volume.decimalNumberByMultiplyingBy(litersPerImperialGallon)
+        case .GalUS: return volume * litersPerUSGallon
+        case .GalUK: return volume * litersPerImperialGallon
         default:     return volume
 		}
 	}
 
 	static func volumeForLiters(liters: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch (unit) {
-        case .GalUS: return liters.decimalNumberByDividingBy(litersPerUSGallon)
-        case .GalUK: return liters.decimalNumberByDividingBy(litersPerImperialGallon)
+        case .GalUS: return liters / litersPerUSGallon
+        case .GalUK: return liters / litersPerImperialGallon
         default:     return liters
 		}
 	}
 
 	static func kilometersForDistance(distance: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
 		if unit == .StatuteMile {
-			return distance.decimalNumberByMultiplyingBy(kilometersPerStatuteMile)
+			return distance * kilometersPerStatuteMile
 		} else {
 			return distance
 		}
@@ -112,7 +112,7 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 
 	static func distanceForKilometers(kilometers: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
 		if unit == .StatuteMile {
-			return kilometers.decimalNumberByDividingBy(kilometersPerStatuteMile)
+			return kilometers / kilometersPerStatuteMile
 		} else {
 			return kilometers
 		}
@@ -120,16 +120,16 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 
 	static func pricePerLiter(price: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return price.decimalNumberByDividingBy(litersPerUSGallon)
-        case .GalUK: return price.decimalNumberByDividingBy(litersPerImperialGallon)
+        case .GalUS: return price / litersPerUSGallon
+        case .GalUK: return price / litersPerImperialGallon
         default:     return price
 		}
 	}
 
 	static func pricePerUnit(literPrice: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return literPrice.decimalNumberByMultiplyingBy(litersPerUSGallon)
-        case .GalUK: return literPrice.decimalNumberByMultiplyingBy(litersPerImperialGallon)
+        case .GalUS: return literPrice * litersPerUSGallon
+        case .GalUK: return literPrice * litersPerImperialGallon
         default:     return literPrice
 		}
 	}
@@ -148,7 +148,7 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 		}
 
 		if KSFuelConsumptionIsEfficiency(unit) {
-			let kmPerLiter = kilometers.decimalNumberByDividingBy(liters)
+			let kmPerLiter = kilometers / liters
 
 			switch unit {
 
@@ -165,7 +165,7 @@ func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .
 
 		} else {
 
-			let literPer100km = liters.decimalNumberByMultiplyingByPowerOf10(2).decimalNumberByDividingBy(kilometers)
+			let literPer100km = (liters << 2) / kilometers
     
 			switch unit {
 

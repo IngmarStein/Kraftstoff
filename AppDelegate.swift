@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 let kraftstoffDeviceShakeNotification = "kraftstoffDeviceShakeNotification"
 
@@ -509,9 +510,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             if !olderEvent.filledUp {
                 let cost = olderEvent.cost
 
-                inheritedCost       = cost.decimalNumberByAdding(olderEvent.inheritedCost)
-                inheritedDistance   = olderEvent.distance.decimalNumberByAdding(olderEvent.inheritedDistance)
-                inheritedFuelVolume = olderEvent.fuelVolume.decimalNumberByAdding(olderEvent.inheritedFuelVolume)
+                inheritedCost       = cost + olderEvent.inheritedCost
+                inheritedDistance   = olderEvent.distance + olderEvent.inheritedDistance
+                inheritedFuelVolume = olderEvent.fuelVolume + olderEvent.inheritedFuelVolume
             }
 		}
 
@@ -526,23 +527,23 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         if youngerEvents.count > 0 {
 
             let deltaCost = filledUp
-                ? NSDecimalNumber.zero().decimalNumberBySubtracting(inheritedCost)
-                : liters.decimalNumberByMultiplyingBy(pricePerLiter)
+                ? -inheritedCost
+                : liters * pricePerLiter
 
             let deltaDistance = filledUp
-                ? NSDecimalNumber.zero().decimalNumberBySubtracting(inheritedDistance)
+                ? -inheritedDistance
                 : kilometers
 
             let deltaFuelVolume = filledUp
-                ? NSDecimalNumber.zero().decimalNumberBySubtracting(inheritedFuelVolume)
+                ? -inheritedFuelVolume
                 : liters
 
             for var row = youngerEvents.count; row > 0; {
 				let youngerEvent = youngerEvents[--row]
 
-				youngerEvent.inheritedCost = youngerEvent.inheritedCost.decimalNumberByAdding(deltaCost).max(zero)
-				youngerEvent.inheritedDistance = youngerEvent.inheritedDistance.decimalNumberByAdding(deltaDistance).max(zero)
-				youngerEvent.inheritedFuelVolume = youngerEvent.inheritedFuelVolume.decimalNumberByAdding(deltaFuelVolume).max(zero)
+				youngerEvent.inheritedCost = max(youngerEvent.inheritedCost + deltaCost, zero)
+				youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance + deltaDistance, zero)
+				youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume + deltaFuelVolume, zero)
 
 				if youngerEvent.filledUp {
                     break
@@ -566,15 +567,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 			newEvent.filledUp = filledUp
 		}
 
-		if !inheritedCost.isEqualToNumber(zero) {
+		if inheritedCost != zero {
 			newEvent.inheritedCost = inheritedCost
 		}
 
-		if !inheritedDistance.isEqualToNumber(zero) {
+		if inheritedDistance != zero {
 			newEvent.inheritedDistance = inheritedDistance
 		}
 
-		if !inheritedFuelVolume.isEqualToNumber(zero) {
+		if inheritedFuelVolume != zero {
 			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
@@ -589,12 +590,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		}
 
 		// Update total car statistics
-		car.distanceTotalSum = car.distanceTotalSum.decimalNumberByAdding(kilometers)
-		car.fuelVolumeTotalSum = car.fuelVolumeTotalSum.decimalNumberByAdding(liters)
+		car.distanceTotalSum = car.distanceTotalSum + kilometers
+		car.fuelVolumeTotalSum = car.fuelVolumeTotalSum + liters
 
 		if forceOdometerUpdate {
 			// Update global odometer
-			car.odometer = car.odometer.decimalNumberByAdding(kilometers).max(car.distanceTotalSum)
+			car.odometer = max(car.odometer + kilometers, car.distanceTotalSum)
 		}
 
 		return newEvent
@@ -634,9 +635,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 					while row > 0 {
 						let youngerEvent = youngerEvents[--row]
 
-						youngerEvent.inheritedCost = youngerEvent.inheritedCost.decimalNumberByAdding(inheritedCost)
-						youngerEvent.inheritedDistance = youngerEvent.inheritedDistance.decimalNumberByAdding(inheritedDistance)
-						youngerEvent.inheritedFuelVolume = youngerEvent.inheritedFuelVolume.decimalNumberByAdding(inheritedFuelVolume)
+						youngerEvent.inheritedCost = youngerEvent.inheritedCost + inheritedCost
+						youngerEvent.inheritedDistance = youngerEvent.inheritedDistance + inheritedDistance
+						youngerEvent.inheritedFuelVolume = youngerEvent.inheritedFuelVolume + inheritedFuelVolume
 
 						if youngerEvent.filledUp {
 							break
@@ -650,9 +651,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 					let youngerEvent = youngerEvents[--row]
 					let cost = event.price
 
-					youngerEvent.inheritedCost = youngerEvent.inheritedCost.decimalNumberBySubtracting(cost).max(zero)
-					youngerEvent.inheritedDistance = youngerEvent.inheritedDistance.decimalNumberBySubtracting(distance).max(zero)
-					youngerEvent.inheritedFuelVolume = youngerEvent.inheritedFuelVolume.decimalNumberBySubtracting(fuelVolume).max(zero)
+					youngerEvent.inheritedCost = max(youngerEvent.inheritedCost - cost, zero)
+					youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance - distance, zero)
+					youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume - fuelVolume, zero)
 
 					if youngerEvent.filledUp {
 						break
@@ -674,12 +675,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		}
 
 		// Update total car statistics
-		car.distanceTotalSum = car.distanceTotalSum.decimalNumberBySubtracting(distance).max(zero)
-		car.fuelVolumeTotalSum = car.fuelVolumeTotalSum.decimalNumberBySubtracting(fuelVolume).max(zero)
+		car.distanceTotalSum = max(car.distanceTotalSum - distance, zero)
+		car.fuelVolumeTotalSum = max(car.fuelVolumeTotalSum - fuelVolume, zero)
 
 		// Update global odometer
 		if forceOdometerUpdate {
-			car.odometer = car.odometer.decimalNumberBySubtracting(distance).max(zero)
+			car.odometer = max(car.odometer - distance, zero)
 		}
 
 		// Delete the managed event object

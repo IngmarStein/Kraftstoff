@@ -66,13 +66,13 @@ class NumberEditTableCell: EditablePageCell {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string:string)
 
-				if digit.isEqual(NSDecimalNumber.notANumber()) {
+				if digit == NSDecimalNumber.notANumber() {
 					return false
 				}
 
 				// Special shift semantics when appending at end of string
-				value = value.decimalNumberByMultiplyingByPowerOf10(1)
-				value = value.decimalNumberByAdding(digit.decimalNumberByDividingBy(scale))
+				value = value << 1
+				value = value + (digit / scale)
 			} else {
 				// Normal insert otherwise
 				text  = (text as NSString).stringByReplacingCharactersInRange(range, withString:string)

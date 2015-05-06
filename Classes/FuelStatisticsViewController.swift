@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 // Coordinates for the content area
 let StatisticsHeight = CGFloat(214.0)

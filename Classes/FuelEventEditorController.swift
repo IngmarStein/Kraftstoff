@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 private let kSRFuelEventCancelSheet     = "FuelEventCancelSheet"
 private let kSRFuelEventDataChanged     = "FuelEventDataChanged"
@@ -298,7 +299,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Compute the average consumption
-		let cost = fuelVolume.decimalNumberByMultiplyingBy(price)
+		let cost = fuelVolume * price
 
 		let liters      = Units.litersForVolume(fuelVolume, withUnit:fuelUnit)
 		let kilometers  = Units.kilometersForDistance(distance, withUnit:odometerUnit)

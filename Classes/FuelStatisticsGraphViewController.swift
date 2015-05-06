@@ -7,6 +7,7 @@
 //  Graphical Statistics View Controller
 
 import UIKit
+import CoreData
 
 @objc protocol FuelStatisticsViewControllerDataSource {
 
@@ -803,8 +804,8 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 		}
 
 		let consumptionUnit = car.ksFuelConsumptionUnit
-		let distance = fuelEvent.distance.decimalNumberByAdding(fuelEvent.inheritedDistance)
-		let fuelVolume = fuelEvent.fuelVolume.decimalNumberByAdding(fuelEvent.inheritedFuelVolume)
+		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
+		let fuelVolume = fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume
 
 		return CGFloat(Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit).floatValue)
 	}
@@ -903,17 +904,17 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 
 		var distance = fuelEvent.distance
 		let fuelVolume = fuelEvent.fuelVolume
-		var cost = fuelVolume.decimalNumberByMultiplyingBy(price)
+		var cost = fuelEvent.cost
 
-		distance = distance.decimalNumberByAdding(fuelEvent.inheritedDistance)
-		cost     = cost.decimalNumberByAdding(fuelEvent.inheritedCost)
+		distance = distance + fuelEvent.inheritedDistance
+		cost     = cost + fuelEvent.inheritedCost
 
 		if cost.compare(NSDecimalNumber.zero()) == .OrderedSame {
 			return CGFloat.NaN
 		}
 
 		if KSDistanceIsMetric(distanceUnit) {
-			return CGFloat(cost.decimalNumberByMultiplyingByPowerOf10(2).decimalNumberByDividingBy(distance, withBehavior:handler).floatValue)
+			return CGFloat((cost << 2).decimalNumberByDividingBy(distance, withBehavior:handler).floatValue)
 		} else {
 			return CGFloat(distance.decimalNumberByDividingBy(Units.kilometersPerStatuteMile).decimalNumberByDividingBy(cost, withBehavior:handler).floatValue)
 		}

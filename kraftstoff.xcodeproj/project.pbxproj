@@ -8,14 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B06D114339BB70069B20A /* InfoPlist.strings */; };
-		4D2CD38E13E70E7B00B08A49 /* CSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CD38D13E70E7B00B08A49 /* CSVParser.m */; };
 		4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
-		4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D8329E5140129A500E4F22F /* CSVImporter.m */; };
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
 		9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */; };
 		950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */; };
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
+		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
+		953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */; };
 		955B46161AF208A000A62D3B /* AppWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46151AF208A000A62D3B /* AppWindow.swift */; };
 		955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */; };
 		955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */; };
@@ -56,21 +56,18 @@
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D1B06D014339BB70069B20A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D1B06D214339BBD0069B20A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		4D2CD38C13E70E7B00B08A49 /* CSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVParser.h; sourceTree = "<group>"; };
-		4D2CD38D13E70E7B00B08A49 /* CSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVParser.m; sourceTree = "<group>"; };
 		4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Kraftstoffrechner.xcdatamodel; sourceTree = "<group>"; };
 		4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kraftstoff-Info.plist"; sourceTree = "<group>"; };
 		4D3F199B176B2B5F003FE2C7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = kraftstoff/Media.xcassets; sourceTree = "<group>"; };
 		4D5B94E216484CC2008BDDD7 /* Kraftstoffrechner 1.0.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Kraftstoffrechner 1.0.10.xcdatamodel"; sourceTree = "<group>"; };
-		4D8329E4140129A500E4F22F /* CSVImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVImporter.h; sourceTree = "<group>"; };
-		4D8329E5140129A500E4F22F /* CSVImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSVImporter.m; sourceTree = "<group>"; };
 		4DCFE36B138EE2930051FEC9 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DCFE36D138EE2AB0051FEC9 /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		9504F3C71AF144E8003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
-		955B46141AF2089F00A62D3B /* kraftstoff-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "kraftstoff-Bridging-Header.h"; sourceTree = "<group>"; };
+		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
+		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		955B46151AF208A000A62D3B /* AppWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppWindow.swift; path = Classes/AppWindow.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -162,7 +159,6 @@
 				95AE6D941AF8A4B5006A56D6 /* AppDelegate.swift */,
 				955B46151AF208A000A62D3B /* AppWindow.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
-				955B46141AF2089F00A62D3B /* kraftstoff-Bridging-Header.h */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
 			);
 			name = "Other Sources";
@@ -303,10 +299,8 @@
 		4D8329E31401295600E4F22F /* CSV Import */ = {
 			isa = PBXGroup;
 			children = (
-				4D2CD38C13E70E7B00B08A49 /* CSVParser.h */,
-				4D2CD38D13E70E7B00B08A49 /* CSVParser.m */,
-				4D8329E4140129A500E4F22F /* CSVImporter.h */,
-				4D8329E5140129A500E4F22F /* CSVImporter.m */,
+				953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */,
+				953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */,
 			);
 			name = "CSV Import";
 			sourceTree = "<group>";
@@ -451,6 +445,7 @@
 			files = (
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
+				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,
 				95C071731AF62AC800DF261C /* TextEditTableCell.swift in Sources */,
 				95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */,
 				95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */,
@@ -470,12 +465,10 @@
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
 				95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,
-				4D2CD38E13E70E7B00B08A49 /* CSVParser.m in Sources */,
 				95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */,
 				95C0717F1AF65A0100DF261C /* EditableProxyPageCell.swift in Sources */,
 				955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */,
 				95AE6D971AF8CDAF006A56D6 /* CarViewController.swift in Sources */,
-				4D8329E6140129A500E4F22F /* CSVImporter.m in Sources */,
 				959A61B81AF4159600BDF116 /* Units.swift in Sources */,
 				95C071711AF6269400DF261C /* SwitchTableCell.swift in Sources */,
 				95AE6D9B1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift in Sources */,
@@ -483,6 +476,7 @@
 				95C071771AF638EF00DF261C /* EditablePageCellTextField.swift in Sources */,
 				95C0716F1AF623AC00DF261C /* PageCellDescription.swift in Sources */,
 				95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */,
+				953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */,
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
@@ -542,7 +536,6 @@
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = kraftstoff;
-				SWIFT_OBJC_BRIDGING_HEADER = "kraftstoff-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -555,7 +548,6 @@
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = kraftstoff;
-				SWIFT_OBJC_BRIDGING_HEADER = "kraftstoff-Bridging-Header.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

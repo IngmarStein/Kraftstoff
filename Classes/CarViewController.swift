@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
@@ -252,8 +253,8 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			editedObject.numberPlate = controller.plate!
 			editedObject.odometerUnit = controller.odometerUnit!.intValue
 
-			let odometer = Units.kilometersForDistance(controller.odometer!,
-                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!).max(editedObject.distanceTotalSum)
+			let odometer = max(Units.kilometersForDistance(controller.odometer!,
+                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!), editedObject.distanceTotalSum)
 
 			editedObject.odometer = odometer
 			editedObject.fuelUnit = controller.fuelUnit!.intValue
