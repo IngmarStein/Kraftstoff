@@ -36,7 +36,7 @@ class ConsumptionLabel: UILabel {
 				}
 			}
 
-			self.attributedText = attributedString;
+			self.attributedText = attributedString
 		}
 	}
 
