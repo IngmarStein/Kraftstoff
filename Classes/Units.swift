@@ -9,20 +9,20 @@
 import UIKit
 
 // Unit Constants
-enum KSDistance: Int32 {
+public enum KSDistance: Int32 {
 	case Invalid = -1
 	case Kilometer
 	case StatuteMile
 }
 
-enum KSVolume: Int32 {
+public enum KSVolume: Int32 {
 	case Invalid = -1
 	case Liter
 	case GalUS
 	case GalUK
 }
 
-enum KSFuelConsumption: Int32 {
+public enum KSFuelConsumption: Int32 {
 	case Invalid = -1
 	case LitersPer100km
 	case KilometersPerLiter

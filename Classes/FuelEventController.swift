@@ -45,7 +45,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		return fetchController
 	}()
 
-	var statisticsController: FuelStatisticsPageController!
+	private var statisticsController: FuelStatisticsPageController!
 
 	private var isShowingAlert = false
 	private var isObservingRotationEvents = false
@@ -235,81 +235,24 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		self.navigationItem.rightBarButtonItem?.enabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
 	}
 
-	var exportFilename: String {
+	private var exportFilename: String {
 		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
 		let illegalCharacters = NSCharacterSet(charactersInString:"/\\?%*|\"<>")
 
 		return "".join(rawFilename.componentsSeparatedByCharactersInSet(illegalCharacters))
 	}
 
-	var exportURL: NSURL {
+	private var exportURL: NSURL {
 		return NSURL(fileURLWithPath:NSTemporaryDirectory().stringByAppendingPathComponent(exportFilename))!
 	}
 
 	func exportTextData() -> NSData {
-		let odometerUnit = selectedCar.ksOdometerUnit
-		let fuelUnit = selectedCar.ksFuelUnit
-		let consumptionUnit = selectedCar.ksFuelConsumptionUnit
-
-		var dataString = String()
-		dataString.reserveCapacity(4096)
-
-		dataString += NSLocalizedString("yyyy-MM-dd", comment:"")
-		dataString += ";"
-
-		dataString += NSLocalizedString("HH:mm", comment:"")
-		dataString += ";"
-
-		dataString += Units.odometerUnitDescription(odometerUnit, pluralization:true)
-		dataString += ";"
-
-		dataString += Units.fuelUnitDescription(fuelUnit, discernGallons:true, pluralization:true)
-		dataString += ";"
-
-		dataString += NSLocalizedString("Full Fill-Up", comment:"")
-		dataString += ";"
-
-		dataString += Units.fuelPriceUnitDescription(fuelUnit)
-		dataString += ";"
-
-		dataString += Units.consumptionUnitDescription(consumptionUnit)
-		dataString += "\n"
-
-		let dateFormatter = NSDateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
-		dateFormatter.locale = NSLocale.systemLocale()
-
-		let numberFormatter = NSNumberFormatter()
-		numberFormatter.numberStyle = .DecimalStyle
-		numberFormatter.locale = NSLocale.currentLocale()
-		numberFormatter.usesGroupingSeparator = false
-		numberFormatter.alwaysShowsDecimalSeparator = true
-		numberFormatter.minimumFractionDigits = 2
-
 		let fetchedObjects = self.fetchedResultsController.fetchedObjects as! [FuelEvent]
-
-		for managedObject in fetchedObjects {
-			let distance = managedObject.distance
-			let fuelVolume = managedObject.fuelVolume
-			let price = managedObject.price
-
-			dataString += String(format:"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\"\n",
-				dateFormatter.stringFromDate(managedObject.timestamp),
-				numberFormatter.stringFromNumber(Units.distanceForKilometers(distance, withUnit:odometerUnit))!,
-				numberFormatter.stringFromNumber(Units.volumeForLiters(fuelVolume, withUnit:fuelUnit))!,
-				managedObject.filledUp ? NSLocalizedString("Yes", comment:"") : NSLocalizedString("No", comment:""),
-				numberFormatter.stringFromNumber(Units.pricePerUnit(price, withUnit:fuelUnit))!,
-				managedObject.filledUp ? numberFormatter.stringFromNumber(
-					Units.consumptionForKilometers(distance + managedObject.inheritedDistance,
-                                           liters:fuelVolume + managedObject.inheritedFuelVolume,
-                                           inUnit:consumptionUnit))!
-                                : " ")
-		}
-
-		return dataString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar:selectedCar)
+		return csvString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
 	}
 
-	func exportTextDescription() -> String {
+	private func exportTextDescription() -> String {
 		let outputFormatter = NSDateFormatter()
 
 		outputFormatter.dateStyle = .MediumStyle

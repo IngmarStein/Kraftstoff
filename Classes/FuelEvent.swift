@@ -9,19 +9,19 @@
 import Foundation
 import CoreData
 
-class FuelEvent: NSManagedObject {
+public class FuelEvent: NSManagedObject {
 
-    @NSManaged var inheritedCost: NSDecimalNumber
-    @NSManaged var distance: NSDecimalNumber
-    @NSManaged var price: NSDecimalNumber
-    @NSManaged var inheritedDistance: NSDecimalNumber
-    @NSManaged var inheritedFuelVolume: NSDecimalNumber
-    @NSManaged var timestamp: NSDate
-    @NSManaged var filledUp: Bool
-    @NSManaged var fuelVolume: NSDecimalNumber
-    @NSManaged var car: Car
+    @NSManaged public var inheritedCost: NSDecimalNumber
+    @NSManaged public var distance: NSDecimalNumber
+    @NSManaged public var price: NSDecimalNumber
+    @NSManaged public var inheritedDistance: NSDecimalNumber
+    @NSManaged public var inheritedFuelVolume: NSDecimalNumber
+    @NSManaged public var timestamp: NSDate
+    @NSManaged public var filledUp: Bool
+    @NSManaged public var fuelVolume: NSDecimalNumber
+    @NSManaged public var car: Car
 
-	var cost: NSDecimalNumber {
+	public var cost: NSDecimalNumber {
 		return fuelVolume * price
 	}
 }
