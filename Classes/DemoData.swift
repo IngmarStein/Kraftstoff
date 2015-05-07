@@ -125,9 +125,9 @@ let demoData = [
     DemoDataItem(date: "2013-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389 ),
 ]
 
-final class DemoData {
+public final class DemoData {
    
-	static func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
+	static public func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
 
 		df.locale = NSLocale.systemLocale()

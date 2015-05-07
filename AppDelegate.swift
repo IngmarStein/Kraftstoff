@@ -18,8 +18,8 @@ extension UIApplication {
 }
 
 @UIApplicationMain
-class AppDelegate: NSObject, UIApplicationDelegate {
-	var window: UIWindow?
+public final class AppDelegate: NSObject, UIApplicationDelegate {
+	public var window: UIWindow?
 
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext! = {
@@ -100,31 +100,31 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 	}
 
 
-	func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	public func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func applicationDidEnterBackground(application: UIApplication) {
+	public func applicationDidEnterBackground(application: UIApplication) {
 		saveContext(AppDelegate.managedObjectContext)
 	}
 
-	func applicationWillTerminate(application: UIApplication) {
+	public func applicationWillTerminate(application: UIApplication) {
 		saveContext(AppDelegate.managedObjectContext)
 	}
 
 	//MARK: - State Restoration
 
-	func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+	public func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+	public func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = NSBundle.mainBundle().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = coder.decodeObjectOfClass(NSNumber.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? Int ?? 0
 
@@ -194,7 +194,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		return String(format:format, carCount, eventCount)
 	}
 
-	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+	public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItemAtURL(url)
@@ -411,7 +411,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                       inManagedObjectContext:moc)
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
+	public static func fetchRequestForEventsForCar(car: Car,
                                     beforeDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext) -> NSFetchRequest {
@@ -440,7 +440,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		return fetchedResultsController
 	}
 
-	static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext) -> [NSManagedObject] {
+	public static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext) -> [NSManagedObject] {
 		var error: NSError?
 		let fetchedObjects = moc.executeFetchRequest(fetchRequest, error:&error)
 

@@ -11,12 +11,14 @@ import CoreData
 
 typealias CSVRecord = [String:String]
 
-class CSVImporter {
+public class CSVImporter {
 
 	private var carIDs = Set<Int>()
 	private var carForID = [Int : Car]()
 	private var modelForID = [Int : String]()
 	private var plateForID = [Int : String]()
+
+	public init() {}
 
 	//MARK: - Core Data Support
 
@@ -114,7 +116,7 @@ class CSVImporter {
 		return nil
 	}
 
-	func importCarIDs(records: [CSVRecord]) -> Bool {
+	private func importCarIDs(records: [CSVRecord]) -> Bool {
 		let first = records.first!
 
 		if first.count < 3 {
@@ -411,7 +413,7 @@ class CSVImporter {
 
 	//MARK: - Data Import
 
-	func importFromCSVString(CSVString: String, inout detectedCars numCars: Int, inout detectedEvents numEvents: Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	public func importFromCSVString(CSVString: String, inout detectedCars numCars: Int, inout detectedEvents numEvents: Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString:CSVString)
 
 		// Check for TankPro import:search for tables containing car definitions

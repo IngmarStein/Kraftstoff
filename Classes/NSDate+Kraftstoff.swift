@@ -9,10 +9,10 @@
 import Foundation
 
 // Calendar component-mask for date+time but without seconds
-let noSecondsComponentMask : NSCalendarUnit = (.CalendarUnitYear | .CalendarUnitMonth | .CalendarUnitDay | .CalendarUnitHour | .CalendarUnitMinute)
+private let noSecondsComponentMask : NSCalendarUnit = (.CalendarUnitYear | .CalendarUnitMonth | .CalendarUnitDay | .CalendarUnitHour | .CalendarUnitMinute)
 
 // Calendar component-mask for hour+minutes
-let timeOfDayComponentMask : NSCalendarUnit = (.CalendarUnitHour | .CalendarUnitMinute)
+private let timeOfDayComponentMask : NSCalendarUnit = (.CalendarUnitHour | .CalendarUnitMinute)
 
 
 extension NSDate {

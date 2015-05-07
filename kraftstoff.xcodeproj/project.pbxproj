@@ -11,7 +11,6 @@
 		4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
-		9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */; };
 		950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */; };
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
 		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
@@ -50,7 +49,20 @@
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 		95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7B1AF69B00003FF205 /* PageViewController.swift */; };
 		95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */; };
+		95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */; };
+		95DA862B1AFB426D001E1375 /* Kraftstoff_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */; };
+		95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA86311AFB45E2001E1375 /* CSVExporter.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		95DA862C1AFB426D001E1375 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = kraftstoff;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,7 +74,6 @@
 		4D5B94E216484CC2008BDDD7 /* Kraftstoffrechner 1.0.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Kraftstoffrechner 1.0.10.xcdatamodel"; sourceTree = "<group>"; };
 		4DCFE36B138EE2930051FEC9 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DCFE36D138EE2AB0051FEC9 /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
-		9504F3C71AF144E8003FF5B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
@@ -102,10 +113,22 @@
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		95D2AE7B1AF69B00003FF205 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelCalculatorController.swift; sourceTree = "<group>"; };
+		95D350301AFB8B5400E04685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		95DA86261AFB426D001E1375 /* Kraftstoff Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		95DA86291AFB426D001E1375 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_Tests.swift; sourceTree = "<group>"; };
+		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		95DA86231AFB426D001E1375 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -128,7 +151,7 @@
 				4D8079DC12A59FE00082C40A /* FuelEvent View */,
 				4DE9620512CA3A20007E7E16 /* FuelEvent Statistics */,
 				4DDC18771429EC4400383F92 /* FuelEvent Editor */,
-				4D8329E31401295600E4F22F /* CSV Import */,
+				4D8329E31401295600E4F22F /* CSV */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -137,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* kraftstoff.app */,
+				95DA86261AFB426D001E1375 /* Kraftstoff Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -147,6 +171,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				95DA86271AFB426D001E1375 /* Kraftstoff Tests */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			comments = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040000 in Other C Flags wegen Bug in SDK. Alternativ: System Default statt LLVM Compiler";
@@ -167,7 +192,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */,
+				95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */,
 				4D3F199B176B2B5F003FE2C7 /* Media.xcassets */,
 				950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */,
 				4DCFE36C138EE2930051FEC9 /* Localizable.strings */,
@@ -296,13 +321,14 @@
 			name = InfoTables;
 			sourceTree = "<group>";
 		};
-		4D8329E31401295600E4F22F /* CSV Import */ = {
+		4D8329E31401295600E4F22F /* CSV */ = {
 			isa = PBXGroup;
 			children = (
+				95DA86311AFB45E2001E1375 /* CSVExporter.swift */,
 				953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */,
 				953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */,
 			);
-			name = "CSV Import";
+			name = CSV;
 			sourceTree = "<group>";
 		};
 		4DAC56211303178D00D02BEC /* PageTables */ = {
@@ -360,6 +386,23 @@
 			name = "Managed Objects";
 			sourceTree = "<group>";
 		};
+		95DA86271AFB426D001E1375 /* Kraftstoff Tests */ = {
+			isa = PBXGroup;
+			children = (
+				95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */,
+				95DA86281AFB426D001E1375 /* Supporting Files */,
+			);
+			path = "Kraftstoff Tests";
+			sourceTree = "<group>";
+		};
+		95DA86281AFB426D001E1375 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				95DA86291AFB426D001E1375 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -381,6 +424,24 @@
 			productReference = 1D6058910D05DD3D006BFB54 /* kraftstoff.app */;
 			productType = "com.apple.product-type.application";
 		};
+		95DA86251AFB426D001E1375 /* Kraftstoff Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95DA86301AFB426D001E1375 /* Build configuration list for PBXNativeTarget "Kraftstoff Tests" */;
+			buildPhases = (
+				95DA86221AFB426D001E1375 /* Sources */,
+				95DA86231AFB426D001E1375 /* Frameworks */,
+				95DA86241AFB426D001E1375 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				95DA862D1AFB426D001E1375 /* PBXTargetDependency */,
+			);
+			name = "Kraftstoff Tests";
+			productName = "Kraftstoff Tests";
+			productReference = 95DA86261AFB426D001E1375 /* Kraftstoff Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -388,6 +449,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0630;
+				TargetAttributes = {
+					95DA86251AFB426D001E1375 = {
+						CreatedOnToolsVersion = 6.4;
+						TestTargetID = 1D6058900D05DD3D006BFB54;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "kraftstoff" */;
 			compatibilityVersion = "Xcode 6.3";
@@ -403,6 +470,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* kraftstoff */,
+				95DA86251AFB426D001E1375 /* Kraftstoff Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -415,8 +483,15 @@
 				4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */,
 				4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */,
 				950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */,
+				95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */,
 				4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */,
-				9504F3C61AF144E8003FF5B8 /* Launch Screen.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		95DA86241AFB426D001E1375 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,11 +555,28 @@
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
+				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		95DA86221AFB426D001E1375 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				95DA862B1AFB426D001E1375 /* Kraftstoff_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		95DA862D1AFB426D001E1375 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* kraftstoff */;
+			targetProxy = 95DA862C1AFB426D001E1375 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4D1B06D114339BB70069B20A /* InfoPlist.strings */ = {
@@ -505,14 +597,6 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		9504F3C81AF144E8003FF5B8 /* Launch Screen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9504F3C71AF144E8003FF5B8 /* Base */,
-			);
-			name = "Launch Screen.xib";
-			sourceTree = "<group>";
-		};
 		950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -520,6 +604,14 @@
 				950C995A1AF37DFD00AC8749 /* de */,
 			);
 			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+		95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				95D350301AFB8B5400E04685 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -548,6 +640,89 @@
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = kraftstoff;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		95DA862E1AFB426D001E1375 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Kraftstoff Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kraftstoff.app/kraftstoff";
+			};
+			name = Debug;
+		};
+		95DA862F1AFB426D001E1375 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "Kraftstoff Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kraftstoff.app/kraftstoff";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -607,6 +782,15 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		95DA86301AFB426D001E1375 /* Build configuration list for PBXNativeTarget "Kraftstoff Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95DA862E1AFB426D001E1375 /* Debug */,
+				95DA862F1AFB426D001E1375 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
