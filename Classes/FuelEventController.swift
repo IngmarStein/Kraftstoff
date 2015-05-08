@@ -371,7 +371,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 	//MARK: - Export Action Sheet
 
-	func showExportSheet(sender: AnyObject!) {
+	func showExportSheet(sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 
@@ -394,6 +394,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		}
 		alertController.addAction(openInAction)
 		alertController.addAction(cancelAction)
+		alertController.popoverPresentationController?.barButtonItem = sender
 
 		presentViewController(alertController, animated:true, completion:nil)
 	}

@@ -24,7 +24,16 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		return fetchedResultsController
 	}()
 
-	private var longPressRecognizer: UILongPressGestureRecognizer?
+	private var longPressRecognizer: UILongPressGestureRecognizer? {
+		didSet {
+			if let old = oldValue {
+				tableView.removeGestureRecognizer(old)
+			}
+			if let new = longPressRecognizer {
+				tableView.addGestureRecognizer(new)
+			}
+		}
+	}
 
 	var fuelEventController: FuelEventController!
 

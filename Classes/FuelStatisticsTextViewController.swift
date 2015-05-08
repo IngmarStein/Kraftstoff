@@ -16,7 +16,7 @@ private let GridTextHeight: CGFloat = 23.0
 
 //MARK: - Disposable Sampling Data Objects for ContentCache
 
-private class FuelStatisticsData : NSObject, DiscardableDataObject {
+private class FuelStatisticsData : DiscardableDataObject {
 	var car: Car!
 
 	var firstDate: NSDate!

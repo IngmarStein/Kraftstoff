@@ -271,6 +271,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
+		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
 
 		isShowingCancelSheet = true
 		presentViewController(alertController, animated:true, completion:nil)

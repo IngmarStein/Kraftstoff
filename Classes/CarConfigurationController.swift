@@ -327,7 +327,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	func showCancelSheet() {
 		isShowingCancelSheet = true
 
-		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment:"") : NSLocalizedString("Delete the newly created Car?", comment:""),
+		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment:"") : NSLocalizedString("Delete the newly created car?", comment:""),
 																			 message:nil,
 																	  preferredStyle:.ActionSheet)
 		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.Cancel) { _ in
@@ -342,6 +342,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		}
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
+		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
 		presentViewController(alertController, animated:true, completion:nil)
 	}
 
