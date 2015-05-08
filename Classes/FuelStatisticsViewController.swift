@@ -48,7 +48,7 @@ class FuelStatisticsViewController: UIViewController {
 	private var invalidationCounter = 0
 	private var expectedCounter = 0
 
-	//MARK: -  View Lifecycle
+	//MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()

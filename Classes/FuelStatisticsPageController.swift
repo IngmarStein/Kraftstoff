@@ -67,6 +67,7 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 				controller.selectedCar = self.selectedCar
 				addChildViewController(controller)
 				scrollView.addSubview(controller.view)
+				controller.didMoveToParentViewController(self)
 			}
 		}
 
