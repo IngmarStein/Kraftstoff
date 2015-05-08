@@ -141,17 +141,17 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */,
-				4D1899B714328AEF001434BD /* Extensions */,
-				4D8079DD12A5A0100082C40A /* InfoTables */,
-				4DAC56211303178D00D02BEC /* PageTables */,
 				4D630C3E12EEF83500134FD7 /* Calculator */,
-				4D8079DB12A59FBE0082C40A /* Car View */,
 				4D630C0812EEEE3400134FD7 /* Car Configurator */,
-				4D8079DC12A59FE00082C40A /* FuelEvent View */,
-				4DE9620512CA3A20007E7E16 /* FuelEvent Statistics */,
-				4DDC18771429EC4400383F92 /* FuelEvent Editor */,
+				4D8079DB12A59FBE0082C40A /* Car View */,
 				4D8329E31401295600E4F22F /* CSV */,
+				4D1899B714328AEF001434BD /* Extensions */,
+				4DDC18771429EC4400383F92 /* FuelEvent Editor */,
+				4DE9620512CA3A20007E7E16 /* FuelEvent Statistics */,
+				4D8079DC12A59FE00082C40A /* FuelEvent View */,
+				4D8079DD12A5A0100082C40A /* InfoTables */,
+				95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */,
+				4DAC56211303178D00D02BEC /* PageTables */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -206,9 +206,9 @@
 		4D0B2FFD1780D1F900644289 /* Content Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				95AE6D9C1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift */,
-				95AE6D981AF8E9A7006A56D6 /* FuelStatisticsTextViewController.swift */,
 				95AE6D9A1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift */,
+				95AE6D981AF8E9A7006A56D6 /* FuelStatisticsTextViewController.swift */,
+				95AE6D9C1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift */,
 			);
 			name = "Content Controllers";
 			sourceTree = "<group>";
@@ -334,10 +334,10 @@
 		4DAC56211303178D00D02BEC /* PageTables */ = {
 			isa = PBXGroup;
 			children = (
-				95D2AE7B1AF69B00003FF205 /* PageViewController.swift */,
+				4DCEA6D613832FE1005F8ECE /* Cells for PageTables */,
 				95C071861AF6751200DF261C /* PageCell.swift */,
 				95C0716E1AF623AC00DF261C /* PageCellDescription.swift */,
-				4DCEA6D613832FE1005F8ECE /* Cells for PageTables */,
+				95D2AE7B1AF69B00003FF205 /* PageViewController.swift */,
 			);
 			name = PageTables;
 			sourceTree = "<group>";
@@ -370,9 +370,9 @@
 		4DE9620512CA3A20007E7E16 /* FuelEvent Statistics */ = {
 			isa = PBXGroup;
 			children = (
+				4D0B2FFD1780D1F900644289 /* Content Controllers */,
 				95AE6D921AF88D13006A56D6 /* FuelStatisticsPageController.swift */,
 				95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */,
-				4D0B2FFD1780D1F900644289 /* Content Controllers */,
 			);
 			name = "FuelEvent Statistics";
 			sourceTree = "<group>";
