@@ -30,17 +30,22 @@ class ConsumptionTableCell: PageCell {
 
 		self.coloredLabel.textAlignment             = .Center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
-		self.coloredLabel.font                      = UIFont(name:"HelveticaNeue", size:20)
-		self.coloredLabel.minimumScaleFactor        = 12.0/self.coloredLabel.font.pointSize
 		self.coloredLabel.backgroundColor           = UIColor.clearColor()
 		self.coloredLabel.highlightedTextColor      = UIColor(white:0.5, alpha:1.0)
 		self.coloredLabel.textColor                 = UIColor.blackColor()
+
+		setupFonts()
 
 		self.contentView.addSubview(self.coloredLabel)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	private func setupFonts() {
+		self.coloredLabel.font                      = UIFont(name:"HelveticaNeue", size:20)
+		self.coloredLabel.minimumScaleFactor        = 12.0/self.coloredLabel.font.pointSize
 	}
 
 	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {

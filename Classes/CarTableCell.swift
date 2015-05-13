@@ -126,7 +126,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 		let line            = CTLineCreateWithAttributedString(attributedString)
 		let truncationToken = CTLineCreateWithAttributedString(truncationString)
-		let truncatedLine   = CTLineCreateTruncatedLine (line, Double(PickerViewCellWidth - 2*PickerViewCellMargin), CTLineTruncationType.End, truncationToken)
+		let truncatedLine   = CTLineCreateTruncatedLine (line, Double(PickerViewCellWidth - 2*PickerViewCellMargin), .End, truncationToken)
 
 		return truncatedLine
 	}
