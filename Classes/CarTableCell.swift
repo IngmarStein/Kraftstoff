@@ -124,7 +124,9 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		}
 
 		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributesDict)
+		attributedText.beginEditing()
 		attributedText.setAttributes(prefixAttributesDict, range:NSRange(location:0, length:count(name)))
+		attributedText.endEditing()
 		label.attributedText = attributedText
 
 		// Description for accessibility
