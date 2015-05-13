@@ -94,7 +94,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	}
 
 	func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return self.cars.count ?? 0
+		return self.cars?.count ?? 0
 	}
 
 	func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

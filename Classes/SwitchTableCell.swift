@@ -33,7 +33,6 @@ class SwitchTableCell: PageCell {
 
 		// Configure the alternate textlabel
 
-		self.valueLabel.font             = UIFont(name:"HelveticaNeue-Light", size:17.0)
 		self.valueLabel.textAlignment    = .Right
 		self.valueLabel.autoresizingMask = .FlexibleWidth
 		self.valueLabel.backgroundColor  = UIColor.clearColor()
@@ -47,10 +46,25 @@ class SwitchTableCell: PageCell {
 		// Configure the default textlabel
 		if let label = self.textLabel {
 			label.textAlignment        = .Left
-			label.font                 = UIFont(name:"HelveticaNeue", size:17.0)
 			label.highlightedTextColor = UIColor.blackColor()
 			label.textColor            = UIColor.blackColor()
 		}
+
+		setupFonts()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	private func setupFonts() {
+		self.valueLabel.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.textLabel?.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	required init(coder aDecoder: NSCoder) {

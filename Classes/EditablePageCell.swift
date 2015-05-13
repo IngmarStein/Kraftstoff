@@ -33,7 +33,6 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 		super.init()
 
-		self.textField.font                     = UIFont(name:"HelveticaNeue-Light", size:17.0)
 		self.textField.textAlignment            = .Right
 		self.textField.autocapitalizationType   = .None
 		self.textField.autocorrectionType       = .No
@@ -48,14 +47,29 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		// Configure the default textlabel
 		if let label = self.textLabel {
 			label.textAlignment        = .Left
-			label.font                 = UIFont(name:"HelveticaNeue", size:17.0)
 			label.highlightedTextColor = UIColor.blackColor()
 			label.textColor            = UIColor.blackColor()
 		}
+
+		setupFonts()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	func setupFonts() {
+		self.textField.font  = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.textLabel?.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	override var accessibilityLabel: String! {

@@ -54,6 +54,7 @@ class ConsumptionTableCell: PageCell {
 	func contentSizeCategoryDidChange(notification: NSNotification!) {
 		setupFonts()
 	}
+
 	private func setupFonts() {
 		self.coloredLabel.font               = UIFont.applicationFontForStyle(UIFontTextStyleCaption1)
 		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
