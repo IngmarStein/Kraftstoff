@@ -53,19 +53,40 @@ class FuelStatisticsViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let titleFont = UIFont(name:"HelveticaNeue-Light", size:17)!
-		let font = UIFont(name:"HelveticaNeue-Light", size:14)!
-		let fontSelected = UIFont(name:"HelveticaNeue-Bold", size:14)!
-
 		// Labels on top of view
-		self.leftLabel.font = titleFont
-		self.centerLabel.font = titleFont
-		self.rightLabel.font = titleFont
 		self.leftLabel.shadowColor = nil
 		self.centerLabel.shadowColor = nil
 		self.rightLabel.shadowColor = nil
 
 		// Update selection status of all buttons
+		for view in self.view.subviews as! [UIView] {
+			if let button = view as? UIButton {
+				button.showsTouchWhenHighlighted = false
+				button.titleLabel?.shadowColor = nil
+			}
+		}
+
+		setupFonts()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	private func setupFonts() {
+		let titleFont = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		let fontSelected = UIFont.boldApplicationFontForStyle(UIFontTextStyleBody)
+
+		self.leftLabel.font = titleFont
+		self.centerLabel.font = titleFont
+		self.rightLabel.font = titleFont
+
 		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0)]
 		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName:UIColor.whiteColor()]
 		for view in self.view.subviews as! [UIView] {
@@ -76,8 +97,6 @@ class FuelStatisticsViewController: UIViewController {
 				button.setAttributedTitle(label, forState:.Normal)
 				button.setAttributedTitle(label, forState:.Highlighted)
 				button.setAttributedTitle(labelSelected, forState:.Selected)
-				button.showsTouchWhenHighlighted = false
-				button.titleLabel!.shadowColor = nil
 			}
 		}
 	}
