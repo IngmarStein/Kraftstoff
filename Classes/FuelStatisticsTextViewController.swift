@@ -9,9 +9,9 @@
 import UIKit
 import CoreData
 
+private let GridLines = 16
 private let GridMargin: CGFloat = 16.0
 private let GridTextXMargin: CGFloat = 10.0
-private let GridTextYMargin: CGFloat = 3.0
 private let GridTextHeight: CGFloat = 23.0
 
 //MARK: - Disposable Sampling Data Objects for ContentCache
@@ -149,7 +149,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		// Create image data from resampled data
 		if state.contentImage == nil {
-			let height = (state.numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*16 + 10.0
+			let height = (state.numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*CGFloat(GridLines) + 10.0
 
 			UIGraphicsBeginImageContextWithOptions(CGSize(width:self.view.bounds.size.width, height:height), false, 0.0)
 
@@ -199,7 +199,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		UIColor.clearColor().setFill()
 		CGContextFillRect(cgContext, CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
-		let font = UIFont(name:"HelveticaNeue-Light", size:14)!
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
 		let labelAttributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0) ]
 		let valueAttributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.whiteColor() ]
 
@@ -236,7 +236,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.moveToPoint(   CGPoint(x: self.gridLeftBorder,  y: 1.0))
 			path.addLineToPoint(CGPoint(x: self.gridRightBorder, y: 1.0))
 
-            for var i = 1, y = CGFloat(0.0); i < 16; i+=2 {
+            for var i = 1, y = CGFloat(0.0); i < GridLines; i+=2 {
 
                 let lastY = y
                 y = rint (GridTextHeight*0.5 + GridTextHeight*CGFloat(i))
@@ -252,7 +252,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Horizontal grid lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
 			let dashDotPatternLength = 1
-			path.lineWidth = 0.5
+			path.lineWidth = 1.0 / UIScreen.mainScreen().scale
 
 			path.setLineDash(dashDotPattern, count:dashDotPatternLength, phase:0.0)
 
@@ -262,7 +262,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.moveToPoint(   CGPoint(x: self.gridLeftBorder,  y: 0.25))
 			path.addLineToPoint(CGPoint(x: self.gridRightBorder, y: 0.25))
 
-            for var i = 1, y = CGFloat(0.0); i <= 16; i++ {
+            for var i = 1, y = CGFloat(0.0); i <= GridLines; i++ {
                 let lastY = y
                 y = rint (GridTextHeight*CGFloat(i))
 
@@ -280,7 +280,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			path.removeAllPoints()
 			path.moveToPoint(CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: 0.0))
-			path.addLineToPoint(CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: GridTextHeight*16))
+			path.addLineToPoint(CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: GridTextHeight*CGFloat(GridLines)))
             path.stroke()
 
 			CGContextRestoreGState(cgContext)
@@ -301,12 +301,12 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let odometerUnit = state.car.ksOdometerUnit
             let odometerUnitString = Units.odometerUnitString(odometerUnit)
 
-			let fuelUnit = state.car.ksFuelUnit;
+			let fuelUnit = state.car.ksFuelUnit
             let fuelUnitString = Units.fuelUnitString(fuelUnit)
 
             let numberOfDays = NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate)
 
-			y = GridTextYMargin
+			y = (GridTextHeight - font.lineHeight) / 2.0
 
 			func drawEntry(label: String, value: String) {
 				let size = label.sizeWithAttributes(labelAttributes)

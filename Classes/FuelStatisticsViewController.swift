@@ -62,7 +62,6 @@ class FuelStatisticsViewController: UIViewController {
 		for view in self.view.subviews as! [UIView] {
 			if let button = view as? UIButton {
 				button.showsTouchWhenHighlighted = false
-				button.titleLabel?.shadowColor = nil
 			}
 		}
 
@@ -76,6 +75,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {
 		setupFonts()
+		invalidateCaches()
 	}
 
 	private func setupFonts() {
@@ -97,6 +97,7 @@ class FuelStatisticsViewController: UIViewController {
 				button.setAttributedTitle(label, forState:.Normal)
 				button.setAttributedTitle(label, forState:.Highlighted)
 				button.setAttributedTitle(labelSelected, forState:.Selected)
+				button.titleLabel?.shadowColor = nil
 			}
 		}
 	}
