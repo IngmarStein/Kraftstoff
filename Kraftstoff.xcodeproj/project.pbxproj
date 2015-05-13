@@ -39,7 +39,6 @@
 		95C071731AF62AC800DF261C /* TextEditTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071721AF62AC800DF261C /* TextEditTableCell.swift */; };
 		95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071741AF6308300DF261C /* PickerTableCell.swift */; };
 		95C071771AF638EF00DF261C /* EditablePageCellTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071761AF638EF00DF261C /* EditablePageCellTextField.swift */; };
-		95C071791AF6399900DF261C /* PickerImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071781AF6399900DF261C /* PickerImageView.swift */; };
 		95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717A1AF6482200DF261C /* CarTableCell.swift */; };
 		95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717C1AF6551200DF261C /* DateEditTableCell.swift */; };
 		95C0717F1AF65A0100DF261C /* EditableProxyPageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0717E1AF65A0100DF261C /* EditableProxyPageCell.swift */; };
@@ -104,7 +103,6 @@
 		95C071721AF62AC800DF261C /* TextEditTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextEditTableCell.swift; sourceTree = "<group>"; };
 		95C071741AF6308300DF261C /* PickerTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerTableCell.swift; sourceTree = "<group>"; };
 		95C071761AF638EF00DF261C /* EditablePageCellTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditablePageCellTextField.swift; sourceTree = "<group>"; };
-		95C071781AF6399900DF261C /* PickerImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerImageView.swift; sourceTree = "<group>"; };
 		95C0717A1AF6482200DF261C /* CarTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarTableCell.swift; sourceTree = "<group>"; };
 		95C0717C1AF6551200DF261C /* DateEditTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateEditTableCell.swift; sourceTree = "<group>"; };
 		95C0717E1AF65A0100DF261C /* EditableProxyPageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableProxyPageCell.swift; sourceTree = "<group>"; };
@@ -235,7 +233,6 @@
 			isa = PBXGroup;
 			children = (
 				95C0717A1AF6482200DF261C /* CarTableCell.swift */,
-				95C071781AF6399900DF261C /* PickerImageView.swift */,
 			);
 			name = CarSelectionCell;
 			sourceTree = "<group>";
@@ -539,7 +536,6 @@
 				95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */,
 				95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
-				95C071791AF6399900DF261C /* PickerImageView.swift in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
 				95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,

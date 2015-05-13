@@ -395,9 +395,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		// Update the tableview
 		if animation == .None {
-			self.tableView.reloadData()
+			self.tableView?.reloadData()
 		} else {
-			self.tableView.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections())),
+			self.tableView?.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections())),
                       withRowAnimation:animation)
 		}
 	}
