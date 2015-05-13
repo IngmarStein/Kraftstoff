@@ -90,7 +90,9 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	//MARK: - State Restoration
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+		if let editedObject = editedObject {
+			coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+		}
 		super.encodeRestorableStateWithCoder(coder)
 	}
 
