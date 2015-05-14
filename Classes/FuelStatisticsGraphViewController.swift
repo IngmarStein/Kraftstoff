@@ -358,7 +358,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			return
 		}
 
-		let font = UIFont(name:"HelveticaNeue-Light", size:12.0)!
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleFootnote)
 		let path = UIBezierPath()
 
 		if state.dataCount == 0	{
@@ -729,7 +729,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes = [ NSFontAttributeName:UIFont(name:"HelveticaNeue-Light", size:17)!,
+		let attributes = [ NSFontAttributeName:UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2),
                                  NSForegroundColorAttributeName:UIColor.whiteColor() ]
 
 		var infoRect = CGRect()

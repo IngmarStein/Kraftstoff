@@ -20,17 +20,8 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	private let maximumDescriptionLength = 24
 
 	// Attributes for custom PickerViews
-	private let prefixAttributesDict : [NSObject:AnyObject] = {
-		let font = UIFont(name: "HelveticaNeue", size: 24)!
-		return [NSFontAttributeName : font,
-				NSForegroundColorAttributeName : UIColor.blackColor()]
-	}()
-
-	private let suffixAttributesDict : [NSObject:AnyObject] = {
-		let font = UIFont(name: "HelveticaNeue", size: 18)!
-		return [NSFontAttributeName : font,
-				NSForegroundColorAttributeName : UIColor.darkGrayColor()]
-	}()
+	private var prefixAttributes = [NSObject:AnyObject]()
+	private var suffixAttributes = [NSObject:AnyObject]()
 
 	required init() {
 		self.carPicker = UIPickerView()
@@ -46,6 +37,17 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	override func setupFonts() {
+		super.setupFonts()
+
+		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
+			NSForegroundColorAttributeName : UIColor.blackColor()]
+		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
+			NSForegroundColorAttributeName : UIColor.darkGrayColor()]
+
+		self.carPicker.reloadAllComponents()
 	}
 
 	override func prepareForReuse() {
@@ -123,9 +125,9 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 			label.lineBreakMode = .ByTruncatingTail
 		}
 
-		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributesDict)
+		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)
 		attributedText.beginEditing()
-		attributedText.setAttributes(prefixAttributesDict, range:NSRange(location:0, length:count(name)))
+		attributedText.setAttributes(prefixAttributes, range:NSRange(location:0, length:count(name)))
 		attributedText.endEditing()
 		label.attributedText = attributedText
 
