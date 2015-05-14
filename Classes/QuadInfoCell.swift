@@ -132,7 +132,6 @@ class QuadInfoCell: UITableViewCell {
 		}
 	}
 
-
 	// Remember target state for transition
 	override func willTransitionToState(state: UITableViewCellStateMask) {
 		super.willTransitionToState(state)
@@ -154,8 +153,6 @@ class QuadInfoCell: UITableViewCell {
 			self.topRightLabel.alpha = newAlpha
 			self.botRightLabel.alpha = newAlpha
 		}
-
-		super.layoutSubviews()
 	}
 
 }

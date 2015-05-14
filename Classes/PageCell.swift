@@ -9,12 +9,6 @@
 import UIKit
 
 class PageCell: UITableViewCell {
-	private static let PageCellDefaultRowHeight: CGFloat = 44.0
-
-	class var rowHeight: CGFloat {
-		return PageCellDefaultRowHeight
-	}
-
 	class var reuseIdentifier: String {
 		return NSStringFromClass(self)
 	}

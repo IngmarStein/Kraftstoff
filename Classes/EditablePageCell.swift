@@ -22,6 +22,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	private let margin = CGFloat(8.0)
 
+	var keyLabel: UILabel
 	var textField: EditablePageCellTextField
 	var valueIdentifier: String!
 
@@ -29,27 +30,32 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	required init() {
 		// Create textfield
-		self.textField = EditablePageCellTextField(frame:CGRectZero)
+		textField = EditablePageCellTextField(frame:CGRectZero)
+		keyLabel = UILabel(frame: CGRectZero)
 
 		super.init()
 
-		self.textField.textAlignment            = .Right
-		self.textField.autocapitalizationType   = .None
-		self.textField.autocorrectionType       = .No
-		self.textField.backgroundColor          = UIColor.clearColor()
-		self.textField.clearButtonMode          = .WhileEditing
-		self.textField.contentVerticalAlignment = .Center
-		self.textField.autoresizingMask         = .FlexibleWidth
-		self.textField.userInteractionEnabled   = false
+		textField.textAlignment            = .Right
+		textField.autocapitalizationType   = .None
+		textField.autocorrectionType       = .No
+		textField.backgroundColor          = UIColor.clearColor()
+		textField.clearButtonMode          = .WhileEditing
+		textField.contentVerticalAlignment = .Center
+		textField.userInteractionEnabled   = false
+		textField.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.textField)
 
-		// Configure the default textlabel
-		if let label = self.textLabel {
-			label.textAlignment        = .Left
-			label.highlightedTextColor = UIColor.blackColor()
-			label.textColor            = UIColor.blackColor()
-		}
+		keyLabel.textAlignment        = .Left
+		keyLabel.highlightedTextColor = UIColor.blackColor()
+		keyLabel.textColor            = UIColor.blackColor()
+		keyLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+		self.contentView.addSubview(keyLabel)
+
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[textField]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel]))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .Baseline, relatedBy: .Equal, toItem: keyLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -68,13 +74,13 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	func setupFonts() {
-		self.textField.font  = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		self.textLabel?.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
+		self.textField.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	override var accessibilityLabel: String! {
 		get {
-			return String(format:"%@ %@", self.textLabel!.text!, self.textField.text)
+			return String(format:"%@ %@", self.keyLabel.text!, self.textField.text)
 		}
 		set {
 
@@ -85,24 +91,12 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
-		self.textLabel!.text  = dictionary["label"] as? String
-		self.delegate         = viewController as? EditablePageCellDelegate
-		self.valueIdentifier  = dictionary["valueIdentifier"] as! String
+		self.keyLabel.text   = dictionary["label"] as? String
+		self.delegate        = viewController as? EditablePageCellDelegate
+		self.valueIdentifier = dictionary["valueIdentifier"] as! String
 
 		self.textField.placeholder = dictionary["placeholder"] as? String
 		self.textField.delegate    = self
-	}
-
-	override func layoutSubviews() {
-		super.layoutSubviews()
-    
-		let leftOffset: CGFloat = 6.0
-		let labelWidth = self.textLabel!.text!.sizeWithAttributes([NSFontAttributeName:self.textLabel!.font]).width
-		let height     = self.contentView.bounds.size.height
-		let width      = self.contentView.bounds.size.width
-
-		self.textLabel!.frame = CGRect(x: leftOffset + margin, y: 0.0, width: labelWidth,                    height: height - 1)
-		self.textField.frame  = CGRect(x: leftOffset + margin, y: 0.0, width: width - 2*margin - leftOffset, height: height - 1)
 	}
 
 	var invalidTextColor: UIColor? {

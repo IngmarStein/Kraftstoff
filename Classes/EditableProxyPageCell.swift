@@ -21,11 +21,16 @@ class EditableProxyPageCell: EditablePageCell {
 
 		self.textFieldProxy.textAlignment          = .Right
 		self.textFieldProxy.backgroundColor        = UIColor.clearColor()
-		self.textFieldProxy.autoresizingMask       = .FlexibleWidth
 		self.textFieldProxy.userInteractionEnabled = false
 		self.textFieldProxy.isAccessibilityElement = false
+		self.textFieldProxy.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.textFieldProxy)
+
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Left, relatedBy: .Equal, toItem: textField, attribute: .Left, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Right, relatedBy: .Equal, toItem: textField, attribute: .Right, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Top, relatedBy: .Equal, toItem: textField, attribute: .Top, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Bottom, relatedBy: .Equal, toItem: textField, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
 
 		// Hide the textfield used for keyboard interaction
 		self.textField.hidden = true
@@ -41,15 +46,9 @@ class EditableProxyPageCell: EditablePageCell {
 		self.textFieldProxy.font = self.textField.font
 	}
 
-	override func layoutSubviews() {
-		super.layoutSubviews()
-
-		self.textFieldProxy.frame = self.textField.frame
-	}
-
 	override var accessibilityLabel: String! {
 		get {
-			if let text1 = self.textLabel?.text, text2 = self.textFieldProxy.text {
+			if let text1 = self.keyLabel.text, text2 = self.textFieldProxy.text {
 				return String(format:"%@ %@", text1, text2)
 			}
 			return nil

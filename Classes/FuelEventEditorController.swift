@@ -70,7 +70,6 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 		// Table contents
 		self.tableView.allowsSelection = false
-		self.tableView.estimatedRowHeight = PageCell.rowHeight
 
 		createTableContentsWithAnimation(.None)
 		self.tableView.reloadData()

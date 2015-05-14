@@ -19,6 +19,8 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 		didSet {
 			tableView.delegate = self
 			tableView.dataSource = self
+			tableView.estimatedRowHeight = 44.0
+			tableView.rowHeight = UITableViewAutomaticDimension
 
 			if self.nibName == nil && self.view == nil {
 				self.view = tableView
@@ -226,12 +228,6 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 				}
 			}
 		}
-	}
-
-	//MARK: - UITableViewDelegate
-
-	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return classForRow(indexPath.row, inSection:indexPath.section)?.rowHeight ?? UITableViewAutomaticDimension
 	}
 
 	//MARK: - UITableViewDataSource

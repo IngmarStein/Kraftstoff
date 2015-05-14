@@ -12,10 +12,6 @@ class ConsumptionTableCell: PageCell {
 
 	private(set) var coloredLabel: ConsumptionLabel
 
-	override class var rowHeight: CGFloat {
-		return UITableViewAutomaticDimension
-	}
-
 	required init() {
 		self.coloredLabel = ConsumptionLabel(frame:CGRectZero)
 
