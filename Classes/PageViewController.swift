@@ -25,13 +25,6 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 			}
 		}
 	}
-	var constantRowHeight = false {
-		didSet {
-			// Force change of delegate to indicate changes
-			tableView.delegate = nil
-			tableView.delegate = self
-		}
-	}
 
 	//MARK: - View Resize on Keyboard Events (only when visible)
 
@@ -235,18 +228,10 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 		}
 	}
 
-	override func respondsToSelector(aSelector: Selector) -> Bool {
-		if aSelector == "tableView:heightForRowAtIndexPath:" {
-			return !self.constantRowHeight
-		}
-
-		return super.respondsToSelector(aSelector)
-	}
-
 	//MARK: - UITableViewDelegate
 
 	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return classForRow(indexPath.row, inSection:indexPath.section)?.rowHeight ?? 0.0
+		return classForRow(indexPath.row, inSection:indexPath.section)?.rowHeight ?? UITableViewAutomaticDimension
 	}
 
 	//MARK: - UITableViewDataSource

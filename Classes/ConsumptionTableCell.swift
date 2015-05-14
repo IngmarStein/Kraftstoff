@@ -12,11 +12,8 @@ class ConsumptionTableCell: PageCell {
 
 	private(set) var coloredLabel: ConsumptionLabel
 
-	// Standard cell geometry
-	private let ConsumptionRowHeight: CGFloat = 50.0
-
-	var rowHeight: CGFloat {
-		return ConsumptionRowHeight
+	override class var rowHeight: CGFloat {
+		return UITableViewAutomaticDimension
 	}
 
 	required init() {
@@ -37,8 +34,8 @@ class ConsumptionTableCell: PageCell {
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-(10)-[coloredLabel]-(10)-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(1)-[coloredLabel]-(1)-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}

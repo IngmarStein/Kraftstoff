@@ -67,8 +67,6 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Table contents
-		self.constantRowHeight = false
-
 		createTableContentsWithAnimation(.None)
 		self.tableView.reloadData()
 		updateSaveButtonState()

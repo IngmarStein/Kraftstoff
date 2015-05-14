@@ -69,8 +69,8 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Table contents
-		self.constantRowHeight = false
 		self.tableView.allowsSelection = false
+		self.tableView.estimatedRowHeight = PageCell.rowHeight
 
 		createTableContentsWithAnimation(.None)
 		self.tableView.reloadData()
