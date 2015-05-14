@@ -11,6 +11,7 @@ import UIKit
 class SwitchTableCell: PageCell {
 	private let margin : CGFloat = 8.0
 
+	var keyLabel: UILabel
 	var valueSwitch: UISwitch
 	var valueLabel: UILabel
 	var valueIdentifier: String!
@@ -18,6 +19,7 @@ class SwitchTableCell: PageCell {
 	weak var delegate: EditablePageCellDelegate?
 
 	required init () {
+		self.keyLabel = UILabel(frame: CGRectZero)
 		self.valueSwitch = UISwitch(frame:CGRectZero)
 		self.valueLabel = UILabel(frame:CGRectZero)
 
@@ -27,30 +29,52 @@ class SwitchTableCell: PageCell {
 		self.selectionStyle = .None
 
 		// Create switch
-		self.valueSwitch.addTarget(self, action:"switchToggledAction:", forControlEvents:.ValueChanged)
+		valueSwitch.addTarget(self, action:"switchToggledAction:", forControlEvents:.ValueChanged)
+		valueSwitch.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.valueSwitch)
 
 		// Configure the alternate textlabel
 
-		self.valueLabel.font             = UIFont(name:"HelveticaNeue-Light", size:17.0)
-		self.valueLabel.textAlignment    = .Right
-		self.valueLabel.autoresizingMask = .FlexibleWidth
-		self.valueLabel.backgroundColor  = UIColor.clearColor()
-		self.valueLabel.textColor        = UIColor.blackColor()
-
-		self.valueLabel.hidden                 = true
-		self.valueLabel.userInteractionEnabled = false
+		valueLabel.textAlignment          = .Right
+		valueLabel.backgroundColor        = UIColor.clearColor()
+		valueLabel.textColor              = UIColor.blackColor()
+		valueLabel.hidden                 = true
+		valueLabel.userInteractionEnabled = false
+		valueLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.valueLabel)
 
 		// Configure the default textlabel
-		if let label = self.textLabel {
-			label.textAlignment        = .Left
-			label.font                 = UIFont(name:"HelveticaNeue", size:17.0)
-			label.highlightedTextColor = UIColor.blackColor()
-			label.textColor            = UIColor.blackColor()
-		}
+		keyLabel.textAlignment        = .Left
+		keyLabel.highlightedTextColor = UIColor.blackColor()
+		keyLabel.textColor            = UIColor.blackColor()
+		keyLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+		self.contentView.addSubview(keyLabel)
+
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueSwitch]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=4)-[valueSwitch]-(>=4)-|", options: .allZeros, metrics: nil, views: ["valueSwitch" : valueSwitch]))
+		self.contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+
+		setupFonts()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	private func setupFonts() {
+		self.valueLabel.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -61,9 +85,9 @@ class SwitchTableCell: PageCell {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [String:AnyObject]
-		self.textLabel?.text  = dictionary["label"] as? String
-		self.delegate         = viewController as? EditablePageCellDelegate
-		self.valueIdentifier  = dictionary["valueIdentifier"] as? String
+		self.keyLabel.text   = dictionary["label"] as? String
+		self.delegate        = viewController as? EditablePageCellDelegate
+		self.valueIdentifier = dictionary["valueIdentifier"] as? String
 
 		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier)?.boolValue ?? false
 
@@ -74,30 +98,6 @@ class SwitchTableCell: PageCell {
 
 		self.valueSwitch.hidden =  showAlternate
 		self.valueLabel.hidden  = !showAlternate
-	}
-
-	override func layoutSubviews() {
-		super.layoutSubviews()
-
-		let leftOffset = CGFloat(6.0)
-
-		// Text label on the left
-		let labelWidth = self.textLabel!.text!.sizeWithAttributes([NSFontAttributeName:self.textLabel!.font]).width
-		let height     = self.contentView.bounds.size.height
-		let width      = self.contentView.bounds.size.width
-
-		self.textLabel!.frame = CGRect(x:margin + leftOffset, y:0.0, width:labelWidth, height:height - 1)
-
-		// UISwitch
-		let valueFrame = self.valueSwitch.frame
-		self.valueSwitch.frame = CGRect(x: width - margin - valueFrame.size.width,
-										y: floor ((height - valueFrame.size.height)/2),
-										width: valueFrame.size.width,
-										height: valueFrame.size.height)
-
-		// Alternate for UISwitch
-		let alternateHeight = self.valueLabel.text!.sizeWithAttributes([NSFontAttributeName:self.valueLabel.font]).height
-		self.valueLabel.frame = CGRect(x: width - margin - 100.0, y: floor ((height - alternateHeight)/2), width: 100.0, height: alternateHeight)
 	}
 
 	func switchToggledAction(sender: UISwitch) {

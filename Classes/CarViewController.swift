@@ -24,7 +24,16 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		return fetchedResultsController
 	}()
 
-	private var longPressRecognizer: UILongPressGestureRecognizer?
+	private var longPressRecognizer: UILongPressGestureRecognizer? {
+		didSet {
+			if let old = oldValue {
+				tableView.removeGestureRecognizer(old)
+			}
+			if let new = longPressRecognizer {
+				tableView.addGestureRecognizer(new)
+			}
+		}
+	}
 
 	var fuelEventController: FuelEventController!
 
@@ -59,6 +68,9 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
 		self.tableView.backgroundView = backgroundView
 
+		self.tableView.estimatedRowHeight = self.tableView.rowHeight
+		self.tableView.rowHeight = UITableViewAutomaticDimension
+
 		NSNotificationCenter.defaultCenter().addObserver(self,
            selector:"localeChanged:",
                name:NSCurrentLocaleDidChangeNotification,
@@ -81,7 +93,9 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	//MARK: - State Restoration
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+		if let editedObject = editedObject {
+			coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+		}
 		super.encodeRestorableStateWithCoder(coder)
 	}
 

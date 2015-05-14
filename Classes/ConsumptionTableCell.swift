@@ -12,15 +12,6 @@ class ConsumptionTableCell: PageCell {
 
 	private(set) var coloredLabel: ConsumptionLabel
 
-	// Standard cell geometry
-	private let ConsumptionRowHeight: CGFloat = 50.0
-	private let cellHMargin: CGFloat          = 10.0
-	private let cellVMargin: CGFloat          =  1.0
-
-	var rowHeight: CGFloat {
-		return ConsumptionRowHeight
-	}
-
 	required init() {
 		self.coloredLabel = ConsumptionLabel(frame:CGRectZero)
 
@@ -30,17 +21,36 @@ class ConsumptionTableCell: PageCell {
 
 		self.coloredLabel.textAlignment             = .Center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
-		self.coloredLabel.font                      = UIFont(name:"HelveticaNeue", size:20)
-		self.coloredLabel.minimumScaleFactor        = 12.0/self.coloredLabel.font.pointSize
 		self.coloredLabel.backgroundColor           = UIColor.clearColor()
 		self.coloredLabel.highlightedTextColor      = UIColor(white:0.5, alpha:1.0)
 		self.coloredLabel.textColor                 = UIColor.blackColor()
+		self.coloredLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+		setupFonts()
 
 		self.contentView.addSubview(self.coloredLabel)
+
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
+
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	private func setupFonts() {
+		self.coloredLabel.font               = UIFont.applicationFontForStyle(UIFontTextStyleCaption1)
+		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
 	}
 
 	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
@@ -57,13 +67,5 @@ class ConsumptionTableCell: PageCell {
 		}
 		set {
 		}
-	}
-
-	override func layoutSubviews() {
-		super.layoutSubviews()
-
-		let size = self.contentView.frame.size
-
-		self.coloredLabel.frame = CGRect(x: cellHMargin, y: cellVMargin, width: size.width-2*cellHMargin, height: size.height-2*cellVMargin)
 	}
 }

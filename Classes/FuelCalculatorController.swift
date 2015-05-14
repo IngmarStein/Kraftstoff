@@ -67,8 +67,6 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Table contents
-		self.constantRowHeight = false
-
 		createTableContentsWithAnimation(.None)
 		self.tableView.reloadData()
 		updateSaveButtonState()
@@ -395,9 +393,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		// Update the tableview
 		if animation == .None {
-			self.tableView.reloadData()
+			self.tableView?.reloadData()
 		} else {
-			self.tableView.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections())),
+			self.tableView?.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections())),
                       withRowAnimation:animation)
 		}
 	}
@@ -668,7 +666,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment:""),
 																			 message:nil,
 																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:rawButton, style:.Cancel) { _ in
+		let cancelAction = UIAlertAction(title:rawButton, style:.Default) { _ in
 			self.isShowingConvertSheet = false
 			self.setEditing(false, animated:true)
 		}
@@ -691,6 +689,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
+		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
 		isShowingConvertSheet = true
 		presentViewController(alertController, animated:true, completion:nil)
 	}

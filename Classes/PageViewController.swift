@@ -19,17 +19,12 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 		didSet {
 			tableView.delegate = self
 			tableView.dataSource = self
+			tableView.estimatedRowHeight = 44.0
+			tableView.rowHeight = UITableViewAutomaticDimension
 
 			if self.nibName == nil && self.view == nil {
 				self.view = tableView
 			}
-		}
-	}
-	var constantRowHeight = false {
-		didSet {
-			// Force change of delegate to indicate changes
-			tableView.delegate = nil
-			tableView.delegate = self
 		}
 	}
 
@@ -233,20 +228,6 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 				}
 			}
 		}
-	}
-
-	override func respondsToSelector(aSelector: Selector) -> Bool {
-		if aSelector == "tableView:heightForRowAtIndexPath:" {
-			return !self.constantRowHeight
-		}
-
-		return super.respondsToSelector(aSelector)
-	}
-
-	//MARK: - UITableViewDelegate
-
-	func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return classForRow(indexPath.row, inSection:indexPath.section)?.rowHeight ?? 0.0
 	}
 
 	//MARK: - UITableViewDataSource

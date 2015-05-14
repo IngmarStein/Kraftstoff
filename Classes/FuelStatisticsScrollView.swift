@@ -65,7 +65,7 @@ class FuelStatisticsScrollView: UIScrollView {
 			}
 
 			// Recenter scrollview
-			self.contentOffset = CGPointMake (currentOffset.x + shiftDelta, currentOffset.y)
+			self.contentOffset = CGPoint(x:currentOffset.x + shiftDelta, y:currentOffset.y)
 
 			// Move content by the same amount so it appears to stay still
 			for view in self.subviews as! [UIView] {

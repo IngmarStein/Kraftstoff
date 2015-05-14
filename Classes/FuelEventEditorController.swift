@@ -69,7 +69,6 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Table contents
-		self.constantRowHeight = false
 		self.tableView.allowsSelection = false
 
 		createTableContentsWithAnimation(.None)
@@ -271,6 +270,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
+		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
 
 		isShowingCancelSheet = true
 		presentViewController(alertController, animated:true, completion:nil)

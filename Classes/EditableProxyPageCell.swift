@@ -14,19 +14,23 @@ class EditableProxyPageCell: EditablePageCell {
 
 	required init() {
 		// Create a proxy overlay for the textfield that is used to display the textField contents
-		// without a flashing cursor and no Cut&Paste possibilities
+		// without a flashing cursor and no cut & paste possibilities
 		self.textFieldProxy = UILabel(frame:CGRectZero)
 
 		super.init()
 
-		self.textFieldProxy.font                   = self.textField.font
 		self.textFieldProxy.textAlignment          = .Right
 		self.textFieldProxy.backgroundColor        = UIColor.clearColor()
-		self.textFieldProxy.autoresizingMask       = .FlexibleWidth
 		self.textFieldProxy.userInteractionEnabled = false
 		self.textFieldProxy.isAccessibilityElement = false
+		self.textFieldProxy.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.textFieldProxy)
+
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Left, relatedBy: .Equal, toItem: textField, attribute: .Left, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Right, relatedBy: .Equal, toItem: textField, attribute: .Right, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Top, relatedBy: .Equal, toItem: textField, attribute: .Top, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Bottom, relatedBy: .Equal, toItem: textField, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
 
 		// Hide the textfield used for keyboard interaction
 		self.textField.hidden = true
@@ -36,15 +40,15 @@ class EditableProxyPageCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func layoutSubviews() {
-		super.layoutSubviews()
+	override func setupFonts() {
+		super.setupFonts()
 
-		self.textFieldProxy.frame = self.textField.frame
+		self.textFieldProxy.font = self.textField.font
 	}
 
 	override var accessibilityLabel: String! {
 		get {
-			if let text1 = self.textLabel?.text, text2 = self.textFieldProxy.text {
+			if let text1 = self.keyLabel.text, text2 = self.textFieldProxy.text {
 				return String(format:"%@ %@", text1, text2)
 			}
 			return nil

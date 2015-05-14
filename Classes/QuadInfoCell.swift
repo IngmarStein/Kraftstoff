@@ -38,38 +38,73 @@ class QuadInfoCell: UITableViewCell {
         topLeftLabel.backgroundColor            = UIColor.clearColor()
         topLeftLabel.textColor                  = UIColor.blackColor()
         topLeftLabel.adjustsFontSizeToFitWidth  = true
-        topLeftLabel.font                       = UIFont(name:"HelveticaNeue-Light", size:22.0)
-        topLeftLabel.minimumScaleFactor         = 12.0/topLeftLabel.font.pointSize
+		topLeftLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
 		self.contentView.addSubview(topLeftLabel)
 
         botLeftLabel.backgroundColor            = UIColor.clearColor()
         botLeftLabel.textColor                  = UIColor(white:0.5, alpha:1.0)
         botLeftLabel.adjustsFontSizeToFitWidth  = true
-        botLeftLabel.font                       = UIFont(name:"HelveticaNeue-Light", size:15.0)
-        botLeftLabel.minimumScaleFactor         = 12.0/botLeftLabel.font.pointSize
+		botLeftLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.contentView.addSubview(botLeftLabel)
 
         topRightLabel.backgroundColor           = UIColor.clearColor()
         topRightLabel.textColor                 = UIColor.blackColor()
         topRightLabel.adjustsFontSizeToFitWidth = true
-		topRightLabel.font                      = UIFont(name:"HelveticaNeue-Light", size:large ? 28.0 : 22.0)
-        topRightLabel.minimumScaleFactor        = 12.0/topRightLabel.font.pointSize
         topRightLabel.textAlignment             = .Right
+		topRightLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
 		self.contentView.addSubview(topRightLabel)
 
         botRightLabel.backgroundColor           = UIColor.clearColor()
         botRightLabel.textColor                 = UIColor(white:0.5, alpha:1.0)
         botRightLabel.adjustsFontSizeToFitWidth = true
-        botRightLabel.font                      = UIFont(name:"HelveticaNeue-Light", size:15.0)
-        botRightLabel.minimumScaleFactor        = 12.0/botRightLabel.font.pointSize
         botRightLabel.textAlignment             = .Right
+		botRightLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         self.contentView.addSubview(botRightLabel)
 
 		separatorView.backgroundColor = UIColor(white:200.0/255.0, alpha:1.0)
+		separatorView.setTranslatesAutoresizingMaskIntoConstraints(false)
+		separatorView.preservesSuperviewLayoutMargins = false
 		self.contentView.addSubview(separatorView)
 
-        self.accessoryType = .DisclosureIndicator
+		// setup contraints
+		let separatorHeight = 1.0 / UIScreen.mainScreen().scale
+		let views = ["topLeftLabel" : topLeftLabel, "botLeftLabel" : botLeftLabel, "topRightLabel" : topRightLabel, "botRightLabel" : botRightLabel]
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: .allZeros, metrics: nil, views: views))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: .allZeros, metrics: nil, views: views))
+		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .Baseline, relatedBy: .Equal, toItem: topRightLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .Baseline, relatedBy: .Equal, toItem: botRightLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .Left, relatedBy: .Equal, toItem: botLeftLabel, attribute: .Left, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: topRightLabel, attribute: .Right, relatedBy: .Equal, toItem: botRightLabel, attribute: .Right, multiplier: 1.0, constant: 0.0))
+		self.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1.0, constant: 0.0))
+		self.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+		separatorView.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: separatorHeight))
+
+		setupFonts()
+
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+
+		self.accessoryType = .DisclosureIndicator
     }
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
+	}
+
+	private func setupFonts() {
+		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleSubheadline)
+		topLeftLabel.minimumScaleFactor  = 12.0/topLeftLabel.font.pointSize
+		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		botLeftLabel.minimumScaleFactor  = 12.0/botLeftLabel.font.pointSize
+		topRightLabel.font               = UIFont.lightApplicationFontForStyle(large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
+		topRightLabel.minimumScaleFactor = 12.0/topRightLabel.font.pointSize
+		botRightLabel.font               = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		botRightLabel.minimumScaleFactor = 12.0/botRightLabel.font.pointSize
+	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
@@ -97,7 +132,6 @@ class QuadInfoCell: UITableViewCell {
 		}
 	}
 
-
 	// Remember target state for transition
 	override func willTransitionToState(state: UITableViewCellStateMask) {
 		super.willTransitionToState(state)
@@ -111,34 +145,7 @@ class QuadInfoCell: UITableViewCell {
 	}
 
 	override func layoutSubviews() {
-		let margin: CGFloat = 15.0
-
-		// offset to compensate shift caused by editing control
-		let editOffset : CGFloat
-
-		if cellState & .ShowingEditControlMask == .ShowingEditControlMask {
-			editOffset = 38.0
-		} else {
-			editOffset = 0.0
-		}
-
-		// space that can be distributed
-		let width = CGFloat(self.frame.size.width) - 9.0 - margin
-
-		// width of right labels
-		let iWidth: CGFloat  = large ? 96.0 : 135.0
-
-		// y position and height of top right label
-		let iYStart: CGFloat = large ? 17.0 :  20.0
-		let iHeight: CGFloat = large ? 36.0 :  30.0
-		let separatorHeight = 1.0 / UIScreen.mainScreen().scale
-
-		// compute label frames
-		topLeftLabel.frame  = CGRect(x:margin,                      y:20.0,    width: width - iWidth - 20, height: 30.0)
-		botLeftLabel.frame  = CGRect(x:margin,                      y:52.0,    width: width - iWidth - 20, height: 20.0)
-		topRightLabel.frame = CGRect(x:width - iWidth - editOffset, y:iYStart, width: iWidth - margin,     height: iHeight)
-		botRightLabel.frame = CGRect(x:width - iWidth - editOffset, y:52.0,    width: iWidth - margin,     height: 20.0)
-		separatorView.frame = CGRect(x:0.0, y:self.frame.size.height - separatorHeight, width: self.frame.size.width, height: separatorHeight)
+		super.layoutSubviews()
 
 		// hide right labels in editing modes
 		UIView.animateWithDuration(0.5) {
@@ -146,8 +153,6 @@ class QuadInfoCell: UITableViewCell {
 			self.topRightLabel.alpha = newAlpha
 			self.botRightLabel.alpha = newAlpha
 		}
-
-		super.layoutSubviews()
 	}
 
 }

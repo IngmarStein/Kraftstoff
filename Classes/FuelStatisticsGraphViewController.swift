@@ -119,7 +119,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		return self.view.bounds.size.height - self.graphTopBorder - StatisticGraphXAxisLabelHeight
 	}
 
-	//MARK: -  View Lifecycle
+	//MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()

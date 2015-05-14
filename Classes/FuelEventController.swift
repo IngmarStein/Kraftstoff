@@ -92,6 +92,9 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
 		self.tableView.backgroundView = backgroundView
 
+		self.tableView.estimatedRowHeight = self.tableView.rowHeight
+		self.tableView.rowHeight = UITableViewAutomaticDimension
+
 		NSNotificationCenter.defaultCenter().addObserver(self,
            selector:"localeChanged:",
                name:NSCurrentLocaleDidChangeNotification,
@@ -371,7 +374,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 	//MARK: - Export Action Sheet
 
-	func showExportSheet(sender: AnyObject!) {
+	func showExportSheet(sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 
@@ -394,6 +397,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		}
 		alertController.addAction(openInAction)
 		alertController.addAction(cancelAction)
+		alertController.popoverPresentationController?.barButtonItem = sender
 
 		presentViewController(alertController, animated:true, completion:nil)
 	}
