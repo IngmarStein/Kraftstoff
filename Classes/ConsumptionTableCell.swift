@@ -53,7 +53,7 @@ class ConsumptionTableCell: PageCell {
 		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]

@@ -29,7 +29,7 @@ class NumberEditTableCell: EditablePageCell {
 		self.textField.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
@@ -81,11 +81,11 @@ class NumberEditTableCell: EditablePageCell {
 			}
 
 			// Don't append when the result gets too large or below zero
-			if value.compare(NSDecimalNumber(mantissa:1, exponent:6, isNegative:false)) != .OrderedAscending {
+			if value >= NSDecimalNumber(mantissa:1, exponent:6, isNegative:false) {
 				return false
 			}
 
-			if value.compare(NSDecimalNumber.zero()) == .OrderedAscending {
+			if value < NSDecimalNumber.zero() {
 				return false
 			}
 		} else if range.location >= count(text) - 1 {

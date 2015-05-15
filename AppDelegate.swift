@@ -36,7 +36,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var error: NSError?
-		let storeURL = NSURL(fileURLWithPath:applicationDocumentsDirectory.stringByAppendingPathComponent("Kraftstoffrechner.sqlite"))!
+		let storeURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
 		let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
@@ -584,7 +584,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		// - when sum of all events equals the odometer value
 		// - when forced to do so
 		if !forceOdometerUpdate {
-			if car.odometer.compare(car.distanceTotalSum) != .OrderedDescending {
+			if car.odometer <= car.distanceTotalSum {
 				forceOdometerUpdate = true
 			}
 		}
@@ -628,10 +628,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 				let inheritedDistance   = event.inheritedDistance
 				let inheritedFuelVolume = event.inheritedFuelVolume
 
-				if inheritedCost.compare(zero) == .OrderedDescending ||
-				   inheritedDistance.compare(zero) == .OrderedDescending ||
-				   inheritedFuelVolume.compare(zero) == .OrderedDescending {
-
+				if inheritedCost > zero || inheritedDistance > zero || inheritedFuelVolume > zero {
 					while row > 0 {
 						let youngerEvent = youngerEvents[--row]
 
@@ -669,7 +666,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		// - when sum of all events equals the odometer value
 		// - when forced to do so
 		if !forceOdometerUpdate {
-			if car.odometer.compare(car.distanceTotalSum) != .OrderedDescending {
+			if car.odometer <= car.distanceTotalSum {
 				forceOdometerUpdate = true
 			}
 		}

@@ -166,7 +166,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let zero = NSDecimalNumber.zero()
 
-		if (distance == nil || distance!.compare(zero) == .OrderedSame) && (fuelVolume == nil || fuelVolume!.compare(zero) == .OrderedSame) && (price == nil || price!.compare(zero) == .OrderedSame) {
+		if (distance == nil || distance! == zero) && (fuelVolume == nil || fuelVolume! == zero) && (price == nil || price! == zero) {
 			return
 		}
 
@@ -199,7 +199,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let zero = NSDecimalNumber.zero()
 
-		if (distance != nil && distance!.compare(zero) != .OrderedDescending) || (fuelVolume != nil && fuelVolume!.compare(zero) != .OrderedDescending) {
+		if (distance == nil || distance! <= zero) || (fuelVolume == nil || fuelVolume! <= zero) {
 			return false
 		}
 
@@ -304,7 +304,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   cellClass:NumberEditTableCell.self,
                    cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
                              "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
-                             "formatter": KSVolumeIsMetric(fuelUnit)
+                             "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
                              "valueIdentifier": "fuelVolume"],
@@ -411,7 +411,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// Update the tableview
 		let odoChanged = oldCar == nil || oldCar!.odometerUnit != self.car!.odometerUnit
 
-		let fuelChanged = oldCar == nil || KSVolumeIsMetric(oldCar!.ksFuelUnit) != KSVolumeIsMetric(self.car!.ksFuelUnit)
+		let fuelChanged = oldCar == nil || oldCar!.ksFuelUnit.isMetric != self.car!.ksFuelUnit.isMetric
 
 		var count = 0
 
@@ -488,9 +488,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
 	}
 
-	//MARK: - Programatically Selecting Table Rows
+	//MARK: - Programmatically Selecting Table Rows
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
 		let field : UITextField?
 
@@ -503,10 +503,15 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		} else {
 			field = nil
 		}
+		return field
+	}
 
-		if let field = field {
+	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
 		}
 	}
 
@@ -557,7 +562,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance!.compare(NSDecimalNumber.zero()) == .OrderedSame) || (fuelVolume == nil || fuelVolume!.compare(NSDecimalNumber.zero()) == .OrderedSame) {
+		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
 			saveValid = false
 		} else if date == nil || AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:self.date!) {
 			saveValid = false
@@ -581,14 +586,14 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
 		let convDistance = rawDistance - self.car!.odometer
     
-		if NSDecimalNumber.zero().compare(convDistance) != .OrderedAscending {
+		if convDistance <= NSDecimalNumber.zero() {
 			return false
 		}
     
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit:self.car!.ksFuelUnit)
     
-		if NSDecimalNumber.zero().compare(liters) != .OrderedAscending {
+		if liters <= NSDecimalNumber.zero() {
 			return false
 		}
 
@@ -624,12 +629,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// conversion only when rawConsumtion <= lowerBound
-		if rawConsumption.compare(loBound) == .OrderedDescending {
+		if rawConsumption > loBound {
 			return false
 		}
 
 		// conversion only when lowerBound <= convConversion <= highBound
-		if convConsumption.compare(loBound) == .OrderedAscending || convConsumption.compare(hiBound) == .OrderedDescending {
+		if convConsumption < loBound || convConsumption > hiBound {
 			return false
 		}
     
@@ -795,7 +800,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber.compare(NSDecimalNumber.zero()) != .OrderedDescending {
+				if decimalNumber <= NSDecimalNumber.zero() {
 					return false
 				}
 			}
@@ -835,6 +840,14 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+	}
+
+	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.resignFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
+		}
 	}
 
 	//MARK: -

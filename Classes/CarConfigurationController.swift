@@ -266,7 +266,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 
 	//MARK: - Programmatically Selecting Table Rows
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
 		let cell = tableView.cellForRowAtIndexPath(indexPath)!
 		let field: UITextField?
 
@@ -280,9 +280,15 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 			field = nil
 		}
 
-		if let field = field {
+		return field
+	}
+
+	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
 		}
 	}
 
@@ -313,7 +319,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer!.compare(NSDecimalNumber.zero()) == .OrderedSame {
+			&& self.odometer! == NSDecimalNumber.zero() {
 			showCancelSheet = false
 		}
 
@@ -413,8 +419,15 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+	}
+
+	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.resignFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
+		}
 	}
 
 	//MARK: - Memory Management

@@ -13,27 +13,34 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 	var picker: UIPickerView
 	var pickerLabels: [String]!
 	var pickerShortLabels: [String]?
+	private var pickerConstraints = [NSLayoutConstraint]()
 
 	private let PickerViewCellWidth: CGFloat  = 290.0
 	private let PickerViewCellHeight: CGFloat =  44.0
 
 	required init() {
-		self.picker = UIPickerView()
+		picker = UIPickerView()
 
 		super.init()
 
-		self.picker.showsSelectionIndicator = true
-		self.picker.dataSource              = self
-		self.picker.delegate                = self
+		picker.showsSelectionIndicator = true
+		picker.dataSource              = self
+		picker.delegate                = self
+		picker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		picker.hidden = true
+		let pickerHeightConstraint = NSLayoutConstraint(item: picker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
+		pickerHeightConstraint.priority = 750
+		picker.addConstraint(pickerHeightConstraint)
+		contentView.addSubview(picker)
 
-		self.textField.inputView = self.picker
+		pickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[picker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "picker" : picker]) as! [NSLayoutConstraint]
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
@@ -55,6 +62,16 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[row]
 
 		self.delegate.valueChanged(row, identifier:self.valueIdentifier)
+	}
+
+	private func showPicker(show: Bool) {
+		if show {
+			contentView.addConstraints(pickerConstraints)
+			picker.hidden = false
+		} else {
+			contentView.removeConstraints(pickerConstraints)
+			picker.hidden = true
+		}
 	}
 
 	//MARK: - UIPickerViewDataSource
@@ -88,12 +105,22 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
-		label.font = UIFont.boldSystemFontOfSize(self.pickerShortLabels != nil ? 18 : 20)
+		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
 		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
 		label.backgroundColor = UIColor.clearColor()
 
 		label.text = self.pickerView(pickerView, titleForRow:row, forComponent:component)
 
 		return label
+	}
+
+	//MARK: - UITextFieldDelegate
+
+	func textFieldDidBeginEditing(textField: UITextField) {
+		showPicker(true)
+	}
+
+	override func textFieldDidEndEditing(textField: UITextField) {
+		showPicker(false)
 	}
 }

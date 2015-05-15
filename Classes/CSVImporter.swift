@@ -194,7 +194,7 @@ public class CSVImporter {
 	private func guessDistanceForParsedDistance(distance: NSDecimalNumber, andFuelVolume liters: NSDecimalNumber) -> NSDecimalNumber {
 		let convDistance = distance << 3
 
-		if NSDecimalNumber.zero().compare(liters) != .OrderedAscending {
+		if liters <= NSDecimalNumber.zero() {
 			return distance
 		}
 
@@ -217,12 +217,12 @@ public class CSVImporter {
 		let hiBound = NSDecimalNumber(integer: 20)
     
 		// conversion only when unconverted >= lowerBound
-		if rawConsumption.compare(hiBound) == .OrderedAscending {
+		if rawConsumption < hiBound {
 			return distance
 		}
 
 		// conversion only when lowerBound <= convConversion <= highBound
-		if convConsumption.compare(loBound) == .OrderedAscending || convConsumption.compare(hiBound) == .OrderedDescending {
+		if convConsumption < loBound || convConsumption > hiBound {
 			return distance
 		}
 

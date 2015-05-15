@@ -10,8 +10,9 @@ import UIKit
 
 class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
-	var carPicker: UIPickerView
+	private var carPicker: UIPickerView
 	var cars: [Car]!
+	private var carPickerConstraints = [NSLayoutConstraint]()
 
 	// Standard cell geometry
 	private let PickerViewCellWidth: CGFloat        = 290.0
@@ -20,32 +21,40 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	private let maximumDescriptionLength = 24
 
 	// Attributes for custom PickerViews
-	private let prefixAttributesDict : [NSObject:AnyObject] = {
-		let font = UIFont(name: "HelveticaNeue", size: 24)!
-		return [NSFontAttributeName : font,
-				NSForegroundColorAttributeName : UIColor.blackColor()]
-	}()
-
-	private let suffixAttributesDict : [NSObject:AnyObject] = {
-		let font = UIFont(name: "HelveticaNeue", size: 18)!
-		return [NSFontAttributeName : font,
-				NSForegroundColorAttributeName : UIColor.darkGrayColor()]
-	}()
+	private var prefixAttributes = [NSObject:AnyObject]()
+	private var suffixAttributes = [NSObject:AnyObject]()
 
 	required init() {
-		self.carPicker = UIPickerView()
+		carPicker = UIPickerView()
 
 		super.init()
 
-		self.carPicker.showsSelectionIndicator = true
-		self.carPicker.dataSource              = self
-		self.carPicker.delegate                = self
+		let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
+		carPickerHeightConstraint.priority = 750
+		carPicker.showsSelectionIndicator = true
+		carPicker.dataSource              = self
+		carPicker.delegate                = self
+		carPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		carPicker.hidden = true
+		carPicker.addConstraint(carPickerHeightConstraint)
+		contentView.addSubview(carPicker)
 
-		self.textField.inputView = self.carPicker
+		carPickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[carPicker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "carPicker" : carPicker]) as! [NSLayoutConstraint]
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	override func setupFonts() {
+		super.setupFonts()
+
+		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
+			NSForegroundColorAttributeName : UIColor.blackColor()]
+		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
+			NSForegroundColorAttributeName : UIColor.darkGrayColor()]
+
+		self.carPicker.reloadAllComponents()
 	}
 
 	override func prepareForReuse() {
@@ -55,7 +64,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
@@ -85,6 +94,16 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 		// Store selected car in delegate
 		self.delegate.valueChanged(car, identifier:self.valueIdentifier)
+	}
+
+	private func showPicker(show: Bool) {
+		if show {
+			contentView.addConstraints(carPickerConstraints)
+			carPicker.hidden = false
+		} else {
+			contentView.removeConstraints(carPickerConstraints)
+			carPicker.hidden = true
+		}
 	}
 
 	//MARK: - UIPickerViewDataSource
@@ -123,9 +142,9 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 			label.lineBreakMode = .ByTruncatingTail
 		}
 
-		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributesDict)
+		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)
 		attributedText.beginEditing()
-		attributedText.setAttributes(prefixAttributesDict, range:NSRange(location:0, length:count(name)))
+		attributedText.setAttributes(prefixAttributes, range:NSRange(location:0, length:count(name)))
 		attributedText.endEditing()
 		label.attributedText = attributedText
 
@@ -134,5 +153,15 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		label.accessibilityLabel = "\(name) \(info)"
 
 		return label
+	}
+
+	//MARK: - UITextFieldDelegate
+
+	func textFieldDidBeginEditing(textField: UITextField) {
+		showPicker(true)
+	}
+
+	override func textFieldDidEndEditing(textField: UITextField) {
+		showPicker(false)
 	}
 }

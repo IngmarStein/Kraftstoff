@@ -177,9 +177,9 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 				helpView.image = UIImage(named:helpImageName)
 				helpView.frame = helpViewFrame
 			} else {
-				let helpImage  = UIImage(named:NSLocalizedString(helpImageName, comment:""))!.imageWithRenderingMode(.AlwaysTemplate)
+				let helpImage   = UIImage(named:NSLocalizedString(helpImageName, comment:""))!.imageWithRenderingMode(.AlwaysTemplate)
 
-				helpView       = UIImageView(image:helpImage)
+				helpView        = UIImageView(image:helpImage)
 				helpView!.tag   = 100
 				helpView!.frame = helpViewFrame
 				helpView!.alpha = animated ? 0.0 : 1.0
@@ -456,7 +456,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		let distance   = managedObject.distanceTotalSum
 		let fuelVolume = managedObject.fuelVolumeTotalSum
 
-		if distance.compare(NSDecimalNumber.zero()) == .OrderedDescending && fuelVolume.compare(NSDecimalNumber.zero()) == .OrderedDescending {
+		if distance > NSDecimalNumber.zero() && fuelVolume > NSDecimalNumber.zero() {
 			avgConsumption = Formatters.sharedFuelVolumeFormatter.stringFromNumber(Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = Units.consumptionUnitAccessibilityDescription(consumptionUnit)

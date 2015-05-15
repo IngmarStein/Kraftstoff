@@ -10,12 +10,25 @@ import UIKit
 
 class DateEditTableCell: EditableProxyPageCell {
 
-	var valueTimestamp: String?
-	var dateFormatter: NSDateFormatter!
-	var autoRefreshedDate = false
+	private var valueTimestamp: String?
+	private var dateFormatter: NSDateFormatter!
+	private var autoRefreshedDate = false
+	private var datePicker: UIDatePicker
+	private var datePickerConstraints = [NSLayoutConstraint]()
 
 	required init() {
+		datePicker = UIDatePicker()
+
 		super.init()
+
+		datePicker.datePickerMode = .DateAndTime
+		datePicker.addTarget(self, action:"datePickerValueChanged:", forControlEvents:.ValueChanged)
+		datePicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		datePicker.hidden = true
+
+		contentView.addSubview(datePicker)
+
+		datePickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[datePicker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "datePicker" : datePicker]) as! [NSLayoutConstraint]
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
 												selector:"significantTimeChange:",
@@ -32,14 +45,14 @@ class DateEditTableCell: EditableProxyPageCell {
 		self.textFieldProxy.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
-	override func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		let dictionary = object as! [NSObject:AnyObject]
 
-		self.valueTimestamp      = dictionary["valueTimestamp"] as? String
-		self.dateFormatter       = dictionary["formatter"] as! NSDateFormatter
-		self.autoRefreshedDate   = dictionary["autorefresh"]?.boolValue ?? false
+		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
+		self.dateFormatter     = dictionary["formatter"] as! NSDateFormatter
+		self.autoRefreshedDate = dictionary["autorefresh"]?.boolValue ?? false
 
 		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate
 		self.textFieldProxy.text = value.flatMap { self.dateFormatter.stringFromDate($0) } ?? ""
@@ -55,7 +68,7 @@ class DateEditTableCell: EditableProxyPageCell {
 			self.delegate.valueChanged(NSDate.distantPast(), identifier:timestamp)
 		}
 
-		refreshDatePickerInputViewWithDate(nil, forceRecreation:true)
+		refreshDatePickerWithDate(nil)
 	}
 
 	func datePickerValueChanged(sender: UIDatePicker) {
@@ -71,35 +84,27 @@ class DateEditTableCell: EditableProxyPageCell {
 		}
 	}
 
-	private func refreshDatePickerInputViewWithDate(date: NSDate?, forceRecreation: Bool) {
+	private func refreshDatePickerWithDate(date: NSDate?) {
 		let now = NSDate()
-
-		// Get previous input view
-		var datePicker: UIDatePicker?
-
-		if !forceRecreation {
-			datePicker = self.textField.inputView as? UIDatePicker
-		}
 
 		// If not specified get the date to be selected from the delegate
 		let effectiveDate = (date ?? self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate) ?? now
 
-		// Create new datepicker with a correct 'today' flag
-		if datePicker == nil {
-			datePicker = UIDatePicker()
-			datePicker!.datePickerMode = .DateAndTime
-
-			datePicker!.addTarget(self, action:"datePickerValueChanged:", forControlEvents:.ValueChanged)
-
-			self.textField.inputView = datePicker
-		}
-
-		datePicker!.maximumDate = NSDate.dateWithoutSeconds(now)
-		datePicker!.setDate(NSDate.dateWithoutSeconds(effectiveDate), animated:false)
+		datePicker.maximumDate = NSDate.dateWithoutSeconds(now)
+		datePicker.setDate(NSDate.dateWithoutSeconds(effectiveDate), animated:false)
 
 		// Immediate update when we are the first responder and notify delegate about new value too
-		datePickerValueChanged(datePicker!)
-		self.textField.reloadInputViews()
+		datePickerValueChanged(datePicker)
+	}
+
+	private func showDatePicker(show: Bool) {
+		if show {
+			contentView.addConstraints(datePickerConstraints)
+			datePicker.hidden = false
+		} else {
+			contentView.removeConstraints(datePickerConstraints)
+			datePicker.hidden = true
+		}
 	}
 
 	//MARK: - UITextFieldDelegate
@@ -121,6 +126,12 @@ class DateEditTableCell: EditableProxyPageCell {
 		}
 
 		// Update the date picker with the selected time
-		refreshDatePickerInputViewWithDate(selectedDate, forceRecreation:false)
+		refreshDatePickerWithDate(selectedDate)
+
+		showDatePicker(true)
+	}
+
+	override func textFieldDidEndEditing(textField: UITextField) {
+		showDatePicker(false)
 	}
 }

@@ -289,7 +289,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		// Don't add the section when no value can be computed
 		let zero = NSDecimalNumber.zero()
 
-		if !(distance.compare(zero) == .OrderedDescending && fuelVolume.compare(zero) == .OrderedDescending) {
+		if distance <= zero || fuelVolume <= zero {
 			return
 		}
 
@@ -363,7 +363,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
               cellClass:NumberEditTableCell.self,
                cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
                          "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
-                         "formatter": KSVolumeIsMetric(fuelUnit) ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
+                         "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
 
@@ -393,23 +393,30 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		}
 	}
 
-	//MARK: - Programatically Selecting Table Rows
+	//MARK: - Programmatically Selecting Table Rows
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
-		let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-		let field: UITextField?
-    
-		if let dateCell = cell as? DateEditTableCell {
+	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
+		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
+		let field : UITextField?
+
+		if let carCell = cell as? CarTableCell {
+			field = carCell.textField
+		} else if let dateCell = cell as? DateEditTableCell {
 			field = dateCell.textField
 		} else if let numberCell = cell as? NumberEditTableCell {
 			field = numberCell.textField
 		} else {
 			field = nil
 		}
+		return field
+	}
 
-		if let field = field {
+	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
 		}
 	}
 
@@ -446,17 +453,17 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			}
 		} else if let newNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier == "distance" {
-				if distance.compare(newNumber) != .OrderedSame {
+				if distance != newNumber {
 					distance = newNumber
 					dataChanged = true
 				}
 			} else if valueIdentifier == "price" {
-				if price.compare(newNumber) != .OrderedSame {
+				if price != newNumber {
 					price = newNumber
 					dataChanged = true
 				}
 			} else if valueIdentifier == "fuelVolume" {
-				if fuelVolume.compare(newNumber) != .OrderedSame {
+				if fuelVolume != newNumber {
 					fuelVolume = newNumber
 					dataChanged = true
 				}
@@ -475,7 +482,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 		let zero = NSDecimalNumber.zero()
 
-		if !(distance.compare(zero) == .OrderedDescending && fuelVolume.compare(zero) == .OrderedDescending) {
+		if !(distance > zero && fuelVolume > zero) {
 			canBeSaved = false
 		} else if !date.isEqualToDate(event.timestamp) {
 			if AppDelegate.managedObjectContext(managedObjectContext, containsEventWithCar:car, andDate:date) {
@@ -501,7 +508,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber.compare(NSDecimalNumber.zero()) != .OrderedDescending {
+				if decimalNumber <= NSDecimalNumber.zero() {
 					return false
 				}
 			}
@@ -530,8 +537,15 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+	}
+
+	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.resignFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
+		}
 	}
 
 	//MARK: - Memory Management
