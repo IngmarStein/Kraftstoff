@@ -36,7 +36,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var error: NSError?
-		let storeURL = NSURL(fileURLWithPath:applicationDocumentsDirectory.stringByAppendingPathComponent("Kraftstoffrechner.sqlite"))!
+		let storeURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
 		let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)

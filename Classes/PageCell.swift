@@ -27,7 +27,7 @@ class PageCell: UITableViewCell {
 		// Suppress default behaviour
 	}
 
-	func configureForData(object: AnyObject!, viewController: AnyObject!, tableView: UITableView!, indexPath: NSIndexPath) {
+	func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		// Overridepoint for subclasses
 	}
 
