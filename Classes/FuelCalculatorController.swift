@@ -166,7 +166,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let zero = NSDecimalNumber.zero()
 
-		if (distance == nil || distance!.compare(zero) == .OrderedSame) && (fuelVolume == nil || fuelVolume!.compare(zero) == .OrderedSame) && (price == nil || price!.compare(zero) == .OrderedSame) {
+		if (distance == nil || distance! == zero) && (fuelVolume == nil || fuelVolume! == zero) && (price == nil || price! == zero) {
 			return
 		}
 
@@ -199,7 +199,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let zero = NSDecimalNumber.zero()
 
-		if (distance != nil && distance!.compare(zero) != .OrderedDescending) || (fuelVolume != nil && fuelVolume!.compare(zero) != .OrderedDescending) {
+		if (distance == nil || distance! <= zero) || (fuelVolume == nil || fuelVolume! <= zero) {
 			return false
 		}
 
@@ -557,7 +557,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance!.compare(NSDecimalNumber.zero()) == .OrderedSame) || (fuelVolume == nil || fuelVolume!.compare(NSDecimalNumber.zero()) == .OrderedSame) {
+		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
 			saveValid = false
 		} else if date == nil || AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:self.date!) {
 			saveValid = false
@@ -581,14 +581,14 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
 		let convDistance = rawDistance - self.car!.odometer
     
-		if NSDecimalNumber.zero().compare(convDistance) != .OrderedAscending {
+		if convDistance <= NSDecimalNumber.zero() {
 			return false
 		}
     
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit:self.car!.ksFuelUnit)
     
-		if NSDecimalNumber.zero().compare(liters) != .OrderedAscending {
+		if liters <= NSDecimalNumber.zero() {
 			return false
 		}
 
@@ -624,12 +624,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// conversion only when rawConsumtion <= lowerBound
-		if rawConsumption.compare(loBound) == .OrderedDescending {
+		if rawConsumption > loBound {
 			return false
 		}
 
 		// conversion only when lowerBound <= convConversion <= highBound
-		if convConsumption.compare(loBound) == .OrderedAscending || convConsumption.compare(hiBound) == .OrderedDescending {
+		if convConsumption < loBound || convConsumption > hiBound {
 			return false
 		}
     
@@ -795,7 +795,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber.compare(NSDecimalNumber.zero()) != .OrderedDescending {
+				if decimalNumber <= NSDecimalNumber.zero() {
 					return false
 				}
 			}

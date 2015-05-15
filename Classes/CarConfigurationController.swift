@@ -313,7 +313,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer!.compare(NSDecimalNumber.zero()) == .OrderedSame {
+			&& self.odometer! == NSDecimalNumber.zero() {
 			showCancelSheet = false
 		}
 

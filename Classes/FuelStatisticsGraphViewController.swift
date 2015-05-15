@@ -842,7 +842,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 	@objc func valueForFuelEvent(fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		let price = fuelEvent.price
 
-		if price.compare(NSDecimalNumber.zero()) == .OrderedSame {
+		if price == NSDecimalNumber.zero() {
 			return CGFloat.NaN
 		}
 
@@ -909,7 +909,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 		distance = distance + fuelEvent.inheritedDistance
 		cost     = cost + fuelEvent.inheritedCost
 
-		if cost.compare(NSDecimalNumber.zero()) == .OrderedSame {
+		if cost == NSDecimalNumber.zero() {
 			return CGFloat.NaN
 		}
 

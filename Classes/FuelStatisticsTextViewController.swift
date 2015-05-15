@@ -368,7 +368,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             // cost per distance
 			let costPerDistanceLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:false))
-			if zero.compare(state.totalDistance) == .OrderedAscending {
+			if zero < state.totalDistance {
 				let val = state.totalCost / Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit)
 				drawEntry(costPerDistanceLabel, String(format:"%@/%@", pcf.stringFromNumber(val)!, odometerUnitString))
 			} else {
@@ -377,7 +377,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             // cost per volume
 			let costPerVolumeLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.fuelUnitDescription(fuelUnit, discernGallons:true, pluralization:false))
-			if zero.compare(state.totalFuelVolume) == .OrderedAscending {
+			if zero < state.totalFuelVolume {
 				let val = state.totalCost / Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit)
 				drawEntry(costPerVolumeLabel, String(format:"%@/%@", pcf.stringFromNumber(val)!, fuelUnitString))
 			} else {
@@ -422,7 +422,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             // distance per money
 			let distancePerMoneyLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), cf.currencySymbol!)
-			if zero.compare(state.totalCost) == .OrderedAscending {
+			if zero < state.totalCost {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / state.totalCost
 				drawEntry(distancePerMoneyLabel, String(format: "%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
 			} else {

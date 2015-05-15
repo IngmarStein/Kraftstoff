@@ -456,7 +456,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		let distance   = managedObject.distanceTotalSum
 		let fuelVolume = managedObject.fuelVolumeTotalSum
 
-		if distance.compare(NSDecimalNumber.zero()) == .OrderedDescending && fuelVolume.compare(NSDecimalNumber.zero()) == .OrderedDescending {
+		if distance > NSDecimalNumber.zero() && fuelVolume > NSDecimalNumber.zero() {
 			avgConsumption = Formatters.sharedFuelVolumeFormatter.stringFromNumber(Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = Units.consumptionUnitAccessibilityDescription(consumptionUnit)
