@@ -115,7 +115,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 				state.avgConsumption = state.avgConsumption + consumption
 
-				if KSFuelConsumptionIsEfficiency(consumptionUnit) {
+				if consumptionUnit.isEfficiency {
 					state.bestConsumption  = max(consumption, state.bestConsumption ?? consumption)
 					state.worstConsumption = min(consumption, state.worstConsumption ?? consumption)
 				} else {
@@ -326,17 +326,17 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             // avg consumption
             drawEntry(
-				NSLocalizedString(KSFuelConsumptionIsEfficiency(consumptionUnit) ? "avg_efficiency" : "avg_consumption", comment:""),
+				NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment:""),
                 String(format:"%@ %@", nf.stringFromNumber(state.avgConsumption)!, consumptionUnitString))
 
             // best consumption
 			drawEntry(
-				NSLocalizedString(KSFuelConsumptionIsEfficiency(consumptionUnit) ? "max_efficiency" : "min_consumption", comment:""),
+				NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment:""),
                 String(format:"%@ %@", nf.stringFromNumber(state.bestConsumption)!, consumptionUnitString))
 
             // worst consumption
 			drawEntry(
-				NSLocalizedString(KSFuelConsumptionIsEfficiency(consumptionUnit) ? "min_efficiency" : "max_consumption", comment:""),
+				NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment:""),
                 String(format:"%@ %@", nf.stringFromNumber(state.worstConsumption)!, consumptionUnitString))
 
             // total cost

@@ -766,12 +766,12 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 
 	@objc func graphRightBorder(rightBorder: CGFloat, forCar car: Car) -> CGFloat {
 		let consumptionUnit = car.ksFuelConsumptionUnit
-		return rightBorder - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0)
+		return rightBorder - (consumptionUnit.isGP10K ? 16.0 : 0.0)
 	}
 
 	@objc func graphWidth(graphWidth: CGFloat, forCar car: Car) -> CGFloat {
 		let consumptionUnit = car.ksFuelConsumptionUnit
-		return graphWidth - (KSFuelConsumptionIsGP10K (consumptionUnit) ? 16.0 : 0.0)
+		return graphWidth - (consumptionUnit.isGP10K ? 16.0 : 0.0)
 	}
 
 	@objc var curveGradient: CGGradientRef {
@@ -858,7 +858,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 	@objc func averageFormatter(precise: Bool, forCar car: Car) -> NSNumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
-		if KSDistanceIsMetric (distanceUnit) {
+		if distanceUnit.isMetric {
 			return Formatters.sharedCurrencyFormatter
 		} else {
 			return Formatters.sharedDistanceFormatter
@@ -868,7 +868,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 	@objc func averageFormatString(avgPrefix: Bool, forCar car: Car) -> String {
 		let distanceUnit = car.ksOdometerUnit
 
-		if KSDistanceIsMetric(distanceUnit) {
+		if distanceUnit.isMetric {
 			return String(format:"%@%%@/100km", avgPrefix ? "∅ " : "")
 		} else {
 			return String(format:"%@%%@ mi/%@", avgPrefix ? "∅ " : "", Formatters.sharedCurrencyFormatter.currencySymbol!)
@@ -878,14 +878,14 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 	@objc func noAverageStringForCar(car: Car) -> String {
 		let distanceUnit = car.ksOdometerUnit
 
-		return String(format:KSDistanceIsMetric(distanceUnit) ? "%@/100km" : "mi/%@",
+		return String(format:distanceUnit.isMetric ? "%@/100km" : "mi/%@",
 				Formatters.sharedCurrencyFormatter.currencySymbol!)
 	}
 
 	@objc func axisFormatterForCar(car: Car) -> NSNumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
-		if KSDistanceIsMetric(distanceUnit) {
+		if distanceUnit.isMetric {
 			return Formatters.sharedAxisCurrencyFormatter
 		} else {
 			return Formatters.sharedDistanceFormatter
@@ -913,7 +913,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 			return CGFloat.NaN
 		}
 
-		if KSDistanceIsMetric(distanceUnit) {
+		if distanceUnit.isMetric {
 			return CGFloat((cost << 2).decimalNumberByDividingBy(distance, withBehavior:handler).floatValue)
 		} else {
 			return CGFloat(distance.decimalNumberByDividingBy(Units.kilometersPerStatuteMile).decimalNumberByDividingBy(cost, withBehavior:handler).floatValue)

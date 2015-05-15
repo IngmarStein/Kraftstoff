@@ -363,7 +363,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
               cellClass:NumberEditTableCell.self,
                cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
                          "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
-                         "formatter": KSVolumeIsMetric(fuelUnit) ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
+                         "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
 

@@ -13,6 +13,10 @@ public enum KSDistance: Int32 {
 	case Invalid = -1
 	case Kilometer
 	case StatuteMile
+
+	var isMetric: Bool {
+		return self == .Kilometer
+	}
 }
 
 public enum KSVolume: Int32 {
@@ -20,6 +24,10 @@ public enum KSVolume: Int32 {
 	case Liter
 	case GalUS
 	case GalUK
+
+	var isMetric: Bool {
+		return self == .Liter
+	}
 }
 
 public enum KSFuelConsumption: Int32 {
@@ -30,15 +38,19 @@ public enum KSFuelConsumption: Int32 {
 	case MilesPerGallonUK
 	case GP10KUS
 	case GP10KUK
+
+	var isMetric: Bool {
+		return self == .LitersPer100km || self == .KilometersPerLiter
+	}
+
+	var isEfficiency: Bool {
+		return self == .KilometersPerLiter || self == .MilesPerGallonUS || self == .MilesPerGallonUK
+	}
+
+	var isGP10K: Bool {
+		return self == .GP10KUS || self == .GP10KUS
+	}
 }
-
-func KSDistanceIsMetric(x: KSDistance) -> Bool { return x == .Kilometer }
-
-func KSVolumeIsMetric(x: KSVolume) -> Bool { return x == .Liter }
-
-func KSFuelConsumptionIsMetric(x: KSFuelConsumption) -> Bool     { return x == .LitersPer100km || x == .KilometersPerLiter }
-func KSFuelConsumptionIsEfficiency(x: KSFuelConsumption) -> Bool { return x == .KilometersPerLiter || x == .MilesPerGallonUS || x == .MilesPerGallonUK }
-func KSFuelConsumptionIsGP10K(x: KSFuelConsumption) -> Bool      { return x == .GP10KUS || x == .GP10KUS }
 
 final class Units {
 
@@ -147,7 +159,7 @@ final class Units {
 			return NSDecimalNumber.notANumber()
 		}
 
-		if KSFuelConsumptionIsEfficiency(unit) {
+		if unit.isEfficiency {
 			let kmPerLiter = kilometers / liters
 
 			switch unit {
@@ -254,7 +266,7 @@ final class Units {
 	}
 
 	static func fuelPriceUnitDescription(unit: KSVolume) -> String {
-		if KSVolumeIsMetric(unit) {
+		if unit.isMetric {
 			return NSLocalizedString("Price per Liter", comment:"")
 		} else {
 			return NSLocalizedString("Price per Gallon", comment:"")
@@ -262,7 +274,7 @@ final class Units {
 	}
 
 	static func odometerUnitString(unit: KSDistance) -> String {
-		if KSDistanceIsMetric(unit) {
+		if unit.isMetric {
 			return "km"
 		} else {
 			return "mi"
@@ -271,9 +283,9 @@ final class Units {
 
 	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool) -> String {
 		if plural {
-			return KSDistanceIsMetric(unit) ? NSLocalizedString("Kilometers", comment:"") : NSLocalizedString("Miles", comment:"")
+			return unit.isMetric ? NSLocalizedString("Kilometers", comment:"") : NSLocalizedString("Miles", comment:"")
 		} else {
-			return KSDistanceIsMetric(unit) ? NSLocalizedString("Kilometer", comment:"")  : NSLocalizedString("Mile", comment:"")
+			return unit.isMetric ? NSLocalizedString("Kilometer", comment:"")  : NSLocalizedString("Mile", comment:"")
 		}
 	}
 

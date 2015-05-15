@@ -304,7 +304,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   cellClass:NumberEditTableCell.self,
                    cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
                              "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
-                             "formatter": KSVolumeIsMetric(fuelUnit)
+                             "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
                              "valueIdentifier": "fuelVolume"],
@@ -411,7 +411,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// Update the tableview
 		let odoChanged = oldCar == nil || oldCar!.odometerUnit != self.car!.odometerUnit
 
-		let fuelChanged = oldCar == nil || KSVolumeIsMetric(oldCar!.ksFuelUnit) != KSVolumeIsMetric(self.car!.ksFuelUnit)
+		let fuelChanged = oldCar == nil || oldCar!.ksFuelUnit.isMetric != self.car!.ksFuelUnit.isMetric
 
 		var count = 0
 
