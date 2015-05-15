@@ -88,7 +88,7 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
-		label.font = UIFont.boldSystemFontOfSize(self.pickerShortLabels != nil ? 18 : 20)
+		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
 		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
 		label.backgroundColor = UIColor.clearColor()
 
