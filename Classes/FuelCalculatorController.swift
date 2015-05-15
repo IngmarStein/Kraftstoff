@@ -488,9 +488,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
 	}
 
-	//MARK: - Programatically Selecting Table Rows
+	//MARK: - Programmatically Selecting Table Rows
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
 		let field : UITextField?
 
@@ -503,10 +503,15 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		} else {
 			field = nil
 		}
+		return field
+	}
 
-		if let field = field {
+	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
 		}
 	}
 
@@ -835,6 +840,14 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+	}
+
+	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.resignFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
+		}
 	}
 
 	//MARK: -

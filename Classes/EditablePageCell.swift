@@ -53,8 +53,11 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 		self.contentView.addSubview(keyLabel)
 
+		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .BottomMargin, multiplier: 1.0, constant: 0.0)
+		keyLabelBottomConstraint.priority = 500
 		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[textField]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel]))
+		self.contentView.addConstraint(NSLayoutConstraint(item: keyLabel, attribute: .Top, relatedBy: .Equal, toItem: contentView, attribute: .TopMargin, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(keyLabelBottomConstraint)
 		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .Baseline, relatedBy: .Equal, toItem: keyLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()

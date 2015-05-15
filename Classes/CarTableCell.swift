@@ -10,8 +10,9 @@ import UIKit
 
 class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
-	var carPicker: UIPickerView
+	private var carPicker: UIPickerView
 	var cars: [Car]!
+	private var carPickerConstraints = [NSLayoutConstraint]()
 
 	// Standard cell geometry
 	private let PickerViewCellWidth: CGFloat        = 290.0
@@ -24,15 +25,21 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	private var suffixAttributes = [NSObject:AnyObject]()
 
 	required init() {
-		self.carPicker = UIPickerView()
+		carPicker = UIPickerView()
 
 		super.init()
 
-		self.carPicker.showsSelectionIndicator = true
-		self.carPicker.dataSource              = self
-		self.carPicker.delegate                = self
+		let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
+		carPickerHeightConstraint.priority = 750
+		carPicker.showsSelectionIndicator = true
+		carPicker.dataSource              = self
+		carPicker.delegate                = self
+		carPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		carPicker.hidden = true
+		carPicker.addConstraint(carPickerHeightConstraint)
+		contentView.addSubview(carPicker)
 
-		self.textField.inputView = self.carPicker
+		carPickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[carPicker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "carPicker" : carPicker]) as! [NSLayoutConstraint]
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -89,6 +96,16 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		self.delegate.valueChanged(car, identifier:self.valueIdentifier)
 	}
 
+	private func showPicker(show: Bool) {
+		if show {
+			contentView.addConstraints(carPickerConstraints)
+			carPicker.hidden = false
+		} else {
+			contentView.removeConstraints(carPickerConstraints)
+			carPicker.hidden = true
+		}
+	}
+
 	//MARK: - UIPickerViewDataSource
 
 	func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
@@ -136,5 +153,15 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		label.accessibilityLabel = "\(name) \(info)"
 
 		return label
+	}
+
+	//MARK: - UITextFieldDelegate
+
+	func textFieldDidBeginEditing(textField: UITextField) {
+		showPicker(true)
+	}
+
+	override func textFieldDidEndEditing(textField: UITextField) {
+		showPicker(false)
 	}
 }

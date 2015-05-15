@@ -177,9 +177,9 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 				helpView.image = UIImage(named:helpImageName)
 				helpView.frame = helpViewFrame
 			} else {
-				let helpImage  = UIImage(named:NSLocalizedString(helpImageName, comment:""))!.imageWithRenderingMode(.AlwaysTemplate)
+				let helpImage   = UIImage(named:NSLocalizedString(helpImageName, comment:""))!.imageWithRenderingMode(.AlwaysTemplate)
 
-				helpView       = UIImageView(image:helpImage)
+				helpView        = UIImageView(image:helpImage)
 				helpView!.tag   = 100
 				helpView!.frame = helpViewFrame
 				helpView!.alpha = animated ? 0.0 : 1.0

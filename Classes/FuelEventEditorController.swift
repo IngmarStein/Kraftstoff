@@ -393,23 +393,30 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		}
 	}
 
-	//MARK: - Programatically Selecting Table Rows
+	//MARK: - Programmatically Selecting Table Rows
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
-		let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-		let field: UITextField?
-    
-		if let dateCell = cell as? DateEditTableCell {
+	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
+		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
+		let field : UITextField?
+
+		if let carCell = cell as? CarTableCell {
+			field = carCell.textField
+		} else if let dateCell = cell as? DateEditTableCell {
 			field = dateCell.textField
 		} else if let numberCell = cell as? NumberEditTableCell {
 			field = numberCell.textField
 		} else {
 			field = nil
 		}
+		return field
+	}
 
-		if let field = field {
+	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
 		}
 	}
 
@@ -530,8 +537,15 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+	}
+
+	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.resignFirstResponder()
+			tableView.beginUpdates()
+			tableView.endUpdates()
+		}
 	}
 
 	//MARK: - Memory Management

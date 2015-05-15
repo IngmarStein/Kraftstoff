@@ -83,26 +83,25 @@ class PageViewController: UIViewController, UITableViewDelegate, UITableViewData
 	func dismissKeyboardWithCompletion(completion: () -> Void) {
 		let scrollToTop = (self.tableView.contentOffset.y > 0.0)
     
-		UIView.animateWithDuration(scrollToTop ? 0.25 : 0.15,
-                     animations: {
-                         
-						if let indexPath = self.tableView.indexPathForSelectedRow() {
-                             self.tableView.deselectRowAtIndexPath(indexPath, animated:false)
-						}
+		UIView.animateWithDuration(scrollToTop ? 0.25 : 0.15, animations: {
+			if let indexPath = self.tableView.indexPathForSelectedRow() {
+				self.tableView.deselectRowAtIndexPath(indexPath, animated:false)
+				self.tableView.delegate?.tableView?(self.tableView, didDeselectRowAtIndexPath: indexPath)
+			}
 
-						if scrollToTop {
-                             self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow:0, inSection:0),
-                                                   atScrollPosition:.Top,
-                                                           animated:false)
-						}
+			if scrollToTop {
+				self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow:0, inSection:0),
+					atScrollPosition:.Top,
+					animated:false)
+			}
 
-						var insets = self.tableView.contentInset
-						insets.bottom = self.bottomInsetBeforeKeyboard ?? 0.0
-						self.tableView.contentInset = insets
-                     }, completion: { finished in
-                         self.view.endEditing(true)
-                         completion()
-                     })
+			var insets = self.tableView.contentInset
+			insets.bottom = self.bottomInsetBeforeKeyboard ?? 0.0
+			self.tableView.contentInset = insets
+		}, completion: { finished in
+			self.view.endEditing(true)
+			completion()
+		})
 	}
 
 	//MARK: - Access to Table Cells

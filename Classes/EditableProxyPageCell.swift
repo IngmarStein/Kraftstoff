@@ -49,7 +49,7 @@ class EditableProxyPageCell: EditablePageCell {
 	override var accessibilityLabel: String! {
 		get {
 			if let text1 = self.keyLabel.text, text2 = self.textFieldProxy.text {
-				return String(format:"%@ %@", text1, text2)
+				return "\(text1) \(text2)"
 			}
 			return nil
 		}
