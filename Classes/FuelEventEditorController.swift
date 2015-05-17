@@ -525,7 +525,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 	//MARK: - UITableViewDelegate
 
-	func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+	override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
 		let cell = tableView.cellForRowAtIndexPath(indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
@@ -535,12 +535,12 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		}
 	}
 
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
 	}
 
-	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			tableView.beginUpdates()

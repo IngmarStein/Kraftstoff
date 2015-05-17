@@ -417,12 +417,12 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 
 	//MARK: - UITableViewDelegate
 
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
 	}
 
-	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			tableView.beginUpdates()

@@ -34,6 +34,7 @@ class EditableProxyPageCell: EditablePageCell {
 
 		// Hide the textfield used for keyboard interaction
 		self.textField.hidden = true
+		self.textField.inputView = UIView() // hide keyboard
 	}
 
 	required init(coder aDecoder: NSCoder) {
