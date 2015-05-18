@@ -34,14 +34,21 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath)!)!
 	}()
 
+	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
+	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Fuel.sqlite")
+
+	private static let iCloudStoreOptions = [
+		NSMigratePersistentStoresAutomaticallyOption: true,
+		NSInferMappingModelAutomaticallyOption: true,
+		NSPersistentStoreUbiquitousContentNameKey: "Kraftstoff"
+	]
+
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
 		var error: NSError?
-		let storeURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
-		let options = [NSMigratePersistentStoresAutomaticallyOption: true, NSInferMappingModelAutomaticallyOption: true]
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
 
-		if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:storeURL, options:options, error:&error) == nil {
+		if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions, error:&error) == nil {
 			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
 				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
 				preferredStyle:.Alert)
@@ -81,6 +88,9 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 	private func commonLaunchInitialization(launchOptions: [NSObject : AnyObject]?) {
 		dispatch_once(&launchInitPred) {
 			self.window?.makeKeyAndVisible()
+
+			self.migrateToiCloud()
+			self.registerForiCloudNotifications()
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
@@ -268,9 +278,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 
 	//MARK: - Application's Documents Directory
 
-	private static var applicationDocumentsDirectory: String {
-		return NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as! String
-	}
+	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as! String
 
 	//MARK: - Shared Color Gradients
 
@@ -350,6 +358,99 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		} else {
 			return moc.existingObjectWithID(object.objectID, error:nil)
 		}
+	}
+
+	//MARK: - iCloud support
+
+	private func migrateToiCloud() {
+		let fileURL = AppDelegate.localStoreURL
+		let fileManager = NSFileManager.defaultManager()
+
+		if fileManager.fileExistsAtPath(fileURL.path!) {
+			let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: AppDelegate.managedObjectModel)
+
+			let options = [
+				NSMigratePersistentStoresAutomaticallyOption: true,
+				NSInferMappingModelAutomaticallyOption: true,
+				NSReadOnlyPersistentStoreOption: true
+			]
+
+			// Open the existing local store
+			var error: NSError?
+			if let sourceStore = migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:fileURL, options:options as [NSObject : AnyObject], error:&error) {
+				if let newStore = migrationPSC.migratePersistentStore(sourceStore, toURL:AppDelegate.iCloudStoreURL, options:AppDelegate.iCloudStoreOptions, withType:NSSQLiteStoreType, error:&error) {
+
+					dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+						let fileCoordinator = NSFileCoordinator()
+						fileCoordinator.coordinateWritingItemAtURL(fileURL, options: .ForMoving, error: &error) { writingURL in
+							var renameError: NSError?
+							let targetURL = fileURL.URLByAppendingPathExtension("migrated")
+							if !fileManager.moveItemAtURL(fileURL, toURL: targetURL, error: &renameError) {
+								if let error = renameError {
+									NSLog("error renaming store after migration: %@", error.localizedDescription)
+								}
+							}
+						}
+					}
+				} else  {
+					if let error = error {
+						NSLog("error while migrating to iCloud: %@", error.localizedDescription)
+					}
+				}
+			} else {
+				if let error = error {
+					NSLog("failed to open local store for migration: %@", error.localizedDescription)
+				}
+			}
+		}
+	}
+
+	private func registerForiCloudNotifications() {
+		let notificationCenter = NSNotificationCenter.defaultCenter()
+
+		notificationCenter.addObserver(self,
+			selector: "storesWillChange:",
+			name: NSPersistentStoreCoordinatorStoresWillChangeNotification,
+			object: AppDelegate.persistentStoreCoordinator)
+
+		notificationCenter.addObserver(self,
+			selector: "storesDidChange:",
+			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
+			object: AppDelegate.persistentStoreCoordinator)
+
+		notificationCenter.addObserver(self,
+			selector: "persistentStoreDidImportUbiquitousContentChanges:",
+			name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
+			object: AppDelegate.persistentStoreCoordinator)
+	}
+
+	func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
+		let context = AppDelegate.managedObjectContext
+
+		context.performBlock {
+			context.mergeChangesFromContextDidSaveNotification(changeNotification)
+		}
+	}
+
+	func storesWillChange(notification: NSNotification) {
+		let context = AppDelegate.managedObjectContext
+
+		context.performBlockAndWait {
+			if context.hasChanges {
+				var error: NSError?
+				let success = context.save(&error)
+
+				if let error = error where !success {
+					// perform error handling
+					NSLog("%@", error.localizedDescription)
+				}
+			}
+
+			context.reset()
+		}
+	}
+
+	func storesDidChange(notification: NSNotification) {
 	}
 
 	//MARK: - Preconfigured Core Data Fetches
