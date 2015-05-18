@@ -1,0 +1,6 @@
+language: objective-c
+osx_image: xcode63
+xcode_project: Kraftstoff.xcodeproj
+xcode_scheme: Kraftstoff
+before_script:
+- brew update && brew upgrade xctool
