@@ -50,7 +50,7 @@ class Kraftstoff_Tests: XCTestCase {
 
 		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
 
-		let fuelEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(car,
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
 			beforeDate:nil,
 			dateMatches:true,
 			inManagedObjectContext:managedObjectContext),

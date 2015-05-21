@@ -24,8 +24,6 @@ private let kSRFuelEventEditing         = "FuelEventEditing"
 
 class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate {
 
-	var managedObjectContext: NSManagedObjectContext!
-
 	var event: FuelEvent! {
 		didSet {
 			restoreStateFromEvent()
@@ -83,8 +81,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as! String
-			controller.managedObjectContext = AppDelegate.managedObjectContext
-			controller.event                = AppDelegate.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
+			controller.event                = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
 				return nil
@@ -102,8 +99,8 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		coder.encodeBool(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
 		coder.encodeBool(dataChanged, forKey:kSRFuelEventDataChanged)
 		coder.encodeObject(indexPath, forKey:kSRFuelEventSelectionIndex)
-		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
-		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
+		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
+		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
 		coder.encodeObject(date, forKey:kSRFuelEventDate)
 		coder.encodeObject(distance, forKey:kSRFuelEventDistance)
 		coder.encodeObject(price, forKey:kSRFuelEventPrice)
@@ -118,7 +115,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		isShowingCancelSheet   = coder.decodeBoolForKey(kSRFuelEventCancelSheet)
 		dataChanged            = coder.decodeBoolForKey(kSRFuelEventDataChanged)
 		restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRFuelEventSelectionIndex) as? NSIndexPath
-		car                    = AppDelegate.managedObjectForModelIdentifier(coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventCarID) as! String) as? Car
+		car                    = CoreDataManager.managedObjectForModelIdentifier(coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventCarID) as! String) as? Car
 		date                   = coder.decodeObjectOfClass(NSDate.self, forKey: kSRFuelEventDate) as? NSDate
 		distance               = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventDistance) as? NSDecimalNumber
 		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice) as? NSDecimalNumber
@@ -146,21 +143,18 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			dataChanged = false
 
 			// Remove event from database
-			AppDelegate.removeEventFromArchive(event,
-                     inManagedObjectContext:managedObjectContext,
-                        forceOdometerUpdate:true)
+			CoreDataManager.removeEventFromArchive(event, forceOdometerUpdate:true)
 
 			// Reinsert new version of event
-			event = AppDelegate.addToArchiveWithCar(car,
+			event = CoreDataManager.addToArchiveWithCar(car,
                                              date:date,
                                          distance:distance,
                                             price:price,
                                        fuelVolume:fuelVolume,
                                          filledUp:filledUp,
-                           inManagedObjectContext:managedObjectContext,
                               forceOdometerUpdate:true)
 
-			UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+			CoreDataManager.saveContext()
 		}
 	}
 
@@ -477,7 +471,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			}
 		}
 
-		// Validation of Done-Button
+		// Validation of Done button
 		var canBeSaved = true
 
 		let zero = NSDecimalNumber.zero()
@@ -485,7 +479,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		if !(distance > zero && fuelVolume > zero) {
 			canBeSaved = false
 		} else if !date.isEqualToDate(event.timestamp) {
-			if AppDelegate.managedObjectContext(managedObjectContext, containsEventWithCar:car, andDate:date) {
+			if CoreDataManager.containsEventWithCar(car, andDate:date) {
 				canBeSaved = false
 			}
 		}
@@ -498,7 +492,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
 				if !date.isEqualToDate(event.timestamp) {
-					if AppDelegate.managedObjectContext(managedObjectContext, containsEventWithCar:car, andDate:date) {
+					if CoreDataManager.containsEventWithCar(car, andDate:date) {
 						return false
 					}
 				}

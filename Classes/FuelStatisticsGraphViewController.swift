@@ -152,8 +152,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var valStretchFactorForDisplay: CGFloat
 
 		for var i = fetchedObjects.count - 1; i >= 0; i-- {
-			if let managedObject = AppDelegate.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
-
+			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
 				if !value.isNaN {
@@ -231,7 +230,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		for var i = valLastIndex; i >= valFirstIndex; i-- {
 
-			if let managedObject = AppDelegate.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
+			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
 				if !value.isNaN {

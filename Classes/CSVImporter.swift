@@ -162,8 +162,8 @@ public class CSVImporter {
 
 	private func createCarObjectsInContext(managedObjectContext: NSManagedObjectContext) -> Int {
 		// Fetch already existing cars for later update of order attribute
-		let carRequest = AppDelegate.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
-		let fetchedCarObjects = AppDelegate.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext) as! [Car]
+		let carRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
+		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext) as! [Car]
 
 		// Create car objects
 		carForID.removeAll()

@@ -76,7 +76,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		for var i = fetchedObjects.count - 1; i >= 0; i-- {
 
-			let managedObject: FuelEvent! = AppDelegate.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent
+			let managedObject: FuelEvent! = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent
 
 			if managedObject == nil {
 				continue

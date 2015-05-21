@@ -14,12 +14,10 @@ private let kSRCarViewEditedObject = "CarViewEditedObject"
 
 class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate {
 
-	private let managedObjectContext: NSManagedObjectContext = AppDelegate.managedObjectContext
-
 	var editedObject: Car!
 
 	private lazy var fetchedResultsController: NSFetchedResultsController = {
-		let fetchedResultsController = AppDelegate.fetchedResultsControllerForCarsInContext(self.managedObjectContext)
+		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
 		fetchedResultsController.delegate = self
 		return fetchedResultsController
 	}()
@@ -94,7 +92,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+			coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
 		}
 		super.encodeRestorableStateWithCoder(coder)
 	}
@@ -103,7 +101,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		super.decodeRestorableStateWithCoder(coder)
 
 		if let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRCarViewEditedObject) as? String {
-			self.editedObject = AppDelegate.managedObjectForModelIdentifier(modelIdentifier) as? Car
+			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 		}
 
 		// -> openradar #13438788
@@ -239,7 +237,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			changeIsUserDriven = false
 
 			// Create a new instance of the entity managed by the fetched results controller.
-			let newManagedObject = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+			let newManagedObject = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:CoreDataManager.managedObjectContext) as! Car
 
 			newManagedObject.order = 0
 			newManagedObject.timestamp = NSDate()
@@ -255,11 +253,11 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 			// Add demo contents
 			if addDemoContents {
-				DemoData.addDemoEventsForCar(newManagedObject, inContext:managedObjectContext)
+				DemoData.addDemoEventsForCar(newManagedObject, inContext:CoreDataManager.managedObjectContext)
 			}
 
 			// Saving here is important here to get a stable objectID for the fuelEvent fetches
-			UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+			CoreDataManager.saveContext()
 
 		} else if result == .EditSucceeded {
 
@@ -274,7 +272,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			editedObject.fuelUnit = controller.fuelUnit!.intValue
 			editedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.intValue
 
-			UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+			CoreDataManager.saveContext()
 
 			// Invalidate fuelEvent-controller and any precomputed statistics
 			fuelEventController = nil
@@ -296,7 +294,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 		// Force Core Data save after editing mode is finished
 		if !editing {
-			UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+			CoreDataManager.saveContext()
 		}
 	}
 
@@ -344,7 +342,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		if sender.state == .Began {
 
 			if let indexPath = self.tableView.indexPathForRowAtPoint(sender.locationInView(self.tableView)) {
-				UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+				CoreDataManager.saveContext()
 				self.editedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as! Car
 
 				// Present modal car configurator
@@ -389,8 +387,6 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	//MARK: - Removing an Existing Object
 
 	func removeExistingObjectAtPath(indexPath: NSIndexPath) {
-		let appDelegate = UIApplication.kraftstoffAppDelegate
-
 		let deletedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Car
 
 		// catch nil objects
@@ -402,15 +398,15 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 		// Invalidate preference for deleted car
 		let preferredCarID = NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")
-		let deletedCarID = AppDelegate.modelIdentifierForManagedObject(deletedObject!)
+		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject!)
 
 		if deletedCarID == preferredCarID {
 			NSUserDefaults.standardUserDefaults().setObject("", forKey:"preferredCarID")
 		}
 
 		// Delete the managed object for the given index path
-		managedObjectContext.deleteObject(deletedObject!)
-		appDelegate.saveContext(managedObjectContext)
+		CoreDataManager.managedObjectContext.deleteObject(deletedObject!)
+		CoreDataManager.saveContext()
 
 		// Update order of existing objects
 		changeIsUserDriven = true
@@ -423,7 +419,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 			}
         }
 
-		appDelegate.saveContext(managedObjectContext)
+		CoreDataManager.saveContext()
 
 		changeIsUserDriven = false
 
@@ -545,7 +541,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	//MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElementWithModelIdentifier(identifier: String, inView view: UIView) -> NSIndexPath? {
-		let object = AppDelegate.managedObjectForModelIdentifier(identifier)!
+		let object = CoreDataManager.managedObjectForModelIdentifier(identifier)!
 
 		return self.fetchedResultsController.indexPathForObject(object)
 	}
@@ -553,7 +549,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String {
 		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
 
-		return AppDelegate.modelIdentifierForManagedObject(object)!
+		return CoreDataManager.modelIdentifierForManagedObject(object)!
 	}
 
 	//MARK: - UITableViewDelegate
@@ -571,7 +567,6 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 		if fuelEventController == nil || fuelEventController.selectedCar != selectedCar {
 			fuelEventController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
-			fuelEventController.managedObjectContext = managedObjectContext
 			fuelEventController.selectedCar          = selectedCar
 		}
 

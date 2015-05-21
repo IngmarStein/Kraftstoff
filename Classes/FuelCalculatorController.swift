@@ -28,7 +28,6 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
 
-	var managedObjectContext: NSManagedObjectContext
 	var fetchedResultsController: NSFetchedResultsController
 
 	var restoredSelectionIndex: NSIndexPath?
@@ -45,8 +44,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	required init(coder aDecoder: NSCoder) {
 		// Fetch the cars
-		self.managedObjectContext = AppDelegate.managedObjectContext
-		self.fetchedResultsController = AppDelegate.fetchedResultsControllerForCarsInContext(self.managedObjectContext)
+		self.fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
 
 		super.init(coder: aDecoder)
 
@@ -319,7 +317,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.car = nil
     
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
-			self.car = AppDelegate.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
+			self.car = CoreDataManager.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
 
 			if self.car == nil {
 				self.car = self.fetchedResultsController.fetchedObjects!.first as? Car
@@ -536,13 +534,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          // Add new event object
                          self.changeIsUserDriven = true
 
-                         AppDelegate.addToArchiveWithCar(self.car!,
+                         CoreDataManager.addToArchiveWithCar(self.car!,
                                                      date:self.date!,
                                                  distance:self.distance!,
                                                     price:self.price!,
                                                fuelVolume:self.fuelVolume!,
                                                  filledUp:self.filledUp ?? false,
-                                   inManagedObjectContext:self.managedObjectContext,
                                       forceOdometerUpdate:false)
 
                          // Reset calculator table
@@ -553,7 +550,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          self.valueChanged(zero, identifier:"fuelVolume")
                          self.valueChanged(true, identifier:"filledUp")
 
-						UIApplication.kraftstoffAppDelegate.saveContext(self.managedObjectContext)
+						CoreDataManager.saveContext()
                      })
 	}
 
@@ -564,7 +561,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			saveValid = false
 		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
 			saveValid = false
-		} else if date == nil || AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:self.date!) {
+		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate:self.date!) {
 			saveValid = false
 		}
 
@@ -639,11 +636,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// 3.) the event must be the youngest one
-		let youngerEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(self.car!,
+		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(self.car!,
 																								afterDate:self.date!,
-																							  dateMatches:false,
-																				   inManagedObjectContext:self.managedObjectContext),
-														inManagedObjectContext:self.managedObjectContext)
+																							  dateMatches:false))
     
 		if youngerEvents.count > 0 {
 			return false
@@ -776,7 +771,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			if !self.car!.objectID.temporaryID {
 				let defaults = NSUserDefaults.standardUserDefaults()
 
-				defaults.setObject(AppDelegate.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
+				defaults.setObject(CoreDataManager.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
 				defaults.synchronize()
 			}
 		}
@@ -791,7 +786,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
-				if AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:date) {
+				if CoreDataManager.containsEventWithCar(self.car!, andDate:date) {
 					return false
 				}
 			}
