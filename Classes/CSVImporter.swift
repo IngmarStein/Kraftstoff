@@ -267,7 +267,7 @@ public class CSVImporter {
 		// Sort records according time and odometer
 		let sortedRecords = records.sorted { (record1, record2) -> Bool in
 			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
-				if date1.compare(date2) == .OrderedAscending {
+				if date1 < date2 {
 					return true
 				}
 			}

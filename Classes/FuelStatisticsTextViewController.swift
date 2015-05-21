@@ -90,11 +90,11 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Collect dates of events
 			let timestamp = managedObject.timestamp
 
-			if state.firstDate == nil || timestamp.compare(state.firstDate) != .OrderedDescending {
+			if state.firstDate == nil || timestamp <= state.firstDate {
 				state.firstDate = timestamp
 			}
 
-			if state.lastDate == nil || timestamp.compare(state.lastDate) != .OrderedAscending {
+			if state.lastDate == nil || timestamp >= state.lastDate {
 				state.lastDate = timestamp
 			}
 

@@ -151,11 +151,11 @@ final class Units {
 	static func consumptionForKilometers(kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: KSFuelConsumption) -> NSDecimalNumber {
 		let handler = Formatters.sharedConsumptionRoundingHandler
 
-		if kilometers.compare(NSDecimalNumber.zero()) != .OrderedDescending {
+		if kilometers <= NSDecimalNumber.zero() {
 			return NSDecimalNumber.notANumber()
 		}
 
-		if liters.compare(NSDecimalNumber.zero()) != .OrderedDescending {
+		if liters <= NSDecimalNumber.zero() {
 			return NSDecimalNumber.notANumber()
 		}
 
