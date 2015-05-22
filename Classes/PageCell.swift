@@ -23,10 +23,6 @@ class PageCell: UITableViewCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func prepareForReuse() {
-		// Suppress default behaviour
-	}
-
 	func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		// Overridepoint for subclasses
 	}

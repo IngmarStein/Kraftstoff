@@ -20,6 +20,13 @@ class PageViewController: UITableViewController {
 		tableView.rowHeight = UITableViewAutomaticDimension
 	}
 
+	override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+		super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+
+		// this fixes a layout issue: the UITextFieldLabels contained in UITextFields are not correctly resized
+		self.tableView.reloadData()
+	}
+
 	//MARK: - Dismissing the Keyboard
 
 	func dismissKeyboardWithCompletion(completion: () -> Void) {

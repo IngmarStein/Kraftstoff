@@ -22,7 +22,7 @@ private let kSRFuelEventFilledUp        = "FuelEventFilledUp"
 private let kSRFuelEventEditing         = "FuelEventEditing"
 
 
-class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate {
+class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var event: FuelEvent! {
 		didSet {
@@ -486,6 +486,8 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 		self.doneButton.enabled = canBeSaved
 	}
+
+	//MARK: - EditablePageCellValidator
 
 	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Date must be collision free

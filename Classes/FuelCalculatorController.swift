@@ -23,7 +23,7 @@ private struct FuelCalculatorDataRow: RawOptionSetType {
 	static var All: FuelCalculatorDataRow      { return self(0b0111) }
 }
 
-class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate {
+class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
@@ -776,6 +776,8 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			}
 		}
 	}
+
+	// MARK: - EditablePageCellValidator
 
 	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Validate only when there is a car for saving

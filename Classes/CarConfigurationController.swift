@@ -30,7 +30,7 @@ private let kSRConfiguratorOdometerUnit           = "FuelConfiguratorOdometerUni
 private let kSRConfiguratorFuelUnit               = "FuelConfiguratorFuelUnit"
 private let kSRConfiguratorFuelConsumptionUnit    = "FuelConfiguratorFuelConsumptionUnit"
 
-class CarConfigurationController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate {
+class CarConfigurationController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellFocusHandler {
 
 	var isShowingCancelSheet = false
 	var dataChanged = false
@@ -360,7 +360,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		}
 	}
 
-	//MARK: - EditablePageCellDelegate
+	//MARK: - EditablePageCellFocusHandler
 
 	func focusNextFieldForValueIdentifier(valueIdentifier: String) {
 		if valueIdentifier == "name" {
@@ -370,6 +370,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		}
 	}
 
+	//MARK: - EditablePageCellDelegate
 
 	func valueForIdentifier(valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {

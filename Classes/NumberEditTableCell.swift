@@ -25,7 +25,12 @@ class NumberEditTableCell: EditablePageCell {
 	}
 
 	private func updateTextFieldColorForValue(value: AnyObject?) {
-		let valid = self.delegate.valueValid?(value, identifier: self.valueIdentifier) ?? true
+		let valid: Bool
+		if let validator = self.delegate as? EditablePageCellValidator {
+			valid = validator.valueValid(value, identifier: self.valueIdentifier)
+		} else {
+			valid = true
+		}
 		self.textField.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
@@ -50,7 +55,6 @@ class NumberEditTableCell: EditablePageCell {
 
 		updateTextFieldColorForValue(value)
 	}
-
 
 	// MARK: - UITextFieldDelegate
 
