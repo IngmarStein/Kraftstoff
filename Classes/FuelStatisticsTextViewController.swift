@@ -296,13 +296,13 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let zero = NSDecimalNumber.zero()
 
             let consumptionUnit = state.car.ksFuelConsumptionUnit
-            let consumptionUnitString = Units.consumptionUnitString(consumptionUnit)
+            let consumptionUnitString = consumptionUnit.localizedString
 
             let odometerUnit = state.car.ksOdometerUnit
-            let odometerUnitString = Units.odometerUnitString(odometerUnit)
+            let odometerUnitString = odometerUnit.description
 
 			let fuelUnit = state.car.ksFuelUnit
-            let fuelUnitString = Units.fuelUnitString(fuelUnit)
+            let fuelUnitString = fuelUnit.description
 
             let numberOfDays = NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate)
 

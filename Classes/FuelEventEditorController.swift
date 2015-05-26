@@ -303,11 +303,11 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
                                       Formatters.sharedCurrencyFormatter.stringFromNumber(cost)!,
 									  NSLocalizedString("/", comment:""),
                                       Formatters.sharedFuelVolumeFormatter.stringFromNumber(consumption)!,
-                                      Units.consumptionUnitString(consumptionUnit))
+                                      consumptionUnit.localizedString)
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-                                  Units.consumptionUnitString(consumptionUnit)]
+                                  consumptionUnit.localizedString]
 
 		addSectionAtIndex(1, withAnimation:animation)
 
@@ -336,7 +336,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
               inSection:0,
               cellClass:NumberEditTableCell.self,
 			   cellData:["label": NSLocalizedString("Distance", comment:""),
-                         "suffix": " ".stringByAppendingString(Units.odometerUnitString(odometerUnit)),
+                         "suffix": " ".stringByAppendingString(odometerUnit.description),
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
           withAnimation:animation)
@@ -356,7 +356,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
               inSection:0,
               cellClass:NumberEditTableCell.self,
                cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                         "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
+                         "suffix": " ".stringByAppendingString(fuelUnit.description),
                          "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)

@@ -231,12 +231,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                                         Formatters.sharedCurrencyFormatter.stringFromNumber(cost)!,
 										NSLocalizedString("/", comment:""),
                                         Formatters.sharedFuelVolumeFormatter.stringFromNumber(consumption)!,
-                                        Units.consumptionUnitString(consumptionUnit))
+                                        consumptionUnit.localizedString)
 
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-								Units.consumptionUnitString(consumptionUnit)]
+								consumptionUnit.localizedString]
 
 		addSectionAtIndex(1, withAnimation:animation)
 
@@ -271,7 +271,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
 				   cellData:["label": NSLocalizedString("Distance", comment:""),
-                             "suffix": " ".stringByAppendingString(Units.odometerUnitString(odometerUnit)),
+                             "suffix": " ".stringByAppendingString(odometerUnit.description),
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
               withAnimation:animation)
@@ -301,7 +301,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
                    cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                             "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
+                             "suffix": " ".stringByAppendingString(fuelUnit.description),
                              "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
@@ -657,11 +657,11 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let rawButton = String(format: "%@ %@",
                                 distanceFormatter.stringFromNumber(Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!,
-                                Units.odometerUnitString(odometerUnit))
+                                odometerUnit.description)
 
 		let convButton = String(format:"%@ %@",
                                 distanceFormatter.stringFromNumber(Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!,
-								Units.odometerUnitString(odometerUnit))
+								odometerUnit.description)
 
 		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment:""),
 																			 message:nil,

@@ -35,7 +35,7 @@ public class CSVExporter {
 		dataString += Units.fuelPriceUnitDescription(fuelUnit)
 		dataString += ";"
 
-		dataString += Units.consumptionUnitDescription(consumptionUnit)
+		dataString += consumptionUnit.description
 		dataString += "\n"
 
 		let dateFormatter = NSDateFormatter()

@@ -791,15 +791,13 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 
 	func averageFormatString(avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = Units.consumptionUnitString(car.ksFuelConsumptionUnit)
+		let unit = car.ksFuelConsumptionUnit.localizedString
 
 		return "\(prefix)%@ \(unit)"
 	}
 
 	func noAverageStringForCar(car: Car) -> String {
-		let consumptionUnit = car.ksFuelConsumptionUnit
-
-		return Units.consumptionUnitString(consumptionUnit)
+		return car.ksFuelConsumptionUnit.localizedString
 	}
 
 	func axisFormatterForCar(car: Car) -> NSNumberFormatter {
@@ -830,7 +828,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 
 	func averageFormatString(avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = Units.fuelUnitString(car.ksFuelUnit)
+		let unit = car.ksFuelUnit.description
 
 		return "\(prefix)%@/\(unit)"
 	}
@@ -840,7 +838,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 
 		return String(format:"%@/%@",
             Formatters.sharedCurrencyFormatter.currencySymbol!,
-            Units.fuelUnitString(fuelUnit))
+            fuelUnit.description)
 	}
 
 	func axisFormatterForCar(car: Car) -> NSNumberFormatter {

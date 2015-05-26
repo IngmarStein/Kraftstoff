@@ -455,7 +455,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		if distance > NSDecimalNumber.zero() && fuelVolume > NSDecimalNumber.zero() {
 			avgConsumption = Formatters.sharedFuelVolumeFormatter.stringFromNumber(Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
-			tableCell.botRightAccessibilityLabel = Units.consumptionUnitAccessibilityDescription(consumptionUnit)
+			tableCell.botRightAccessibilityLabel = consumptionUnit.accessibilityDescription
 		} else {
 			avgConsumption = NSLocalizedString("-", comment:"")
 			tableCell.topRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
@@ -463,7 +463,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		}
 
 		tableCell.topRightLabel.text = avgConsumption
-		tableCell.botRightLabel.text = Units.consumptionUnitString(consumptionUnit)
+		tableCell.botRightLabel.text = consumptionUnit.localizedString
 	}
 
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

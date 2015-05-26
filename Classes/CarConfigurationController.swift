@@ -133,7 +133,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		let suffix = " ".stringByAppendingString(Units.odometerUnitString(KSDistance(rawValue: self.odometerUnit!.intValue)!))
+		let suffix = " ".stringByAppendingString(KSDistance(rawValue: self.odometerUnit!.intValue)!.description)
 
 		if self.odometer == nil {
 			self.odometer = NSDecimalNumber.zero()
@@ -212,19 +212,19 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 			self.fuelConsumptionUnit = Int(Units.fuelConsumptionUnitFromLocale.rawValue)
 		}
 
-		let fuelConsumptionUnitPickerLabels = [Units.consumptionUnitDescription(.LitersPer100km),
-                    Units.consumptionUnitDescription(.KilometersPerLiter),
-                    Units.consumptionUnitDescription(.MilesPerGallonUS),
-                    Units.consumptionUnitDescription(.MilesPerGallonUK),
-                    Units.consumptionUnitDescription(.GP10KUS),
-					Units.consumptionUnitDescription(.GP10KUK)]
+		let fuelConsumptionUnitPickerLabels = [KSFuelConsumption.LitersPer100km.description,
+                    KSFuelConsumption.KilometersPerLiter.description,
+                    KSFuelConsumption.MilesPerGallonUS.description,
+                    KSFuelConsumption.MilesPerGallonUK.description,
+                    KSFuelConsumption.GP10KUS.description,
+					KSFuelConsumption.GP10KUK.description]
 
-		let fuelConsumptionUnitPickerShortLabels = [Units.consumptionUnitShortDescription(.LitersPer100km),
-                         Units.consumptionUnitShortDescription(.KilometersPerLiter),
-                         Units.consumptionUnitShortDescription(.MilesPerGallonUS),
-                         Units.consumptionUnitShortDescription(.MilesPerGallonUK),
-                         Units.consumptionUnitShortDescription(.GP10KUS),
-                         Units.consumptionUnitShortDescription(.GP10KUK)]
+		let fuelConsumptionUnitPickerShortLabels = [KSFuelConsumption.LitersPer100km.shortDescription,
+                         KSFuelConsumption.KilometersPerLiter.shortDescription,
+                         KSFuelConsumption.MilesPerGallonUS.shortDescription,
+                         KSFuelConsumption.MilesPerGallonUK.shortDescription,
+                         KSFuelConsumption.GP10KUS.shortDescription,
+                         KSFuelConsumption.GP10KUK.shortDescription]
 
 		addRowAtIndex(rowIndex: 5,
               inSection:0,

@@ -427,7 +427,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 		tableCell.botLeftLabel.text = String(format:"%@ %@",
                     Formatters.sharedDistanceFormatter.stringFromNumber(convertedDistance)!,
-                    Units.odometerUnitString(odometerUnit))
+                    odometerUnit.description)
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
@@ -446,14 +446,14 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 			tableCell.botRightAccessibilityLabel = String(format:", %@ %@",
                                                     consumptionDescription,
-                                                    Units.consumptionUnitAccessibilityDescription(consumptionUnit))
+                                                    consumptionUnit.accessibilityDescription)
 
 		} else {
 			consumptionDescription = NSLocalizedString("-", comment:"")
 			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
 		}
 
-		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, Units.consumptionUnitString(consumptionUnit))
+		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, consumptionUnit.localizedString)
 	}
 
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
