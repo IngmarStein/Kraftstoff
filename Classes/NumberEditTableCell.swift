@@ -34,10 +34,9 @@ class NumberEditTableCell: EditablePageCell {
 		self.textField.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		let dictionary = object as! [NSObject:AnyObject]
 		self.textFieldSuffix          = dictionary["suffix"] as? String
 		self.numberFormatter          = dictionary["formatter"] as? NSNumberFormatter
 		self.alternateNumberFormatter = dictionary["alternateFormatter"] as? NSNumberFormatter

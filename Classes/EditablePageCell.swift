@@ -95,10 +95,9 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		}
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		let dictionary = object as! [NSObject:AnyObject]
 		self.keyLabel.text   = dictionary["label"] as? String
 		self.delegate        = viewController as? EditablePageCellDelegate
 		self.valueIdentifier = dictionary["valueIdentifier"] as! String

@@ -174,11 +174,11 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		dataChanged = false
 	}
 
-	//MARK: - Modeswitching for Table Rows
+	//MARK: - Mode Switching for Table Rows
 
 	private func reconfigureRowAtIndexPath(indexPath: NSIndexPath) {
-		if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? PageCell {
-			cell.configureForData(dataForRow(indexPath.row, inSection:0),
+		if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
+			cell.configureForData(cellData,
                 viewController:self,
                      tableView:self.tableView,
                      indexPath:indexPath)
