@@ -145,13 +145,13 @@ final class Units {
 
 	//MARK: - Conversion Constants
 
-	static let litersPerUSGallon = NSDecimalNumber(mantissa:UInt64(3785411784), exponent: -9, isNegative:false)
-	static let litersPerImperialGallon = NSDecimalNumber(mantissa:UInt64(454609), exponent: -5, isNegative:false)
-	static let kilometersPerStatuteMile = NSDecimalNumber(mantissa:UInt64(1609344), exponent: -6, isNegative:false)
-	static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa:UInt64(2352145833), exponent: -9, isNegative:false)
-	static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa:UInt64(2737067636), exponent: -9, isNegative:false)
-	static let litersPer100KilometersToMilesPer10KUSGallon = NSDecimalNumber(mantissa:UInt64(425170068027), exponent: -10, isNegative:false)
-	static let litersPer100KilometersToMilesPer10KImperialGallon = NSDecimalNumber(mantissa:UInt64(353982300885), exponent: -10, isNegative:false)
+	static let litersPerUSGallon = NSDecimalNumber(mantissa:(3785411784 as UInt64), exponent: -9, isNegative:false)
+	static let litersPerImperialGallon = NSDecimalNumber(mantissa:(454609 as UInt64), exponent: -5, isNegative:false)
+	static let kilometersPerStatuteMile = NSDecimalNumber(mantissa:(1609344 as UInt64), exponent: -6, isNegative:false)
+	static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa:(2352145833 as UInt64), exponent: -9, isNegative:false)
+	static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa:(2737067636 as UInt64), exponent: -9, isNegative:false)
+	static let litersPer100KilometersToMilesPer10KUSGallon = NSDecimalNumber(mantissa:(425170068027 as UInt64), exponent: -10, isNegative:false)
+	static let litersPer100KilometersToMilesPer10KImperialGallon = NSDecimalNumber(mantissa:(353982300885 as UInt64), exponent: -10, isNegative:false)
 
 	//MARK: - Conversion to/from Internal Data Format
 
