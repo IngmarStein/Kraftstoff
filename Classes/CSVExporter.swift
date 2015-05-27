@@ -41,6 +41,7 @@ public class CSVExporter {
 		let dateFormatter = NSDateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
 		dateFormatter.locale = NSLocale.systemLocale()
+		dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
 
 		let numberFormatter = NSNumberFormatter()
 		numberFormatter.numberStyle = .DecimalStyle
