@@ -35,12 +35,13 @@ public class CSVExporter {
 		dataString += Units.fuelPriceUnitDescription(fuelUnit)
 		dataString += ";"
 
-		dataString += Units.consumptionUnitDescription(consumptionUnit)
+		dataString += consumptionUnit.description
 		dataString += "\n"
 
 		let dateFormatter = NSDateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
 		dateFormatter.locale = NSLocale.systemLocale()
+		dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
 
 		let numberFormatter = NSNumberFormatter()
 		numberFormatter.numberStyle = .DecimalStyle

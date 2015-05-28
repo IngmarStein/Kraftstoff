@@ -15,15 +15,15 @@ class EditableProxyPageCell: EditablePageCell {
 	required init() {
 		// Create a proxy overlay for the textfield that is used to display the textField contents
 		// without a flashing cursor and no cut & paste possibilities
-		self.textFieldProxy = UILabel(frame:CGRectZero)
+		textFieldProxy = UILabel(frame:CGRectZero)
 
 		super.init()
 
-		self.textFieldProxy.textAlignment          = .Right
-		self.textFieldProxy.backgroundColor        = UIColor.clearColor()
-		self.textFieldProxy.userInteractionEnabled = false
-		self.textFieldProxy.isAccessibilityElement = false
-		self.textFieldProxy.setTranslatesAutoresizingMaskIntoConstraints(false)
+		textFieldProxy.textAlignment          = .Right
+		textFieldProxy.backgroundColor        = UIColor.clearColor()
+		textFieldProxy.userInteractionEnabled = false
+		textFieldProxy.isAccessibilityElement = false
+		textFieldProxy.setTranslatesAutoresizingMaskIntoConstraints(false)
 
 		self.contentView.addSubview(self.textFieldProxy)
 
@@ -33,7 +33,8 @@ class EditableProxyPageCell: EditablePageCell {
 		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Bottom, relatedBy: .Equal, toItem: textField, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
 
 		// Hide the textfield used for keyboard interaction
-		self.textField.hidden = true
+		textField.hidden = true
+		textField.inputView = UIView() // hide keyboard
 	}
 
 	required init(coder aDecoder: NSCoder) {

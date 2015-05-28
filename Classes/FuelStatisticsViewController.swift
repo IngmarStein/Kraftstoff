@@ -161,7 +161,7 @@ class FuelStatisticsViewController: UIViewController {
 			if let sampleCar = sampleContext.existingObjectWithID(selectedCarID, error:&error) as? Car {
 
 				// Fetch some young events to get the most recent fillup date
-				let recentEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(sampleCar,
+				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
                                                                                                       beforeDate:NSDate(),
                                                                                                      dateMatches:true,
                                                                                           inManagedObjectContext:sampleContext),
@@ -170,14 +170,14 @@ class FuelStatisticsViewController: UIViewController {
 				var recentFillupDate = NSDate()
 
 				if recentEvents.count > 0 {
-					if let recentEvent = AppDelegate.existingObject(recentEvents[0], inManagedObjectContext:sampleContext) as? FuelEvent {
+					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext:sampleContext) as? FuelEvent {
 						recentFillupDate = recentEvent.timestamp
 					}
 				}
 
 				// Fetch events for the selected time period
 				let samplingStart = NSDate.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
-				let samplingObjects = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(sampleCar,
+				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
                                                                                                           afterDate:samplingStart,
                                                                                                         dateMatches:true,
                                                                                              inManagedObjectContext:sampleContext),

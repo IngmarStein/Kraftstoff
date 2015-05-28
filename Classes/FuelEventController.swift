@@ -18,18 +18,16 @@ private let kSRFuelEventShowComposer      = "FuelEventShowMailComposer"
 class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate {
 
 	var selectedCar: Car!
-	var managedObjectContext: NSManagedObjectContext!
 
 	private lazy var fetchRequest: NSFetchRequest = {
-		return AppDelegate.fetchRequestForEventsForCar(self.selectedCar,
+		return CoreDataManager.fetchRequestForEventsForCar(self.selectedCar,
 			afterDate:nil,
-			dateMatches:true,
-			inManagedObjectContext:self.managedObjectContext)
+			dateMatches:true)
 	}()
 
 	private lazy var fetchedResultsController: NSFetchedResultsController = {
 		let fetchController = NSFetchedResultsController(fetchRequest:self.fetchRequest,
-			managedObjectContext:self.managedObjectContext,
+			managedObjectContext:CoreDataManager.managedObjectContext,
 			sectionNameKeyPath:nil,
 			cacheName:nil)
 
@@ -140,8 +138,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey:UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventSelectedCarID) as! String
-			controller.managedObjectContext = AppDelegate.managedObjectContext
-			controller.selectedCar = AppDelegate.managedObjectForModelIdentifier(modelIdentifier) as? Car
+			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
 			if controller.selectedCar == nil {
 				return nil
@@ -153,7 +150,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		coder.encodeObject(AppDelegate.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
+		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
 		coder.encodeBool(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
 		coder.encodeBool(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
 		coder.encodeBool(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
@@ -430,7 +427,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 		tableCell.botLeftLabel.text = String(format:"%@ %@",
                     Formatters.sharedDistanceFormatter.stringFromNumber(convertedDistance)!,
-                    Units.odometerUnitString(odometerUnit))
+                    odometerUnit.description)
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
@@ -449,14 +446,14 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 			tableCell.botRightAccessibilityLabel = String(format:", %@ %@",
                                                     consumptionDescription,
-                                                    Units.consumptionUnitAccessibilityDescription(consumptionUnit))
+                                                    consumptionUnit.accessibilityDescription)
 
 		} else {
 			consumptionDescription = NSLocalizedString("-", comment:"")
 			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
 		}
 
-		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, Units.consumptionUnitString(consumptionUnit))
+		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, consumptionUnit.localizedString)
 	}
 
 	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -484,18 +481,15 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
 		if editingStyle == .Delete {
 			let fuelEvent = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
-			AppDelegate.removeEventFromArchive(fuelEvent,
-                     inManagedObjectContext:managedObjectContext,
-                        forceOdometerUpdate:false)
-
-			UIApplication.kraftstoffAppDelegate.saveContext(managedObjectContext)
+			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate:false)
+			CoreDataManager.saveContext()
 		}
 	}
 
 	//MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElementWithModelIdentifier(identifier: String, inView view: UIView) -> NSIndexPath? {
-		let object = AppDelegate.managedObjectForModelIdentifier(identifier)!
+		let object = CoreDataManager.managedObjectForModelIdentifier(identifier)!
 
 		return self.fetchedResultsController.indexPathForObject(object)
 	}
@@ -503,7 +497,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String {
 		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
 
-		return AppDelegate.modelIdentifierForManagedObject(object)!
+		return CoreDataManager.modelIdentifierForManagedObject(object)!
 	}
 
 	//MARK: - UITableViewDelegate
@@ -511,7 +505,6 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		let editController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
 
-		editController.managedObjectContext = managedObjectContext
 		editController.event = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
 
 		self.navigationController?.pushViewController(editController, animated:true)

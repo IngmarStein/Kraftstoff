@@ -23,12 +23,11 @@ private struct FuelCalculatorDataRow: RawOptionSetType {
 	static var All: FuelCalculatorDataRow      { return self(0b0111) }
 }
 
-class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate {
+class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
 
-	var managedObjectContext: NSManagedObjectContext
 	var fetchedResultsController: NSFetchedResultsController
 
 	var restoredSelectionIndex: NSIndexPath?
@@ -45,8 +44,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	required init(coder aDecoder: NSCoder) {
 		// Fetch the cars
-		self.managedObjectContext = AppDelegate.managedObjectContext
-		self.fetchedResultsController = AppDelegate.fetchedResultsControllerForCarsInContext(self.managedObjectContext)
+		self.fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
 
 		super.init(coder: aDecoder)
 
@@ -233,12 +231,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                                         Formatters.sharedCurrencyFormatter.stringFromNumber(cost)!,
 										NSLocalizedString("/", comment:""),
                                         Formatters.sharedFuelVolumeFormatter.stringFromNumber(consumption)!,
-                                        Units.consumptionUnitString(consumptionUnit))
+                                        consumptionUnit.localizedString)
 
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-								Units.consumptionUnitString(consumptionUnit)]
+								consumptionUnit.localizedString]
 
 		addSectionAtIndex(1, withAnimation:animation)
 
@@ -273,7 +271,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
 				   cellData:["label": NSLocalizedString("Distance", comment:""),
-                             "suffix": " ".stringByAppendingString(Units.odometerUnitString(odometerUnit)),
+                             "suffix": " ".stringByAppendingString(odometerUnit.description),
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
               withAnimation:animation)
@@ -303,7 +301,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
                    cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                             "suffix": " ".stringByAppendingString(Units.fuelUnitString(fuelUnit)),
+                             "suffix": " ".stringByAppendingString(fuelUnit.description),
                              "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
@@ -319,7 +317,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.car = nil
     
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
-			self.car = AppDelegate.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
+			self.car = CoreDataManager.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
 
 			if self.car == nil {
 				self.car = self.fetchedResultsController.fetchedObjects!.first as? Car
@@ -460,7 +458,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	//MARK: - System Events
 
 	func willEnterForeground(notification: NSNotification) {
-		if tableSections.isEmpty || keyboardIsVisible {
+		if tableSections.isEmpty {
 			return
 		}
 
@@ -536,13 +534,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          // Add new event object
                          self.changeIsUserDriven = true
 
-                         AppDelegate.addToArchiveWithCar(self.car!,
+                         CoreDataManager.addToArchiveWithCar(self.car!,
                                                      date:self.date!,
                                                  distance:self.distance!,
                                                     price:self.price!,
                                                fuelVolume:self.fuelVolume!,
                                                  filledUp:self.filledUp ?? false,
-                                   inManagedObjectContext:self.managedObjectContext,
                                       forceOdometerUpdate:false)
 
                          // Reset calculator table
@@ -553,7 +550,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          self.valueChanged(zero, identifier:"fuelVolume")
                          self.valueChanged(true, identifier:"filledUp")
 
-						UIApplication.kraftstoffAppDelegate.saveContext(self.managedObjectContext)
+						CoreDataManager.saveContext()
                      })
 	}
 
@@ -564,7 +561,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			saveValid = false
 		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
 			saveValid = false
-		} else if date == nil || AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:self.date!) {
+		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate:self.date!) {
 			saveValid = false
 		}
 
@@ -639,11 +636,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// 3.) the event must be the youngest one
-		let youngerEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(self.car!,
+		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(self.car!,
 																								afterDate:self.date!,
-																							  dateMatches:false,
-																				   inManagedObjectContext:self.managedObjectContext),
-														inManagedObjectContext:self.managedObjectContext)
+																							  dateMatches:false))
     
 		if youngerEvents.count > 0 {
 			return false
@@ -662,11 +657,11 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let rawButton = String(format: "%@ %@",
                                 distanceFormatter.stringFromNumber(Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!,
-                                Units.odometerUnitString(odometerUnit))
+                                odometerUnit.description)
 
 		let convButton = String(format:"%@ %@",
                                 distanceFormatter.stringFromNumber(Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!,
-								Units.odometerUnitString(odometerUnit))
+								odometerUnit.description)
 
 		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment:""),
 																			 message:nil,
@@ -776,11 +771,13 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			if !self.car!.objectID.temporaryID {
 				let defaults = NSUserDefaults.standardUserDefaults()
 
-				defaults.setObject(AppDelegate.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
+				defaults.setObject(CoreDataManager.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
 				defaults.synchronize()
 			}
 		}
 	}
+
+	// MARK: - EditablePageCellValidator
 
 	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Validate only when there is a car for saving
@@ -791,7 +788,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
-				if AppDelegate.managedObjectContext(self.managedObjectContext, containsEventWithCar:self.car!, andDate:date) {
+				if CoreDataManager.containsEventWithCar(self.car!, andDate:date) {
 					return false
 				}
 			}
@@ -826,7 +823,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	//MARK: - UITableViewDelegate
 
-	func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+	override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
 		let cell = tableView.cellForRowAtIndexPath(indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
@@ -837,12 +834,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		return indexPath
 	}
 
-	func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
 	}
 
-	func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			tableView.beginUpdates()

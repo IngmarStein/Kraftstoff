@@ -50,7 +50,7 @@ class Kraftstoff_Tests: XCTestCase {
 
 		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
 
-		let fuelEvents = AppDelegate.objectsForFetchRequest(AppDelegate.fetchRequestForEventsForCar(car,
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
 			beforeDate:nil,
 			dateMatches:true,
 			inManagedObjectContext:managedObjectContext),
@@ -58,7 +58,7 @@ class Kraftstoff_Tests: XCTestCase {
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar:car)
 
-		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"), "CSV data should have the expected prefix")
+		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"), "CSV data should have the expected prefix")
 		XCTAssert(count(csvString) == 5177, "CSV data should have the expected size")
     }
 

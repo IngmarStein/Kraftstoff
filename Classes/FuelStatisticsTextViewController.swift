@@ -76,7 +76,7 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		for var i = fetchedObjects.count - 1; i >= 0; i-- {
 
-			let managedObject: FuelEvent! = AppDelegate.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent
+			let managedObject: FuelEvent! = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent
 
 			if managedObject == nil {
 				continue
@@ -90,11 +90,11 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Collect dates of events
 			let timestamp = managedObject.timestamp
 
-			if state.firstDate == nil || timestamp.compare(state.firstDate) != .OrderedDescending {
+			if state.firstDate == nil || timestamp <= state.firstDate {
 				state.firstDate = timestamp
 			}
 
-			if state.lastDate == nil || timestamp.compare(state.lastDate) != .OrderedAscending {
+			if state.lastDate == nil || timestamp >= state.lastDate {
 				state.lastDate = timestamp
 			}
 
@@ -296,13 +296,13 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let zero = NSDecimalNumber.zero()
 
             let consumptionUnit = state.car.ksFuelConsumptionUnit
-            let consumptionUnitString = Units.consumptionUnitString(consumptionUnit)
+            let consumptionUnitString = consumptionUnit.localizedString
 
             let odometerUnit = state.car.ksOdometerUnit
-            let odometerUnitString = Units.odometerUnitString(odometerUnit)
+            let odometerUnitString = odometerUnit.description
 
 			let fuelUnit = state.car.ksFuelUnit
-            let fuelUnitString = Units.fuelUnitString(fuelUnit)
+            let fuelUnitString = fuelUnit.description
 
             let numberOfDays = NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate)
 

@@ -118,11 +118,11 @@ class QuadInfoCell: UITableViewCell {
 
 			if cellState == .DefaultMask {
 				if let accessibilityLabel = topRightAccessibilityLabel {
-					label = label.stringByAppendingFormat(", %@", accessibilityLabel)
+					label = "\(label), \(accessibilityLabel)"
 				}
 
 				if let accessibilityLabel = botRightAccessibilityLabel {
-					label = label.stringByAppendingFormat(" %@", accessibilityLabel)
+					label = "\(label) \(accessibilityLabel)"
 				}
 			}
 

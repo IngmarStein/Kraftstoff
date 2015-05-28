@@ -41,14 +41,17 @@ class DateEditTableCell: EditableProxyPageCell {
 	}
 
 	private func updateTextFieldColorForValue(value: AnyObject?) {
-		let valid = self.delegate.valueValid?(value, identifier: self.valueIdentifier) ?? true
+		let valid: Bool
+		if let validator = self.delegate as? EditablePageCellValidator {
+			valid = validator.valueValid(value, identifier: self.valueIdentifier)
+		} else {
+			valid = true
+		}
 		self.textFieldProxy.textColor = valid ? UIColor.blackColor() : invalidTextColor
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
-
-		let dictionary = object as! [NSObject:AnyObject]
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
 		self.dateFormatter     = dictionary["formatter"] as! NSDateFormatter

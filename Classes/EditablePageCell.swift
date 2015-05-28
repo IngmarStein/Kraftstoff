@@ -8,14 +8,17 @@
 
 import UIKit
 
-@objc protocol EditablePageCellDelegate {
-
+protocol EditablePageCellDelegate : class {
 	func valueForIdentifier(valueIdentifier: String) -> AnyObject?
 	func valueChanged(newValue: AnyObject?, identifier: String)
+}
 
-	optional func valueValid(newValue: AnyObject?, identifier: String) -> Bool
-	optional func focusNextFieldForValueIdentifier(valueIdentifier: String)
+protocol EditablePageCellValidator {
+	func valueValid(newValue: AnyObject?, identifier: String) -> Bool
+}
 
+protocol EditablePageCellFocusHandler {
+	func focusNextFieldForValueIdentifier(valueIdentifier: String)
 }
 
 class EditablePageCell: PageCell, UITextFieldDelegate {
@@ -44,13 +47,15 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.userInteractionEnabled   = false
 		textField.setTranslatesAutoresizingMaskIntoConstraints(false)
 
-		self.contentView.addSubview(self.textField)
+		self.contentView.addSubview(textField)
 
 		keyLabel.textAlignment        = .Left
 		keyLabel.highlightedTextColor = UIColor.blackColor()
 		keyLabel.textColor            = UIColor.blackColor()
+		keyLabel.setContentHuggingPriority(750, forAxis: .Horizontal)
 		keyLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
 
+		contentView
 		self.contentView.addSubview(keyLabel)
 
 		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .BottomMargin, multiplier: 1.0, constant: 0.0)
@@ -90,10 +95,9 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		}
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		let dictionary = object as! [NSObject:AnyObject]
 		self.keyLabel.text   = dictionary["label"] as? String
 		self.delegate        = viewController as? EditablePageCellDelegate
 		self.valueIdentifier = dictionary["valueIdentifier"] as! String

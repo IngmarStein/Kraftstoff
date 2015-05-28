@@ -44,32 +44,17 @@
         <!--Fuel Event Editor Controller-->
         <scene sceneID="6aJ-se-1Lo">
             <objects>
-                <viewController storyboardIdentifier="FuelEventEditor" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lex-OJ-iPL" customClass="FuelEventEditorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="4gP-wO-bmt"/>
-                        <viewControllerLayoutGuide type="bottom" id="oxe-mV-GHY"/>
-                    </layoutGuides>
-                    <view key="view" tag="100" contentMode="scaleToFill" id="Q6q-lL-ahN">
+                <tableViewController storyboardIdentifier="FuelEventEditor" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lex-OJ-iPL" customClass="FuelEventEditorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="nob-ca-3BE">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="nob-ca-3BE">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </tableView>
-                        </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="nob-ca-3BE" firstAttribute="leading" secondItem="Q6q-lL-ahN" secondAttribute="leading" id="CNN-eZ-COy"/>
-                            <constraint firstAttribute="trailing" secondItem="nob-ca-3BE" secondAttribute="trailing" id="EFP-48-v70"/>
-                            <constraint firstItem="nob-ca-3BE" firstAttribute="top" secondItem="Q6q-lL-ahN" secondAttribute="top" id="RmJ-kl-y8M"/>
-                            <constraint firstAttribute="bottom" secondItem="nob-ca-3BE" secondAttribute="bottom" id="sET-xC-SSe"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="nob-ca-3BE" id="0QM-m0-OUe"/>
-                    </connections>
-                </viewController>
+                        <color key="sectionIndexTrackingBackgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <connections>
+                            <outlet property="dataSource" destination="lex-OJ-iPL" id="Roy-Xy-FGY"/>
+                            <outlet property="delegate" destination="lex-OJ-iPL" id="xVt-eo-6MS"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rh0-ia-SE5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2564" y="-431"/>
@@ -647,7 +632,7 @@
         <!--Car Configuration Controller-->
         <scene sceneID="lz2-N8-e6A">
             <objects>
-                <viewController storyboardIdentifier="CarConfigurationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="IpX-il-ip5" customClass="CarConfigurationController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="CarConfigurationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="IpX-il-ip5" customClass="CarConfigurationController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="qzE-oL-oJq">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -658,10 +643,7 @@
                             <outlet property="delegate" destination="IpX-il-ip5" id="BRl-qV-8Kg"/>
                         </connections>
                     </tableView>
-                    <connections>
-                        <outlet property="tableView" destination="qzE-oL-oJq" id="lKA-mo-Q2k"/>
-                    </connections>
-                </viewController>
+                </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ca1-b7-Z7g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1829" y="231"/>
@@ -669,7 +651,7 @@
         <!--Fill-Up-->
         <scene sceneID="D5c-O8-rs6">
             <objects>
-                <viewController storyboardIdentifier="FuelCalculatorController" title="Fill-Up" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9ok-pF-7av" customClass="FuelCalculatorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="FuelCalculatorController" title="Fill-Up" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9ok-pF-7av" customClass="FuelCalculatorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="3yL-yW-mOq">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -681,10 +663,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="2wd-L4-5FK"/>
-                    <connections>
-                        <outlet property="tableView" destination="3yL-yW-mOq" id="axL-nt-YlD"/>
-                    </connections>
-                </viewController>
+                </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tw0-IV-CcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1014" y="-431"/>

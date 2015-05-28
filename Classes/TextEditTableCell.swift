@@ -24,10 +24,9 @@ class TextEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		let dictionary = object as! [NSObject:AnyObject]
 		if dictionary["autocapitalizeAll"]?.boolValue ?? false {
 			self.textField.autocapitalizationType = .AllCharacters
 		} else {
@@ -40,8 +39,10 @@ class TextEditTableCell: EditablePageCell {
 	//MARK: - UITextFieldDelegate
 
 	func textFieldShouldReturn(textField: UITextField) -> Bool {
-		// Let delegate handle switching to next textfield
-		self.delegate.focusNextFieldForValueIdentifier?(self.valueIdentifier)
+		// Let the focus handler handle switching to next textfield
+		if let focusHandler = self.delegate as? EditablePageCellFocusHandler {
+			focusHandler.focusNextFieldForValueIdentifier(self.valueIdentifier)
+		}
 
 		return false
 	}

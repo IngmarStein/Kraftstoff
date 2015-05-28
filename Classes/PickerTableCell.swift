@@ -40,10 +40,9 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(object: AnyObject?, viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(object, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		let dictionary = object as! [NSObject:AnyObject]
 		// Array of picker labels
 		self.pickerLabels = dictionary["labels"] as? [String]
 		self.pickerShortLabels = dictionary["shortLabels"] as? [String]

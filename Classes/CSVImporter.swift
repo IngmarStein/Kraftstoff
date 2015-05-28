@@ -162,8 +162,8 @@ public class CSVImporter {
 
 	private func createCarObjectsInContext(managedObjectContext: NSManagedObjectContext) -> Int {
 		// Fetch already existing cars for later update of order attribute
-		let carRequest = AppDelegate.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
-		let fetchedCarObjects = AppDelegate.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext) as! [Car]
+		let carRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
+		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext) as! [Car]
 
 		// Create car objects
 		carForID.removeAll()
@@ -267,7 +267,7 @@ public class CSVImporter {
 		// Sort records according time and odometer
 		let sortedRecords = records.sorted { (record1, record2) -> Bool in
 			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
-				if date1.compare(date2) == .OrderedAscending {
+				if date1 < date2 {
 					return true
 				}
 			}
