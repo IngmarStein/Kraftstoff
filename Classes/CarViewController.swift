@@ -60,7 +60,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		let backgroundView = UIView(frame:CGRectZero)
 		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps")!)
-		backgroundImage.setTranslatesAutoresizingMaskIntoConstraints(false)
+		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.Bottom,  relatedBy:.Equal, toItem:backgroundImage, attribute:.Bottom,  multiplier:1.0, constant:90.0))
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
@@ -352,13 +352,13 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 				configurator.name = editedObject.name
 
-				if count(configurator.name!) > TextEditTableCell.maximumTextFieldLength {
+				if (configurator.name!).characters.count > TextEditTableCell.maximumTextFieldLength {
 					configurator.name = ""
 				}
 
 				configurator.plate = editedObject.numberPlate
 
-				if count(configurator.plate!) > TextEditTableCell.maximumTextFieldLength {
+				if (configurator.plate!).characters.count > TextEditTableCell.maximumTextFieldLength {
 					configurator.plate = ""
 				}
 
@@ -471,7 +471,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let sectionInfo = self.fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
+		let sectionInfo = self.fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
 
 		return sectionInfo.numberOfObjects
 	}
@@ -546,8 +546,8 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		return self.fetchedResultsController.indexPathForObject(object)
 	}
 
-	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
+	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
+		let object = self.fetchedResultsController.objectAtIndexPath(idx) as NSManagedObject
 
 		return CoreDataManager.modelIdentifierForManagedObject(object)!
 	}
@@ -600,7 +600,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		if changeIsUserDriven {
 			return
 		}

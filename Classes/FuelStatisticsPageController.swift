@@ -30,7 +30,7 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 		super.viewDidLayoutSubviews()
 
 		for var page = 0; page < pageControl.numberOfPages; page++ {
-			let controller = self.childViewControllers[page] as! UIViewController
+			let controller = self.childViewControllers[page]
 			controller.view.frame = frameForPage(page)
 		}
 
@@ -123,8 +123,8 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 		return true
 	}
 
-	override func supportedInterfaceOrientations() -> Int {
-		return Int(UIInterfaceOrientationMask.Landscape.rawValue)
+	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+		return .Landscape
 	}
 
 	//MARK: - Cache Handling

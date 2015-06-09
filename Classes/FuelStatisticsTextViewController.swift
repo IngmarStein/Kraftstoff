@@ -82,7 +82,6 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				continue
 			}
 
-			let price = managedObject.price
 			let distance = managedObject.distance
 			let fuelVolume = managedObject.fuelVolume
 			let cost = managedObject.cost
@@ -322,111 +321,111 @@ class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // number of days
 			drawEntry(
 				NSLocalizedString("days", comment:""),
-				"\(NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate))")
+				value: "\(NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate))")
 
             // avg consumption
             drawEntry(
 				NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment:""),
-                String(format:"%@ %@", nf.stringFromNumber(state.avgConsumption)!, consumptionUnitString))
+                value: String(format:"%@ %@", nf.stringFromNumber(state.avgConsumption)!, consumptionUnitString))
 
             // best consumption
 			drawEntry(
 				NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment:""),
-                String(format:"%@ %@", nf.stringFromNumber(state.bestConsumption)!, consumptionUnitString))
+                value: String(format:"%@ %@", nf.stringFromNumber(state.bestConsumption)!, consumptionUnitString))
 
             // worst consumption
 			drawEntry(
 				NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment:""),
-                String(format:"%@ %@", nf.stringFromNumber(state.worstConsumption)!, consumptionUnitString))
+                value: String(format:"%@ %@", nf.stringFromNumber(state.worstConsumption)!, consumptionUnitString))
 
             // total cost
-			drawEntry(NSLocalizedString("ttl_cost", comment:""), cf.stringFromNumber(state.totalCost)!)
+			drawEntry(NSLocalizedString("ttl_cost", comment:""), value: cf.stringFromNumber(state.totalCost)!)
 
             // total distance
 			let totalDistance = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit)
 			drawEntry(
 				NSLocalizedString("ttl_distance", comment:""),
-                String(format:"%@ %@", Formatters.sharedDistanceFormatter.stringFromNumber(totalDistance)!, odometerUnitString))
+                value: String(format:"%@ %@", Formatters.sharedDistanceFormatter.stringFromNumber(totalDistance)!, odometerUnitString))
 
             // total volume
 			let totalVolume = Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit)
 			drawEntry(
 				NSLocalizedString("ttl_volume", comment:""),
-                String(format:"%@ %@", nf.stringFromNumber(totalVolume)!, fuelUnitString))
+                value: String(format:"%@ %@", nf.stringFromNumber(totalVolume)!, fuelUnitString))
 
             // total events
-			drawEntry(NSLocalizedString("ttl_events", comment:""), "\(state.numberOfFillups)")
+			drawEntry(NSLocalizedString("ttl_events", comment:""), value: "\(state.numberOfFillups)")
 
             // volume per event
 			let volumePerEventLabel = NSLocalizedString("volume_event", comment:"")
 			if state.numberOfFillups > 0 {
 				let val = Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit) / NSDecimalNumber(integer:state.numberOfFillups)
-				drawEntry(volumePerEventLabel, String(format:"%@ %@", nf.stringFromNumber(val)!, fuelUnitString))
+				drawEntry(volumePerEventLabel, value: String(format:"%@ %@", nf.stringFromNumber(val)!, fuelUnitString))
 			} else {
-				drawEntry(volumePerEventLabel, NSLocalizedString("-", comment:""))
+				drawEntry(volumePerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per distance
 			let costPerDistanceLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:false))
 			if zero < state.totalDistance {
 				let val = state.totalCost / Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit)
-				drawEntry(costPerDistanceLabel, String(format:"%@/%@", pcf.stringFromNumber(val)!, odometerUnitString))
+				drawEntry(costPerDistanceLabel, value: String(format:"%@/%@", pcf.stringFromNumber(val)!, odometerUnitString))
 			} else {
-				drawEntry(costPerDistanceLabel, NSLocalizedString("-", comment:""))
+				drawEntry(costPerDistanceLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per volume
 			let costPerVolumeLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.fuelUnitDescription(fuelUnit, discernGallons:true, pluralization:false))
 			if zero < state.totalFuelVolume {
 				let val = state.totalCost / Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit)
-				drawEntry(costPerVolumeLabel, String(format:"%@/%@", pcf.stringFromNumber(val)!, fuelUnitString))
+				drawEntry(costPerVolumeLabel, value: String(format:"%@/%@", pcf.stringFromNumber(val)!, fuelUnitString))
 			} else {
-				drawEntry(costPerVolumeLabel, NSLocalizedString("-", comment:""))
+				drawEntry(costPerVolumeLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per day
 			let costPerDayLabel = String(format:NSLocalizedString("cost_per_x", comment:""), NSLocalizedString("day", comment:""))
 			if numberOfDays > 0 {
 				let val = state.totalCost / NSDecimalNumber(integer: numberOfDays)
-				drawEntry(costPerDayLabel, cf.stringFromNumber(val)!)
+				drawEntry(costPerDayLabel, value: cf.stringFromNumber(val)!)
 			} else {
-				drawEntry(costPerDayLabel, NSLocalizedString("-", comment:""))
+				drawEntry(costPerDayLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per event
 			let costPerEventLabel = String(format:NSLocalizedString("cost_per_x", comment:""), NSLocalizedString("event", comment:""))
 			if state.numberOfFillups > 0 {
 				let val = state.totalCost / NSDecimalNumber(integer: state.numberOfFillups)
-				drawEntry(costPerEventLabel, cf.stringFromNumber(val)!)
+				drawEntry(costPerEventLabel, value: cf.stringFromNumber(val)!)
 			} else {
-				drawEntry(costPerEventLabel, NSLocalizedString("-", comment:""))
+				drawEntry(costPerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per event
 			let distancePerEventLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), NSLocalizedString("event", comment:""))
 			if state.numberOfFillups > 0 {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(integer: state.numberOfFillups)
-				drawEntry(distancePerEventLabel, String(format:"%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
+				drawEntry(distancePerEventLabel, value: String(format:"%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerEventLabel, NSLocalizedString("-", comment:""))
+				drawEntry(distancePerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per day
 			let distancePerDayLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), NSLocalizedString("day", comment:""))
 			if numberOfDays > 0 {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(integer: numberOfDays)
-				drawEntry(distancePerDayLabel, String(format: "%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
+				drawEntry(distancePerDayLabel, value: String(format: "%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerDayLabel, NSLocalizedString("-", comment:""))
+				drawEntry(distancePerDayLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per money
 			let distancePerMoneyLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), cf.currencySymbol!)
 			if zero < state.totalCost {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / state.totalCost
-				drawEntry(distancePerMoneyLabel, String(format: "%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
+				drawEntry(distancePerMoneyLabel, value: String(format: "%@ %@", nf.stringFromNumber(val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerMoneyLabel, NSLocalizedString("-", comment:""))
+				drawEntry(distancePerMoneyLabel, value: NSLocalizedString("-", comment:""))
 			}
 
 			CGContextRestoreGState (cgContext)

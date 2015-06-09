@@ -33,7 +33,7 @@ class PageViewController: UITableViewController {
 		let scrollToTop = (self.tableView.contentOffset.y > 0.0)
     
 		UIView.animateWithDuration(scrollToTop ? 0.25 : 0.15, animations: {
-			if let indexPath = self.tableView.indexPathForSelectedRow() {
+			if let indexPath = self.tableView.indexPathForSelectedRow {
 				self.tableView.deselectRowAtIndexPath(indexPath, animated:false)
 				self.tableView.delegate?.tableView?(self.tableView, didDeselectRowAtIndexPath: indexPath)
 			}

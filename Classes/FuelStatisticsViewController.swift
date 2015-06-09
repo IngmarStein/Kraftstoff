@@ -34,7 +34,7 @@ class FuelStatisticsViewController: UIViewController {
 	var displayedNumberOfMonths = 0 {
 		didSet {
 			// Update selection status of all buttons
-			for view in self.view.subviews as! [UIView] {
+			for view in self.view.subviews {
 				if let button = view as? UIButton {
 					button.selected = button.tag == displayedNumberOfMonths
 				}
@@ -59,7 +59,7 @@ class FuelStatisticsViewController: UIViewController {
 		self.rightLabel.shadowColor = nil
 
 		// Update selection status of all buttons
-		for view in self.view.subviews as! [UIView] {
+		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				button.showsTouchWhenHighlighted = false
 			}
@@ -89,7 +89,7 @@ class FuelStatisticsViewController: UIViewController {
 
 		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0)]
 		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName:UIColor.whiteColor()]
-		for view in self.view.subviews as! [UIView] {
+		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
 				let label = NSAttributedString(string:text, attributes:labelAttributes)
@@ -116,8 +116,8 @@ class FuelStatisticsViewController: UIViewController {
 		return true
 	}
 
-	override func supportedInterfaceOrientations() -> Int {
-		return Int(UIInterfaceOrientationMask.Landscape.rawValue)
+	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+		return .Landscape
 	}
 
 	//MARK: - Cache Handling
@@ -156,49 +156,51 @@ class FuelStatisticsViewController: UIViewController {
 		let sampleContext = NSManagedObjectContext(concurrencyType:.PrivateQueueConcurrencyType)
 		sampleContext.parentContext = parentContext
 		sampleContext.performBlock {
-			// Get the selected car
-			var error: NSError?
-			if let sampleCar = sampleContext.existingObjectWithID(selectedCarID, error:&error) as? Car {
+			do {
+				// Get the selected car
+				if let sampleCar = try sampleContext.existingObjectWithID(selectedCarID) as? Car {
 
-				// Fetch some young events to get the most recent fillup date
-				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
-                                                                                                      beforeDate:NSDate(),
-                                                                                                     dateMatches:true,
-                                                                                          inManagedObjectContext:sampleContext),
-                                                 inManagedObjectContext:sampleContext)
+					// Fetch some young events to get the most recent fillup date
+					let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
+																										  beforeDate:NSDate(),
+																										 dateMatches:true,
+																							  inManagedObjectContext:sampleContext),
+													 inManagedObjectContext:sampleContext)
 
-				var recentFillupDate = NSDate()
+					var recentFillupDate = NSDate()
 
-				if recentEvents.count > 0 {
-					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext:sampleContext) as? FuelEvent {
-						recentFillupDate = recentEvent.timestamp
+					if recentEvents.count > 0 {
+						if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext:sampleContext) as? FuelEvent {
+							recentFillupDate = recentEvent.timestamp
+						}
 					}
-				}
 
-				// Fetch events for the selected time period
-				let samplingStart = NSDate.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
-				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
-                                                                                                          afterDate:samplingStart,
-                                                                                                        dateMatches:true,
-                                                                                             inManagedObjectContext:sampleContext),
-                                                    inManagedObjectContext:sampleContext) as! [FuelEvent]
+					// Fetch events for the selected time period
+					let samplingStart = NSDate.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
+					let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
+																											  afterDate:samplingStart,
+																											dateMatches:true,
+																								 inManagedObjectContext:sampleContext),
+														inManagedObjectContext:sampleContext) as! [FuelEvent]
 
-				// Compute statistics
-				let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-                                                            forCar:sampleCar,
-                                                       withObjects:samplingObjects,
-                                            inManagedObjectContext:sampleContext)
+					// Compute statistics
+					let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
+																forCar:sampleCar,
+														   withObjects:samplingObjects,
+												inManagedObjectContext:sampleContext)
 
-				// Schedule update of cache and display in main thread
-				dispatch_async(dispatch_get_main_queue()) {
-					if self.invalidationCounter == self.expectedCounter {
-						self.contentCache[numberOfMonths] = sampleData
+					// Schedule update of cache and display in main thread
+					dispatch_async(dispatch_get_main_queue()) {
+						if self.invalidationCounter == self.expectedCounter {
+							self.contentCache[numberOfMonths] = sampleData
 
-						if self.displayedNumberOfMonths == numberOfMonths {
-							self.displayCachedStatisticsForRecentMonths(numberOfMonths)
+							if self.displayedNumberOfMonths == numberOfMonths {
+								self.displayCachedStatisticsForRecentMonths(numberOfMonths)
+							}
 						}
 					}
 				}
+			} catch _ {
 			}
 		}
 	}
