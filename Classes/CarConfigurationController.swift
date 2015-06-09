@@ -93,7 +93,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow()
+		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		coder.encodeObject(self.delegate,            forKey:kSRConfiguratorDelegate)
 		coder.encodeBool(self.editingExistingObject, forKey:kSRConfiguratorEditMode)
@@ -256,7 +256,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Locale Handling
 
 	func localeChanged(object: AnyObject) {
-		let previousSelection = self.tableView.indexPathForSelectedRow()
+		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {
 			self.recreateTableContents()
@@ -302,7 +302,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Cancel Button
 
 	@IBAction func handleCancel(sender: AnyObject) {
-		previousSelectionIndex = self.tableView.indexPathForSelectedRow()
+		previousSelectionIndex = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion { self.handleCancelCompletion() }
 	}

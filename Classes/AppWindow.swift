@@ -10,7 +10,7 @@ import UIKit
 
 class AppWindow: UIWindow {
 
-	override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent)	{
+	override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?)	{
 		if motion == .MotionShake {
 			NSNotificationCenter.defaultCenter().postNotificationName(kraftstoffDeviceShakeNotification, object:nil)
 		} else {

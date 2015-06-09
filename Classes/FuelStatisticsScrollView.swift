@@ -68,7 +68,7 @@ class FuelStatisticsScrollView: UIScrollView {
 			self.contentOffset = CGPoint(x:currentOffset.x + shiftDelta, y:currentOffset.y)
 
 			// Move content by the same amount so it appears to stay still
-			for view in self.subviews as! [UIView] {
+			for view in self.subviews {
 				var center = view.center
 
 				center.x += shiftDelta

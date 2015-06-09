@@ -34,10 +34,12 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		fetchController.delegate = self
 
 		// Perform the data fetch
-		var error: NSError?
-
-		if !fetchController.performFetch(&error) {
-			fatalError(error!.localizedDescription)
+		do {
+			try fetchController.performFetch()
+		} catch let error as NSError {
+			fatalError(error.localizedDescription)
+		} catch {
+			fatalError()
 		}
 
 		return fetchController
@@ -84,7 +86,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		let backgroundView = UIView(frame:CGRectZero)
 		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps"))
-		backgroundImage.setTranslatesAutoresizingMaskIntoConstraints(false)
+		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.Bottom,  relatedBy:.Equal, toItem:backgroundImage, attribute:.Bottom,  multiplier:1.0, constant:90.0))
 		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
@@ -243,7 +245,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	private var exportURL: NSURL {
-		return NSURL(fileURLWithPath:NSTemporaryDirectory().stringByAppendingPathComponent(exportFilename))!
+		return NSURL(fileURLWithPath:NSTemporaryDirectory().stringByAppendingPathComponent(exportFilename))
 	}
 
 	func exportTextData() -> NSData {
@@ -287,9 +289,9 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 		// write exported data
 		let data = exportTextData()
-		var error: NSError?
-
-		if !data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete, error:&error) {
+		do {
+			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+		} catch _ {
 			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
 				message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
 				preferredStyle:.Alert)
@@ -327,7 +329,10 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
-		NSFileManager.defaultManager().removeItemAtURL(exportURL, error:nil)
+		do {
+			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+		} catch _ {
+		}
 
 		openInController = nil
 	}
@@ -350,12 +355,12 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		}
 	}
 
-	func mailComposeController(controller: MFMailComposeViewController!, didFinishWithResult result: MFMailComposeResult, error: NSError!) {
+	func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
 		dismissViewControllerAnimated(true) {
 
 			self.mailComposeController = nil
 
-			if result.value == MFMailComposeResultFailed.value {
+			if result == MFMailComposeResultFailed {
 				let alertController = UIAlertController(title:NSLocalizedString("Sending Failed", comment:""),
 					message:NSLocalizedString("The exported fuel data could not be sent.", comment:""),
 																			  preferredStyle:.Alert)
@@ -407,7 +412,6 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		let car = managedObject.car
 		let distance = managedObject.distance
 		let fuelVolume = managedObject.fuelVolume
-		let price = managedObject.price
 
 		let odometerUnit = car.ksOdometerUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
@@ -461,7 +465,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let sectionInfo = self.fetchedResultsController.sections?[section] as? NSFetchedResultsSectionInfo
+		let sectionInfo = self.fetchedResultsController.sections?[section]
 		return sectionInfo?.numberOfObjects ?? 0
 	}
 
@@ -494,10 +498,10 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		return self.fetchedResultsController.indexPathForObject(object)
 	}
 
-	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
+	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
+		let object = self.fetchedResultsController.objectAtIndexPath(idx) as NSManagedObject
 
-		return CoreDataManager.modelIdentifierForManagedObject(object)!
+		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
 	//MARK: - UITableViewDelegate
@@ -527,7 +531,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
         case .Insert:
             tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)

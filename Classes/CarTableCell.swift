@@ -21,8 +21,8 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	private let maximumDescriptionLength = 24
 
 	// Attributes for custom PickerViews
-	private var prefixAttributes = [NSObject:AnyObject]()
-	private var suffixAttributes = [NSObject:AnyObject]()
+	private var prefixAttributes = [String:AnyObject]()
+	private var suffixAttributes = [String:AnyObject]()
 
 	required init() {
 		carPicker = UIPickerView()
@@ -35,12 +35,12 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		carPicker.showsSelectionIndicator = true
 		carPicker.dataSource              = self
 		carPicker.delegate                = self
-		carPicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		carPicker.translatesAutoresizingMaskIntoConstraints = false
 		carPicker.hidden = true
 		carPicker.addConstraint(carPickerHeightConstraint)
 		contentView.addSubview(carPicker)
 
-		carPickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[carPicker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "carPicker" : carPicker]) as! [NSLayoutConstraint]
+		carPickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[carPicker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "carPicker" : carPicker]) as [NSLayoutConstraint]
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -73,7 +73,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 		// Look for index of selected car
 		let car = self.delegate.valueForIdentifier(self.valueIdentifier) as! Car
-		let initialIndex = find(self.cars, car) ?? 0
+		let initialIndex = self.cars.indexOf(car) ?? 0
 
 		// (Re-)configure car picker and select the initial item
 		self.carPicker.reloadAllComponents()
@@ -86,7 +86,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		// Update textfield in cell
 		var description = String(format:"%@ %@", car.name, car.numberPlate)
 
-		if count(description) > maximumDescriptionLength {
+		if description.characters.count > maximumDescriptionLength {
 			description = String(format:"%@…", description.substringToIndex(advance(description.startIndex, maximumDescriptionLength)))
 		}
 
@@ -130,7 +130,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		return PickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
+	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
 		// Strings to be displayed
 		let car = self.cars[row]
 		let name = car.name
@@ -144,7 +144,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)
 		attributedText.beginEditing()
-		attributedText.setAttributes(prefixAttributes, range:NSRange(location:0, length:count(name)))
+		attributedText.setAttributes(prefixAttributes, range:NSRange(location:0, length:name.characters.count))
 		attributedText.endEditing()
 		label.attributedText = attributedText
 

@@ -20,13 +20,13 @@ public class CoreDataManager {
 
 	private static let managedObjectModel: NSManagedObjectModel = {
 		let modelPath = NSBundle.mainBundle().pathForResource("Kraftstoffrechner", ofType:"momd")!
-		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath)!)!
+		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath))!
 	}()
 
-	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as! String
+	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last!
 	
-	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
-	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Fuel.sqlite")
+	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
+	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Fuel.sqlite")
 
 	private static let iCloudStoreOptions = [
 		NSMigratePersistentStoresAutomaticallyOption: true,
@@ -37,19 +37,21 @@ public class CoreDataManager {
 	static let sharedInstance = CoreDataManager()
 
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		var error: NSError?
-
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
 
-		if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions, error:&error) == nil {
+		do {
+			try persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions)
+		} catch let error as NSError {
 			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
 				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
 				preferredStyle:.Alert)
 			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
-				fatalError(error!.localizedDescription)
+				fatalError(error.localizedDescription)
 			}
 			alertController.addAction(defaultAction)
 			UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
+		} catch {
+			fatalError()
 		}
 
 		return persistentStoreCoordinator
@@ -59,14 +61,14 @@ public class CoreDataManager {
 
 	static func saveContext(context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
-			var error : NSError?
-
-			if !context.save(&error) {
+			do {
+				try context.save()
+			} catch let error as NSError {
 				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment:""),
 					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment:""),
 					preferredStyle:.Alert)
 				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
-					fatalError(error!.localizedDescription)
+					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
 				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
@@ -91,7 +93,11 @@ public class CoreDataManager {
 
 		if objectURL.scheme == "x-coredata" {
 			if let objectID = persistentStoreCoordinator.managedObjectIDForURIRepresentation(objectURL) {
-				return managedObjectContext.existingObjectWithID(objectID, error:nil)
+				do {
+					return try managedObjectContext.existingObjectWithID(objectID)
+				} catch _ {
+					return nil
+				}
 			}
 		}
 
@@ -102,7 +108,11 @@ public class CoreDataManager {
 		if object.deleted {
 			return nil
 		} else {
-			return moc.existingObjectWithID(object.objectID, error:nil)
+			do {
+				return try moc.existingObjectWithID(object.objectID)
+			} catch _ {
+				return nil
+			}
 		}
 	}
 
@@ -123,30 +133,29 @@ public class CoreDataManager {
 
 			// Open the existing local store
 			var error: NSError?
-			if let sourceStore = migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:fileURL, options:options as [NSObject : AnyObject], error:&error) {
-				if let newStore = migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType, error:&error) {
+			do {
+				let sourceStore = try migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:fileURL, options:options as [NSObject : AnyObject])
+				do {
+					try migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType)
 
 					dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 						let fileCoordinator = NSFileCoordinator()
 						fileCoordinator.coordinateWritingItemAtURL(fileURL, options: .ForMoving, error: &error) { writingURL in
-							var renameError: NSError?
 							let targetURL = fileURL.URLByAppendingPathExtension("migrated")
-							if !fileManager.moveItemAtURL(fileURL, toURL: targetURL, error: &renameError) {
-								if let error = renameError {
-									NSLog("error renaming store after migration: %@", error.localizedDescription)
-								}
+							do {
+								try fileManager.moveItemAtURL(fileURL, toURL: targetURL)
+							} catch let error as NSError {
+								NSLog("error renaming store after migration: %@", error.localizedDescription)
+							} catch {
+								fatalError()
 							}
 						}
 					}
-				} else  {
-					if let error = error {
-						NSLog("error while migrating to iCloud: %@", error.localizedDescription)
-					}
+				} catch let error as NSError {
+					NSLog("error while migrating to iCloud: %@", error.localizedDescription)
 				}
-			} else {
-				if let error = error {
-					NSLog("failed to open local store for migration: %@", error.localizedDescription)
-				}
+			} catch let error as NSError {
+				NSLog("failed to open local store for migration: %@", error.localizedDescription)
 			}
 		}
 	}
@@ -183,12 +192,12 @@ public class CoreDataManager {
 
 		context.performBlockAndWait {
 			if context.hasChanges {
-				var error: NSError?
-				let success = context.save(&error)
-
-				if let error = error where !success {
-					// perform error handling
+				do {
+					try context.save()
+				} catch let error as NSError {
 					NSLog("%@", error.localizedDescription)
+				} catch {
+					fatalError()
 				}
 			}
 
@@ -279,19 +288,20 @@ public class CoreDataManager {
             cacheName:nil)
 
 		// Perform the Core Data fetch
-		var error: NSError?
-		if !fetchedResultsController.performFetch(&error) {
-			fatalError(error!.localizedDescription)
+		do {
+			try fetchedResultsController.performFetch()
+		} catch let error as NSError {
+			fatalError(error.localizedDescription)
 		}
 
 		return fetchedResultsController
 	}
 
 	public static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
-		var error: NSError?
-		let fetchedObjects = moc.executeFetchRequest(fetchRequest, error:&error)
-
-		if let error = error {
+		let fetchedObjects: [AnyObject]?
+		do {
+			fetchedObjects = try moc.executeFetchRequest(fetchRequest)
+		} catch let error as NSError {
 			fatalError(error.localizedDescription)
 		}
 

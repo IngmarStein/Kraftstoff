@@ -94,7 +94,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow()
+		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		coder.encodeBool(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
 		coder.encodeBool(dataChanged, forKey:kSRFuelEventDataChanged)
@@ -236,7 +236,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	//MARK: - Aborting Editing Mode
 
 	@IBAction func endEditingModeAndRevert(sender: AnyObject) {
-		restoredSelectionIndex = self.tableView.indexPathForSelectedRow()
+		restoredSelectionIndex = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
 			if self.dataChanged {
@@ -376,7 +376,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	//MARK: - Locale Handling
 
 	func localeChanged(object: AnyObject) {
-		let previousSelection = self.tableView.indexPathForSelectedRow()
+		let previousSelection = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
 			self.removeAllSectionsWithAnimation(.None)

@@ -649,6 +649,7 @@
 				PRODUCT_NAME = kraftstoff;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -666,6 +667,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.m-schmidt.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = kraftstoff;
 				PROVISIONING_PROFILE = "";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

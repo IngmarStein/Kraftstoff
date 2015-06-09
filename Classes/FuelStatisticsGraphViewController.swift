@@ -71,7 +71,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private var zooming = false {
 		didSet {
-			for subview in self.view.subviews as! [UIView] {
+			for subview in self.view.subviews {
 				if subview.tag > 0 {
 					if subview.tag < 1000 {
 						subview.hidden = zooming
@@ -902,10 +902,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 		let handler = Formatters.sharedConsumptionRoundingHandler
 		let distanceUnit = car.ksOdometerUnit
 
-		let price = fuelEvent.price
-
 		var distance = fuelEvent.distance
-		let fuelVolume = fuelEvent.fuelVolume
 		var cost = fuelEvent.cost
 
 		distance = distance + fuelEvent.inheritedDistance

@@ -79,7 +79,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	private let kSRCalculatorEditing       = "FuelCalculatorEditing"
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		if let indexPath = self.restoredSelectionIndex ?? self.tableView.indexPathForSelectedRow() {
+		if let indexPath = self.restoredSelectionIndex ?? self.tableView.indexPathForSelectedRow {
 			coder.encodeObject(indexPath, forKey: kSRCalculatorSelectedIndex)
 		}
 
@@ -392,7 +392,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		if animation == .None {
 			self.tableView?.reloadData()
 		} else {
-			self.tableView?.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections())),
+			self.tableView?.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections)),
                       withRowAnimation:animation)
 		}
 	}
@@ -446,7 +446,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	//MARK: - Locale Handling
 
 	func localeChanged(object: AnyObject) {
-		let previousSelection = self.tableView.indexPathForSelectedRow()
+		let previousSelection = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
 			self.recreateTableContentsWithAnimation(.None)

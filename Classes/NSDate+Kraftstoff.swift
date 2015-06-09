@@ -9,10 +9,10 @@
 import Foundation
 
 // Calendar component-mask for date+time but without seconds
-private let noSecondsComponentMask : NSCalendarUnit = (.CalendarUnitYear | .CalendarUnitMonth | .CalendarUnitDay | .CalendarUnitHour | .CalendarUnitMinute)
+private let noSecondsComponentMask : NSCalendarUnit = ([.Year, .Month, .Day, .Hour, .Minute])
 
 // Calendar component-mask for hour+minutes
-private let timeOfDayComponentMask : NSCalendarUnit = (.CalendarUnitHour | .CalendarUnitMinute)
+private let timeOfDayComponentMask : NSCalendarUnit = ([.Hour, .Minute])
 
 
 extension NSDate {
@@ -27,7 +27,7 @@ extension NSDate {
 
 		return gregorianCalendar.dateByAddingComponents(deltaComponents,
 														toDate:gregorianCalendar.dateFromComponents(noSecComponents)!,
-														options:.allZeros)!
+														options:[])!
 	}
 
 	static func dateWithoutSeconds(date: NSDate) -> NSDate {
@@ -49,8 +49,8 @@ extension NSDate {
 		let gregorianCalendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
 		let referenceDate = NSDate(timeIntervalSinceReferenceDate: 0.0)
 
-		let daysToStart = gregorianCalendar.components(.CalendarUnitDay, fromDate:referenceDate, toDate:startDate, options:.allZeros).day
-		let daysToEnd   = gregorianCalendar.components(.CalendarUnitDay, fromDate:referenceDate, toDate:endDate, options:.allZeros).day
+		let daysToStart = gregorianCalendar.components(.Day, fromDate:referenceDate, toDate:startDate, options:[]).day
+		let daysToEnd   = gregorianCalendar.components(.Day, fromDate:referenceDate, toDate:endDate, options:[]).day
     
 		return daysToEnd - daysToStart + 1
 	}

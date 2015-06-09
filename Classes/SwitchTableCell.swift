@@ -30,7 +30,7 @@ class SwitchTableCell: PageCell {
 
 		// Create switch
 		valueSwitch.addTarget(self, action:"switchToggledAction:", forControlEvents:.ValueChanged)
-		valueSwitch.setTranslatesAutoresizingMaskIntoConstraints(false)
+		valueSwitch.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueSwitch)
 
@@ -41,7 +41,7 @@ class SwitchTableCell: PageCell {
 		valueLabel.textColor              = UIColor.blackColor()
 		valueLabel.hidden                 = true
 		valueLabel.userInteractionEnabled = false
-		valueLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		valueLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueLabel)
 
@@ -49,14 +49,14 @@ class SwitchTableCell: PageCell {
 		keyLabel.textAlignment        = .Left
 		keyLabel.highlightedTextColor = UIColor.blackColor()
 		keyLabel.textColor            = UIColor.blackColor()
-		keyLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(keyLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueSwitch]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=4)-[valueSwitch]-(>=4)-|", options: .allZeros, metrics: nil, views: ["valueSwitch" : valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueSwitch]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=4)-[valueSwitch]-(>=4)-|", options: [], metrics: nil, views: ["valueSwitch" : valueSwitch]))
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
 
