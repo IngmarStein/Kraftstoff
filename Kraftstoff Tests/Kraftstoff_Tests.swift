@@ -9,7 +9,7 @@
 import XCTest
 import UIKit
 import CoreData
-import kraftstoff
+@testable import kraftstoff
 
 class Kraftstoff_Tests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!

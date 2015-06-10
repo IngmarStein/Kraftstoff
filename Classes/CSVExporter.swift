@@ -8,8 +8,8 @@
 
 import Foundation
 
-public class CSVExporter {
-	public static func exportFuelEvents(fuelEvents: [FuelEvent], forCar car: Car) -> String {
+final class CSVExporter {
+	static func exportFuelEvents(fuelEvents: [FuelEvent], forCar car: Car) -> String {
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit = car.ksFuelUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
