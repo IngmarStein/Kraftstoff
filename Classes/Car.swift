@@ -9,21 +9,21 @@
 import Foundation
 import CoreData
 
-public class Car: NSManagedObject {
+final class Car: NSManagedObject {
 
-    @NSManaged public var timestamp: NSDate
-    @NSManaged public var distanceTotalSum: NSDecimalNumber
-    @NSManaged public var fuelUnit: Int32
-    @NSManaged public var order: Int32
-    @NSManaged public var fuelVolumeTotalSum: NSDecimalNumber
-    @NSManaged public var odometer: NSDecimalNumber
-    @NSManaged public var fuelConsumptionUnit: Int32
-    @NSManaged public var odometerUnit: Int32
-    @NSManaged public var name: String
-    @NSManaged public var numberPlate: String
-    @NSManaged public var fuelEvents: NSSet
+    @NSManaged var timestamp: NSDate
+    @NSManaged var distanceTotalSum: NSDecimalNumber
+    @NSManaged var fuelUnit: Int32
+    @NSManaged var order: Int32
+    @NSManaged var fuelVolumeTotalSum: NSDecimalNumber
+    @NSManaged var odometer: NSDecimalNumber
+    @NSManaged var fuelConsumptionUnit: Int32
+    @NSManaged var odometerUnit: Int32
+    @NSManaged var name: String
+    @NSManaged var numberPlate: String
+    @NSManaged var fuelEvents: NSSet
 
-	public var ksFuelUnit: KSVolume {
+	var ksFuelUnit: KSVolume {
 		get {
 			return KSVolume(rawValue: fuelUnit)!
 		}
@@ -32,7 +32,7 @@ public class Car: NSManagedObject {
 		}
 	}
 
-	public var ksFuelConsumptionUnit: KSFuelConsumption {
+	var ksFuelConsumptionUnit: KSFuelConsumption {
 		get {
 			return KSFuelConsumption(rawValue: fuelConsumptionUnit)!
 		}
@@ -41,7 +41,7 @@ public class Car: NSManagedObject {
 		}
 	}
 
-	public var ksOdometerUnit: KSDistance {
+	var ksOdometerUnit: KSDistance {
 		get {
 			return KSDistance(rawValue: odometerUnit)!
 		}

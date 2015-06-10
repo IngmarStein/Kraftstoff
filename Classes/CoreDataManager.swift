@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-public class CoreDataManager {
+class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext! = {
 		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)
@@ -256,7 +256,7 @@ public class CoreDataManager {
 		return fetchRequest
 	}
 
-	public static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEventsForCar(car: Car,
                                      afterDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
@@ -267,7 +267,7 @@ public class CoreDataManager {
                       inManagedObjectContext:moc)
 	}
 
-	public static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEventsForCar(car: Car,
                                     beforeDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
@@ -297,7 +297,7 @@ public class CoreDataManager {
 		return fetchedResultsController
 	}
 
-	public static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
+	static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
 		let fetchedObjects: [AnyObject]?
 		do {
 			fetchedObjects = try moc.executeFetchRequest(fetchRequest)

@@ -18,8 +18,8 @@ extension UIApplication {
 }
 
 @UIApplicationMain
-public final class AppDelegate: NSObject, UIApplicationDelegate {
-	public var window: UIWindow?
+final class AppDelegate: NSObject, UIApplicationDelegate {
+	var window: UIWindow?
 
 	private var importAlert: UIAlertController?
 
@@ -68,31 +68,31 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		}
 	}
 
-	public func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	public func applicationDidEnterBackground(application: UIApplication) {
+	func applicationDidEnterBackground(application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
-	public func applicationWillTerminate(application: UIApplication) {
+	func applicationWillTerminate(application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
 	//MARK: - State Restoration
 
-	public func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+	func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	public func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+	func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = NSBundle.mainBundle().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = coder.decodeObjectOfClass(NSNumber.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? Int ?? 0
 
@@ -160,7 +160,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		return String(format:format, carCount, eventCount)
 	}
 
-	public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItemAtURL(url)
