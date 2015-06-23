@@ -579,10 +579,8 @@ final class CSVImporter {
 		return df
 	}()
 
-	private func scanDateWithString(string: String!) -> NSDate? {
-		if string == nil {
-			return nil
-		}
+	private func scanDateWithString(string: String?) -> NSDate? {
+		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
 		if let d = systemDateFormatter.dateFromString(string) {
@@ -598,10 +596,8 @@ final class CSVImporter {
 	}
 
 
-	private func scanTimeWithString(string: String!) -> NSDate? {
-		if string == nil {
-			return nil
-		}
+	private func scanTimeWithString(string: String?) -> NSDate? {
+		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
 		if let d = systemTimeFormatter.dateFromString(string) {
@@ -616,10 +612,8 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func scanBooleanWithString(string: String!) -> Bool {
-		if string == nil {
-			return true
-		}
+	private func scanBooleanWithString(string: String?) -> Bool {
+		guard let string = string else { return true }
 
 		if let n = scanNumberWithString(string) {
 			return n != 0
@@ -629,10 +623,8 @@ final class CSVImporter {
 		}
 	}
 
-	private func scanVolumeUnitWithString(string: String!) -> KSVolume {
-		if string == nil {
-			return .Liter
-		}
+	private func scanVolumeUnitWithString(string: String?) -> KSVolume {
+		guard let string = string else { return .Liter }
 
 		let header = CSVParser.simplifyCSVHeaderName(string)
 

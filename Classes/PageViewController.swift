@@ -203,7 +203,7 @@ class PageViewController: UITableViewController {
 		var cell = tableView.dequeueReusableCellWithIdentifier(description.cellClass.reuseIdentifier) as? PageCell
 
 		if cell == nil {
-			cell = cellClass()
+			cell = cellClass.init()
 		}
 
 		cell!.configureForData(description.cellData, viewController:self, tableView:tableView, indexPath:indexPath)

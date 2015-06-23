@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class CoreDataManager {
+final class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext! = {
 		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)
@@ -179,7 +179,7 @@ class CoreDataManager {
 			object: CoreDataManager.persistentStoreCoordinator)
 	}
 
-	func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
+	@objc func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
 		let context = CoreDataManager.managedObjectContext
 
 		context.performBlock {
@@ -187,7 +187,7 @@ class CoreDataManager {
 		}
 	}
 
-	func storesWillChange(notification: NSNotification) {
+	@objc func storesWillChange(notification: NSNotification) {
 		let context = CoreDataManager.managedObjectContext
 
 		context.performBlockAndWait {
@@ -205,7 +205,7 @@ class CoreDataManager {
 		}
 	}
 
-	func storesDidChange(notification: NSNotification) {
+	@objc func storesDidChange(notification: NSNotification) {
 	}
 
 	//MARK: - Preconfigured Core Data Fetches
