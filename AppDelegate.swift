@@ -238,7 +238,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+        let blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return blueGradient
 	}()
@@ -247,7 +247,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+		let greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return greenGradient
     }()
@@ -256,7 +256,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+        let orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return orangeGradient
     }()

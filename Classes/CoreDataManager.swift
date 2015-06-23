@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class CoreDataManager {
+final class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext! = {
 		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)

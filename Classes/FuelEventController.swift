@@ -324,7 +324,6 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 			presentViewController(alertController, animated:true, completion:nil)
 
 			self.openInController = nil
-			return
 		}
 	}
 
@@ -349,7 +348,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 			mailComposeController.mailComposeDelegate = self
 			mailComposeController.setSubject(String(format:NSLocalizedString("Your fuel data for %@", comment:""), selectedCar.numberPlate))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML:false)
-			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text", fileName:exportFilename)
+			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text/csv", fileName:exportFilename)
 
 			presentViewController(mailComposeController, animated:true, completion:nil)
 		}

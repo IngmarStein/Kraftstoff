@@ -387,25 +387,23 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	//MARK: - Removing an Existing Object
 
 	func removeExistingObjectAtPath(indexPath: NSIndexPath) {
-		let deletedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Car
-
-		// catch nil objects
-		if deletedObject == nil {
+		guard let deletedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Car else {
+			// catch nil objects
 			return
 		}
 
-		let deletedObjectOrder = deletedObject!.order
+		let deletedObjectOrder = deletedObject.order
 
 		// Invalidate preference for deleted car
 		let preferredCarID = NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")
-		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject!)
+		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject)
 
 		if deletedCarID == preferredCarID {
 			NSUserDefaults.standardUserDefaults().setObject("", forKey:"preferredCarID")
 		}
 
 		// Delete the managed object for the given index path
-		CoreDataManager.managedObjectContext.deleteObject(deletedObject!)
+		CoreDataManager.managedObjectContext.deleteObject(deletedObject)
 		CoreDataManager.saveContext()
 
 		// Update order of existing objects

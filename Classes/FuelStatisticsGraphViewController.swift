@@ -512,7 +512,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 									self.dataSource!.curveGradient,
 									CGPoint(x: 0, y: self.graphBottomBorder - 6),
 									CGPoint(x: 0, y: minY),
-									CGGradientDrawingOptions(kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation))
+									[CGGradientDrawingOptions.DrawsBeforeStartLocation, CGGradientDrawingOptions.DrawsAfterEndLocation])
 
 		CGContextRestoreGState(cgContext)
 
@@ -532,7 +532,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// The curve
 		path.lineWidth    = 1
-		path.lineCapStyle = kCGLineCapRound
+		path.lineCapStyle = .Round
 		UIColor.whiteColor().setStroke()
         
 		path.removeAllPoints()
@@ -710,7 +710,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var path = UIBezierPath()
 
 		// Graph as background
-		background.drawAtPoint(CGPointZero, blendMode:kCGBlendModeCopy, alpha:1.0)
+		background.drawAtPoint(CGPointZero, blendMode:.Copy, alpha:1.0)
 
 		// Marker line
 		self.view.tintColor.set()

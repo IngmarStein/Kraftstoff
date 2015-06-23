@@ -9,18 +9,13 @@
 import UIKit
 import CoreData
 
-private struct FuelCalculatorDataRow: RawOptionSetType {
-	private var value: UInt = 0
-	var rawValue: UInt { return value }
-	init(nilLiteral: ()) { self.value = 0 }
-	init(_ value: UInt) { self.value = value }
-	init(rawValue value: UInt) { self.value = value }
+private struct FuelCalculatorDataRow: OptionSetType {
+	let rawValue: UInt
 
-	static var allZeros: FuelCalculatorDataRow { return self(0b0000) }
-	static var Distance: FuelCalculatorDataRow { return self(0b0001) }
-	static var Price: FuelCalculatorDataRow    { return self(0b0010) }
-	static var Amount: FuelCalculatorDataRow   { return self(0b0100) }
-	static var All: FuelCalculatorDataRow      { return self(0b0111) }
+	static let Distance = FuelCalculatorDataRow(rawValue: 0b0001)
+	static let Price = FuelCalculatorDataRow(rawValue: 0b0010)
+	static let Amount = FuelCalculatorDataRow(rawValue: 0b0100)
+	static let All = FuelCalculatorDataRow(rawValue: 0b0111)
 }
 
 class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
@@ -46,6 +41,13 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	required init(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
+
+		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")
+		userActivity?.title = NSLocalizedString("Fill-Up", comment:"")
+		if #available(iOS 9.0, *) {
+			userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment:"") ]
+			userActivity?.eligibleForSearch = true
+		}
 
 		// Title bar
 		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingMode:")
@@ -142,6 +144,8 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	override func viewDidAppear(animated: Bool) {
 		super.viewDidAppear(animated)
 
+		self.userActivity?.becomeCurrent()
+
 		NSNotificationCenter.defaultCenter().addObserver(self,
                                              selector:"handleShake:",
                                                  name:kraftstoffDeviceShakeNotification,
@@ -150,6 +154,10 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	override func viewDidDisappear(animated: Bool) {
 		super.viewDidDisappear(animated)
+
+		if #available(iOS 9.0, *) {
+			userActivity?.resignCurrent()
+		}
 
 		NSNotificationCenter.defaultCenter().removeObserver(self,
                                                     name:kraftstoffDeviceShakeNotification,
@@ -261,7 +269,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
-		if rowMask & .Distance == .Distance {
+		if rowMask.contains(.Distance) {
 			if self.distance == nil {
 				self.distance = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentDistance")! as! NSNumber).decimalValue)
 			}
@@ -276,7 +284,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
               withAnimation:animation)
 		}
 
-		if rowMask & .Price == .Price {
+		if rowMask.contains(.Price) {
 			if self.price == nil {
 				self.price = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentPrice")! as! NSNumber).decimalValue)
 			}
@@ -291,7 +299,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
               withAnimation:animation)
 		}
 
-		if rowMask & .Amount == .Amount {
+		if rowMask.contains(.Amount) {
 			if self.fuelVolume == nil {
 				self.fuelVolume = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentFuelVolume")! as! NSNumber).decimalValue)
 			}
@@ -780,14 +788,12 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Validate only when there is a car for saving
-		if self.car == nil {
-			return true
-		}
+		guard let car = self.car else { return true }
 
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
-				if CoreDataManager.containsEventWithCar(self.car!, andDate:date) {
+				if CoreDataManager.containsEventWithCar(car, andDate:date) {
 					return false
 				}
 			}
