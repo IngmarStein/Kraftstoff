@@ -408,7 +408,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				CGContextTranslateCTM (cgContext, 0.0, y - lastY)
 				path.stroke()
 			}
-            CGContextRestoreGState(cgContext)
+
+			CGContextRestoreGState(cgContext)
         }
 
 		CGContextRestoreGState(cgContext)
