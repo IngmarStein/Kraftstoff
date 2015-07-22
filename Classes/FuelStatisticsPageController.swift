@@ -20,7 +20,7 @@ class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 
 	//MARK: - View Lifecycle
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		self.modalTransitionStyle = .CrossDissolve

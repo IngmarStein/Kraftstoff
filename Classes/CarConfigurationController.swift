@@ -49,7 +49,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 
 	//MARK: - View Lifecycle
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		restorationClass = self.dynamicType

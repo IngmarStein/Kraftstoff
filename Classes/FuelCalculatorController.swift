@@ -39,7 +39,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var doneButton: UIBarButtonItem!
 	var saveButton: UIBarButtonItem!
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")

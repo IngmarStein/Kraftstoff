@@ -46,7 +46,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 	//MARK: - View Lifecycle
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		self.restorationClass = self.dynamicType
