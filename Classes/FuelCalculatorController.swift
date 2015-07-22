@@ -37,7 +37,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var doneButton: UIBarButtonItem!
 	var saveButton: UIBarButtonItem!
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		// Fetch the cars
 		fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
 

@@ -244,7 +244,7 @@ final class CoreDataManager {
 			let dateDescription = NSExpression(forConstantValue:date).description
 			let datePredicate = NSPredicate(format:String(format:"timestamp %@ %@", dateCompare, dateDescription))
 
-			fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([parentPredicate, datePredicate])
+			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
 		}
@@ -322,7 +322,7 @@ final class CoreDataManager {
 		let dateDescription = NSExpression(forConstantValue:date).description
 		let datePredicate = NSPredicate(format:String(format:"timestamp == %@", dateDescription))
 
-		fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([parentPredicate, datePredicate])
+		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 
 		// Check whether fetch would reveal any event objects
 		var error: NSError?
