@@ -565,7 +565,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 		if fuelEventController == nil || fuelEventController.selectedCar != selectedCar {
 			fuelEventController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
-			fuelEventController.selectedCar          = selectedCar
+			fuelEventController.selectedCar = selectedCar
 		}
 
 		self.navigationController?.pushViewController(fuelEventController, animated:true)
@@ -598,6 +598,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		}
 	}
 
+	// see https://forums.developer.apple.com/thread/4999 why this currently crashes on iOS 9
 	func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		if changeIsUserDriven {
 			return
@@ -605,15 +606,22 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 		switch type {
         case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
+			if let newIndexPath = newIndexPath {
+				tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation:.Fade)
+			}
         case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
+			if let indexPath = indexPath {
+				tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:.Fade)
+			}
         case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
-
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
+			if let indexPath = indexPath, newIndexPath = newIndexPath where indexPath != newIndexPath {
+				tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:.Fade)
+				tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation:.Fade)
+			}
         case .Update:
-            tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation:.Automatic)
+			if let indexPath = indexPath {
+				tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation:.Automatic)
+			}
 		}
 	}
 
