@@ -245,7 +245,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	private var exportURL: NSURL {
-		return NSURL(fileURLWithPath:NSTemporaryDirectory().stringByAppendingPathComponent(exportFilename))
+		return NSURL(fileURLWithPath:(NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(exportFilename))
 	}
 
 	func exportTextData() -> NSData {
@@ -498,7 +498,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	}
 
 	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as NSManagedObject
+		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
 
 		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
@@ -530,7 +530,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
         case .Insert:
             tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)

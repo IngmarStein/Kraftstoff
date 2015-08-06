@@ -545,7 +545,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	}
 
 	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as NSManagedObject
+		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
 
 		return CoreDataManager.modelIdentifierForManagedObject(object)!
 	}
@@ -599,7 +599,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	}
 
 	// see https://forums.developer.apple.com/thread/4999 why this currently crashes on iOS 9
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		if changeIsUserDriven {
 			return
 		}
