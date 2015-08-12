@@ -523,7 +523,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" ${INFOPLIST_FILE})\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" ${INFOPLIST_FILE}";
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" ${INFOPLIST_FILE})\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" ${INFOPLIST_FILE}\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
