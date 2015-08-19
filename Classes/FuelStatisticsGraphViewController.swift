@@ -368,9 +368,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleFootnote)
 		let path = UIBezierPath()
 
-		if state.dataCount == 0	{
+		CGContextSaveGState(cgContext)
 
-			CGContextSaveGState(cgContext)
+		if state.dataCount == 0	{
 
 			let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.whiteColor() ]
 
@@ -382,16 +382,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			text.drawAtPoint(CGPoint(x: x, y:y), withAttributes:attributes)
 
-			CGContextRestoreGState(cgContext)
-
 		} else {
 
 			// Color for coordinate-axes
 			UIColor(white:0.224, alpha:1.0).setStroke()
 
 			// Horizontal marker lines
-			CGContextSaveGState(cgContext)
-
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
             let dashDotPatternLength = 1
 
