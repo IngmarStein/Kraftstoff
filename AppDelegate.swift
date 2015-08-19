@@ -48,8 +48,8 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		dispatch_once(&launchInitPred) {
 			self.window?.makeKeyAndVisible()
 
-			CoreDataManager.migrateToiCloud()
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
+			CoreDataManager.migrateToiCloud()
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
@@ -67,7 +67,6 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 			}
 		}
 	}
-
 
 	public func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)

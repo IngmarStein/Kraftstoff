@@ -28,7 +28,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
 
-	var fetchedResultsController: NSFetchedResultsController
+	lazy var fetchedResultsController: NSFetchedResultsController = {
+		return CoreDataManager.fetchedResultsControllerForCars()
+	}()
 
 	var restoredSelectionIndex: NSIndexPath?
 	var car: Car?
@@ -43,23 +45,20 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var saveButton: UIBarButtonItem!
 
 	required init(coder aDecoder: NSCoder) {
-		// Fetch the cars
-		self.fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-
 		super.init(coder: aDecoder)
 
 		// Title bar
 		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingMode:")
 		self.saveButton = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:"saveAction:")
 		self.title = NSLocalizedString("Fill-Up", comment:"")
-
-		self.fetchedResultsController.delegate = self
 	}
 
 	//MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		self.fetchedResultsController.delegate = self
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
