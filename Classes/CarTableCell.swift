@@ -11,7 +11,7 @@ import UIKit
 class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
 	private var carPicker: UIPickerView
-	var cars: [Car]!
+	var cars: [Car]
 	private var carPickerConstraints = [NSLayoutConstraint]()
 
 	// Standard cell geometry
@@ -26,6 +26,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 
 	required init() {
 		carPicker = UIPickerView()
+		cars = []
 
 		super.init()
 
@@ -60,7 +61,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	override func prepareForReuse() {
 		super.prepareForReuse()
 
-		self.cars = nil
+		self.cars = []
 		self.carPicker.reloadAllComponents()
 	}
 
@@ -68,7 +69,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		// Array of possible cars
-		self.cars = dictionary["fetchedObjects"] as? [Car]
+		self.cars = dictionary["fetchedObjects"] as? [Car] ?? []
 
 		// Look for index of selected car
 		let car = self.delegate.valueForIdentifier(self.valueIdentifier) as! Car
@@ -112,7 +113,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 	}
 
 	func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return self.cars?.count ?? 0
+		return self.cars.count
 	}
 
 	func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
