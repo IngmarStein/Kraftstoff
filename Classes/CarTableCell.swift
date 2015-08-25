@@ -87,7 +87,7 @@ class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewD
 		var description = String(format:"%@ %@", car.name, car.numberPlate)
 
 		if description.characters.count > maximumDescriptionLength {
-			description = String(format:"%@…", description.substringToIndex(advance(description.startIndex, maximumDescriptionLength)))
+			description = String(format:"%@…", description.substringToIndex(description.startIndex.advancedBy(maximumDescriptionLength)))
 		}
 
 		self.textFieldProxy.text = description

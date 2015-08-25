@@ -82,7 +82,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - State Restoration
 
 	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("CarConfigurationController") as! CarConfigurationController
 			controller.editingExistingObject = coder.decodeBoolForKey(kSRConfiguratorEditMode)
 
@@ -113,11 +113,11 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		self.delegate               = coder.decodeObjectForKey(kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBoolForKey(kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBoolForKey(kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex) as? NSIndexPath
+		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex)
 		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
 		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit) as? NSNumber
-		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit) as? NSNumber
+		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 

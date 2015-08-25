@@ -137,7 +137,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 	//MARK: - State Restoration
 
 	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey:UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventSelectedCarID) as! String
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
@@ -241,7 +241,7 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
 		let illegalCharacters = NSCharacterSet(charactersInString:"/\\?%*|\"<>")
 
-		return "".join(rawFilename.componentsSeparatedByCharactersInSet(illegalCharacters))
+		return rawFilename.componentsSeparatedByCharactersInSet(illegalCharacters).joinWithSeparator("")
 	}
 
 	private var exportURL: NSURL {

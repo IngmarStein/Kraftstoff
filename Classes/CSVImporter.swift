@@ -83,7 +83,7 @@ final class CSVImporter {
 
 				if !part.isEmpty {
 					if part.characters.count > TextEditTableCell.maximumTextFieldLength {
-						return part.substringToIndex(advance(part.startIndex, TextEditTableCell.maximumTextFieldLength))
+						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -105,7 +105,7 @@ final class CSVImporter {
 
 				if !part.isEmpty {
 					if part.characters.count > TextEditTableCell.maximumTextFieldLength {
-						return part.substringToIndex(advance(part.startIndex, TextEditTableCell.maximumTextFieldLength))
+						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -154,7 +154,7 @@ final class CSVImporter {
 
 	private func truncateLongString(str: String) -> String {
 		if str.characters.count > TextEditTableCell.maximumTextFieldLength {
-			return str.substringToIndex(advance(str.startIndex, TextEditTableCell.maximumTextFieldLength))
+			return str.substringToIndex(str.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 		} else {
 			return str
 		}

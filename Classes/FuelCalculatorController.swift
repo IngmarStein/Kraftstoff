@@ -92,7 +92,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	}
 
 	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		self.restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? NSIndexPath
+		self.restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRCalculatorSelectedIndex)
 		self.isShowingConvertSheet = coder.decodeBoolForKey(kSRCalculatorConvertSheet)
     
 		if coder.decodeBoolForKey(kSRCalculatorEditing) {
