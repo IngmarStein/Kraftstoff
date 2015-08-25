@@ -93,11 +93,7 @@ final class CoreDataManager {
 
 		if objectURL.scheme == "x-coredata" {
 			if let objectID = persistentStoreCoordinator.managedObjectIDForURIRepresentation(objectURL) {
-				do {
-					return try managedObjectContext.existingObjectWithID(objectID)
-				} catch _ {
-					return nil
-				}
+				return try? managedObjectContext.existingObjectWithID(objectID)
 			}
 		}
 
@@ -108,11 +104,7 @@ final class CoreDataManager {
 		if object.deleted {
 			return nil
 		} else {
-			do {
-				return try moc.existingObjectWithID(object.objectID)
-			} catch _ {
-				return nil
-			}
+			return try? moc.existingObjectWithID(object.objectID)
 		}
 	}
 

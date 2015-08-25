@@ -126,15 +126,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 	// Read file contents from given URL, guess file encoding
 	private func contentsOfURL(url: NSURL) -> String? {
 		var enc: NSStringEncoding = NSUTF8StringEncoding
-		do {
-			return try String(contentsOfURL: url, usedEncoding: &enc)
-		} catch _ {
-			do {
-				return try String(contentsOfURL:url, encoding:NSMacOSRomanStringEncoding)
-			} catch _ {
-				return nil
-			}
-		}
+		if let contents = try? String(contentsOfURL: url, usedEncoding: &enc) { return contents }
+		if let contents = try? String(contentsOfURL: url, encoding: NSMacOSRomanStringEncoding) { return contents }
+		return nil
 	}
 
 	// Removes files from the inbox
