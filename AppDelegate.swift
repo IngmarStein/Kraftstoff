@@ -169,6 +169,11 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 			return false
 		}
 
+		if !StoreManager.sharedInstance.checkCarCount() {
+			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
+			return false
+		}
+
 		// Show modal activity indicator while importing
 		showImportAlert()
 

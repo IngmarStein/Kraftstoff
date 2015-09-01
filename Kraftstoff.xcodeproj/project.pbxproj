@@ -53,6 +53,7 @@
 		95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */; };
 		95DA862B1AFB426D001E1375 /* Kraftstoff_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */; };
 		95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA86311AFB45E2001E1375 /* CSVExporter.swift */; };
+		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +122,7 @@
 		95DA86291AFB426D001E1375 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_Tests.swift; sourceTree = "<group>"; };
 		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
+		95F1962F1B961D90000E4D0C /* StoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 				4D8079DD12A5A0100082C40A /* InfoTables */,
 				95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */,
 				4DAC56211303178D00D02BEC /* PageTables */,
+				95F1962E1B961D54000E4D0C /* Store */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -408,6 +411,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		95F1962E1B961D54000E4D0C /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				95F1962F1B961D90000E4D0C /* StoreManager.swift */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -459,6 +470,9 @@
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = ADVP2P7SJK;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
@@ -535,6 +549,7 @@
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
 				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,
+				95F196301B961D90000E4D0C /* StoreManager.swift in Sources */,
 				95C071731AF62AC800DF261C /* TextEditTableCell.swift in Sources */,
 				95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */,
 				95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */,

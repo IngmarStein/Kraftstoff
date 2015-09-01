@@ -303,6 +303,11 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	}
 
 	func insertNewObject(sender: AnyObject) {
+		if !StoreManager.sharedInstance.checkCarCount() {
+			StoreManager.sharedInstance.showBuyOptions(self)
+			return
+		}
+
 		setEditing(false, animated:true)
 
 		let configurator = self.storyboard!.instantiateViewControllerWithIdentifier("CarConfigurationController") as! CarConfigurationController
