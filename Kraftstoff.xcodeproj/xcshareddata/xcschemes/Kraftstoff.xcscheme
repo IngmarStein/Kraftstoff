@@ -88,7 +88,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-com.apple.coredata.ubiquity.logLevel 3"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-com.apple.CoreData.SQLDebug 1"

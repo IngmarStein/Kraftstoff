@@ -28,10 +28,26 @@ public class CoreDataManager {
 	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
 	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Fuel.sqlite")
 
+	private static var iCloudLocalStoreURL : NSURL? {
+		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("CoreDataUbiquitySupport")
+		var error : NSError?
+		if let peers = NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: .allZeros, error: &error) where peers.count == 1 {
+			if let peer = peers.first as? NSURL {
+				return peer.URLByAppendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
+			}
+		}
+		return nil
+	}
+
+	private static let localStoreOptions = [
+		NSMigratePersistentStoresAutomaticallyOption: true,
+		NSInferMappingModelAutomaticallyOption: true,
+	]
+
 	private static let iCloudStoreOptions = [
 		NSMigratePersistentStoresAutomaticallyOption: true,
 		NSInferMappingModelAutomaticallyOption: true,
-		NSPersistentStoreUbiquitousContentNameKey: "Kraftstoff"
+		NSPersistentStoreUbiquitousContentNameKey: "Kraftstoff2"
 	]
 
 	static let sharedInstance = CoreDataManager()
@@ -108,46 +124,49 @@ public class CoreDataManager {
 
 	//MARK: - iCloud support
 
-	static func migrateToiCloud() {
-		let fileURL = localStoreURL
-		let fileManager = NSFileManager.defaultManager()
+	private static func migrateStore(sourceStoreURL: NSURL, options: [NSObject : AnyObject]) {
+		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 
-		if fileManager.fileExistsAtPath(fileURL.path!) {
-			let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+		var migrationOptions = options
+		migrationOptions[NSReadOnlyPersistentStoreOption] = true
 
-			let options = [
-				NSMigratePersistentStoresAutomaticallyOption: true,
-				NSInferMappingModelAutomaticallyOption: true,
-				NSReadOnlyPersistentStoreOption: true
-			]
-
-			// Open the existing local store
-			var error: NSError?
-			if let sourceStore = migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:fileURL, options:options as [NSObject : AnyObject], error:&error) {
-				if let newStore = migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType, error:&error) {
-
-					dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-						let fileCoordinator = NSFileCoordinator()
-						fileCoordinator.coordinateWritingItemAtURL(fileURL, options: .ForMoving, error: &error) { writingURL in
-							var renameError: NSError?
-							let targetURL = fileURL.URLByAppendingPathExtension("migrated")
-							if !fileManager.moveItemAtURL(fileURL, toURL: targetURL, error: &renameError) {
-								if let error = renameError {
-									NSLog("error renaming store after migration: %@", error.localizedDescription)
-								}
+		// Open the existing local store
+		var error: NSError?
+		if let sourceStore = migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:sourceStoreURL, options:migrationOptions, error:&error) {
+			if let newStore = migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType, error:&error) {
+				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+					let fileCoordinator = NSFileCoordinator()
+					fileCoordinator.coordinateWritingItemAtURL(sourceStoreURL, options: .ForMoving, error: &error) { writingURL in
+						var renameError: NSError?
+						let targetURL = sourceStoreURL.URLByAppendingPathExtension("migrated")
+						if !NSFileManager.defaultManager().moveItemAtURL(sourceStoreURL, toURL: targetURL, error: &renameError) {
+							if let error = renameError {
+								NSLog("error renaming store after migration: %@", error.localizedDescription)
 							}
 						}
 					}
-				} else  {
-					if let error = error {
-						NSLog("error while migrating to iCloud: %@", error.localizedDescription)
-					}
 				}
-			} else {
+			} else  {
 				if let error = error {
-					NSLog("failed to open local store for migration: %@", error.localizedDescription)
+					NSLog("error while migrating to iCloud: %@", error.localizedDescription)
 				}
 			}
+		} else {
+			if let error = error {
+				NSLog("failed to open local store for migration: %@", error.localizedDescription)
+			}
+		}
+	}
+
+	static func migrateToiCloud() {
+		// migrate old non-iCloud store
+		if NSFileManager.defaultManager().fileExistsAtPath(localStoreURL.path!) {
+			migrateStore(localStoreURL, options: localStoreOptions)
+		}
+
+		// migrate old iCloud store without iCloud Documents entitlement
+		if let url = iCloudLocalStoreURL where NSFileManager.defaultManager().fileExistsAtPath(url.path!) {
+			migrateStore(url, options: localStoreOptions)
 		}
 	}
 
