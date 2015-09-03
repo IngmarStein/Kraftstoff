@@ -65,6 +65,9 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .Cancel, handler: nil)
 		alert.addAction(cancelAction)
 
+		alert.popoverPresentationController?.sourceView = parent.view
+		alert.popoverPresentationController?.sourceRect = parent.view.bounds
+		alert.popoverPresentationController?.permittedArrowDirections = .allZeros
 		parent.presentViewController(alert, animated: true, completion: nil)
 	}
 
