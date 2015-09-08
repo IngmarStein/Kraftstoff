@@ -31,9 +31,13 @@ public class CoreDataManager {
 	private static var iCloudLocalStoreURL : NSURL? {
 		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("CoreDataUbiquitySupport")
 		var error : NSError?
-		if let peers = NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: .allZeros, error: &error) where peers.count == 1 {
-			if let peer = peers.first as? NSURL {
-				return peer.URLByAppendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
+		if let peers = NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: .allZeros, error: &error) as? [NSURL] {
+			let fileManager = NSFileManager.defaultManager()
+			for peer in peers {
+				let localStoreURL = peer.URLByAppendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
+				if fileManager.fileExistsAtPath(localStoreURL.path!) {
+					return localStoreURL
+				}
 			}
 		}
 		return nil
