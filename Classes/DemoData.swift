@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-struct DemoDataItem {
+private struct DemoDataItem {
 	var date: String
 
 	var distance: UInt64       // *10^-1
@@ -17,7 +17,7 @@ struct DemoDataItem {
 	var price: UInt64          // *10^-3
 }
 
-let demoData = [
+private let demoData = [
 	DemoDataItem(date: "2009-09-25 12:00:GMT+02:00", distance: 1900, fuelVolume:  760, price: 1079 ),
     DemoDataItem(date: "2009-10-10 12:00:GMT+02:00", distance: 5810, fuelVolume: 2488, price: 1079 ),
     DemoDataItem(date: "2009-10-22 12:00:GMT+02:00", distance: 5740, fuelVolume: 2494, price: 1119 ),
@@ -125,9 +125,9 @@ let demoData = [
     DemoDataItem(date: "2013-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389 ),
 ]
 
-public final class DemoData {
+final class DemoData {
    
-	static public func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
+	static func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
 
 		df.locale = NSLocale.systemLocale()
@@ -135,7 +135,7 @@ public final class DemoData {
 
 		autoreleasepool {
 			for item in demoData {
-				let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:context) as! NSManagedObject
+				let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:context) as NSManagedObject
 
 				let distance = NSDecimalNumber(mantissa:item.distance, exponent: -1, isNegative:false)
 				let fuelVolume = NSDecimalNumber(mantissa:item.fuelVolume, exponent: -2, isNegative:false)

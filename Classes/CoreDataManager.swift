@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-public class CoreDataManager {
+final class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext! = {
 		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)
@@ -20,13 +20,13 @@ public class CoreDataManager {
 
 	private static let managedObjectModel: NSManagedObjectModel = {
 		let modelPath = NSBundle.mainBundle().pathForResource("Kraftstoffrechner", ofType:"momd")!
-		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath)!)!
+		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath))!
 	}()
 
-	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last as! String
+	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last!
 	
-	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
-	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("Fuel.sqlite")
+	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
+	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Fuel.sqlite")
 
 	private static var iCloudLocalStoreURL : NSURL? {
 		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("CoreDataUbiquitySupport")
@@ -57,19 +57,21 @@ public class CoreDataManager {
 	static let sharedInstance = CoreDataManager()
 
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		var error: NSError?
-
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
 
-		if persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions, error:&error) == nil {
+		do {
+			try persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions)
+		} catch let error as NSError {
 			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
 				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
 				preferredStyle:.Alert)
 			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
-				fatalError(error!.localizedDescription)
+				fatalError(error.localizedDescription)
 			}
 			alertController.addAction(defaultAction)
 			UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
+		} catch {
+			fatalError()
 		}
 
 		return persistentStoreCoordinator
@@ -79,14 +81,14 @@ public class CoreDataManager {
 
 	static func saveContext(context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
-			var error : NSError?
-
-			if !context.save(&error) {
+			do {
+				try context.save()
+			} catch let error as NSError {
 				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment:""),
 					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment:""),
 					preferredStyle:.Alert)
 				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
-					fatalError(error!.localizedDescription)
+					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
 				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
@@ -111,7 +113,7 @@ public class CoreDataManager {
 
 		if objectURL.scheme == "x-coredata" {
 			if let objectID = persistentStoreCoordinator.managedObjectIDForURIRepresentation(objectURL) {
-				return managedObjectContext.existingObjectWithID(objectID, error:nil)
+				return try? managedObjectContext.existingObjectWithID(objectID)
 			}
 		}
 
@@ -122,7 +124,7 @@ public class CoreDataManager {
 		if object.deleted {
 			return nil
 		} else {
-			return moc.existingObjectWithID(object.objectID, error:nil)
+			return try? moc.existingObjectWithID(object.objectID)
 		}
 	}
 
@@ -154,6 +156,8 @@ public class CoreDataManager {
 				if let error = error {
 					NSLog("error while migrating to iCloud: %@", error.localizedDescription)
 				}
+			} catch let error as NSError {
+				NSLog("failed to open local store for migration: %@", error.localizedDescription)
 			}
 		} else {
 			if let error = error {
@@ -206,12 +210,12 @@ public class CoreDataManager {
 
 		context.performBlockAndWait {
 			if context.hasChanges {
-				var error: NSError?
-				let success = context.save(&error)
-
-				if let error = error where !success {
-					// perform error handling
+				do {
+					try context.save()
+				} catch let error as NSError {
 					NSLog("%@", error.localizedDescription)
+				} catch {
+					fatalError()
 				}
 			}
 
@@ -258,7 +262,7 @@ public class CoreDataManager {
 			let dateDescription = NSExpression(forConstantValue:date).description
 			let datePredicate = NSPredicate(format:String(format:"timestamp %@ %@", dateCompare, dateDescription))
 
-			fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([parentPredicate, datePredicate])
+			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
 		}
@@ -270,7 +274,7 @@ public class CoreDataManager {
 		return fetchRequest
 	}
 
-	public static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEventsForCar(car: Car,
                                      afterDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
@@ -281,7 +285,7 @@ public class CoreDataManager {
                       inManagedObjectContext:moc)
 	}
 
-	public static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEventsForCar(car: Car,
                                     beforeDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
@@ -302,19 +306,20 @@ public class CoreDataManager {
             cacheName:nil)
 
 		// Perform the Core Data fetch
-		var error: NSError?
-		if !fetchedResultsController.performFetch(&error) {
-			fatalError(error!.localizedDescription)
+		do {
+			try fetchedResultsController.performFetch()
+		} catch let error as NSError {
+			fatalError(error.localizedDescription)
 		}
 
 		return fetchedResultsController
 	}
 
-	public static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
-		var error: NSError?
-		let fetchedObjects = moc.executeFetchRequest(fetchRequest, error:&error)
-
-		if let error = error {
+	static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
+		let fetchedObjects: [AnyObject]?
+		do {
+			fetchedObjects = try moc.executeFetchRequest(fetchRequest)
+		} catch let error as NSError {
 			fatalError(error.localizedDescription)
 		}
 
@@ -335,7 +340,7 @@ public class CoreDataManager {
 		let dateDescription = NSExpression(forConstantValue:date).description
 		let datePredicate = NSPredicate(format:String(format:"timestamp == %@", dateDescription))
 
-		fetchRequest.predicate = NSCompoundPredicate.andPredicateWithSubpredicates([parentPredicate, datePredicate])
+		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 
 		// Check whether fetch would reveal any event objects
 		var error: NSError?

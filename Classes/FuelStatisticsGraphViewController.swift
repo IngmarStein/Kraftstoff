@@ -71,7 +71,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private var zooming = false {
 		didSet {
-			for subview in self.view.subviews as! [UIView] {
+			for subview in self.view.subviews {
 				if subview.tag > 0 {
 					if subview.tag < 1000 {
 						subview.hidden = zooming
@@ -408,7 +408,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				CGContextTranslateCTM (cgContext, 0.0, y - lastY)
 				path.stroke()
 			}
-            CGContextRestoreGState(cgContext)
+
+			CGContextRestoreGState(cgContext)
         }
 
 		CGContextRestoreGState(cgContext)
@@ -512,7 +513,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 									self.dataSource!.curveGradient,
 									CGPoint(x: 0, y: self.graphBottomBorder - 6),
 									CGPoint(x: 0, y: minY),
-									CGGradientDrawingOptions(kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation))
+									[CGGradientDrawingOptions.DrawsBeforeStartLocation, CGGradientDrawingOptions.DrawsAfterEndLocation])
 
 		CGContextRestoreGState(cgContext)
 
@@ -532,7 +533,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// The curve
 		path.lineWidth    = 1
-		path.lineCapStyle = kCGLineCapRound
+		path.lineCapStyle = .Round
 		UIColor.whiteColor().setStroke()
         
 		path.removeAllPoints()
@@ -710,7 +711,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var path = UIBezierPath()
 
 		// Graph as background
-		background.drawAtPoint(CGPointZero, blendMode:kCGBlendModeCopy, alpha:1.0)
+		background.drawAtPoint(CGPointZero, blendMode:.Copy, alpha:1.0)
 
 		// Marker line
 		self.view.tintColor.set()
@@ -902,10 +903,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 		let handler = Formatters.sharedConsumptionRoundingHandler
 		let distanceUnit = car.ksOdometerUnit
 
-		let price = fuelEvent.price
-
 		var distance = fuelEvent.distance
-		let fuelVolume = fuelEvent.fuelVolume
 		var cost = fuelEvent.cost
 
 		distance = distance + fuelEvent.inheritedDistance

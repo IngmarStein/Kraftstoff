@@ -46,7 +46,7 @@ class NumberEditTableCell: EditablePageCell {
 			self.textField.text = (alternateNumberFormatter ?? numberFormatter).stringFromNumber(value)
 
 			if let suffix = self.textFieldSuffix {
-				self.textField.text = self.textField.text.stringByAppendingString(suffix)
+				self.textField.text = self.textField.text!.stringByAppendingString(suffix)
 			}
 		} else {
 			self.textField.text = ""
@@ -60,12 +60,12 @@ class NumberEditTableCell: EditablePageCell {
 	// Implement special behavior for newly added characters
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
 		// Modify text
-		var text = textField.text
+		var text = textField.text!
 		var value = self.numberFormatter.numberFromString(text) as! NSDecimalNumber
 		let scale = NSDecimalNumber(mantissa:1, exponent:Int16(self.numberFormatter.maximumFractionDigits), isNegative:false)
 
 		if range.length == 0 {
-			if range.location == count(text) && count(string) == 1 {
+			if range.location == text.characters.count && string.characters.count == 1 {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string:string)
 
@@ -91,7 +91,7 @@ class NumberEditTableCell: EditablePageCell {
 			if value < NSDecimalNumber.zero() {
 				return false
 			}
-		} else if range.location >= count(text) - 1 {
+		} else if range.location >= text.characters.count - 1 {
 			let handler = NSDecimalNumberHandler(roundingMode:.RoundDown,
 												 scale:Int16(self.numberFormatter.maximumFractionDigits),
                                                  raiseOnExactness:false,
@@ -123,7 +123,7 @@ class NumberEditTableCell: EditablePageCell {
 			textField.text = (alternateNumberFormatter ?? numberFormatter).stringFromNumber(clearedValue)
 
 			if let suffix = self.textFieldSuffix {
-				textField.text = textField.text.stringByAppendingString(suffix)
+				textField.text = textField.text!.stringByAppendingString(suffix)
 			}
 		}
 
@@ -137,13 +137,13 @@ class NumberEditTableCell: EditablePageCell {
 	// Editing starts, remove suffix and switch to normal formatter
 	func textFieldDidBeginEditing(textField: UITextField) {
 		if let suffix = self.textFieldSuffix {
-			if textField.text.hasSuffix(suffix) {
-				textField.text = textField.text.substringToIndex(advance(textField.text.endIndex, -count(suffix)))
+			if textField.text!.hasSuffix(suffix) {
+				textField.text = textField.text!.substringToIndex(textField.text!.endIndex.advancedBy(-suffix.characters.count))
 			}
 		}
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
-			let value = alternateNumberFormatter.numberFromString(textField.text) as? NSDecimalNumber ?? NSDecimalNumber.zero()
+			let value = alternateNumberFormatter.numberFromString(textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()
 			textField.text = numberFormatter.stringFromNumber(value)
 			self.delegate.valueChanged(value, identifier:self.valueIdentifier)
 			updateTextFieldColorForValue(value)
@@ -154,15 +154,15 @@ class NumberEditTableCell: EditablePageCell {
 	override func textFieldDidEndEditing(textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
-		let value = self.numberFormatter.numberFromString(textField.text) as? NSDecimalNumber ?? NSDecimalNumber.zero()
+		let value = self.numberFormatter.numberFromString(textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
 			textField.text = alternateNumberFormatter.stringFromNumber(value)
 		}
 
 		if let suffix = self.textFieldSuffix {
-			if !textField.text.hasSuffix(suffix) {
-				textField.text = textField.text.stringByAppendingString(suffix)
+			if !textField.text!.hasSuffix(suffix) {
+				textField.text = textField.text!.stringByAppendingString(suffix)
 			}
 		}
 

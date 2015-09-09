@@ -11,14 +11,14 @@ import CoreData
 
 typealias CSVRecord = [String:String]
 
-public class CSVImporter {
+final class CSVImporter {
 
 	private var carIDs = Set<Int>()
 	private var carForID = [Int : Car]()
 	private var modelForID = [Int : String]()
 	private var plateForID = [Int : String]()
 
-	public init() {}
+	init() {}
 
 	//MARK: - Core Data Support
 
@@ -75,15 +75,15 @@ public class CSVImporter {
 
 	private func guessModelFromURL(sourceURL: NSURL) -> String? {
 		if sourceURL.fileURL {
-			let nameComponents = sourceURL.path!.lastPathComponent.stringByDeletingPathExtension.componentsSeparatedByString("__")
+			let nameComponents = (((sourceURL.path! as NSString).lastPathComponent as NSString).stringByDeletingPathExtension as NSString).componentsSeparatedByString("__")
 
 			// CSV file exported in new format: model is first part of filename
 			if nameComponents.count == 2 {
 				let part = nameComponents[0]
 
 				if !part.isEmpty {
-					if count(part) > TextEditTableCell.maximumTextFieldLength {
-						return part.substringToIndex(advance(part.startIndex, TextEditTableCell.maximumTextFieldLength))
+					if part.characters.count > TextEditTableCell.maximumTextFieldLength {
+						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -96,7 +96,7 @@ public class CSVImporter {
 
 	private func guessPlateFromURL(sourceURL: NSURL) -> String? {
 		if sourceURL.fileURL {
-			let nameComponents = sourceURL.path!.lastPathComponent.stringByDeletingPathExtension.componentsSeparatedByString("__")
+			let nameComponents = ((sourceURL.path! as NSString).lastPathComponent as NSString).stringByDeletingPathExtension.componentsSeparatedByString("__")
 
 			// CSV file in new format: plate is second part of filename
 			//     for unknown format: use the whole filename if it is a single component
@@ -104,8 +104,8 @@ public class CSVImporter {
 				let part = nameComponents.last!
 
 				if !part.isEmpty {
-					if count(part) > TextEditTableCell.maximumTextFieldLength {
-						return part.substringToIndex(advance(part.startIndex, TextEditTableCell.maximumTextFieldLength))
+					if part.characters.count > TextEditTableCell.maximumTextFieldLength {
+						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -153,8 +153,8 @@ public class CSVImporter {
 	}
 
 	private func truncateLongString(str: String) -> String {
-		if count(str) > TextEditTableCell.maximumTextFieldLength {
-			return str.substringToIndex(advance(str.startIndex, TextEditTableCell.maximumTextFieldLength))
+		if str.characters.count > TextEditTableCell.maximumTextFieldLength {
+			return str.substringToIndex(str.startIndex.advancedBy(TextEditTableCell.maximumTextFieldLength))
 		} else {
 			return str
 		}
@@ -265,7 +265,7 @@ public class CSVImporter {
 		}
 
 		// Sort records according time and odometer
-		let sortedRecords = records.sorted { (record1, record2) -> Bool in
+		let sortedRecords = records.sort { (record1, record2) -> Bool in
 			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
 				if date1 < date2 {
 					return true
@@ -285,7 +285,7 @@ public class CSVImporter {
 		for carID in carIDs {
 			let car = carForID[carID]!
 
-			var lastDate          = NSDate.distantPast() as! NSDate
+			var lastDate          = NSDate.distantPast() as NSDate
 			var lastDelta         = NSTimeInterval(0.0)
 			var detectedEvents    = false
 			var initialFillUpSeen = false
@@ -413,7 +413,7 @@ public class CSVImporter {
 
 	//MARK: - Data Import
 
-	public func importFromCSVString(CSVString: String, inout detectedCars numCars: Int, inout detectedEvents numEvents: Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	func importFromCSVString(CSVString: String, inout detectedCars numCars: Int, inout detectedEvents numEvents: Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString:CSVString)
 
 		// Check for TankPro import:search for tables containing car definitions
@@ -579,10 +579,8 @@ public class CSVImporter {
 		return df
 	}()
 
-	private func scanDateWithString(string: String!) -> NSDate? {
-		if string == nil {
-			return nil
-		}
+	private func scanDateWithString(string: String?) -> NSDate? {
+		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
 		if let d = systemDateFormatter.dateFromString(string) {
@@ -598,10 +596,8 @@ public class CSVImporter {
 	}
 
 
-	private func scanTimeWithString(string: String!) -> NSDate? {
-		if string == nil {
-			return nil
-		}
+	private func scanTimeWithString(string: String?) -> NSDate? {
+		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
 		if let d = systemTimeFormatter.dateFromString(string) {
@@ -616,10 +612,8 @@ public class CSVImporter {
 		return nil
 	}
 
-	private func scanBooleanWithString(string: String!) -> Bool {
-		if string == nil {
-			return true
-		}
+	private func scanBooleanWithString(string: String?) -> Bool {
+		guard let string = string else { return true }
 
 		if let n = scanNumberWithString(string) {
 			return n != 0
@@ -629,10 +623,8 @@ public class CSVImporter {
 		}
 	}
 
-	private func scanVolumeUnitWithString(string: String!) -> KSVolume {
-		if string == nil {
-			return .Liter
-		}
+	private func scanVolumeUnitWithString(string: String?) -> KSVolume {
+		guard let string = string else { return .Liter }
 
 		let header = CSVParser.simplifyCSVHeaderName(string)
 
@@ -675,7 +667,7 @@ public class CSVImporter {
 
 	private func keyForDate(record: CSVRecord) -> String? {
 		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -685,7 +677,7 @@ public class CSVImporter {
 
 	private func keyForTime(record: CSVRecord) -> String? {
 		for key in [ "HHMM", "TIME", "ZEIT" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -695,14 +687,14 @@ public class CSVImporter {
 
 	private func keyForDistance(record: CSVRecord, inout unit: KSDistance) -> String? {
 		for key in [ "KILOMETERS", "KILOMETER", "STRECKE" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .Kilometer
 				return key
 			}
 		}
 
 		for key in [ "MILES", "MEILEN" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .StatuteMile
 				return key
 			}
@@ -713,14 +705,14 @@ public class CSVImporter {
 
 	private func keyForOdometer(record: CSVRecord, inout unit: KSDistance) -> String? {
 		for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .Kilometer
 				return key
 			}
         }
 
 		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .StatuteMile
 				return key
 			}
@@ -731,21 +723,21 @@ public class CSVImporter {
 
 	private func keyForVolume(record: CSVRecord, inout unit: KSVolume) -> String? {
 		for key in [ "LITERS", "LITER", "TANKMENGE" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .Liter
 				return key
 			}
         }
 
 		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .GalUS
 				return key
 			}
 		}
 
 		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				unit = .GalUK
 				return key
 			}
@@ -756,7 +748,7 @@ public class CSVImporter {
 
 	private func keyForVolume(record: CSVRecord) -> String? {
 		for key in [ "GETANKT", "AMOUNTFILLED" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -767,7 +759,7 @@ public class CSVImporter {
 	private func keyForVolumeUnit(record: CSVRecord) -> String? {
 		// 'MAFLEINHEIT' happens when Windows encoding is misinterpreted as MacRoman...
 		for key in [ "MASSEINHEIT", "UNIT", "MAFLEINHEIT" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -777,7 +769,7 @@ public class CSVImporter {
 
 	private func keyForPrice(record: CSVRecord) -> String? {
 		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -787,7 +779,7 @@ public class CSVImporter {
 
 	private func keyForFillup(record: CSVRecord) -> String? {
 		for key in [ "FULLFILLUP", "VOLLGETANKT" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -797,7 +789,7 @@ public class CSVImporter {
 
 	private func keyForModel(record: CSVRecord) -> String? {
 		for key in [ "MODEL", "MODELL" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}
@@ -807,7 +799,7 @@ public class CSVImporter {
 
 	private func keyForCarID(record: CSVRecord) -> String? {
 		for key in [ "CARID", "FAHRZEUGID" ] {
-			if let value = record[key] {
+			if record[key] != nil {
 				return key
 			}
 		}

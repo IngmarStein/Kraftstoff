@@ -27,7 +27,7 @@ class TextEditTableCell: EditablePageCell {
 	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
-		if dictionary["autocapitalizeAll"]?.boolValue ?? false {
+		if let autocapitalizeAll = dictionary["autocapitalizeAll"] where autocapitalizeAll.boolValue == true {
 			self.textField.autocapitalizationType = .AllCharacters
 		} else {
 			self.textField.autocapitalizationType = .Words
@@ -55,10 +55,10 @@ class TextEditTableCell: EditablePageCell {
 	}
 
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-		let newValue = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString:string)
+		let newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
 
 		// Don't allow too large strings
-		if count(newValue) > TextEditTableCell.maximumTextFieldLength {
+		if newValue.characters.count > TextEditTableCell.maximumTextFieldLength {
 			return false
 		}
 

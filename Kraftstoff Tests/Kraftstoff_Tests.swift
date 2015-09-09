@@ -9,7 +9,7 @@
 import XCTest
 import UIKit
 import CoreData
-import kraftstoff
+@testable import kraftstoff
 
 class Kraftstoff_Tests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!
@@ -18,7 +18,10 @@ class Kraftstoff_Tests: XCTestCase {
 		let managedObjectModel = NSManagedObjectModel.mergedModelFromBundles([NSBundle.mainBundle()])!
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-		persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil, error: nil)
+		do {
+			try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
+		} catch _ {
+		}
 
 		let managedObjectContext = NSManagedObjectContext()
 		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
@@ -59,14 +62,14 @@ class Kraftstoff_Tests: XCTestCase {
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar:car)
 
 		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"), "CSV data should have the expected prefix")
-		XCTAssert(count(csvString) == 5177, "CSV data should have the expected size")
+		XCTAssert(csvString.characters.count == 5177, "CSV data should have the expected size")
     }
 
     func testCSVImport() {
 		let importer = CSVImporter()
 		var numCars   = 0
 		var numEvents = 0
-		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")!
+		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let CSVString = "yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"
 		let success = importer.importFromCSVString(CSVString,

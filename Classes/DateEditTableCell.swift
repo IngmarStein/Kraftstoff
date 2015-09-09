@@ -23,12 +23,12 @@ class DateEditTableCell: EditableProxyPageCell {
 
 		datePicker.datePickerMode = .DateAndTime
 		datePicker.addTarget(self, action:"datePickerValueChanged:", forControlEvents:.ValueChanged)
-		datePicker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		datePicker.translatesAutoresizingMaskIntoConstraints = false
 		datePicker.hidden = true
 
 		contentView.addSubview(datePicker)
 
-		datePickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[datePicker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "datePicker" : datePicker]) as! [NSLayoutConstraint]
+		datePickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[datePicker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "datePicker" : datePicker]) as [NSLayoutConstraint]
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
 												selector:"significantTimeChange:",

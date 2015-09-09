@@ -46,7 +46,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 
 	//MARK: - View Lifecycle
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		self.restorationClass = self.dynamicType
@@ -78,10 +78,10 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	//MARK: - State Restoration
 
 	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as! String
-			controller.event                = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
+			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
 				return nil
@@ -94,7 +94,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow()
+		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		coder.encodeBool(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
 		coder.encodeBool(dataChanged, forKey:kSRFuelEventDataChanged)
@@ -114,12 +114,12 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	override func decodeRestorableStateWithCoder(coder: NSCoder) {
 		isShowingCancelSheet   = coder.decodeBoolForKey(kSRFuelEventCancelSheet)
 		dataChanged            = coder.decodeBoolForKey(kSRFuelEventDataChanged)
-		restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRFuelEventSelectionIndex) as? NSIndexPath
+		restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRFuelEventSelectionIndex)
 		car                    = CoreDataManager.managedObjectForModelIdentifier(coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventCarID) as! String) as? Car
-		date                   = coder.decodeObjectOfClass(NSDate.self, forKey: kSRFuelEventDate) as? NSDate
-		distance               = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventDistance) as? NSDecimalNumber
-		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice) as? NSDecimalNumber
-		fuelVolume             = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventVolume) as? NSDecimalNumber
+		date                   = coder.decodeObjectOfClass(NSDate.self, forKey: kSRFuelEventDate)
+		distance               = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventDistance)
+		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice)
+		fuelVolume             = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventVolume)
 		filledUp               = coder.decodeBoolForKey(kSRFuelEventFilledUp)
     
 		if coder.decodeBoolForKey(kSRFuelEventEditing) {
@@ -236,7 +236,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	//MARK: - Aborting Editing Mode
 
 	@IBAction func endEditingModeAndRevert(sender: AnyObject) {
-		restoredSelectionIndex = self.tableView.indexPathForSelectedRow()
+		restoredSelectionIndex = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
 			if self.dataChanged {
@@ -376,7 +376,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	//MARK: - Locale Handling
 
 	func localeChanged(object: AnyObject) {
-		let previousSelection = self.tableView.indexPathForSelectedRow()
+		let previousSelection = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
 			self.removeAllSectionsWithAnimation(.None)

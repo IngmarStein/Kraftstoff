@@ -23,7 +23,7 @@ class EditableProxyPageCell: EditablePageCell {
 		textFieldProxy.backgroundColor        = UIColor.clearColor()
 		textFieldProxy.userInteractionEnabled = false
 		textFieldProxy.isAccessibilityElement = false
-		textFieldProxy.setTranslatesAutoresizingMaskIntoConstraints(false)
+		textFieldProxy.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.textFieldProxy)
 
@@ -47,7 +47,7 @@ class EditableProxyPageCell: EditablePageCell {
 		self.textFieldProxy.font = self.textField.font
 	}
 
-	override var accessibilityLabel: String! {
+	override var accessibilityLabel: String? {
 		get {
 			if let text1 = self.keyLabel.text, text2 = self.textFieldProxy.text {
 				return "\(text1) \(text2)"

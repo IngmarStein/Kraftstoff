@@ -18,8 +18,8 @@ extension UIApplication {
 }
 
 @UIApplicationMain
-public final class AppDelegate: NSObject, UIApplicationDelegate {
-	public var window: UIWindow?
+final class AppDelegate: NSObject, UIApplicationDelegate {
+	var window: UIWindow?
 
 	private var importAlert: UIAlertController?
 
@@ -68,31 +68,31 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		}
 	}
 
-	public func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	public func applicationDidEnterBackground(application: UIApplication) {
+	func applicationDidEnterBackground(application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
-	public func applicationWillTerminate(application: UIApplication) {
+	func applicationWillTerminate(application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
 	//MARK: - State Restoration
 
-	public func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+	func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	public func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+	func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = NSBundle.mainBundle().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = coder.decodeObjectOfClass(NSNumber.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? Int ?? 0
 
@@ -107,7 +107,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:""), message:"", preferredStyle:.Alert)
 
 			let progress = UIActivityIndicatorView(frame:self.importAlert!.view.bounds)
-			progress.autoresizingMask = .FlexibleWidth | .FlexibleHeight
+			progress.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
 			progress.userInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .WhiteLarge
 			progress.startAnimating()
@@ -126,25 +126,17 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 	// Read file contents from given URL, guess file encoding
 	private func contentsOfURL(url: NSURL) -> String? {
 		var enc: NSStringEncoding = NSUTF8StringEncoding
-		var error: NSError?
-		let string = String(contentsOfURL: url, usedEncoding: &enc, error: &error)
-
-		if string == nil || error != nil {
-			error = nil
-			return String(contentsOfURL:url, encoding:NSMacOSRomanStringEncoding, error:&error)
-		} else {
-			return string
-		}
+		if let contents = try? String(contentsOfURL: url, usedEncoding: &enc) { return contents }
+		if let contents = try? String(contentsOfURL: url, encoding: NSMacOSRomanStringEncoding) { return contents }
+		return nil
 	}
 
 	// Removes files from the inbox
 	private func removeFileItemAtURL(url: NSURL) {
 		if url.fileURL {
-			var error: NSError?
-
-			NSFileManager.defaultManager().removeItemAtURL(url, error:&error)
-
-			if let error = error {
+			do {
+				try NSFileManager.defaultManager().removeItemAtURL(url)
+			} catch let error as NSError {
 				NSLog("%@", error.localizedDescription)
 			}
 		}
@@ -162,7 +154,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		return String(format:format, carCount, eventCount)
 	}
 
-	public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItemAtURL(url)
@@ -202,8 +194,8 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 
 				// On success propagate changes to parent context
 				if success {
-					CoreDataManager.saveContext(context: importContext)
-					parentContext.performBlock { CoreDataManager.saveContext(context: parentContext) }
+					CoreDataManager.saveContext(importContext)
+					parentContext.performBlock { CoreDataManager.saveContext(parentContext) }
 				}
 
 				dispatch_async(dispatch_get_main_queue()) {
@@ -245,7 +237,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+        let blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return blueGradient
 	}()
@@ -254,7 +246,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+		let greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return greenGradient
     }()
@@ -263,7 +255,7 @@ public final class AppDelegate: NSObject, UIApplicationDelegate {
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)
+        let orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
 
 		return orangeGradient
     }()

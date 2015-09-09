@@ -33,24 +33,23 @@ private let contentSizeDelta: [String:CGFloat] = [
 ]
 
 extension UIFont {
-	private static func applicationFontForStyle(textStyle: String, fontName: String) -> UIFont {
+	private static func applicationFontForStyle(textStyle: String, weight: CGFloat) -> UIFont {
 		let baseSize = textStyleSize[textStyle] ?? 0.0
 		let contentSize = UIApplication.sharedApplication().preferredContentSizeCategory
 		let sizeDelta = contentSizeDelta[contentSize] ?? 0.0
 		let fontSize = baseSize + sizeDelta
-		let fontDescriptor = UIFontDescriptor(name: fontName, size: fontSize)
-		return UIFont(descriptor: fontDescriptor, size: 0.0)
+		return UIFont.systemFontOfSize(fontSize, weight: weight)
 	}
 
 	static func lightApplicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, fontName: "HelveticaNeue-Light")
+		return applicationFontForStyle(textStyle, weight: UIFontWeightLight)
 	}
 
 	static func applicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, fontName: "HelveticaNeue")
+		return applicationFontForStyle(textStyle, weight: UIFontWeightRegular)
 	}
 
 	static func boldApplicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, fontName: "HelveticaNeue-Bold")
+		return applicationFontForStyle(textStyle, weight: UIFontWeightBold)
 	}
 }

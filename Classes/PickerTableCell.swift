@@ -26,14 +26,14 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 		picker.showsSelectionIndicator = true
 		picker.dataSource              = self
 		picker.delegate                = self
-		picker.setTranslatesAutoresizingMaskIntoConstraints(false)
+		picker.translatesAutoresizingMaskIntoConstraints = false
 		picker.hidden = true
 		let pickerHeightConstraint = NSLayoutConstraint(item: picker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
 		pickerHeightConstraint.priority = 750
 		picker.addConstraint(pickerHeightConstraint)
 		contentView.addSubview(picker)
 
-		pickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[picker]-|", options: .allZeros, metrics: nil, views: ["keyLabel" : keyLabel, "picker" : picker]) as! [NSLayoutConstraint]
+		pickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[picker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "picker" : picker]) as [NSLayoutConstraint]
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -97,11 +97,11 @@ class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerVi
 		return PickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+	func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		return self.pickerLabels[row]
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
+	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
 		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)

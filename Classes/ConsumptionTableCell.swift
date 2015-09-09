@@ -24,14 +24,14 @@ class ConsumptionTableCell: PageCell {
 		self.coloredLabel.backgroundColor           = UIColor.clearColor()
 		self.coloredLabel.highlightedTextColor      = UIColor(white:0.5, alpha:1.0)
 		self.coloredLabel.textColor                 = UIColor.blackColor()
-		self.coloredLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		setupFonts()
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: .allZeros, metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
@@ -60,7 +60,7 @@ class ConsumptionTableCell: PageCell {
 		self.coloredLabel.text             = dictionary["label"] as? String
 	}
 
-	override var accessibilityLabel: String! {
+	override var accessibilityLabel: String? {
 		get {
 			return self.coloredLabel.text
 		}

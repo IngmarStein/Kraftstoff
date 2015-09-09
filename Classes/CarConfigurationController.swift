@@ -49,7 +49,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 
 	//MARK: - View Lifecycle
 
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		restorationClass = self.dynamicType
@@ -82,7 +82,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - State Restoration
 
 	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectOfClass(UIStoryboard.self, forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			let controller = storyboard.instantiateViewControllerWithIdentifier("CarConfigurationController") as! CarConfigurationController
 			controller.editingExistingObject = coder.decodeBoolForKey(kSRConfiguratorEditMode)
 
@@ -93,7 +93,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	}
 
 	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow()
+		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		coder.encodeObject(self.delegate,            forKey:kSRConfiguratorDelegate)
 		coder.encodeBool(self.editingExistingObject, forKey:kSRConfiguratorEditMode)
@@ -113,11 +113,11 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 		self.delegate               = coder.decodeObjectForKey(kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBoolForKey(kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBoolForKey(kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex) as? NSIndexPath
+		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex)
 		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
 		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit) as? NSNumber
-		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit) as? NSNumber
+		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 
@@ -256,7 +256,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Locale Handling
 
 	func localeChanged(object: AnyObject) {
-		let previousSelection = self.tableView.indexPathForSelectedRow()
+		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {
 			self.recreateTableContents()
@@ -302,7 +302,7 @@ class CarConfigurationController: PageViewController, UIViewControllerRestoratio
 	//MARK: - Cancel Button
 
 	@IBAction func handleCancel(sender: AnyObject) {
-		previousSelectionIndex = self.tableView.indexPathForSelectedRow()
+		previousSelectionIndex = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion { self.handleCancelCompletion() }
 	}

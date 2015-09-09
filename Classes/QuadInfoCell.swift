@@ -38,39 +38,39 @@ class QuadInfoCell: UITableViewCell {
         topLeftLabel.backgroundColor            = UIColor.clearColor()
         topLeftLabel.textColor                  = UIColor.blackColor()
         topLeftLabel.adjustsFontSizeToFitWidth  = true
-		topLeftLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.contentView.addSubview(topLeftLabel)
 
         botLeftLabel.backgroundColor            = UIColor.clearColor()
         botLeftLabel.textColor                  = UIColor(white:0.5, alpha:1.0)
         botLeftLabel.adjustsFontSizeToFitWidth  = true
-		botLeftLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(botLeftLabel)
 
         topRightLabel.backgroundColor           = UIColor.clearColor()
         topRightLabel.textColor                 = UIColor.blackColor()
         topRightLabel.adjustsFontSizeToFitWidth = true
         topRightLabel.textAlignment             = .Right
-		topRightLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.contentView.addSubview(topRightLabel)
 
         botRightLabel.backgroundColor           = UIColor.clearColor()
         botRightLabel.textColor                 = UIColor(white:0.5, alpha:1.0)
         botRightLabel.adjustsFontSizeToFitWidth = true
         botRightLabel.textAlignment             = .Right
-		botRightLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
+		botRightLabel.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(botRightLabel)
 
 		separatorView.backgroundColor = UIColor(white:200.0/255.0, alpha:1.0)
-		separatorView.setTranslatesAutoresizingMaskIntoConstraints(false)
+		separatorView.translatesAutoresizingMaskIntoConstraints = false
 		separatorView.preservesSuperviewLayoutMargins = false
 		self.contentView.addSubview(separatorView)
 
 		// setup contraints
 		let separatorHeight = 1.0 / UIScreen.mainScreen().scale
 		let views = ["topLeftLabel" : topLeftLabel, "botLeftLabel" : botLeftLabel, "topRightLabel" : topRightLabel, "botRightLabel" : botRightLabel]
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: .allZeros, metrics: nil, views: views))
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: .allZeros, metrics: nil, views: views))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views))
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .Baseline, relatedBy: .Equal, toItem: topRightLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .Baseline, relatedBy: .Equal, toItem: botRightLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .Left, relatedBy: .Equal, toItem: botLeftLabel, attribute: .Left, multiplier: 1.0, constant: 0.0))
@@ -110,7 +110,7 @@ class QuadInfoCell: UITableViewCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override var accessibilityLabel: String! {
+	override var accessibilityLabel: String? {
 		get {
 			var label = String(format:"%@, %@",
 							(topLeftAccessibilityLabel ?? topLeftLabel.text) ?? "",
@@ -149,7 +149,7 @@ class QuadInfoCell: UITableViewCell {
 
 		// hide right labels in editing modes
 		UIView.animateWithDuration(0.5) {
-			let newAlpha: CGFloat = ((self.cellState & .ShowingEditControlMask) == .ShowingEditControlMask) ? 0.0 : 1.0
+			let newAlpha: CGFloat = self.cellState.contains(.ShowingEditControlMask) ? 0.0 : 1.0
 			self.topRightLabel.alpha = newAlpha
 			self.botRightLabel.alpha = newAlpha
 		}
