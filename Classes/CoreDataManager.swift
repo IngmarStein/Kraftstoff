@@ -29,9 +29,8 @@ final class CoreDataManager {
 	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Fuel.sqlite")
 
 	private static var iCloudLocalStoreURL : NSURL? {
-		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory)!.URLByAppendingPathComponent("CoreDataUbiquitySupport")
-		var error : NSError?
-		if let peers = NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: .allZeros, error: &error) as? [NSURL] {
+		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("CoreDataUbiquitySupport")
+		if let peers = try? NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
 			let fileManager = NSFileManager.defaultManager()
 			for peer in peers {
 				let localStoreURL = peer.URLByAppendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
@@ -137,32 +136,27 @@ final class CoreDataManager {
 		migrationOptions[NSReadOnlyPersistentStoreOption] = true
 
 		// Open the existing local store
-		var error: NSError?
-		if let sourceStore = migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:sourceStoreURL, options:migrationOptions, error:&error) {
-			if let newStore = migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType, error:&error) {
+		do {
+			let sourceStore = try migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:sourceStoreURL, options:migrationOptions)
+			do {
+				try migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType)
 				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 					let fileCoordinator = NSFileCoordinator()
+					var error: NSError?
 					fileCoordinator.coordinateWritingItemAtURL(sourceStoreURL, options: .ForMoving, error: &error) { writingURL in
-						var renameError: NSError?
 						let targetURL = sourceStoreURL.URLByAppendingPathExtension("migrated")
-						if !NSFileManager.defaultManager().moveItemAtURL(sourceStoreURL, toURL: targetURL, error: &renameError) {
-							if let error = renameError {
-								NSLog("error renaming store after migration: %@", error.localizedDescription)
-							}
+						do {
+							try NSFileManager.defaultManager().moveItemAtURL(sourceStoreURL, toURL: targetURL)
+						} catch let error as NSError {
+							NSLog("error renaming store after migration: %@", error.localizedDescription)
 						}
 					}
 				}
-			} else  {
-				if let error = error {
-					NSLog("error while migrating to iCloud: %@", error.localizedDescription)
-				}
 			} catch let error as NSError {
-				NSLog("failed to open local store for migration: %@", error.localizedDescription)
+				NSLog("error while migrating to iCloud: %@", error.localizedDescription)
 			}
-		} else {
-			if let error = error {
-				NSLog("failed to open local store for migration: %@", error.localizedDescription)
-			}
+		} catch let error as NSError {
+			NSLog("failed to open local store for migration: %@", error.localizedDescription)
 		}
 	}
 

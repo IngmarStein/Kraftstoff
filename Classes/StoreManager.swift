@@ -67,13 +67,13 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 
 		alert.popoverPresentationController?.sourceView = parent.view
 		alert.popoverPresentationController?.sourceRect = parent.view.bounds
-		alert.popoverPresentationController?.permittedArrowDirections = .allZeros
+		alert.popoverPresentationController?.permittedArrowDirections = []
 		parent.presentViewController(alert, animated: true, completion: nil)
 	}
 
 	private func isProductPurchased(product: String) -> Bool {
 		if let purchasedProducts = NSUserDefaults.standardUserDefaults().arrayForKey(purchasedProductsKey) as? [String] {
-			return find(purchasedProducts, product) != nil
+			return purchasedProducts.indexOf(product) != nil
 		}
 		return false
 	}
@@ -81,7 +81,7 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 	private func setProductPurchased(product: String, purchased: Bool) {
 		let userDefaults = NSUserDefaults.standardUserDefaults()
 		var purchasedProducts = (userDefaults.arrayForKey(purchasedProductsKey) as? [String]) ?? [String]()
-		let index = find(purchasedProducts, product)
+		let index = purchasedProducts.indexOf(product)
 		if purchased {
 			if index == nil {
 				purchasedProducts.append(product)
@@ -115,25 +115,23 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 		}
 	}
 
-	func productsRequest(request: SKProductsRequest!, didReceiveResponse response: SKProductsResponse!) {
-		if let product = response.products.first as? SKProduct where response.products.count == 1 {
-			var payment = SKPayment(product: product)
+	func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+		if let product = response.products.first where response.products.count == 1 {
+			let payment = SKPayment(product: product)
 			SKPaymentQueue.defaultQueue().addPayment(payment)
 		}
 	}
 
-	func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
+	func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
 		for transaction in transactions {
-			if let transaction = transaction as? SKPaymentTransaction {
-				switch transaction.transactionState {
-				case .Purchased, .Restored:
-					setProductPurchased(transaction.payment.productIdentifier, purchased: true)
-					SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-				case .Failed:
-					SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-					println("Transaction failed: \(transaction.error)")
-				default: ()
-				}
+			switch transaction.transactionState {
+			case .Purchased, .Restored:
+				setProductPurchased(transaction.payment.productIdentifier, purchased: true)
+				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+			case .Failed:
+				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+				print("Transaction failed: \(transaction.error)")
+			default: ()
 			}
 		}
 	}
