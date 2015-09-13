@@ -12,7 +12,7 @@ import CoreData
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
 
-class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate {
+class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIViewControllerPreviewingDelegate {
 
 	var editedObject: Car!
 
@@ -552,7 +552,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
 		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
 
-		return CoreDataManager.modelIdentifierForManagedObject(object)!
+		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
 	//MARK: - UITableViewDelegate
@@ -637,6 +637,26 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		checkEnableEditButton()
 
 		changeIsUserDriven = false
+	}
+
+	//MARK: - UIViewControllerPreviewingDelegate
+
+	@available(iOS 9.0, *)
+	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		guard let indexPath = tableView.indexPathForRowAtPoint(location),
+			cell = tableView.cellForRowAtIndexPath(indexPath),
+			selectedCar = self.fetchedResultsController.objectAtIndexPath(indexPath) as? Car else { return nil }
+
+		guard let fuelEventController = storyboard?.instantiateViewControllerWithIdentifier("FuelEventController") as? FuelEventController else { return nil }
+		fuelEventController.selectedCar = selectedCar
+
+		previewingContext.sourceRect = cell.frame
+
+		return fuelEventController
+	}
+
+	func previewingContext(previewingContext: UIViewControllerPreviewing, commitViewController viewControllerToCommit: UIViewController) {
+		showViewController(viewControllerToCommit, sender: self)
 	}
 
 	//MARK: - Memory Management
