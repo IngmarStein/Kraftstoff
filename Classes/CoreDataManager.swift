@@ -100,11 +100,14 @@ final class CoreDataManager {
 	}
 
 	static func modelIdentifierForManagedObject(object: NSManagedObject) -> String? {
-		if !object.objectID.temporaryID {
-			return object.objectID.URIRepresentation().absoluteString
-		} else {
-			return nil
+		if object.objectID.temporaryID {
+			do {
+				try managedObjectContext.obtainPermanentIDsForObjects([object])
+			} catch {
+				return nil
+			}
 		}
+		return object.objectID.URIRepresentation().absoluteString
 	}
 
 	static func managedObjectForModelIdentifier(identifier: String) -> NSManagedObject? {

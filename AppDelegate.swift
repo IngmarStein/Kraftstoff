@@ -18,10 +18,16 @@ extension UIApplication {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
 	var window: UIWindow?
 
 	private var importAlert: UIAlertController?
+
+	private lazy var carsFetchedResultsController: NSFetchedResultsController = {
+		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
+	}()
 
 	//MARK: - Application Lifecycle
 
@@ -51,6 +57,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
 			CoreDataManager.migrateToiCloud()
 
+			self.updateShortcutItems()
+
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
 				let defaults = NSUserDefaults.standardUserDefaults()
@@ -63,6 +71,32 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 					}
 
 					defaults.setObject(false, forKey:"firstStartup")
+				}
+			}
+		}
+	}
+
+	private func updateShortcutItems() {
+		if #available(iOS 9.0, *) {
+			if let cars = self.carsFetchedResultsController.fetchedObjects as? [Car] {
+				UIApplication.sharedApplication().shortcutItems = cars.map { car in
+					let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
+					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
+				}
+			}
+		}
+	}
+
+	@available(iOS 9.0, *)
+	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+		if shortcutItem.type == "fillup" {
+			if let tabBarController = self.window?.rootViewController as? UITabBarController {
+				tabBarController.selectedIndex = 0
+				if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+					navigationController.popToRootViewControllerAnimated(false)
+					if let fuelCalculatorController = navigationController.viewControllers.first as? FuelCalculatorController {
+						fuelCalculatorController.selectedCarId = shortcutItem.userInfo?["objectId"] as? String
+					}
 				}
 			}
 		}
@@ -229,6 +263,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 		// Treat imports as successful first startups
 		NSUserDefaults.standardUserDefaults().setObject(false, forKey:"firstStartup")
 		return true
+	}
+
+	//MARK: - NSFetchedResultsControllerDelegate
+
+	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+		updateShortcutItems()
 	}
 
 	//MARK: - Shared Color Gradients

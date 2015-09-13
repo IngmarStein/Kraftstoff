@@ -22,6 +22,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
+	var selectedCarId : String?
 
 	lazy var fetchedResultsController: NSFetchedResultsController = {
 		return CoreDataManager.fetchedResultsControllerForCars()
@@ -324,7 +325,11 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		self.car = nil
     
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
-			self.car = CoreDataManager.managedObjectForModelIdentifier(NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID")!) as? Car
+			if let selectedCar = selectedCarId {
+				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar) as? Car
+			} else if let preferredCar = NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID") {
+				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar) as? Car
+			}
 
 			if self.car == nil {
 				self.car = self.fetchedResultsController.fetchedObjects!.first as? Car
