@@ -583,30 +583,31 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	//MARK: - Conversion for Odometer
 
+	// A simple heuristic when to ask for distance conversion
 	func needsOdometerConversionSheet() -> Bool {
-		// A simple heuristics when to ask for distance cobversion
-		if self.car == nil {
-			return false
-		}
+		guard let car = self.car else { return false }
+		guard let distance = self.distance else { return false }
+
+		guard car.odometer != NSDecimalNumber.notANumber() else { return false }
 
 		// 1.) entered "distance" must be larger than car odometer
-		let odometerUnit = self.car!.ksOdometerUnit
+		let odometerUnit = car.ksOdometerUnit
 
-		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
-		let convDistance = rawDistance - self.car!.odometer
+		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
+		let convDistance = rawDistance - car.odometer
     
 		if convDistance <= NSDecimalNumber.zero() {
 			return false
 		}
     
 		// 2.) consumption with converted distances is more 'logical'
-		let liters = Units.litersForVolume(fuelVolume!, withUnit:self.car!.ksFuelUnit)
+		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
     
 		if liters <= NSDecimalNumber.zero() {
 			return false
 		}
 
-		let rawConsumption  = Units.consumptionForKilometers(rawDistance,
+		let rawConsumption = Units.consumptionForKilometers(rawDistance,
                                                                       liters:liters,
                                                                       inUnit:.LitersPer100km)
 
@@ -622,8 +623,8 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			return false
 		}
 
-		let avgConsumption = Units.consumptionForKilometers(self.car!.distanceTotalSum,
-                                                                     liters:self.car!.fuelVolumeTotalSum,
+		let avgConsumption = Units.consumptionForKilometers(car.distanceTotalSum,
+                                                                     liters:car.fuelVolumeTotalSum,
                                                                      inUnit:.LitersPer100km)
     
 		let loBound: NSDecimalNumber
@@ -648,7 +649,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		}
     
 		// 3.) the event must be the youngest one
-		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(self.car!,
+		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
 																								afterDate:self.date!,
 																							  dateMatches:false))
     
