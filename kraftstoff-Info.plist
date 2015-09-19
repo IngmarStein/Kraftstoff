@@ -58,11 +58,11 @@
 			<key>TintColor</key>
 			<dict>
 				<key>Blue</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 				<key>Green</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 				<key>Red</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 			</dict>
 			<key>Translucent</key>
 			<false/>
@@ -73,6 +73,13 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
