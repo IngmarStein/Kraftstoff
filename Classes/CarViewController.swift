@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CoreSpotlight
 
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
@@ -16,11 +17,15 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 	var editedObject: Car!
 
-	private lazy var fetchedResultsController: NSFetchedResultsController = {
-		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-		fetchedResultsController.delegate = self
-		return fetchedResultsController
-	}()
+	private var _fetchedResultsController: NSFetchedResultsController?
+	private var fetchedResultsController: NSFetchedResultsController {
+		if _fetchedResultsController == nil {
+			let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+			fetchedResultsController.delegate = self
+			_fetchedResultsController = fetchedResultsController
+		}
+		return _fetchedResultsController!
+	}
 
 	private var longPressRecognizer: UILongPressGestureRecognizer? {
 		didSet {
@@ -73,6 +78,16 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
            selector:"localeChanged:",
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self,
+			selector: "storesDidChange:",
+			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
+			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+	}
+
+	@objc func storesDidChange(notification: NSNotification) {
+		_fetchedResultsController = nil
+		NSFetchedResultsController.deleteCacheWithName(nil)
+		self.tableView.reloadData()
 	}
 
 	override func viewWillAppear(animated: Bool) {
@@ -411,6 +426,12 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		CoreDataManager.managedObjectContext.deleteObject(deletedObject)
 		CoreDataManager.saveContext()
 
+		if #available(iOS 9.0, *) {
+			if let itemID = deletedCarID {
+				CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers([itemID], completionHandler: nil)
+			}
+		}
+
 		// Update order of existing objects
 		changeIsUserDriven = true
 
@@ -474,7 +495,7 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 	}
 
 	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let sectionInfo = self.fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
+		let sectionInfo = self.fetchedResultsController.sections![section]
 
 		return sectionInfo.numberOfObjects
 	}

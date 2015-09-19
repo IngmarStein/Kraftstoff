@@ -17,6 +17,7 @@ private let kSRFuelEventShowComposer      = "FuelEventShowMailComposer"
 
 class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate {
 
+	var selectedCarId: String?
 	var selectedCar: Car!
 
 	private lazy var fetchRequest: NSFetchRequest = {
@@ -25,25 +26,29 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 			dateMatches:true)
 	}()
 
-	private lazy var fetchedResultsController: NSFetchedResultsController = {
-		let fetchController = NSFetchedResultsController(fetchRequest:self.fetchRequest,
-			managedObjectContext:CoreDataManager.managedObjectContext,
-			sectionNameKeyPath:nil,
-			cacheName:nil)
+	private var _fetchedResultsController: NSFetchedResultsController?
+	private var fetchedResultsController: NSFetchedResultsController {
+		if _fetchedResultsController == nil {
+			let fetchController = NSFetchedResultsController(fetchRequest:self.fetchRequest,
+				managedObjectContext:CoreDataManager.managedObjectContext,
+				sectionNameKeyPath:nil,
+				cacheName:nil)
 
-		fetchController.delegate = self
+			fetchController.delegate = self
 
-		// Perform the data fetch
-		do {
-			try fetchController.performFetch()
-		} catch let error as NSError {
-			fatalError(error.localizedDescription)
-		} catch {
-			fatalError()
+			// Perform the data fetch
+			do {
+				try fetchController.performFetch()
+			} catch let error as NSError {
+				fatalError(error.localizedDescription)
+			} catch {
+				fatalError()
+			}
+			_fetchedResultsController = fetchController
 		}
 
-		return fetchController
-	}()
+		return _fetchedResultsController!
+	}
 
 	private var statisticsController: FuelStatisticsPageController!
 
@@ -68,6 +73,10 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		if let selectedCarId = selectedCarId where selectedCar == nil {
+			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
+		}
 
 		statisticsController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsPageController") as! FuelStatisticsPageController
 
@@ -100,10 +109,20 @@ class FuelEventController: UITableViewController, UIDataSourceModelAssociation, 
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 
+		NSNotificationCenter.defaultCenter().addObserver(self,
+			selector: "storesDidChange:",
+			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
+			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+
 		// Dismiss any presented view controllers
 		if presentedViewController != nil {
 			dismissViewControllerAnimated(false, completion:nil)
 		}
+	}
+
+	@objc func storesDidChange(notification: NSNotification) {
+		_fetchedResultsController = nil
+		self.tableView.reloadData()
 	}
 
 	override func viewWillAppear(animated: Bool) {

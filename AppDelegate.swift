@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import CoreSpotlight
+import MobileCoreServices
 
 let kraftstoffDeviceShakeNotification = "kraftstoffDeviceShakeNotification"
 
@@ -83,6 +85,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
 					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
 				}
+
+				if CSSearchableIndex.isIndexingAvailable() {
+					let searchableItems = cars.map { car -> CSSearchableItem in
+						let carIdentifier = CoreDataManager.modelIdentifierForManagedObject(car)
+						let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+						attributeset.title = car.name
+						attributeset.contentDescription = car.numberPlate
+						return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.m-schmidt.Kraftstoff.cars", attributeSet: attributeset)
+					}
+					CSSearchableIndex.defaultSearchableIndex().indexSearchableItems(searchableItems, completionHandler: nil)
+				}
 			}
 		}
 	}
@@ -90,6 +103,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	@available(iOS 9.0, *)
 	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
+			// switch to fill-up tab and select the car
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
 				tabBarController.selectedIndex = 0
 				if let navigationController = tabBarController.selectedViewController as? UINavigationController {
@@ -100,6 +114,35 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 		}
+	}
+
+	func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
+			// switch to fill-up tab
+			if let tabBarController = self.window?.rootViewController as? UITabBarController {
+				tabBarController.selectedIndex = 0
+			}
+
+			return true
+		} else if #available(iOS 9.0, *) {
+			if userActivity.activityType == CSSearchableItemActionType {
+				// switch to cars tab and show the fuel history
+				if let tabBarController = self.window?.rootViewController as? UITabBarController {
+					tabBarController.selectedIndex = 1
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
+						let fuelEventController = tabBarController.storyboard!.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
+						fuelEventController.selectedCarId = carIdentifier
+						if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+							navigationController.popToRootViewControllerAnimated(false)
+							navigationController.pushViewController(fuelEventController, animated: false)
+						}
+					}
+				}
+				return true
+			}
+		}
+
+		return false
 	}
 
 	func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {

@@ -221,6 +221,7 @@ final class CoreDataManager {
 	}
 
 	@objc func storesDidChange(notification: NSNotification) {
+		NSLog("storesDidChange: %@", notification)
 	}
 
 	//MARK: - Preconfigured Core Data Fetches
