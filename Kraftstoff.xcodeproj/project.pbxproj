@@ -16,7 +16,6 @@
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
 		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
 		953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */; };
-		955B46161AF208A000A62D3B /* AppWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46151AF208A000A62D3B /* AppWindow.swift */; };
 		955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */; };
 		955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */; };
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
@@ -82,7 +81,6 @@
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
 		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
-		955B46151AF208A000A62D3B /* AppWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppWindow.swift; path = Classes/AppWindow.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Kraftstoff.swift"; sourceTree = "<group>"; };
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
@@ -192,7 +190,6 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D941AF8A4B5006A56D6 /* AppDelegate.swift */,
-				955B46151AF208A000A62D3B /* AppWindow.swift */,
 				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
@@ -558,7 +555,6 @@
 				95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */,
 				95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */,
 				95AE6D951AF8A4B5006A56D6 /* AppDelegate.swift in Sources */,
-				955B46161AF208A000A62D3B /* AppWindow.swift in Sources */,
 				95AE6D931AF88D13006A56D6 /* FuelStatisticsPageController.swift in Sources */,
 				95C071871AF6751200DF261C /* PageCell.swift in Sources */,
 				95AE6D991AF8E9A7006A56D6 /* FuelStatisticsTextViewController.swift in Sources */,

@@ -142,15 +142,22 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 
 	//MARK: - Shake Events
 
+	override func canBecomeFirstResponder() -> Bool {
+		return true
+	}
+
+	override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?)	{
+		if motion == .MotionShake {
+			handleShake()
+		} else {
+			super.motionEnded(motion, withEvent:event)
+		}
+	}
+
 	override func viewDidAppear(animated: Bool) {
 		super.viewDidAppear(animated)
 
 		self.userActivity?.becomeCurrent()
-
-		NSNotificationCenter.defaultCenter().addObserver(self,
-                                             selector:"handleShake:",
-                                                 name:kraftstoffDeviceShakeNotification,
-                                               object:nil)
 	}
 
 	override func viewDidDisappear(animated: Bool) {
@@ -159,13 +166,9 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		if #available(iOS 9.0, *) {
 			userActivity?.resignCurrent()
 		}
-
-		NSNotificationCenter.defaultCenter().removeObserver(self,
-                                                    name:kraftstoffDeviceShakeNotification,
-                                                  object:nil)
 	}
 
-	func handleShake(object: AnyObject) {
+	func handleShake() {
 		if self.editing {
 			return
 		}

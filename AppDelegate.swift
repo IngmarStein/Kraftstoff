@@ -11,8 +11,6 @@ import CoreData
 import CoreSpotlight
 import MobileCoreServices
 
-let kraftstoffDeviceShakeNotification = "kraftstoffDeviceShakeNotification"
-
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
 		return sharedApplication().delegate as! AppDelegate
@@ -44,8 +42,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			"recentFilledUp": true,
 			"editHelpCounter": 0,
 			"firstStartup": true])
-
-		self.window = AppWindow(frame: UIScreen.mainScreen().bounds)
 
 		super.init()
 	}
