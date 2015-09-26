@@ -20,7 +20,7 @@ private let kSRFuelEventPrice           = "FuelEventPrice"
 private let kSRFuelEventVolume          = "FuelEventVolume "
 private let kSRFuelEventFilledUp        = "FuelEventFilledUp"
 private let kSRFuelEventEditing         = "FuelEventEditing"
-
+private let kSRFuelEventComment         = "FuelEventComment"
 
 class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
@@ -35,6 +35,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 	var price: NSDecimalNumber!
 	var fuelVolume: NSDecimalNumber!
 	var filledUp = false
+	var comment: String?
 
 	var editButton: UIBarButtonItem!
 	var cancelButton: UIBarButtonItem!
@@ -106,6 +107,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		coder.encodeObject(price, forKey:kSRFuelEventPrice)
 		coder.encodeObject(fuelVolume, forKey:kSRFuelEventVolume)
 		coder.encodeBool(filledUp, forKey:kSRFuelEventFilledUp)
+		coder.encodeObject(comment, forKey:kSRFuelEventComment)
 		coder.encodeBool(self.editing, forKey:kSRFuelEventEditing)
 
 		super.encodeRestorableStateWithCoder(coder)
@@ -121,7 +123,8 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice)
 		fuelVolume             = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventVolume)
 		filledUp               = coder.decodeBoolForKey(kSRFuelEventFilledUp)
-    
+		comment                = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventComment) as? String
+
 		if coder.decodeBoolForKey(kSRFuelEventEditing) {
 			setEditing(true, animated:false)
             
@@ -152,6 +155,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
                                             price:price,
                                        fuelVolume:fuelVolume,
                                          filledUp:filledUp,
+										  comment:comment,
                               forceOdometerUpdate:true)
 
 			CoreDataManager.saveContext()
@@ -170,6 +174,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		price      = Units.pricePerUnit(event.price, withUnit:fuelUnit)
 		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit:fuelUnit)
 		filledUp   = event.filledUp
+		comment    = event.comment
 
 		dataChanged = false
 	}
@@ -368,6 +373,13 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
                          "valueIdentifier": "filledUp"],
           withAnimation:animation)
 
+		addRowAtIndex(rowIndex: 5,
+			inSection:0,
+			cellClass:TextEditTableCell.self,
+			cellData:["label": NSLocalizedString("Comment", comment:""),
+				"valueIdentifier": "comment"],
+			withAnimation:animation)
+
 		if !self.editing {
 			createConsumptionRowWithAnimation(animation)
 		}
@@ -398,6 +410,8 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 		} else if let dateCell = cell as? DateEditTableCell {
 			field = dateCell.textField
 		} else if let numberCell = cell as? NumberEditTableCell {
+			field = numberCell.textField
+		} else if let numberCell = cell as? TextEditTableCell {
 			field = numberCell.textField
 		} else {
 			field = nil
@@ -430,6 +444,7 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			case "price": return price
 			case "fuelVolume": return fuelVolume
 			case "filledUp": return filledUp
+			case "comment": return comment
 			case "showValueLabel": return !self.editing
 			default: return nil
 		}
@@ -466,6 +481,13 @@ class FuelEventEditorController: PageViewController, UIViewControllerRestoration
 			if let newBoolValue = newValue as? Bool {
 				if filledUp != newBoolValue {
 					filledUp = newBoolValue
+					dataChanged = true
+				}
+			}
+		} else if valueIdentifier == "comment" {
+			if let newValue = newValue as? String {
+				if comment != newValue {
+					comment = newValue
 					dataChanged = true
 				}
 			}

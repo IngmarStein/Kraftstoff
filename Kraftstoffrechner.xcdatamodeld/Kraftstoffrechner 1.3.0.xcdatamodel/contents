@@ -14,6 +14,7 @@
         <relationship name="fuelEvents" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="fuelEvent" inverseName="car" inverseEntity="fuelEvent" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="fuelEvent" representedClassName="kraftstoff.FuelEvent" syncable="YES">
+        <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="distance" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="filledUp" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="fuelVolume" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
@@ -26,6 +27,6 @@
     </entity>
     <elements>
         <element name="car" positionX="70" positionY="63" width="146" height="210"/>
-        <element name="fuelEvent" positionX="376" positionY="93" width="128" height="180"/>
+        <element name="fuelEvent" positionX="376" positionY="93" width="128" height="195"/>
     </elements>
 </model>

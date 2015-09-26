@@ -9,12 +9,14 @@
 import UIKit
 
 class TextEditTableCell: EditablePageCell {
-	static let maximumTextFieldLength = 15
+	static let DefaultMaximumTextFieldLength = 15
+
+	private var maximumTextFieldLength = 0
 
 	required init() {
 		super.init()
 
-		self.textField.keyboardType  = .ASCIICapable
+		self.textField.keyboardType  = .Default
 		self.textField.returnKeyType = .Next
 		self.textField.allowCut      = true
 		self.textField.allowPaste    = true
@@ -31,6 +33,11 @@ class TextEditTableCell: EditablePageCell {
 			self.textField.autocapitalizationType = .AllCharacters
 		} else {
 			self.textField.autocapitalizationType = .Words
+		}
+		if let maximumTextFieldLength = dictionary["maximumTextFieldLength"] as? Int {
+			self.maximumTextFieldLength = maximumTextFieldLength
+		} else {
+			self.maximumTextFieldLength = TextEditTableCell.DefaultMaximumTextFieldLength
 		}
 
 		self.textField.text = self.delegate.valueForIdentifier(self.valueIdentifier) as? String
@@ -58,7 +65,7 @@ class TextEditTableCell: EditablePageCell {
 		let newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
 
 		// Don't allow too large strings
-		if newValue.characters.count > TextEditTableCell.maximumTextFieldLength {
+		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {
 			return false
 		}
 

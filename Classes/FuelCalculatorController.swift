@@ -36,6 +36,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 	var price: NSDecimalNumber?
 	var fuelVolume: NSDecimalNumber?
 	var filledUp: Bool?
+	var comment: String?
 
 	var doneButton: UIBarButtonItem!
 	var saveButton: UIBarButtonItem!
@@ -192,6 +193,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          self.valueChanged(zero, identifier:"price")
                          self.valueChanged(zero, identifier:"fuelVolume")
                          self.valueChanged(true, identifier:"filledUp")
+						 self.valueChanged("", identifier:"comment")
 
                          self.recreateTableContentsWithAnimation(.Left)
                          self.updateSaveButtonState()
@@ -382,6 +384,17 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 				   cellData:["label": NSLocalizedString("Full Fill-Up", comment:""),
                              "valueIdentifier": "filledUp"],
               withAnimation:animation)
+
+			if self.comment == nil {
+				self.comment = NSUserDefaults.standardUserDefaults().stringForKey("recentComment")!
+			}
+
+			addRowAtIndex(rowIndex: 6,
+				inSection:0,
+				cellClass:TextEditTableCell.self,
+				cellData:["label": NSLocalizedString("Comment", comment:""),
+					"valueIdentifier": "comment"],
+				withAnimation:animation)
 		}
 
 		// Consumption info (optional)
@@ -513,6 +526,8 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			field = dateCell.textField
 		} else if let numberCell = cell as? NumberEditTableCell {
 			field = numberCell.textField
+		} else if let textCell = cell as? TextEditTableCell {
+			field = textCell.textField
 		} else {
 			field = nil
 		}
@@ -555,6 +570,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                                                     price:self.price!,
                                                fuelVolume:self.fuelVolume!,
                                                  filledUp:self.filledUp ?? false,
+												 comment:self.comment,
                                       forceOdometerUpdate:false)
 
                          // Reset calculator table
@@ -564,6 +580,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
                          self.valueChanged(zero, identifier:"price")
                          self.valueChanged(zero, identifier:"fuelVolume")
                          self.valueChanged(true, identifier:"filledUp")
+						 self.valueChanged("", identifier:"comment")
 
 						CoreDataManager.saveContext()
                      })
@@ -733,6 +750,7 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 		case "price": return self.price
 		case "fuelVolume": return self.fuelVolume
 		case "filledUp": return self.filledUp
+		case "comment": return self.comment
 		default: return nil
 		}
 	}
@@ -775,6 +793,14 @@ class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDe
 			let defaults = NSUserDefaults.standardUserDefaults()
 
 			defaults.setObject(newValue, forKey:"recentFilledUp")
+			defaults.synchronize()
+
+		} else if valueIdentifier == "comment" {
+			comment = newValue as? String
+
+			let defaults = NSUserDefaults.standardUserDefaults()
+
+			defaults.setObject(newValue, forKey:"recentComment")
 			defaults.synchronize()
 
 		} else if valueIdentifier == "car" {

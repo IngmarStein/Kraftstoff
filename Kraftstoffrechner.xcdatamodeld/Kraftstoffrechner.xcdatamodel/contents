@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15B17c" minimumToolsVersion="Automatic">
+    <entity name="car" representedClassName="NSManagedObject" syncable="YES">
+        <attribute name="distanceTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="fuelConsumptionUnit" attributeType="Integer 32" minValueString="0" maxValueString="3" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="fuelUnit" attributeType="Integer 32" minValueString="0" maxValueString="2" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="fuelVolumeTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="numberPlate" optional="YES" attributeType="String" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="odometer" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="odometerUnit" attributeType="Integer 32" minValueString="0" maxValueString="1" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" indexed="YES" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="timestamp" attributeType="Date" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <relationship name="fuelEvents" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="fuelEvent" inverseName="car" inverseEntity="fuelEvent" indexed="YES" syncable="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
+    </entity>
+    <entity name="fuelEvent" representedClassName="NSManagedObject" syncable="YES">
+        <attribute name="distance" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="filledUp" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="fuelVolume" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="inheritedCost" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="inheritedDistance" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="inheritedFuelVolume" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="price" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="timestamp" attributeType="Date" indexed="YES" syncable="YES">
+            <userInfo/>
+        </attribute>
+        <relationship name="car" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="car" inverseName="fuelEvents" inverseEntity="car" indexed="YES" syncable="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
+    </entity>
+    <elements>
+        <element name="car" positionX="70" positionY="63" width="146" height="210"/>
+        <element name="fuelEvent" positionX="376" positionY="93" width="128" height="180"/>
+    </elements>
+</model>

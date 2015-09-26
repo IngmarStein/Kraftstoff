@@ -372,13 +372,13 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 
 				configurator.name = editedObject.name
 
-				if (configurator.name!).characters.count > TextEditTableCell.maximumTextFieldLength {
+				if configurator.name!.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
 					configurator.name = ""
 				}
 
 				configurator.plate = editedObject.numberPlate
 
-				if (configurator.plate!).characters.count > TextEditTableCell.maximumTextFieldLength {
+				if configurator.plate!.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
 					configurator.plate = ""
 				}
 

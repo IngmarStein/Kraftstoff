@@ -40,6 +40,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			"recentPrice": NSDecimalNumber.zero(),
 			"recentFuelVolume": NSDecimalNumber.zero(),
 			"recentFilledUp": true,
+			"recentComment": "",
 			"editHelpCounter": 0,
 			"firstStartup": true])
 

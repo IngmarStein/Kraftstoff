@@ -353,7 +353,7 @@ final class CoreDataManager {
 
 	//MARK: - Core Data Updates
 
-	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, var forceOdometerUpdate: Bool) -> FuelEvent {
+	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, var forceOdometerUpdate: Bool) -> FuelEvent {
 		let zero = NSDecimalNumber.zero()
 
 		// Convert distance and fuelvolume to SI units
@@ -435,6 +435,7 @@ final class CoreDataManager {
 		newEvent.distance = kilometers
 		newEvent.price = pricePerLiter
 		newEvent.fuelVolume = liters
+		newEvent.comment = comment
 
 		if !filledUp {
 			newEvent.filledUp = filledUp

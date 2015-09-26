@@ -18,6 +18,7 @@ final class FuelEvent: NSManagedObject {
     @NSManaged var inheritedFuelVolume: NSDecimalNumber
     @NSManaged var timestamp: NSDate
     @NSManaged var filledUp: Bool
+	@NSManaged var comment: String?
     @NSManaged var fuelVolume: NSDecimalNumber
     @NSManaged var car: Car
 
