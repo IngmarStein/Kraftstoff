@@ -8,6 +8,7 @@
 
 import Foundation
 import StoreKit
+import Security
 
 class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
@@ -19,6 +20,8 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 
 	override init() {
 		super.init()
+
+		migratePurchases()
 
 		SKPaymentQueue.defaultQueue().addTransactionObserver(self)
 	}
@@ -71,28 +74,38 @@ class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionOb
 		parent.presentViewController(alert, animated: true, completion: nil)
 	}
 
-	private func isProductPurchased(product: String) -> Bool {
-		if let purchasedProducts = NSUserDefaults.standardUserDefaults().arrayForKey(purchasedProductsKey) as? [String] {
-			return purchasedProducts.indexOf(product) != nil
+	// migrate purchases from NSUserDefaults to Keychain
+	private func migratePurchases() {
+		let userDefaults = NSUserDefaults.standardUserDefaults()
+		if let purchasedProducts = userDefaults.arrayForKey(purchasedProductsKey) as? [String] {
+			for product in purchasedProducts {
+				setProductPurchased(product, purchased: true)
+			}
 		}
-		return false
+		userDefaults.removeObjectForKey(purchasedProductsKey)
+		userDefaults.synchronize()
+	}
+
+	private func keychainItemForProduct(product: String) -> [String:AnyObject] {
+		return [
+			String(kSecClass) : kSecClassGenericPassword,
+			String(kSecAttrService) : "com.github.ingmarstein.kraftstoff",
+			String(kSecAttrAccount) : product,
+			String(kSecAttrAccessible) : kSecAttrAccessibleWhenUnlocked
+		]
+	}
+
+	private func isProductPurchased(product: String) -> Bool {
+		return SecItemCopyMatching(keychainItemForProduct(product), nil) == 0
 	}
 
 	private func setProductPurchased(product: String, purchased: Bool) {
-		let userDefaults = NSUserDefaults.standardUserDefaults()
-		var purchasedProducts = (userDefaults.arrayForKey(purchasedProductsKey) as? [String]) ?? [String]()
-		let index = purchasedProducts.indexOf(product)
+		let keychainItem = keychainItemForProduct(product)
 		if purchased {
-			if index == nil {
-				purchasedProducts.append(product)
-			}
+			SecItemAdd(keychainItem, nil)
 		} else {
-			if let index = index {
-				purchasedProducts.removeAtIndex(index)
-			}
+			SecItemDelete(keychainItem)
 		}
-		userDefaults.setObject(purchasedProducts, forKey: purchasedProductsKey)
-		userDefaults.synchronize()
 	}
 
 	var twoCars : Bool {
