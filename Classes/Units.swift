@@ -256,37 +256,37 @@ final class Units {
 
 	//MARK: - Unit Strings/Descriptions
 
-	static func fuelUnitDescription(unit: KSVolume, discernGallons: Bool, pluralization plural: Bool) -> String {
+	static func fuelUnitDescription(unit: KSVolume, discernGallons: Bool, pluralization plural: Bool, bundle: NSBundle = NSBundle.mainBundle()) -> String {
 		if plural {
 			switch unit {
-			case .Liter: return NSLocalizedString("Liters", comment:"")
-            case .GalUS: return discernGallons ? NSLocalizedString("Gallons (US)", comment:"") : NSLocalizedString("Gallons", comment:"")
-            case .GalUK: return discernGallons ? NSLocalizedString("Gallons (UK)", comment:"") : NSLocalizedString("Gallons", comment:"")
+			case .Liter: return NSLocalizedString("Liters", bundle: bundle, comment:"")
+            case .GalUS: return discernGallons ? NSLocalizedString("Gallons (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
+            case .GalUK: return discernGallons ? NSLocalizedString("Gallons (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
 			default:     return ""
 			}
 		} else {
 			switch unit {
-            case .Liter: return NSLocalizedString("Liter", comment:"")
-            case .GalUS: return discernGallons ? NSLocalizedString("Gallon (US)", comment:"") : NSLocalizedString("Gallon", comment:"")
-            case .GalUK: return discernGallons ? NSLocalizedString("Gallon (UK)", comment:"") : NSLocalizedString("Gallon", comment:"")
+            case .Liter: return NSLocalizedString("Liter", bundle: bundle, comment:"")
+            case .GalUS: return discernGallons ? NSLocalizedString("Gallon (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
+            case .GalUK: return discernGallons ? NSLocalizedString("Gallon (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
 			default:     return ""
 			}
 		}
 	}
 
-	static func fuelPriceUnitDescription(unit: KSVolume) -> String {
+	static func fuelPriceUnitDescription(unit: KSVolume, bundle: NSBundle = NSBundle.mainBundle()) -> String {
 		if unit.isMetric {
-			return NSLocalizedString("Price per Liter", comment:"")
+			return NSLocalizedString("Price per Liter", bundle: bundle, comment:"")
 		} else {
-			return NSLocalizedString("Price per Gallon", comment:"")
+			return NSLocalizedString("Price per Gallon", bundle: bundle, comment:"")
 		}
 	}
 
-	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool) -> String {
+	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool, bundle: NSBundle = NSBundle.mainBundle()) -> String {
 		if plural {
-			return unit.isMetric ? NSLocalizedString("Kilometers", comment:"") : NSLocalizedString("Miles", comment:"")
+			return unit.isMetric ? NSLocalizedString("Kilometers", bundle: bundle, comment:"") : NSLocalizedString("Miles", comment:"")
 		} else {
-			return unit.isMetric ? NSLocalizedString("Kilometer", comment:"")  : NSLocalizedString("Mile", comment:"")
+			return unit.isMetric ? NSLocalizedString("Kilometer", bundle: bundle, comment:"")  : NSLocalizedString("Mile", comment:"")
 		}
 	}
 }

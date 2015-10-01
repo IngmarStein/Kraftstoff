@@ -38,7 +38,7 @@ final class CSVImporter {
 		return newCar
 	}
 
-	private func addEventForCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
+	private func addEventForCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:managedObjectContext) as! FuelEvent
 
 		newEvent.car = car
@@ -46,6 +46,7 @@ final class CSVImporter {
 		newEvent.distance = distance
 		newEvent.price = price
 		newEvent.fuelVolume = fuelVolume
+		newEvent.comment = comment
 
 		if !filledUp {
 			newEvent.filledUp = filledUp
@@ -248,6 +249,7 @@ final class CSVImporter {
 		let volumeUnitKey   = keyForVolumeUnit(first)
 		let priceKey        = keyForPrice(first)
 		let fillupKey       = keyForFillup(first)
+		let commentKey      = keyForComment(first)
 
 		// Common consistency check for CSV headers
 		if dateKey == nil
@@ -364,6 +366,11 @@ final class CSVImporter {
 
 				let filledUp = scanBooleanWithString(record[fillupKey!])
 
+				var comment: String?
+				if let commentKey = commentKey {
+					comment = record[commentKey]
+				}
+
 				// For TankPro ignore events until after the first full fill-up
 				if isTankProImport && !initialFillUpSeen {
 					initialFillUpSeen = filledUp
@@ -384,6 +391,7 @@ final class CSVImporter {
 					   inheritedDistance:inheritedDistance,
 					 inheritedFuelVolume:inheritedFuelVolume,
 								filledUp:filledUp,
+								 comment:comment,
 							   inContext:managedObjectContext)
 
 					if filledUp {
@@ -666,7 +674,7 @@ final class CSVImporter {
 	//MARK: - Interpretation of CSV Header Names
 
 	private func keyForDate(record: CSVRecord) -> String? {
-		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM" ] {
+		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ" ] {
 			if record[key] != nil {
 				return key
 			}
@@ -686,7 +694,7 @@ final class CSVImporter {
 	}
 
 	private func keyForDistance(record: CSVRecord, inout unit: KSDistance) -> String? {
-		for key in [ "KILOMETERS", "KILOMETER", "STRECKE" ] {
+		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] {
 			if record[key] != nil {
 				unit = .Kilometer
 				return key
@@ -722,7 +730,7 @@ final class CSVImporter {
 	}
 
 	private func keyForVolume(record: CSVRecord, inout unit: KSVolume) -> String? {
-		for key in [ "LITERS", "LITER", "TANKMENGE" ] {
+		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] {
 			if record[key] != nil {
 				unit = .Liter
 				return key
@@ -768,7 +776,7 @@ final class CSVImporter {
 	}
 
 	private func keyForPrice(record: CSVRecord) -> String? {
-		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER" ] {
+		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON" ] {
 			if record[key] != nil {
 				return key
 			}
@@ -778,7 +786,7 @@ final class CSVImporter {
 	}
 
 	private func keyForFillup(record: CSVRecord) -> String? {
-		for key in [ "FULLFILLUP", "VOLLGETANKT" ] {
+		for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN" ] {
 			if record[key] != nil {
 				return key
 			}
@@ -799,6 +807,16 @@ final class CSVImporter {
 
 	private func keyForCarID(record: CSVRecord) -> String? {
 		for key in [ "CARID", "FAHRZEUGID" ] {
+			if record[key] != nil {
+				return key
+			}
+		}
+
+		return nil
+	}
+
+	private func keyForComment(record: CSVRecord) -> String? {
+		for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE" ] {
 			if record[key] != nil {
 				return key
 			}
