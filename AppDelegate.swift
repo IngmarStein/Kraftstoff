@@ -107,6 +107,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					navigationController.popToRootViewControllerAnimated(false)
 					if let fuelCalculatorController = navigationController.viewControllers.first as? FuelCalculatorController {
 						fuelCalculatorController.selectedCarId = shortcutItem.userInfo?["objectId"] as? String
+						fuelCalculatorController.recreateTableContentsWithAnimation(.None)
 					}
 				}
 			}
