@@ -74,6 +74,12 @@ class CarViewController: UITableViewController, UIDataSourceModelAssociation, UI
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
+		if #available(iOS 9.0, *) {
+			if traitCollection.forceTouchCapability == .Available {
+				registerForPreviewingWithDelegate(self, sourceView: view)
+			}
+		}
+
 		NSNotificationCenter.defaultCenter().addObserver(self,
            selector:"localeChanged:",
                name:NSCurrentLocaleDidChangeNotification,
