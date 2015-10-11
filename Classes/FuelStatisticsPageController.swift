@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
+final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
 
 	// Set by presenting view controller
 	var selectedCar: Car!

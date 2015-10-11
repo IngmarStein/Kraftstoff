@@ -10,7 +10,7 @@ import Foundation
 import StoreKit
 import Security
 
-class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
 
 	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.2cars"

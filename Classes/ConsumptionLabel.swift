@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConsumptionLabel: UILabel {
+final class ConsumptionLabel: UILabel {
 
 	var highlightStrings: [String]? {
 		didSet {

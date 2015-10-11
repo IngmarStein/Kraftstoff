@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ConsumptionTableCell: PageCell {
+final class ConsumptionTableCell: PageCell {
 
 	private(set) var coloredLabel: ConsumptionLabel
 

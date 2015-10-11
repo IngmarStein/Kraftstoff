@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TextEditTableCell: EditablePageCell {
+final class TextEditTableCell: EditablePageCell {
 	static let DefaultMaximumTextFieldLength = 15
 
 	private var maximumTextFieldLength = 0

@@ -15,7 +15,7 @@ private let kSRFuelEventExportSheet       = "FuelEventExportSheet"
 private let kSRFuelEventShowOpenIn        = "FuelEventShowOpenIn"
 private let kSRFuelEventShowComposer      = "FuelEventShowMailComposer"
 
-class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate {
+final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate {
 
 	var selectedCarId: String?
 	var selectedCar: Car!

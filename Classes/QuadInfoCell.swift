@@ -8,7 +8,7 @@
 
 import UIKit
 
-class QuadInfoCell: UITableViewCell {
+final class QuadInfoCell: UITableViewCell {
 
 	private(set) var topLeftLabel: UILabel
 	private(set) var botLeftLabel: UILabel

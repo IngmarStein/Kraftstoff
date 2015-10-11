@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PageCellDescription {
+final class PageCellDescription {
 	private(set) var cellClass: PageCell.Type
 	var cellData: [NSObject:AnyObject]
 

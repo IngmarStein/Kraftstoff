@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CSVParser {
+final class CSVParser {
 	private var csvString: String
 
 	private var separator: String! {

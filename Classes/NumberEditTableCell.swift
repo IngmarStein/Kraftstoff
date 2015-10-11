@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NumberEditTableCell: EditablePageCell {
+final class NumberEditTableCell: EditablePageCell {
 
 	var numberFormatter: NSNumberFormatter!
 	var alternateNumberFormatter: NSNumberFormatter?

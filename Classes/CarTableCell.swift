@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
+final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
 	private var carPicker: UIPickerView
 	var cars: [Car]

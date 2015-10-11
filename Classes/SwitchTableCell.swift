@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SwitchTableCell: PageCell {
+final class SwitchTableCell: PageCell {
 	private let margin : CGFloat = 8.0
 
 	var keyLabel: UILabel

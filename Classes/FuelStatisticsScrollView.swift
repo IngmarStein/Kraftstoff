@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FuelStatisticsScrollView: UIScrollView {
+final class FuelStatisticsScrollView: UIScrollView {
 
     // Offset between logical and currently visible pages
 	private var pageOffset = 0

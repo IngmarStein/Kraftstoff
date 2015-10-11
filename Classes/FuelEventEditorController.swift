@@ -22,7 +22,7 @@ private let kSRFuelEventFilledUp        = "FuelEventFilledUp"
 private let kSRFuelEventEditing         = "FuelEventEditing"
 private let kSRFuelEventComment         = "FuelEventComment"
 
-class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
+final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var event: FuelEvent! {
 		didSet {

@@ -18,7 +18,7 @@ private struct FuelCalculatorDataRow: OptionSetType {
 	static let All = FuelCalculatorDataRow(rawValue: 0b0111)
 }
 
-class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
+final class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false

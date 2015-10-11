@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
+final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
 	var picker: UIPickerView
 	var pickerLabels: [String]!

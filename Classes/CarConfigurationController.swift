@@ -30,7 +30,7 @@ private let kSRConfiguratorOdometerUnit           = "FuelConfiguratorOdometerUni
 private let kSRConfiguratorFuelUnit               = "FuelConfiguratorFuelUnit"
 private let kSRConfiguratorFuelConsumptionUnit    = "FuelConfiguratorFuelConsumptionUnit"
 
-class CarConfigurationController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellFocusHandler {
+final class CarConfigurationController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellFocusHandler {
 
 	var isShowingCancelSheet = false
 	var dataChanged = false

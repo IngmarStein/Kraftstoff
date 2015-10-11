@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DateEditTableCell: EditableProxyPageCell {
+final class DateEditTableCell: EditableProxyPageCell {
 
 	private var valueTimestamp: String?
 	private var dateFormatter: NSDateFormatter!

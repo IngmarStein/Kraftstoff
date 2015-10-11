@@ -13,7 +13,7 @@ import CoreSpotlight
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
 
-class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIViewControllerPreviewingDelegate {
+final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIViewControllerPreviewingDelegate {
 
 	var editedObject: Car!
 
