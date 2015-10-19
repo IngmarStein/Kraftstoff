@@ -34,6 +34,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		contentView.addSubview(picker)
 
 		pickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[picker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "picker" : picker]) as [NSLayoutConstraint]
+		pickerConstraints.append(NSLayoutConstraint(item: picker, attribute: .CenterX, relatedBy: .Equal, toItem: contentView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
 	}
 
 	required init(coder aDecoder: NSCoder) {

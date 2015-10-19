@@ -29,6 +29,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		contentView.addSubview(datePicker)
 
 		datePickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[datePicker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "datePicker" : datePicker]) as [NSLayoutConstraint]
+		datePickerConstraints.append(NSLayoutConstraint(item: datePicker, attribute: .CenterX, relatedBy: .Equal, toItem: contentView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
 												selector:"significantTimeChange:",
