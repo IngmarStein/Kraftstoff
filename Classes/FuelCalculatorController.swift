@@ -24,9 +24,15 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	var isShowingConvertSheet = false
 	var selectedCarId : String?
 
-	lazy var fetchedResultsController: NSFetchedResultsController = {
-		return CoreDataManager.fetchedResultsControllerForCars()
-	}()
+	private var _fetchedResultsController: NSFetchedResultsController?
+	private var fetchedResultsController: NSFetchedResultsController {
+		if _fetchedResultsController == nil {
+			let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+			fetchedResultsController.delegate = self
+			_fetchedResultsController = fetchedResultsController
+		}
+		return _fetchedResultsController!
+	}
 
 	var restoredSelectionIndex: NSIndexPath?
 	var car: Car?
@@ -61,8 +67,6 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
-		self.fetchedResultsController.delegate = self
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
@@ -329,7 +333,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		// Car selector (optional)
 		self.car = nil
-    
+
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
 			if let selectedCar = selectedCarId {
 				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar) as? Car
@@ -516,6 +520,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	}
 
 	func storesDidChange(notification: NSNotification) {
+		_fetchedResultsController = nil
+		NSFetchedResultsController.deleteCacheWithName(nil)
 		recreateTableContentsWithAnimation(.None)
 		updateSaveButtonState()
 	}
