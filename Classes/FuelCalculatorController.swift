@@ -74,6 +74,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"localeChanged:", name:NSCurrentLocaleDidChangeNotification, object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:"willEnterForeground:", name:UIApplicationWillEnterForegroundNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"storesDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
 	//MARK: - State Restoration
@@ -514,6 +515,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
+	func storesDidChange(notification: NSNotification) {
+		recreateTableContentsWithAnimation(.None)
+		updateSaveButtonState()
+	}
+
 	//MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
@@ -582,7 +588,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                          self.valueChanged(true, identifier:"filledUp")
 						 self.valueChanged("", identifier:"comment")
 
-						CoreDataManager.saveContext()
+						 CoreDataManager.saveContext()
                      })
 	}
 

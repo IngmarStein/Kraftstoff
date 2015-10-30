@@ -93,6 +93,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	@objc func storesDidChange(notification: NSNotification) {
 		_fetchedResultsController = nil
 		NSFetchedResultsController.deleteCacheWithName(nil)
+		updateHelp(true)
 		self.tableView.reloadData()
 	}
 
@@ -145,7 +146,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	private func updateHelp(animated: Bool) {
 		let defaults = NSUserDefaults.standardUserDefaults()
 
-		// Number of cars determins the help badge
+		// Number of cars determines the help badge
 		let helpImageName: String?
 		let helpViewFrame: CGRect
 		let helpViewContentMode: UIViewContentMode
@@ -218,6 +219,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		// Update the toolbar button
 		self.navigationItem.leftBarButtonItem = (carCount == 0) ? nil : self.editButtonItem()
+		checkEnableEditButton()
 	}
 
 	private func hideHelp(animated: Bool) {
