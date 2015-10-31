@@ -176,12 +176,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private func showImportAlert() {
 		if self.importAlert == nil {
-			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:""), message:"", preferredStyle:.Alert)
+			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:"") + "\n\n", message:"", preferredStyle:.Alert)
 
 			let progress = UIActivityIndicatorView(frame:self.importAlert!.view.bounds)
 			progress.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
 			progress.userInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .WhiteLarge
+			progress.color = UIColor.blackColor()
+			let center = self.importAlert!.view.center
+			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
 			progress.startAnimating()
 
 			self.importAlert!.view.addSubview(progress)
