@@ -23,7 +23,7 @@ class Kraftstoff_Tests: XCTestCase {
 		} catch _ {
 		}
 
-		let managedObjectContext = NSManagedObjectContext()
+		let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
 		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 
 		return managedObjectContext
