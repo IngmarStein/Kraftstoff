@@ -12,7 +12,6 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	private var carPicker: UIPickerView
 	var cars: [Car]
-	private var carPickerConstraints = [NSLayoutConstraint]()
 
 	// Standard cell geometry
 	private let PickerViewCellWidth: CGFloat        = 290.0
@@ -38,9 +37,15 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		carPicker.translatesAutoresizingMaskIntoConstraints = false
 		carPicker.hidden = true
 		carPicker.addConstraint(carPickerHeightConstraint)
-		contentView.addSubview(carPicker)
 
-		carPickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[carPicker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "carPicker" : carPicker]) as [NSLayoutConstraint]
+		let stackView = UIStackView(arrangedSubviews: [carPicker])
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.axis = .Vertical
+		stackView.alignment = .Center
+
+		contentView.addSubview(stackView)
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -97,13 +102,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	}
 
 	private func showPicker(show: Bool) {
-		if show {
-			contentView.addConstraints(carPickerConstraints)
-			carPicker.hidden = false
-		} else {
-			contentView.removeConstraints(carPickerConstraints)
-			carPicker.hidden = true
-		}
+		carPicker.hidden = !show
 	}
 
 	//MARK: - UIPickerViewDataSource

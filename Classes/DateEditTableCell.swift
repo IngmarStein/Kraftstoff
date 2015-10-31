@@ -14,7 +14,6 @@ final class DateEditTableCell: EditableProxyPageCell {
 	private var dateFormatter: NSDateFormatter!
 	private var autoRefreshedDate = false
 	private var datePicker: UIDatePicker
-	private var datePickerConstraints = [NSLayoutConstraint]()
 
 	required init() {
 		datePicker = UIDatePicker()
@@ -26,10 +25,14 @@ final class DateEditTableCell: EditableProxyPageCell {
 		datePicker.translatesAutoresizingMaskIntoConstraints = false
 		datePicker.hidden = true
 
-		contentView.addSubview(datePicker)
+		let stackView = UIStackView(arrangedSubviews: [datePicker])
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.axis = .Vertical
+		stackView.alignment = .Center
 
-		datePickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[datePicker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "datePicker" : datePicker]) as [NSLayoutConstraint]
-		datePickerConstraints.append(NSLayoutConstraint(item: datePicker, attribute: .CenterX, relatedBy: .Equal, toItem: contentView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
+		contentView.addSubview(stackView)
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
 												selector:"significantTimeChange:",
@@ -39,6 +42,12 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
+	}
+
+	override func prepareForReuse() {
+		super.prepareForReuse()
+
+		showDatePicker(false)
 	}
 
 	private func updateTextFieldColorForValue(value: AnyObject?) {
@@ -102,19 +111,13 @@ final class DateEditTableCell: EditableProxyPageCell {
 	}
 
 	private func showDatePicker(show: Bool) {
-		if show {
-			contentView.addConstraints(datePickerConstraints)
-			datePicker.hidden = false
-		} else {
-			contentView.removeConstraints(datePickerConstraints)
-			datePicker.hidden = true
-		}
+		datePicker.hidden = !show
 	}
 
 	//MARK: - UITextFieldDelegate
 
 	func textFieldDidBeginEditing(textField: UITextField) {
-		// Optional:update selected value to current time when no change was done in the last 5 minutes
+		// Optional: update selected value to current time when no change was done in the last 5 minutes
 		var selectedDate: NSDate?
 
 		if self.autoRefreshedDate {

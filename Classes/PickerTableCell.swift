@@ -10,50 +10,57 @@ import UIKit
 
 final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
-	var picker: UIPickerView
+	var pickerView: UIPickerView
 	var pickerLabels: [String]!
 	var pickerShortLabels: [String]?
-	private var pickerConstraints = [NSLayoutConstraint]()
 
 	private let PickerViewCellWidth: CGFloat  = 290.0
 	private let PickerViewCellHeight: CGFloat =  44.0
 
 	required init() {
-		picker = UIPickerView()
+		pickerView = UIPickerView()
 
 		super.init()
 
-		picker.showsSelectionIndicator = true
-		picker.dataSource              = self
-		picker.delegate                = self
-		picker.translatesAutoresizingMaskIntoConstraints = false
-		picker.hidden = true
-		let pickerHeightConstraint = NSLayoutConstraint(item: picker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
-		pickerHeightConstraint.priority = 750
-		picker.addConstraint(pickerHeightConstraint)
-		contentView.addSubview(picker)
+		pickerView.showsSelectionIndicator = true
+		pickerView.dataSource              = self
+		pickerView.delegate                = self
+		pickerView.translatesAutoresizingMaskIntoConstraints = false
+		pickerView.hidden = true
 
-		pickerConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[picker]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "picker" : picker]) as [NSLayoutConstraint]
-		pickerConstraints.append(NSLayoutConstraint(item: picker, attribute: .CenterX, relatedBy: .Equal, toItem: contentView, attribute: .CenterX, multiplier: 1.0, constant: 0.0))
+		let stackView = UIStackView(arrangedSubviews: [pickerView])
+		stackView.translatesAutoresizingMaskIntoConstraints = false
+		stackView.axis = .Vertical
+		stackView.alignment = .Center
+
+		contentView.addSubview(stackView)
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
+	override func prepareForReuse() {
+		super.prepareForReuse()
+
+		showPicker(false)
+	}
+	
 	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		// Array of picker labels
 		self.pickerLabels = dictionary["labels"] as? [String]
 		self.pickerShortLabels = dictionary["shortLabels"] as? [String]
-		self.picker.reloadAllComponents()
+		self.pickerView.reloadAllComponents()
 
 		// (Re-)configure initial selected row
 		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier)?.integerValue ?? 0
 
-		self.picker.selectRow(initialIndex, inComponent:0, animated:false)
-		self.picker.reloadComponent(0)
+		self.pickerView.selectRow(initialIndex, inComponent:0, animated:false)
+		self.pickerView.reloadComponent(0)
 
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[initialIndex]
 	}
@@ -65,13 +72,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	}
 
 	private func showPicker(show: Bool) {
-		if show {
-			contentView.addConstraints(pickerConstraints)
-			picker.hidden = false
-		} else {
-			contentView.removeConstraints(pickerConstraints)
-			picker.hidden = true
-		}
+		pickerView.hidden = !show
 	}
 
 	//MARK: - UIPickerViewDataSource

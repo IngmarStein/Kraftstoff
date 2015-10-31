@@ -11,7 +11,7 @@ import CoreData
 
 final class CoreDataManager {
 	// CoreData support
-	static let managedObjectContext: NSManagedObjectContext! = {
+	static let managedObjectContext: NSManagedObjectContext = {
 		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)
 		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 		managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -194,11 +194,25 @@ final class CoreDataManager {
 			object: CoreDataManager.persistentStoreCoordinator)
 	}
 
+	private static func cleanupDetachedFuelEvents(moc : NSManagedObjectContext) {
+		let fetchRequest = NSFetchRequest()
+		fetchRequest.entity = NSEntityDescription.entityForName("fuelEvent", inManagedObjectContext:moc)
+		fetchRequest.predicate = NSPredicate(format:"car == nil")
+
+		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+		do {
+			try moc.executeRequest(deleteRequest)
+		} catch {
+			// ignore
+		}
+	}
+
 	@objc func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
 		let context = CoreDataManager.managedObjectContext
 
 		context.performBlock {
 			context.mergeChangesFromContextDidSaveNotification(changeNotification)
+			CoreDataManager.cleanupDetachedFuelEvents(context)
 		}
 	}
 

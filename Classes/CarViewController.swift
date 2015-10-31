@@ -74,10 +74,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
-		if #available(iOS 9.0, *) {
-			if traitCollection.forceTouchCapability == .Available {
-				registerForPreviewingWithDelegate(self, sourceView: view)
-			}
+		if traitCollection.forceTouchCapability == .Available {
+			registerForPreviewingWithDelegate(self, sourceView: view)
 		}
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
@@ -434,10 +432,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		CoreDataManager.managedObjectContext.deleteObject(deletedObject)
 		CoreDataManager.saveContext()
 
-		if #available(iOS 9.0, *) {
-			if let itemID = deletedCarID {
-				CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers([itemID], completionHandler: nil)
-			}
+		if let itemID = deletedCarID {
+			CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers([itemID], completionHandler: nil)
 		}
 
 		// Update order of existing objects
@@ -670,7 +666,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - UIViewControllerPreviewingDelegate
 
-	@available(iOS 9.0, *)
 	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		guard let indexPath = tableView.indexPathForRowAtPoint(location),
 			cell = tableView.cellForRowAtIndexPath(indexPath),

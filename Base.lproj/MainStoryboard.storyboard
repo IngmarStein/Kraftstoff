@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bla-8M-9aI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15C27e" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bla-8M-9aI">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
     <scenes>
         <!--Cars-->
@@ -128,16 +127,16 @@
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </scrollView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" misplaced="YES" text="CarName" lineBreakMode="tailTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="kej-pI-VdQ" userLabel="Name Label (Toyota IQ+)">
-                                <rect key="frame" x="10" y="5" width="74" height="21.5"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="CarName" lineBreakMode="tailTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="kej-pI-VdQ" userLabel="Name Label (Toyota IQ+)">
+                                <rect key="frame" x="10" y="5" width="76.5" height="21.5"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" misplaced="YES" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="Rk6-Nm-3ol" userLabel="Statistics Label (∅ 4.1 l/100km)">
-                                <rect key="frame" x="517" y="5" width="73" height="21.5"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="Rk6-Nm-3ol" userLabel="Statistics Label (∅ 4.1 l/100km)">
+                                <rect key="frame" x="512" y="5" width="78" height="21.5"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -404,16 +403,16 @@
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </scrollView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" misplaced="YES" text="CarName" lineBreakMode="tailTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="dTb-Bs-XAf" userLabel="Name Label (Toyota IQ+)">
-                                <rect key="frame" x="10" y="5" width="74" height="21.5"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="CarName" lineBreakMode="tailTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="dTb-Bs-XAf" userLabel="Name Label (Toyota IQ+)">
+                                <rect key="frame" x="10" y="5" width="76.5" height="21.5"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" misplaced="YES" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="b5U-MO-Tva" userLabel="Statistics Label (∅ 4.1 l/100km)">
-                                <rect key="frame" x="517" y="5" width="73" height="21.5"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="b5U-MO-Tva" userLabel="Statistics Label (∅ 4.1 l/100km)">
+                                <rect key="frame" x="512" y="5" width="78" height="21.5"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

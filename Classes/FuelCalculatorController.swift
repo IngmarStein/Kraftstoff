@@ -52,10 +52,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")
 		userActivity?.title = NSLocalizedString("Fill-Up", comment:"")
-		if #available(iOS 9.0, *) {
-			userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment:"") ]
-			userActivity?.eligibleForSearch = true
-		}
+		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment:"") ]
+		userActivity?.eligibleForSearch = true
 
 		// Title bar
 		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingMode:")
@@ -169,9 +167,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	override func viewDidDisappear(animated: Bool) {
 		super.viewDidDisappear(animated)
 
-		if #available(iOS 9.0, *) {
-			userActivity?.resignCurrent()
-		}
+		userActivity?.resignCurrent()
 	}
 
 	func handleShake() {
@@ -550,8 +546,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
-			tableView.beginUpdates()
-			tableView.endUpdates()
+			dispatch_async(dispatch_get_main_queue()) {
+				self.tableView.beginUpdates()
+				self.tableView.endUpdates()
+			}
 		}
 	}
 

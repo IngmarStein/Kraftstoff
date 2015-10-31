@@ -76,28 +76,25 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	private func updateShortcutItems() {
-		if #available(iOS 9.0, *) {
-			if let cars = self.carsFetchedResultsController.fetchedObjects as? [Car] {
-				UIApplication.sharedApplication().shortcutItems = cars.map { car in
-					let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
-					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
-				}
+		if let cars = self.carsFetchedResultsController.fetchedObjects as? [Car] {
+			UIApplication.sharedApplication().shortcutItems = cars.map { car in
+				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
+				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
+			}
 
-				if CSSearchableIndex.isIndexingAvailable() {
-					let searchableItems = cars.map { car -> CSSearchableItem in
-						let carIdentifier = CoreDataManager.modelIdentifierForManagedObject(car)
-						let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
-						attributeset.title = car.name
-						attributeset.contentDescription = car.numberPlate
-						return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.m-schmidt.Kraftstoff.cars", attributeSet: attributeset)
-					}
-					CSSearchableIndex.defaultSearchableIndex().indexSearchableItems(searchableItems, completionHandler: nil)
+			if CSSearchableIndex.isIndexingAvailable() {
+				let searchableItems = cars.map { car -> CSSearchableItem in
+					let carIdentifier = CoreDataManager.modelIdentifierForManagedObject(car)
+					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+					attributeset.title = car.name
+					attributeset.contentDescription = car.numberPlate
+					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.m-schmidt.Kraftstoff.cars", attributeSet: attributeset)
 				}
+				CSSearchableIndex.defaultSearchableIndex().indexSearchableItems(searchableItems, completionHandler: nil)
 			}
 		}
 	}
 
-	@available(iOS 9.0, *)
 	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
 			// switch to fill-up tab and select the car
@@ -122,7 +119,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			}
 
 			return true
-		} else if #available(iOS 9.0, *) {
+		} else {
 			if userActivity.activityType == CSSearchableItemActionType {
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
