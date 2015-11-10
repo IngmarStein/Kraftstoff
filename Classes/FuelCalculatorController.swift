@@ -892,8 +892,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
-			tableView.beginUpdates()
-			tableView.endUpdates()
+			dispatch_async(dispatch_get_main_queue()) {
+				tableView.beginUpdates()
+				tableView.endUpdates()
+			}
 		}
 	}
 

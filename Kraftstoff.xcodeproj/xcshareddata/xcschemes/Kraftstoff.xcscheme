@@ -103,6 +103,10 @@
             argument = "-com.apple.CoreData.MigrationDebug"
             isEnabled = "NO">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-purchasedProducts &lt;array&gt;&lt;string&gt;com.github.ingmarstein.kraftstoff.unlimitedCars&lt;/string&gt;&lt;/array&gt;"
+            isEnabled = "NO">
+         </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>

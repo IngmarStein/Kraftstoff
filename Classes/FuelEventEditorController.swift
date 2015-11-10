@@ -423,8 +423,10 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
-			tableView.beginUpdates()
-			tableView.endUpdates()
+			dispatch_async(dispatch_get_main_queue()) {
+				tableView.beginUpdates()
+				tableView.endUpdates()
+			}
 		}
 	}
 
@@ -561,8 +563,10 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
-			tableView.beginUpdates()
-			tableView.endUpdates()
+			dispatch_async(dispatch_get_main_queue()) {
+				tableView.beginUpdates()
+				tableView.endUpdates()
+			}
 		}
 	}
 
