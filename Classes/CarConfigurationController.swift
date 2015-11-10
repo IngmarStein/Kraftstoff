@@ -288,8 +288,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {
-				tableView.beginUpdates()
-				tableView.endUpdates()
+				self.tableView.beginUpdates()
+				self.tableView.endUpdates()
 			}
 		}
 	}

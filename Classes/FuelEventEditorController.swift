@@ -424,8 +424,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			field.userInteractionEnabled = true
 			field.becomeFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {
-				tableView.beginUpdates()
-				tableView.endUpdates()
+				self.tableView.beginUpdates()
+				self.tableView.endUpdates()
 			}
 		}
 	}
