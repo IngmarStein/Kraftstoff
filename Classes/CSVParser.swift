@@ -155,11 +155,11 @@ final class CSVParser {
 			} else {
 				fieldName = "FIELD_\(fieldCount + 1)"
 				fieldNames.append(fieldName)
-				fieldNamesCount++
+				fieldNamesCount = fieldNamesCount + 1
 			}
 
 			record[fieldName] = field
-			fieldCount++
+			fieldCount = fieldCount + 1
 
 			if parseSeparator() == nil {
 				break

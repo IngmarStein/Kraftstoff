@@ -124,7 +124,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	func invalidateCaches() {
 		contentCache.removeAll(keepCapacity: false)
-		invalidationCounter++
+		invalidationCounter = invalidationCounter + 1
 	}
 
 	func purgeDiscardableCacheContent() {

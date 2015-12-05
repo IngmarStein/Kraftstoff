@@ -367,7 +367,7 @@ final class CoreDataManager {
 
 	//MARK: - Core Data Updates
 
-	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, var forceOdometerUpdate: Bool) -> FuelEvent {
+	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
 		let zero = NSDecimalNumber.zero()
 
 		// Convert distance and fuelvolume to SI units
@@ -381,6 +381,8 @@ final class CoreDataManager {
 		var inheritedCost       = zero
 		var inheritedDistance   = zero
 		var inheritedFuelVolume = zero
+
+		var forceOdometerUpdate = odometerUpdate
 
 		// Compute inherited data from older element
 
@@ -425,9 +427,7 @@ final class CoreDataManager {
                 ? -inheritedFuelVolume
                 : liters
 
-            for var row = youngerEvents.count; row > 0; {
-				let youngerEvent = youngerEvents[--row]
-
+			for youngerEvent in youngerEvents.reverse() {
 				youngerEvent.inheritedCost = max(youngerEvent.inheritedCost + deltaCost, zero)
 				youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance + deltaDistance, zero)
 				youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume + deltaFuelVolume, zero)
@@ -518,7 +518,8 @@ final class CoreDataManager {
 
 				if inheritedCost > zero || inheritedDistance > zero || inheritedFuelVolume > zero {
 					while row > 0 {
-						let youngerEvent = youngerEvents[--row]
+						row = row - 1
+						let youngerEvent = youngerEvents[row]
 
 						youngerEvent.inheritedCost = youngerEvent.inheritedCost + inheritedCost
 						youngerEvent.inheritedDistance = youngerEvent.inheritedDistance + inheritedDistance
@@ -533,7 +534,8 @@ final class CoreDataManager {
 				// Intermediate event deleted => remove distance/volume from inherited data
 
 				while row > 0 {
-					let youngerEvent = youngerEvents[--row]
+					row = row - 1
+					let youngerEvent = youngerEvents[row]
 					let cost = event.price
 
 					youngerEvent.inheritedCost = max(youngerEvent.inheritedCost - cost, zero)

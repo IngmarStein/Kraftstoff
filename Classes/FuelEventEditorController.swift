@@ -211,7 +211,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			}
 
 			if animated {
-				for var row = 0; row <= 4; row++ {
+				for row in 0...4 {
 					reconfigureRowAtIndexPath(NSIndexPath(forRow:row, inSection:0))
 				}
 			} else {

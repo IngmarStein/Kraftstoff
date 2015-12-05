@@ -74,9 +74,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
-		for var i = fetchedObjects.count - 1; i >= 0; i-- {
-
-			let managedObject: FuelEvent! = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent
+		for fetchedObject in fetchedObjects.lazy.reverse() {
+			let managedObject: FuelEvent! = CoreDataManager.existingObject(fetchedObject, inManagedObjectContext:moc) as? FuelEvent
 
 			if managedObject == nil {
 				continue
@@ -122,10 +121,10 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 					state.worstConsumption = max(consumption, state.worstConsumption ?? consumption)
 				}
 
-				state.numberOfFullFillups++
+				state.numberOfFullFillups = state.numberOfFullFillups + 1
 			}
 
-			state.numberOfFillups++
+			state.numberOfFillups = state.numberOfFillups + 1
 		}
 
 		// Compute average consumption
@@ -261,7 +260,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.moveToPoint(   CGPoint(x: self.gridLeftBorder,  y: 0.25))
 			path.addLineToPoint(CGPoint(x: self.gridRightBorder, y: 0.25))
 
-            for var i = 1, y = CGFloat(0.0); i <= GridLines; i++ {
+			var y = CGFloat(0.0)
+            for i in 1...GridLines {
                 let lastY = y
                 y = rint (GridTextHeight*CGFloat(i))
 

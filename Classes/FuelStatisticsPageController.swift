@@ -29,7 +29,7 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 
-		for var page = 0; page < pageControl.numberOfPages; page++ {
+		for page in 0..<pageControl.numberOfPages {
 			let controller = self.childViewControllers[page]
 			controller.view.frame = frameForPage(page)
 		}
@@ -41,7 +41,7 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 		super.viewDidLoad()
 
 		// Load content pages
-		for var page = 0; page < pageControl.numberOfPages; page++ {
+		for page in 0..<pageControl.numberOfPages {
 			let controller: FuelStatisticsViewController?
 
 			switch page {
@@ -203,7 +203,7 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 	//MARK: - Page Control Handling
 
 	private func updatePageVisibility() {
-		for var page = 0; page < pageControl.numberOfPages; page++ {
+		for page in 0..<pageControl.numberOfPages {
 			let controller = self.childViewControllers[page] as! FuelStatisticsViewController
 			controller.noteStatisticsPageBecomesVisible(page == pageControl.currentPage)
 		}

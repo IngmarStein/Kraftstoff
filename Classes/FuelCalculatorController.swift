@@ -429,7 +429,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	private func recreateDataRowsWithPreviousCar(oldCar: Car?) {
 		// Replace data rows in the internal data model
-		for var row = 4; row >= 2; row-- {
+		for row in 2...4 {
 			removeRowAtIndex(row, inSection:0, withAnimation:.None)
 		}
 
@@ -442,11 +442,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		var count = 0
 
-		for var row = 2; row <= 4; row++ {
+		for row in 2...4 {
 			let animation: UITableViewRowAnimation
 			if (row == 2 && odoChanged) || (row != 2 && fuelChanged) {
 				animation = (count % 2) == 0 ? .Right : .Left
-				count++
+				count = count + 1
 			} else {
 				animation = .None
 			}

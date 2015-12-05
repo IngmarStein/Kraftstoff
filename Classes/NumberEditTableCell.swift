@@ -61,9 +61,10 @@ final class NumberEditTableCell: EditablePageCell {
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
 		// Modify text
 		var text = textField.text!
-		guard var value = self.numberFormatter.numberFromString(text) as? NSDecimalNumber else {
+		guard let textValue = self.numberFormatter.numberFromString(text) as? NSDecimalNumber else {
 			return false
 		}
+		var value = textValue
 		let scale = NSDecimalNumber(mantissa:1, exponent:Int16(self.numberFormatter.maximumFractionDigits), isNegative:false)
 
 		if range.length == 0 {

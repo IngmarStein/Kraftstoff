@@ -546,7 +546,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			return
 		}
 
-		for var i = from; i <= to; i++ {
+		for i in from...to {
 			let managedObject = self.fetchedResultsController.objectAtIndexPath(basePath.indexPathByAddingIndex(i)) as! Car
 			var order = Int(managedObject.order)
 

@@ -159,7 +159,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var valRange: CGFloat
 		var valStretchFactorForDisplay: CGFloat
 
-		for var i = fetchedObjects.count - 1; i >= 0; i-- {
+		for i in (0..<fetchedObjects.count).reverse() {
 			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
@@ -228,7 +228,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var samples = [CGFloat](count: MAX_SAMPLES, repeatedValue: 0.0)
 		var samplesCount = [Int](count: MAX_SAMPLES, repeatedValue: 0)
 
-		for var i = 0; i < MAX_SAMPLES; i++ {
+		for i in 0..<MAX_SAMPLES {
 			state.lensDate  [i][0] = 0.0
 			state.lensDate  [i][1] = 0.0
 			state.lensValue [i]    = 0.0
@@ -236,8 +236,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		let rangeInterval = firstDate!.timeIntervalSinceDate(lastDate!)
 
-		for var i = valLastIndex; i >= valFirstIndex; i-- {
-
+		for i in (valFirstIndex...valLastIndex).reverse() {
 			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
@@ -265,7 +264,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// Build curve data from resampled values
 		state.dataCount = 0
 
-		for var i = 0; i < MAX_SAMPLES; i++ {
+		for i in 0..<MAX_SAMPLES {
 			if samplesCount[i] > 0 {
 
 				state.data[state.dataCount] = CGPoint(x: CGFloat(i) / CGFloat(MAX_SAMPLES-1), y: 1.0 - samples [i] / CGFloat(samplesCount[i]))
@@ -274,7 +273,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				state.lensDate[state.dataCount][1] = state.lensDate[i][(samplesCount[i] > 1) ? 1 : 0]
 				state.lensValue[state.dataCount] = state.lensValue[i] / CGFloat(samplesCount[i])
 
-				state.dataCount++
+				state.dataCount = state.dataCount + 1
 			}
 		}
 
@@ -311,17 +310,17 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		state.vMarkCount = 0
 		state.vMarkPositions[state.vMarkCount] = 0.0
 		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(lastDate!)!
-		state.vMarkCount++
+		state.vMarkCount = state.vMarkCount + 1
 
 		if let midDate = midDate {
 			state.vMarkPositions[state.vMarkCount] = 0.5
 			state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(midDate)!
-			state.vMarkCount++
+			state.vMarkCount = state.vMarkCount + 1
 		}
 
 		state.vMarkPositions[state.vMarkCount] = 1.0
 		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(firstDate!)!
-		state.vMarkCount++
+		state.vMarkCount = state.vMarkCount + 1
 
 		return valAverage
 	}
@@ -401,7 +400,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
             CGContextSaveGState(cgContext)
 
-			for var i = 0, y = CGFloat(0.0); i < state.hMarkCount; i++ {
+			var y = CGFloat(0.0)
+			for i in 0..<state.hMarkCount {
 				let lastY = y
 				y = rint (self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
 
@@ -419,7 +419,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.whiteColor() ]
 
-		for var i = 0; i < state.hMarkCount; i++ {
+		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
 
 				let size = mark.sizeWithAttributes(attributes)
@@ -443,7 +443,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
         CGContextSaveGState(cgContext)
 
-		for var i = 0, x = CGFloat(0.0); i < state.vMarkCount; i++ {
+		var x = CGFloat(0.0)
+		for i in 0..<state.vMarkCount {
 			let lastX = x
 			x = rint (self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
 
@@ -458,7 +459,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		let vMarkAttributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0) ]
 
-		for var i = 0; i < state.vMarkCount; i++ {
+		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
 
 				let size = mark.sizeWithAttributes(attributes)
@@ -489,7 +490,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		var minY = self.graphBottomBorder - 6
 
-		for var i = 0; i < state.dataCount; i++ {
+		for i in 0..<state.dataCount {
 			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
 			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
 
@@ -540,7 +541,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.moveToPoint(CGPoint(x: rint (self.graphLeftBorder + self.graphWidth * state.data [0].x),
 								 y: rint (self.graphTopBorder + self.graphHeight * state.data [0].y)))
 
-		for var i = 1; i < state.dataCount; i++ {
+		for i in 0..<state.dataCount {
 			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
 			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
             
