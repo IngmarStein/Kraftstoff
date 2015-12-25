@@ -404,7 +404,7 @@ final class CSVImporter {
 						inheritedFuelVolume = inheritedFuelVolume + volume
 					}
 
-					numEvents      = numEvents + 1
+					numEvents     += 1
 					detectedEvents = true
 					lastDate       = date
 				}

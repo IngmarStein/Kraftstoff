@@ -121,10 +121,10 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 					state.worstConsumption = max(consumption, state.worstConsumption ?? consumption)
 				}
 
-				state.numberOfFullFillups = state.numberOfFullFillups + 1
+				state.numberOfFullFillups += 1
 			}
 
-			state.numberOfFillups = state.numberOfFillups + 1
+			state.numberOfFillups += 1
 		}
 
 		// Compute average consumption
@@ -234,8 +234,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.moveToPoint(   CGPoint(x: self.gridLeftBorder,  y: 1.0))
 			path.addLineToPoint(CGPoint(x: self.gridRightBorder, y: 1.0))
 
-            for var i = 1, y = CGFloat(0.0); i < GridLines; i+=2 {
-
+			var y = CGFloat(0.0)
+			for i in 1.stride(to:GridLines, by:2) {
                 let lastY = y
                 y = rint (GridTextHeight*0.5 + GridTextHeight*CGFloat(i))
 
@@ -260,7 +260,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.moveToPoint(   CGPoint(x: self.gridLeftBorder,  y: 0.25))
 			path.addLineToPoint(CGPoint(x: self.gridRightBorder, y: 0.25))
 
-			var y = CGFloat(0.0)
+			y = CGFloat(0.0)
             for i in 1...GridLines {
                 let lastY = y
                 y = rint (GridTextHeight*CGFloat(i))

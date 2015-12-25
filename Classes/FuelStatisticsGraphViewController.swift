@@ -273,7 +273,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				state.lensDate[state.dataCount][1] = state.lensDate[i][(samplesCount[i] > 1) ? 1 : 0]
 				state.lensValue[state.dataCount] = state.lensValue[i] / CGFloat(samplesCount[i])
 
-				state.dataCount = state.dataCount + 1
+				state.dataCount += 1
 			}
 		}
 
@@ -310,17 +310,17 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		state.vMarkCount = 0
 		state.vMarkPositions[state.vMarkCount] = 0.0
 		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(lastDate!)!
-		state.vMarkCount = state.vMarkCount + 1
+		state.vMarkCount += 1
 
 		if let midDate = midDate {
 			state.vMarkPositions[state.vMarkCount] = 0.5
 			state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(midDate)!
-			state.vMarkCount = state.vMarkCount + 1
+			state.vMarkCount += 1
 		}
 
 		state.vMarkPositions[state.vMarkCount] = 1.0
 		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(firstDate!)!
-		state.vMarkCount = state.vMarkCount + 1
+		state.vMarkCount += 1
 
 		return valAverage
 	}

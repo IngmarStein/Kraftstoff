@@ -446,7 +446,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			let animation: UITableViewRowAnimation
 			if (row == 2 && odoChanged) || (row != 2 && fuelChanged) {
 				animation = (count % 2) == 0 ? .Right : .Left
-				count = count + 1
+				count += 1
 			} else {
 				animation = .None
 			}

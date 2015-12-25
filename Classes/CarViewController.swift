@@ -244,7 +244,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			changeIsUserDriven = true
 
 			for car in self.fetchedResultsController.fetchedObjects as! [Car] {
-				car.order = car.order + 1
+				car.order += 1
             }
 
             // Detect demo data request
