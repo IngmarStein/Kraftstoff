@@ -57,7 +57,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		// Title bar
 		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingMode:")
+		self.doneButton.accessibilityIdentifier = "done"
 		self.saveButton = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:"saveAction:")
+		self.saveButton.accessibilityIdentifier = "save"
 		self.title = NSLocalizedString("Fill-Up", comment:"")
 	}
 

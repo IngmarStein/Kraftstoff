@@ -61,6 +61,10 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingModeAndSave:")
 		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.Stop, target:self, action:"endEditingModeAndRevert:")
 
+		self.editButton.accessibilityIdentifier = "edit"
+		self.doneButton.accessibilityIdentifier = "done"
+		self.cancelButton.accessibilityIdentifier = "cancel"
+
 		self.title = Formatters.sharedDateFormatter.stringFromDate(self.event.timestamp)
 		self.navigationItem.rightBarButtonItem = self.editButton
 

@@ -56,6 +56,23 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
 			CoreDataManager.migrateToiCloud()
 
+			if NSProcessInfo.processInfo().arguments.indexOf("-STARTFRESH") != nil {
+				CoreDataManager.deleteAllObjects()
+				let userDefaults = NSUserDefaults.standardUserDefaults()
+				for key in ["statisticTimeSpan",
+					"preferredStatisticsPage",
+					"preferredCarID",
+					"recentDistance",
+					"recentPrice",
+					"recentFuelVolume",
+					"recentFilledUp",
+					"recentComment",
+					"editHelpCounter",
+					"firstStartup"] {
+					userDefaults.removeObjectForKey(key)
+				}
+			}
+
 			self.updateShortcutItems()
 
 			// Switch once to the car view for new users

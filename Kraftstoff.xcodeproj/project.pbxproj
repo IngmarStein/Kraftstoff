@@ -52,6 +52,8 @@
 		95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */; };
 		95DA862B1AFB426D001E1375 /* Kraftstoff_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */; };
 		95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA86311AFB45E2001E1375 /* CSVExporter.swift */; };
+		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
+		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +64,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
 			remoteInfo = kraftstoff;
+		};
+		95E685471C4C1BC800C6D5F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = Kraftstoff;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -121,6 +130,10 @@
 		95DA86291AFB426D001E1375 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_Tests.swift; sourceTree = "<group>"; };
 		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
+		95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_UI_Tests.swift; sourceTree = "<group>"; };
+		95E685461C4C1BC800C6D5F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		95F1962F1B961D90000E4D0C /* StoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -136,6 +149,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		95DA86231AFB426D001E1375 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		95E6853F1C4C1BC800C6D5F8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -169,6 +189,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* kraftstoff.app */,
 				95DA86261AFB426D001E1375 /* Kraftstoff Tests.xctest */,
+				95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -181,6 +202,7 @@
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				95DA86271AFB426D001E1375 /* Kraftstoff Tests */,
+				95E685431C4C1BC800C6D5F8 /* Kraftstoff UI Tests */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			comments = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040000 in Other C Flags wegen Bug in SDK. Alternativ: System Default statt LLVM Compiler";
@@ -412,6 +434,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		95E685431C4C1BC800C6D5F8 /* Kraftstoff UI Tests */ = {
+			isa = PBXGroup;
+			children = (
+				95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */,
+				95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */,
+				95E685461C4C1BC800C6D5F8 /* Info.plist */,
+			);
+			path = "Kraftstoff UI Tests";
+			sourceTree = "<group>";
+		};
 		95F1962E1B961D54000E4D0C /* Store */ = {
 			isa = PBXGroup;
 			children = (
@@ -459,13 +491,31 @@
 			productReference = 95DA86261AFB426D001E1375 /* Kraftstoff Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		95E685411C4C1BC800C6D5F8 /* Kraftstoff UI Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 95E685491C4C1BC800C6D5F8 /* Build configuration list for PBXNativeTarget "Kraftstoff UI Tests" */;
+			buildPhases = (
+				95E6853E1C4C1BC800C6D5F8 /* Sources */,
+				95E6853F1C4C1BC800C6D5F8 /* Frameworks */,
+				95E685401C4C1BC800C6D5F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				95E685481C4C1BC800C6D5F8 /* PBXTargetDependency */,
+			);
+			name = "Kraftstoff UI Tests";
+			productName = "Kraftstoff UI Tests";
+			productReference = 95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0700;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
@@ -481,6 +531,10 @@
 					};
 					95DA86251AFB426D001E1375 = {
 						CreatedOnToolsVersion = 6.4;
+						TestTargetID = 1D6058900D05DD3D006BFB54;
+					};
+					95E685411C4C1BC800C6D5F8 = {
+						CreatedOnToolsVersion = 7.2;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 				};
@@ -501,6 +555,7 @@
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Kraftstoff */,
 				95DA86251AFB426D001E1375 /* Kraftstoff Tests */,
+				95E685411C4C1BC800C6D5F8 /* Kraftstoff UI Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -519,6 +574,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		95DA86241AFB426D001E1375 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		95E685401C4C1BC800C6D5F8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -599,6 +661,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		95E6853E1C4C1BC800C6D5F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */,
+				95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -606,6 +677,11 @@
 			isa = PBXTargetDependency;
 			target = 1D6058900D05DD3D006BFB54 /* Kraftstoff */;
 			targetProxy = 95DA862C1AFB426D001E1375 /* PBXContainerItemProxy */;
+		};
+		95E685481C4C1BC800C6D5F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* Kraftstoff */;
+			targetProxy = 95E685471C4C1BC800C6D5F8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -757,6 +833,79 @@
 			};
 			name = Release;
 		};
+		95E6854A1C4C1BC800C6D5F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Kraftstoff UI Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.m-schmidt.Kraftstoff-UI-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Kraftstoff;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		95E6854B1C4C1BC800C6D5F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Kraftstoff UI Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.m-schmidt.Kraftstoff-UI-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Kraftstoff;
+				USES_XCTRUNNER = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -833,6 +982,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		95E685491C4C1BC800C6D5F8 /* Build configuration list for PBXNativeTarget "Kraftstoff UI Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				95E6854A1C4C1BC800C6D5F8 /* Debug */,
+				95E6854B1C4C1BC800C6D5F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Kraftstoff" */ = {
 			isa = XCConfigurationList;

@@ -61,7 +61,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		recreateTableContents()
 
 		// Configure the navigation bar
-		self.navigationItem.leftBarButtonItem  = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"handleSave:")
+		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"handleSave:")
+		leftBarButtonItem.accessibilityIdentifier = "done"
+		self.navigationItem.leftBarButtonItem = leftBarButtonItem
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:"handleCancel:")
 		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
 

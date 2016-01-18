@@ -52,7 +52,10 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Navigation Bar
 		self.title = NSLocalizedString("Cars", comment:"")
 		self.navigationItem.leftBarButtonItem = nil
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target:self, action:"insertNewObject:")
+
+		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target:self, action:"insertNewObject:")
+		rightBarButtonItem.accessibilityIdentifier = "add"
+		self.navigationItem.rightBarButtonItem = rightBarButtonItem
 
 		// Gesture recognizer for touch and hold
 		self.longPressRecognizer = UILongPressGestureRecognizer(target:self, action:"handleLongPress:")

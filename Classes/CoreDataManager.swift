@@ -24,7 +24,7 @@ final class CoreDataManager {
 	}()
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last!
-	
+
 	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
 	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Fuel.sqlite")
 
@@ -572,5 +572,17 @@ final class CoreDataManager {
 
 		// Delete the managed event object
 		moc.deleteObject(event)
+	}
+
+	static func deleteAllObjects() {
+		for entity in managedObjectModel.entitiesByName.keys {
+			let deleteRequest = NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: entity))
+
+			do {
+				try persistentStoreCoordinator.executeRequest(deleteRequest, withContext: managedObjectContext)
+			} catch let error as NSError {
+				print(error)
+			}
+		}
 	}
 }

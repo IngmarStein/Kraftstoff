@@ -51,6 +51,8 @@ final class NumberEditTableCell: EditablePageCell {
 		} else {
 			self.textField.text = ""
 		}
+		self.accessibilityIdentifier = self.valueIdentifier
+		self.textField.accessibilityIdentifier = self.valueIdentifier
 
 		updateTextFieldColorForValue(value)
 	}

@@ -41,6 +41,7 @@ final class TextEditTableCell: EditablePageCell {
 		}
 
 		self.textField.text = self.delegate.valueForIdentifier(self.valueIdentifier) as? String
+		self.textField.accessibilityIdentifier = self.valueIdentifier
 	}
 
 	//MARK: - UITextFieldDelegate
