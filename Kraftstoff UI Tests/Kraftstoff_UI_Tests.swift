@@ -17,7 +17,7 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		let app = XCUIApplication()
 		setupSnapshot(app)
-		app.launchArguments += ["-STARTFRESH"]
+		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
 		app.launch()
 
 		XCUIDevice.sharedDevice().orientation = .Portrait
@@ -61,17 +61,11 @@ class Kraftstoff_UI_Tests: XCTestCase {
 		let button = imagesQuery.buttons["5Y"]
 		button.tap()
 
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.6 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
-			snapshot("04_chart_cost")
-		}
-
-		imagesQuery["graphImage"].coordinateWithNormalizedOffset(CGVector(dx: 0.535, dy: 0.2)).pressForDuration(2.0)
+		imagesQuery["graphImage"].coordinateWithNormalizedOffset(CGVector(dx: 0.536, dy: 0.5)).pressForDuration(0.6)
+		snapshot("04_chart_cost")
 
 		//app.pageIndicators.elementBoundByIndex(0).tap()
-		let scrollView = app.scrollViews.elementBoundByIndex(0)
-		let startCoordinate = scrollView.coordinateWithNormalizedOffset(CGVector(dx: 0.8, dy: 0.2))
-		let endCoordinate = scrollView.coordinateWithNormalizedOffset(CGVector(dx: 0.2, dy: 0.2))
-		startCoordinate.pressForDuration(0.2, thenDragToCoordinate: endCoordinate)
+		app.scrollViews.elementBoundByIndex(0).swipeLeft()
 
 		snapshot("05_chart_fuel")
 		

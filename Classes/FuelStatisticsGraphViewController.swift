@@ -704,7 +704,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
             }
 
         case .Ended, .Cancelled, .Failed:
-            self.zooming = false
+			if NSProcessInfo.processInfo().arguments.indexOf("-KEEPLENS") == nil {
+				self.zooming = false
+			}
 		}
 	}
 
