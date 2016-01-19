@@ -1,6 +1,6 @@
 # Kraftstoff [![Build Status](https://travis-ci.org/IngmarStein/Kraftstoff.svg?branch=master)](https://travis-ci.org/IngmarStein/Kraftstoff)
 
-*Kraftstoff* is an app for iOS 8.x or higher to track your fuel economy.
+*Kraftstoff* is an app for iOS 9.x or higher to track your fuel economy.
 
 Kraftstoff is available on the [App Store](https://itunes.apple.com/app/id471634654)
 
