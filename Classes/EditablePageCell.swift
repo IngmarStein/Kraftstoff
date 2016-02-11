@@ -53,6 +53,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.highlightedTextColor = UIColor.blackColor()
 		keyLabel.textColor            = UIColor.blackColor()
 		keyLabel.setContentHuggingPriority(750, forAxis: .Horizontal)
+		keyLabel.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		contentView

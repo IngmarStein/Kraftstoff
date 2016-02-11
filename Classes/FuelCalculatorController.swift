@@ -396,7 +396,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				inSection:0,
 				cellClass:TextEditTableCell.self,
 				cellData:["label": NSLocalizedString("Comment", comment:""),
-					"valueIdentifier": "comment"],
+					"valueIdentifier": "comment",
+					"maximumTextFieldLength": 0],
 				withAnimation:animation)
 		}
 
@@ -582,7 +583,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                     price:self.price!,
                                                fuelVolume:self.fuelVolume!,
                                                  filledUp:self.filledUp ?? false,
-												 comment:self.comment,
+												  comment:self.comment,
                                       forceOdometerUpdate:false)
 
                          // Reset calculator table

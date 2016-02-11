@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   Localizable.stringsdict.plist
+   Kraftstoff
+
+   Created by Ingmar Stein on 11.02.16.
+   Copyright (c) 2016 __MyCompanyName__. All rights reserved.
+-->
+<plist version="1.0">
+    <dict>
+		<key>Imported %d car(s) with %d fuel event(s).</key>
+		<dict>
+			<key>NSStringLocalizedFormatKey</key>
+			<string>%#@cars@ mit %#@events@ importiert.</string>
+			<key>cars</key>
+			<dict>
+				<key>NSStringFormatSpecTypeKey</key>
+				<string>NSStringPluralRuleType</string>
+				<key>NSStringFormatValueTypeKey</key>
+				<string>d</string>
+				<key>one</key>
+				<string>Ein Fahrzeug</string>
+				<key>other</key>
+				<string>%d Fahrzeuge</string>
+			</dict>
+			<key>events</key>
+			<dict>
+				<key>NSStringFormatSpecTypeKey</key>
+				<string>NSStringPluralRuleType</string>
+				<key>NSStringFormatValueTypeKey</key>
+				<string>d</string>
+				<key>one</key>
+				<string>einem Datensatz</string>
+				<key>other</key>
+				<string>%d Datensätzen</string>
+			</dict>
+		</dict>
+    </dict>
+</plist>

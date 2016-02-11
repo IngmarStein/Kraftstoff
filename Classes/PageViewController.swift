@@ -200,14 +200,10 @@ class PageViewController: UITableViewController {
 		let description = cellDescriptionForRow(indexPath.row, inSection:indexPath.section)!
 
 		let cellClass = description.cellClass
-		var cell = tableView.dequeueReusableCellWithIdentifier(description.cellClass.reuseIdentifier) as? PageCell
+		let cell = tableView.dequeueReusableCellWithIdentifier(description.cellClass.reuseIdentifier) as? PageCell ?? cellClass.init()
 
-		if cell == nil {
-			cell = cellClass.init()
-		}
+		cell.configureForData(description.cellData, viewController:self, tableView:tableView, indexPath:indexPath)
 
-		cell!.configureForData(description.cellData, viewController:self, tableView:tableView, indexPath:indexPath)
-
-		return cell!
+		return cell
 	}
 }

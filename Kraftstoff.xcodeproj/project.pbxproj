@@ -31,7 +31,6 @@
 		95AE6D9B1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D9A1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift */; };
 		95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D9C1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift */; };
 		95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D9E1AF9ED21006A56D6 /* FuelEventController.swift */; };
-		95C0716B1AF602C000DF261C /* FuelStatisticsScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */; };
 		95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716C1AF6066100DF261C /* QuadInfoCell.swift */; };
 		95C0716F1AF623AC00DF261C /* PageCellDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0716E1AF623AC00DF261C /* PageCellDescription.swift */; };
 		95C071711AF6269400DF261C /* SwitchTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071701AF6269400DF261C /* SwitchTableCell.swift */; };
@@ -55,6 +54,7 @@
 		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
 		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
+		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,7 +107,6 @@
 		95AE6D9A1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsGraphViewController.swift; sourceTree = "<group>"; };
 		95AE6D9C1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsViewController.swift; sourceTree = "<group>"; };
 		95AE6D9E1AF9ED21006A56D6 /* FuelEventController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEventController.swift; sourceTree = "<group>"; };
-		95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsScrollView.swift; sourceTree = "<group>"; };
 		95C0716C1AF6066100DF261C /* QuadInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadInfoCell.swift; sourceTree = "<group>"; };
 		95C0716E1AF623AC00DF261C /* PageCellDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCellDescription.swift; sourceTree = "<group>"; };
 		95C071701AF6269400DF261C /* SwitchTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableCell.swift; sourceTree = "<group>"; };
@@ -135,6 +134,9 @@
 		95E685461C4C1BC800C6D5F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		95F1962F1B961D90000E4D0C /* StoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
+		9E228BA91C6CB193000EDD88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				4D3F199B176B2B5F003FE2C7 /* Media.xcassets */,
 				950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */,
 				4DCFE36C138EE2930051FEC9 /* Localizable.strings */,
+				9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */,
 				4D1B06D114339BB70069B20A /* InfoPlist.strings */,
 				4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */,
 				4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */,
@@ -403,7 +406,6 @@
 			children = (
 				4D0B2FFD1780D1F900644289 /* Content Controllers */,
 				95AE6D921AF88D13006A56D6 /* FuelStatisticsPageController.swift */,
-				95C0716A1AF602C000DF261C /* FuelStatisticsScrollView.swift */,
 			);
 			name = "FuelEvent Statistics";
 			sourceTree = "<group>";
@@ -566,6 +568,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */,
+				9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */,
 				4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */,
 				950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */,
 				95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */,
@@ -639,7 +642,6 @@
 				95C071711AF6269400DF261C /* SwitchTableCell.swift in Sources */,
 				9500D81A1B03485900A86227 /* UIFont+Kraftstoff.swift in Sources */,
 				95AE6D9B1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift in Sources */,
-				95C0716B1AF602C000DF261C /* FuelStatisticsScrollView.swift in Sources */,
 				95C071771AF638EF00DF261C /* EditablePageCellTextField.swift in Sources */,
 				95C0716F1AF623AC00DF261C /* PageCellDescription.swift in Sources */,
 				95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */,
@@ -722,6 +724,16 @@
 				95D350301AFB8B5400E04685 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9E228BA91C6CB193000EDD88 /* en */,
+				9E228BAB1C6CB196000EDD88 /* de */,
+				9E228BAC1C6CB197000EDD88 /* fr */,
+			);
+			name = Localizable.stringsdict;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

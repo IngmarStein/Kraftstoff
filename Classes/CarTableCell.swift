@@ -17,8 +17,6 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	private let PickerViewCellWidth: CGFloat        = 290.0
 	private let PickerViewCellHeight: CGFloat       =  44.0
 
-	private let maximumDescriptionLength = 24
-
 	// Attributes for custom PickerViews
 	private var prefixAttributes = [String:AnyObject]()
 	private var suffixAttributes = [String:AnyObject]()
@@ -89,13 +87,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	private func selectCar(car: Car) {
 		// Update textfield in cell
-		var description = String(format:"%@ %@", car.name, car.numberPlate)
-
-		if description.characters.count > maximumDescriptionLength {
-			description = String(format:"%@…", description.substringToIndex(description.startIndex.advancedBy(maximumDescriptionLength)))
-		}
-
-		self.textFieldProxy.text = description
+		self.textFieldProxy.text = "\(car.name) \(car.numberPlate)"
 
 		// Store selected car in delegate
 		self.delegate.valueChanged(car, identifier:self.valueIdentifier)

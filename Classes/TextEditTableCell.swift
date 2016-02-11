@@ -63,18 +63,29 @@ final class TextEditTableCell: EditablePageCell {
 	}
 
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-		let newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
+		var newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
 
 		// Don't allow too large strings
 		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {
 			return false
 		}
 
+		if textField.textAlignment == .Right {
+			// http://stackoverflow.com/questions/19569688/right-aligned-uitextfield-spacebar-does-not-advance-cursor-in-ios-7
+			newValue = newValue.stringByReplacingOccurrencesOfString(" ", withString:"\u{00a0}")
+		}
+
 		// Do the update here and propagate the new value back to the delegate
 		textField.text = newValue
 
 		self.delegate.valueChanged(newValue, identifier:self.valueIdentifier)
+
 		return false
 	}
 
+	override func textFieldDidEndEditing(textField: UITextField) {
+		super.textFieldDidEndEditing(textField)
+
+		textField.text = textField.text?.stringByReplacingOccurrencesOfString("\u{00a0}", withString: " ")
+	}
 }

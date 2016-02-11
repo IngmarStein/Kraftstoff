@@ -216,7 +216,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	// Read file contents from given URL, guess file encoding
-	private func contentsOfURL(url: NSURL) -> String? {
+	private static func contentsOfURL(url: NSURL) -> String? {
 		var enc: NSStringEncoding = NSUTF8StringEncoding
 		if let contents = try? String(contentsOfURL: url, usedEncoding: &enc) { return contents }
 		if let contents = try? String(contentsOfURL: url, encoding: NSMacOSRomanStringEncoding) { return contents }
@@ -232,18 +232,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				NSLog("%@", error.localizedDescription)
 			}
 		}
-	}
-
-	private func pluralizedImportMessageForCarCount(carCount: Int, eventCount: Int) -> String {
-		let format: String
-    
-		if carCount == 1 {
-			format = NSLocalizedString(((eventCount == 1) ? "Imported %d car with %d fuel event."  : "Imported %d car with %d fuel events."), comment:"")
-		} else {
-			format = NSLocalizedString(((eventCount == 1) ? "Imported %d cars with %d fuel event." : "Imported %d cars with %d fuel events."), comment:"")
-		}
-
-		return String(format:format, carCount, eventCount)
 	}
 
 	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
@@ -268,7 +256,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 		importContext.performBlock {
 			// Read file contents from given URL, guess file encoding
-			let CSVString = self.contentsOfURL(url)
+			let CSVString = AppDelegate.contentsOfURL(url)
 			self.removeFileItemAtURL(url)
 
 			if let CSVString = CSVString {
@@ -296,7 +284,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					let title = success ? NSLocalizedString("Import Finished", comment:"") : NSLocalizedString("Import Failed", comment:"")
 
 					let message = success
-						? self.pluralizedImportMessageForCarCount(numCars, eventCount:numEvents)
+						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment:""), numCars, numEvents)
 						: NSLocalizedString("No valid CSV-data could be found.", comment:"")
 
 					let alertController = UIAlertController(title:title, message:message, preferredStyle:.Alert)

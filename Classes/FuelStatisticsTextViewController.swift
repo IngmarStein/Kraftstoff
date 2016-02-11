@@ -46,10 +46,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 	private var gridRightBorder: CGFloat!
 	private var gridDesColumnWidth: CGFloat!
 
-	override func noteStatisticsPageBecomesVisible(visible: Bool) {
-		if visible {
-			self.scrollView.flashScrollIndicators()
-		}
+	override func noteStatisticsPageBecomesVisible() {
+		self.scrollView.flashScrollIndicators()
 	}
 
 	//MARK: - Graph Computation

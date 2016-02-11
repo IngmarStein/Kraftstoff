@@ -23,6 +23,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	// Set by presenting view controller
 	var selectedCar: Car!
+	var pageIndex = 0
 
 	@IBOutlet weak var activityView: UIActivityIndicatorView!
 	@IBOutlet weak var leftLabel: UILabel!
@@ -211,7 +212,7 @@ class FuelStatisticsViewController: UIViewController {
 		fatalError("computeStatisticsForRecentMonths not implemented")
 	}
 
-	func noteStatisticsPageBecomesVisible(visible: Bool) {
+	func noteStatisticsPageBecomesVisible() {
 	}
 
 	//MARK: - Button Handling

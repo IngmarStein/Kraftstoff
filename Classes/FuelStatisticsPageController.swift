@@ -8,15 +8,11 @@
 
 import UIKit
 
-final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate {
+final class FuelStatisticsPageController: UIPageViewController {
 
 	// Set by presenting view controller
 	var selectedCar: Car!
-
-	@IBOutlet private weak var scrollView: FuelStatisticsScrollView!
-	@IBOutlet private weak var pageControl: UIPageControl!
-
-	private var pageControlUsed = false
+	var statisticsViewControllers = [FuelStatisticsViewController]()
 
 	//MARK: - View Lifecycle
 
@@ -24,65 +20,41 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 		super.init(coder: aDecoder)
 
 		self.modalTransitionStyle = .CrossDissolve
-	}
-
-	override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-
-		for page in 0..<pageControl.numberOfPages {
-			let controller = self.childViewControllers[page]
-			controller.view.frame = frameForPage(page)
-		}
-
-		scrollView.contentSize = CGSize(width:scrollView.frame.size.width * CGFloat(pageControl.numberOfPages), height: scrollView.frame.size.height)
+		self.dataSource = self
+		self.delegate = self
 	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Load content pages
-		for page in 0..<pageControl.numberOfPages {
-			let controller: FuelStatisticsViewController?
+		let priceDistanceViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		priceDistanceViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
+		priceDistanceViewController.selectedCar = self.selectedCar
+		priceDistanceViewController.pageIndex = 0
 
-			switch page {
-			case 0:
-				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
-				controller = graphViewController
-			case 1:
-				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
-				controller = graphViewController
-			case 2:
-				let graphViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-				graphViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
-				controller = graphViewController
-			case 3:
-				controller = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsTextViewController") as! FuelStatisticsTextViewController
-			default:
-				controller = nil
-			}
+		let avgConsumptionViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		avgConsumptionViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
+		avgConsumptionViewController.selectedCar = self.selectedCar
+		avgConsumptionViewController.pageIndex = 1
 
-			if let controller = controller {
-				controller.selectedCar = self.selectedCar
-				addChildViewController(controller)
-				scrollView.addSubview(controller.view)
-				controller.didMoveToParentViewController(self)
-			}
-		}
+		let priceAmountViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		priceAmountViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
+		priceAmountViewController.selectedCar = self.selectedCar
+		priceAmountViewController.pageIndex = 2
 
-		// Configure scroll view
-		scrollView.scrollsToTop = false
+		let statisticsViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsTextViewController") as! FuelStatisticsTextViewController
+		statisticsViewController.selectedCar = self.selectedCar
+		statisticsViewController.pageIndex = 3
 
-		// Hide pageControl
-		//pageControl.hidden = true
+		statisticsViewControllers = [priceDistanceViewController, avgConsumptionViewController, priceAmountViewController, statisticsViewController]
 
-		// Select preferred page
 		dispatch_async (dispatch_get_main_queue()) {
-			self.pageControl.currentPage = NSUserDefaults.standardUserDefaults().integerForKey("preferredStatisticsPage")
-			self.scrollToPage(self.pageControl.currentPage, animated:false)
-
-			self.pageControlUsed = false
+			var page = NSUserDefaults.standardUserDefaults().integerForKey("preferredStatisticsPage")
+			if page < 0 || page >= self.statisticsViewControllers.count {
+				page = 0
+			}
+			self.setViewControllers([self.statisticsViewControllers[page]], direction: .Forward, animated: false, completion: nil)
 		}
     
 		NSNotificationCenter.defaultCenter().addObserver(self,
@@ -106,6 +78,11 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
              object:nil)
 	}
 
+	var currentPage: Int {
+		guard let statisticsViewController = viewControllers?.first as? FuelStatisticsViewController else { return -1 }
+		return statisticsViewController.pageIndex
+	}
+
 	override func preferredStatusBarStyle() -> UIStatusBarStyle {
 		return .LightContent
 	}
@@ -113,7 +90,7 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		NSUserDefaults.standardUserDefaults().setInteger(pageControl.currentPage, forKey:"preferredStatisticsPage")
+		NSUserDefaults.standardUserDefaults().setInteger(currentPage, forKey:"preferredStatisticsPage")
 		NSUserDefaults.standardUserDefaults().synchronize()
 	}
 
@@ -121,10 +98,6 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 
 	override func shouldAutorotate() -> Bool {
 		return true
-	}
-
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-		return .Landscape
 	}
 
 	//MARK: - Cache Handling
@@ -142,11 +115,19 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 	}
 
 	func didEnterBackground(object: AnyObject) {
-		NSUserDefaults.standardUserDefaults().setInteger(pageControl.currentPage, forKey:"preferredStatisticsPage")
+		NSUserDefaults.standardUserDefaults().setInteger(currentPage, forKey:"preferredStatisticsPage")
 		NSUserDefaults.standardUserDefaults().synchronize()
 
-		for controller in self.childViewControllers as! [FuelStatisticsViewController] {
+		for controller in statisticsViewControllers {
 			controller.purgeDiscardableCacheContent()
+		}
+	}
+
+	private func updatePageVisibility() {
+		for controller in statisticsViewControllers {
+			if viewControllers!.contains(controller) {
+				controller.noteStatisticsPageBecomesVisible()
+			}
 		}
 	}
 
@@ -168,61 +149,51 @@ final class FuelStatisticsPageController: UIViewController, UIScrollViewDelegate
 		}
 	}
 
-	//MARK: - Frame Computation for Pages
-
-	func frameForPage(page: Int) -> CGRect {
-		let visiblePage = scrollView.visiblePageForPage(page)
-
-		var frame = scrollView.frame
-		frame.origin.x = frame.size.width * CGFloat(visiblePage)
-		frame.origin.y = 0
-
-		return frame
-	}
-
-	//MARK: - Sync ScrollView with Page Indicator
-
-	func scrollViewDidScroll(scrollView: UIScrollView) {
-		if !pageControlUsed {
-			let newPage = self.scrollView.pageForVisiblePage(Int(floor((scrollView.contentOffset.x - scrollView.frame.size.width*0.5) / scrollView.frame.size.width) + 1))
-			if pageControl.currentPage != newPage {
-				pageControl.currentPage = newPage
-				updatePageVisibility()
-			}
-		}
-	}
-
-	func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-		pageControlUsed = false
-	}
-
-	func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-		pageControlUsed = false
-	}
-
-	//MARK: - Page Control Handling
-
-	private func updatePageVisibility() {
-		for page in 0..<pageControl.numberOfPages {
-			let controller = self.childViewControllers[page] as! FuelStatisticsViewController
-			controller.noteStatisticsPageBecomesVisible(page == pageControl.currentPage)
-		}
-	}
-
-	private func scrollToPage(page: Int, animated: Bool) {
-		pageControlUsed = true
-
-		scrollView.scrollRectToVisible(frameForPage(page), animated:animated)
-		updatePageVisibility()
-	}
-
-	@IBAction func pageAction(sender: AnyObject) {
-		scrollToPage(pageControl.currentPage, animated:true)
-	}
-
 	//MARK: - Memory Management
 
 	deinit {
 		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+}
+
+extension FuelStatisticsPageController : UIPageViewControllerDelegate {
+	func pageViewControllerSupportedInterfaceOrientations(pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
+		return .Landscape
+	}
+
+	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+		if completed {
+			updatePageVisibility()
+		}
+	}
+}
+
+extension FuelStatisticsPageController : UIPageViewControllerDataSource {
+	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
+		let page = statisticsViewController.pageIndex
+		if statisticsViewController.pageIndex < statisticsViewControllers.count - 1 {
+			return statisticsViewControllers[page+1]
+		} else {
+			return statisticsViewControllers.first!
+		}
+	}
+
+	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
+		let page = statisticsViewController.pageIndex
+		if page > 0 {
+			return statisticsViewControllers[page-1]
+		} else {
+			return statisticsViewControllers.last!
+		}
+	}
+
+	func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
+		return statisticsViewControllers.count
+	}
+
+	func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
+		return currentPage
 	}
 }
