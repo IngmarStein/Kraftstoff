@@ -20,7 +20,6 @@ final class QuadInfoCell: UITableViewCell {
 	var topRightAccessibilityLabel: String?
 	var botRightAccessibilityLabel: String?
 
-	private var separatorView: UIView
 	private var cellState: UITableViewCellStateMask
 	private var large: Bool
 
@@ -31,7 +30,6 @@ final class QuadInfoCell: UITableViewCell {
 		topLeftLabel  = UILabel(frame:CGRectZero)
 		topRightLabel = UILabel(frame:CGRectZero)
 		botRightLabel = UILabel(frame:CGRectZero)
-		separatorView = UIView(frame:CGRectZero)
 
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -61,13 +59,7 @@ final class QuadInfoCell: UITableViewCell {
 		botRightLabel.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(botRightLabel)
 
-		separatorView.backgroundColor = UIColor(white:200.0/255.0, alpha:1.0)
-		separatorView.translatesAutoresizingMaskIntoConstraints = false
-		separatorView.preservesSuperviewLayoutMargins = false
-		self.contentView.addSubview(separatorView)
-
-		// setup contraints
-		let separatorHeight = 1.0 / UIScreen.mainScreen().scale
+		// setup constraints
 		let views = ["topLeftLabel" : topLeftLabel, "botLeftLabel" : botLeftLabel, "topRightLabel" : topRightLabel, "botRightLabel" : botRightLabel]
 		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views))
 		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views))
@@ -75,10 +67,6 @@ final class QuadInfoCell: UITableViewCell {
 		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .Baseline, relatedBy: .Equal, toItem: botRightLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .Left, relatedBy: .Equal, toItem: botLeftLabel, attribute: .Left, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topRightLabel, attribute: .Right, relatedBy: .Equal, toItem: botRightLabel, attribute: .Right, multiplier: 1.0, constant: 0.0))
-		self.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Left, relatedBy: .Equal, toItem: self, attribute: .Left, multiplier: 1.0, constant: 0.0))
-		self.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Right, relatedBy: .Equal, toItem: self, attribute: .Right, multiplier: 1.0, constant: 0.0))
-		contentView.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
-		separatorView.addConstraint(NSLayoutConstraint(item: separatorView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: separatorHeight))
 
 		setupFonts()
 
