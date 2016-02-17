@@ -10,7 +10,7 @@ import UIKit
 
 class PageCell: UITableViewCell {
 	class var reuseIdentifier: String {
-		return NSStringFromClass(self)
+		return String(self)
 	}
 
 	required init() {
