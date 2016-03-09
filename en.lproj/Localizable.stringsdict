@@ -12,7 +12,7 @@
 		<key>Imported %d car(s) with %d fuel event(s).</key>
 		<dict>
 			<key>NSStringLocalizedFormatKey</key>
-			<string>%#@cars@ mit %#@events@ importiert.</string>
+			<string>Imported %#@cars@ with %#@events@.</string>
 			<key>cars</key>
 			<dict>
 				<key>NSStringFormatSpecTypeKey</key>
@@ -20,9 +20,9 @@
 				<key>NSStringFormatValueTypeKey</key>
 				<string>d</string>
 				<key>one</key>
-				<string>Ein Fahrzeug</string>
+				<string>one car</string>
 				<key>other</key>
-				<string>%d Fahrzeuge</string>
+				<string>%d cars</string>
 			</dict>
 			<key>events</key>
 			<dict>
@@ -31,9 +31,9 @@
 				<key>NSStringFormatValueTypeKey</key>
 				<string>d</string>
 				<key>one</key>
-				<string>einem Datensatz</string>
+				<string>one fuel event</string>
 				<key>other</key>
-				<string>%d Datensätzen</string>
+				<string>%d fuel events</string>
 			</dict>
 		</dict>
     </dict>
