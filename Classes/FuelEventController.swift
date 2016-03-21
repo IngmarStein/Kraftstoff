@@ -84,7 +84,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.title = selectedCar.name
 
 		// Export button in navigation bar
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Action, target:self, action:"showExportSheet:")
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Action, target:self, action:#selector(FuelEventController.showExportSheet(_:)))
 
 		self.navigationItem.rightBarButtonItem!.enabled = false
 
@@ -105,12 +105,12 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"localeChanged:",
+           selector:#selector(FuelEventController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-			selector: "storesDidChange:",
+			selector: #selector(FuelEventController.storesDidChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 
@@ -202,7 +202,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
 
 			NSNotificationCenter.defaultCenter().addObserver(self,
-               selector:"orientationChanged:",
+               selector:#selector(FuelEventController.orientationChanged(_:)),
                    name:UIDeviceOrientationDidChangeNotification,
                  object:UIDevice.currentDevice())
 

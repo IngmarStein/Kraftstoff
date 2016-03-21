@@ -29,7 +29,7 @@ final class SwitchTableCell: PageCell {
 		self.selectionStyle = .None
 
 		// Create switch
-		valueSwitch.addTarget(self, action:"switchToggledAction:", forControlEvents:.ValueChanged)
+		valueSwitch.addTarget(self, action:#selector(SwitchTableCell.switchToggledAction(_:)), forControlEvents:.ValueChanged)
 		valueSwitch.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueSwitch)
@@ -61,7 +61,7 @@ final class SwitchTableCell: PageCell {
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryDidChange:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	deinit {

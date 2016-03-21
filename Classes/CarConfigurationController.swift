@@ -61,16 +61,16 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		recreateTableContents()
 
 		// Configure the navigation bar
-		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"handleSave:")
+		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(CarConfigurationController.handleSave(_:)))
 		leftBarButtonItem.accessibilityIdentifier = "done"
 		self.navigationItem.leftBarButtonItem = leftBarButtonItem
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:"handleCancel:")
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:#selector(CarConfigurationController.handleCancel(_:)))
 		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"localeChanged:", name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
 	override func viewDidAppear(animated: Bool) {

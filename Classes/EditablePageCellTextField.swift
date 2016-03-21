@@ -13,13 +13,13 @@ class EditablePageCellTextField: UITextField {
 	var allowCut = false
 	var allowPaste = false
 
-	// Disable Cut&Paste functionality to properly handle special text inputs methods for our textfields
+	// Disable cut & paste functionality to properly handle special text inputs methods for our textfields
 	override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-		if action == "cut:" && !self.allowCut {
+		if action == #selector(NSObject.cut(_:)) && !self.allowCut {
 			return false
 		}
 
-		if action == "paste:" && !self.allowPaste {
+		if action == #selector(NSObject.paste(_:)) && !self.allowPaste {
 			return false
 		}
 

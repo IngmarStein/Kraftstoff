@@ -53,12 +53,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.title = NSLocalizedString("Cars", comment:"")
 		self.navigationItem.leftBarButtonItem = nil
 
-		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target:self, action:"insertNewObject:")
+		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Add, target:self, action:#selector(CarViewController.insertNewObject(_:)))
 		rightBarButtonItem.accessibilityIdentifier = "add"
 		self.navigationItem.rightBarButtonItem = rightBarButtonItem
 
 		// Gesture recognizer for touch and hold
-		self.longPressRecognizer = UILongPressGestureRecognizer(target:self, action:"handleLongPress:")
+		self.longPressRecognizer = UILongPressGestureRecognizer(target:self, action:#selector(CarViewController.handleLongPress(_:)))
 		self.longPressRecognizer!.delegate = self
 
 		// Reset tint color
@@ -82,11 +82,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"localeChanged:",
+           selector:#selector(CarViewController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 		NSNotificationCenter.defaultCenter().addObserver(self,
-			selector: "storesDidChange:",
+			selector: #selector(CarViewController.storesDidChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}

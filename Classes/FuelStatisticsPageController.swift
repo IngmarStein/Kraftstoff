@@ -58,22 +58,22 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
     
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"localeChanged:",
+           selector:#selector(FuelStatisticsPageController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"didEnterBackground:",
+           selector:#selector(FuelStatisticsPageController.didEnterBackground(_:)),
                name:UIApplicationDidEnterBackgroundNotification,
              object:nil)
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"didBecomeActive:",
+           selector:#selector(FuelStatisticsPageController.didBecomeActive(_:)),
                name:UIApplicationDidBecomeActiveNotification,
              object:nil)
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:"numberOfMonthsSelected:",
+           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
                name:"numberOfMonthsSelected",
              object:nil)
 	}

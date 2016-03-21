@@ -57,9 +57,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		super.viewDidLoad()
 
 		// Title bar
-		self.editButton   = UIBarButtonItem(barButtonSystemItem:.Edit, target:self, action:"enterEditingMode:")
-		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingModeAndSave:")
-		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.Stop, target:self, action:"endEditingModeAndRevert:")
+		self.editButton   = UIBarButtonItem(barButtonSystemItem:.Edit, target:self, action:#selector(FuelEventEditorController.enterEditingMode(_:)))
+		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(FuelEventEditorController.endEditingModeAndSave(_:)))
+		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.Stop, target:self, action:#selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
 
 		self.editButton.accessibilityIdentifier = "edit"
 		self.doneButton.accessibilityIdentifier = "done"
@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.None)
 		self.tableView.reloadData()
     
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"localeChanged:", name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
 	//MARK: - State Restoration

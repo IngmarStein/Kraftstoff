@@ -56,9 +56,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		userActivity?.eligibleForSearch = true
 
 		// Title bar
-		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:"endEditingMode:")
+		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(FuelCalculatorController.endEditingMode(_:)))
 		self.doneButton.accessibilityIdentifier = "done"
-		self.saveButton = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:"saveAction:")
+		self.saveButton = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(FuelCalculatorController.saveAction(_:)))
 		self.saveButton.accessibilityIdentifier = "save"
 		self.title = NSLocalizedString("Fill-Up", comment:"")
 	}
@@ -76,9 +76,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"localeChanged:", name:NSCurrentLocaleDidChangeNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"willEnterForeground:", name:UIApplicationWillEnterForegroundNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"storesDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name:UIApplicationWillEnterForegroundNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
 	//MARK: - State Restoration

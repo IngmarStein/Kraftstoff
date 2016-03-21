@@ -132,7 +132,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		zoomRecognizer = UILongPressGestureRecognizer(target:self, action:"longPressChanged:")
+		zoomRecognizer = UILongPressGestureRecognizer(target:self, action:#selector(FuelStatisticsGraphViewController.longPressChanged(_:)))
 		zoomRecognizer.minimumPressDuration = 0.4
 		zoomRecognizer.numberOfTouchesRequired = 1
 		zoomRecognizer.enabled = false

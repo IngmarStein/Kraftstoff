@@ -179,17 +179,17 @@ final class CoreDataManager {
 		let notificationCenter = NSNotificationCenter.defaultCenter()
 
 		notificationCenter.addObserver(self,
-			selector: "storesWillChange:",
+			selector: #selector(CoreDataManager.storesWillChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresWillChangeNotification,
 			object: CoreDataManager.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
-			selector: "storesDidChange:",
+			selector: #selector(CoreDataManager.storesDidChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
 			object: CoreDataManager.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
-			selector: "persistentStoreDidImportUbiquitousContentChanges:",
+			selector: #selector(CoreDataManager.persistentStoreDidImportUbiquitousContentChanges(_:)),
 			name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
 			object: CoreDataManager.persistentStoreCoordinator)
 	}
