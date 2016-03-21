@@ -96,7 +96,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 	}
 
 	private func isProductPurchased(product: String) -> Bool {
-		return SecItemCopyMatching(keychainItemForProduct(product), nil) == 0
+		return UIApplication.kraftstoffAppDelegate.validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product), nil) == 0
 	}
 
 	private func setProductPurchased(product: String, purchased: Bool) {

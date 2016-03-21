@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import CoreSpotlight
 import MobileCoreServices
+import StoreKit
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -18,8 +19,11 @@ extension UIApplication {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
 	var window: UIWindow?
+	private var appReceiptValid = false
+	private var appReceipt : [String : AnyObject]?
+	private var receiptRefreshRequest: SKReceiptRefreshRequest?
 
 	private var importAlert: UIAlertController?
 
@@ -52,6 +56,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func commonLaunchInitialization(launchOptions: [NSObject : AnyObject]?) {
 		dispatch_once(&launchInitPred) {
 			self.window?.makeKeyAndVisible()
+
+			self.validateReceipt(NSBundle.mainBundle().appStoreReceiptURL) { (success) -> Void in
+				self.appReceiptValid = success
+				if !success {
+					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
+					self.receiptRefreshRequest?.delegate = self
+					self.receiptRefreshRequest?.start()
+				}
+			}
 
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
 			CoreDataManager.migrateToiCloud()
@@ -315,6 +328,116 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
 		updateShortcutItems()
+	}
+
+	//MARK: - SKRequestDelegate
+
+	func requestDidFinish(request: SKRequest) {
+		validateReceipt(NSBundle.mainBundle().appStoreReceiptURL) { (success) -> Void in
+			self.appReceiptValid = success
+		}
+	}
+
+	func request(request: SKRequest, didFailWithError error: NSError) {
+		print("receipt request failed: \(error)")
+	}
+
+	// MARK: - Receipt validation
+
+	private func receiptData(appStoreReceiptURL : NSURL?) -> NSData? {
+		guard let receiptURL = appStoreReceiptURL, receipt = NSData(contentsOfURL: receiptURL) else { return nil }
+
+		do {
+			let receiptData = receipt.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+			let requestContents = ["receipt-data" : receiptData]
+			let requestData = try NSJSONSerialization.dataWithJSONObject(requestContents, options: [])
+			return requestData
+		} catch let error as NSError {
+			print(error)
+		}
+
+		return nil
+	}
+
+	private func validateReceiptInternal(appStoreReceiptURL : NSURL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
+		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
+
+		guard let receiptData = receiptData(appStoreReceiptURL), url = NSURL(string: serverURL) else {
+			onCompletion(nil, nil)
+			return
+		}
+
+		let request = NSMutableURLRequest(URL: url)
+		request.HTTPMethod = "POST"
+		request.HTTPBody = receiptData
+
+		let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+
+			guard let data = data where error == nil else {
+				onCompletion(nil, nil)
+				return
+			}
+
+			do {
+				let json = try NSJSONSerialization.JSONObjectWithData(data, options:[])
+				//print(json)
+				guard let statusCode = json["status"] as? Int else {
+					onCompletion(nil, json)
+					return
+				}
+				onCompletion(statusCode, json)
+			} catch let error as NSError {
+				print(error)
+				onCompletion(nil, nil)
+			}
+		})
+		task.resume()
+	}
+
+	private func validateReceipt(appStoreReceiptURL : NSURL?, onCompletion: (Bool) -> Void) {
+		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: AnyObject?) -> Void in
+			guard let status = statusCode else {
+				onCompletion(false)
+				return
+			}
+
+			// This receipt is from the test environment, but it was sent to the production environment for verification.
+			if status == 21007 {
+				self.validateReceiptInternal(appStoreReceiptURL, isProd: false) { (statusCode: Int?, json: AnyObject?) -> Void in
+					guard let statusValue = statusCode else {
+						onCompletion(false)
+						return
+					}
+
+					// 0 if the receipt is valid
+					if let receipt = json?["receipt"] as? [String:AnyObject], bundleId = receipt["bundle_id"] as? String where statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+						self.appReceipt = receipt
+						onCompletion(true)
+					} else {
+						onCompletion(false)
+					}
+				}
+
+				// 0 if the receipt is valid
+			} else if let receipt = json?["receipt"] as? [String:AnyObject], bundleId = receipt["bundle_id"] as? String where status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+				self.appReceipt = receipt
+				onCompletion(true)
+			} else {
+				onCompletion(false)
+			}
+		}
+	}
+
+	func validReceiptForInAppPurchase(productId: String) -> Bool {
+		guard let receipt = appReceipt, inApps = receipt["in_app"] as? [[String:AnyObject]] where appReceiptValid else { return false }
+		for inApp in inApps {
+			if let id = inApp["product_id"] as? String {
+				if id == productId {
+					return true
+				}
+			}
+		}
+		return false
 	}
 
 	//MARK: - Shared Color Gradients
