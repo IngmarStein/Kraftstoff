@@ -15,7 +15,7 @@ private let kSRFuelEventExportSheet       = "FuelEventExportSheet"
 private let kSRFuelEventShowOpenIn        = "FuelEventShowOpenIn"
 private let kSRFuelEventShowComposer      = "FuelEventShowMailComposer"
 
-final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate {
+final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate {
 
 	var selectedCarId: String?
 	var selectedCar: Car!
@@ -62,6 +62,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	private var openInController: UIDocumentInteractionController!
 	private var mailComposeController: MFMailComposeViewController!
+	private var documentPickerViewController: UIDocumentPickerViewController!
 
 	//MARK: - View Lifecycle
 
@@ -139,9 +140,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if restoreExportSheet {
 			showExportSheet(nil)
 		} else if restoreOpenIn {
-			showOpenIn(nil)
+			showOpenIn()
 		} else if restoreMailComposer {
-			showMailComposer(nil)
+			showMailComposer()
 		}
 	}
 
@@ -219,11 +220,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func orientationChanged(aNotification: NSNotification) {
 		// Ignore rotation when sheets or alerts are visible
-		if openInController != nil {
-			return
-		}
-
-		if mailComposeController != nil {
+		if openInController != nil || documentPickerViewController != nil || mailComposeController != nil {
 			return
 		}
 
@@ -301,9 +298,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
             count)
 	}
 
-	//MARK: - Export Objects via email
+	//MARK: - Export data
 
-	func showOpenIn(sender: AnyObject!) {
+	func showOpenIn() {
 		restoreOpenIn = false
 
 		// write exported data
@@ -331,7 +328,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		openInController.UTI = "public.comma-separated-values-text"
 
 		if !openInController.presentOpenInMenuFromBarButtonItem(self.navigationItem.rightBarButtonItem!, animated:true) {
-
 			let alertController = UIAlertController(title:NSLocalizedString("Open In Failed", comment:""),
 				message:NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment:""),
 																		  preferredStyle:.Alert)
@@ -346,6 +342,50 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
+	func showExportDocumentPicker() {
+		restoreOpenIn = false
+
+		// write exported data
+		let data = exportTextData()
+		do {
+			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+		} catch _ {
+			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
+			                                        message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
+			                                        preferredStyle:.Alert)
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+				self.isShowingAlert = false
+			}
+			alertController.addAction(defaultAction)
+			self.isShowingAlert = true
+			presentViewController(alertController, animated:true, completion:nil)
+			return
+		}
+
+		documentPickerViewController = UIDocumentPickerViewController(URL: exportURL, inMode: .ExportToService)
+		documentPickerViewController.delegate = self
+
+		presentViewController(documentPickerViewController, animated: true, completion: nil)
+	}
+
+	func documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
+		do {
+			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+		} catch _ {
+		}
+
+		documentPickerViewController = nil
+	}
+
+	func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+		do {
+			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+		} catch _ {
+		}
+
+		documentPickerViewController = nil
+	}
+
 	func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
 		do {
 			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
@@ -357,7 +397,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - Export Objects via email
 
-	func showMailComposer(sender: AnyObject!) {
+	func showMailComposer() {
 		restoreMailComposer = false
 
 		if MFMailComposeViewController.canSendMail() {
@@ -406,16 +446,21 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment:""), style:.Default) { _ in
 			self.isShowingExportSheet = false
-			dispatch_async(dispatch_get_main_queue()) { self.showMailComposer(nil) }
+			dispatch_async(dispatch_get_main_queue()) { self.showMailComposer() }
 		}
 		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment:""), style:.Default) { _ in
 			self.isShowingExportSheet = false
-			dispatch_async(dispatch_get_main_queue()) { self.showOpenIn(nil) }
+			dispatch_async(dispatch_get_main_queue()) { self.showOpenIn() }
+		}
+		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment:""), style:.Default) { _ in
+			self.isShowingExportSheet = false
+			dispatch_async(dispatch_get_main_queue()) { self.showExportDocumentPicker() }
 		}
 		if MFMailComposeViewController.canSendMail() {
 			alertController.addAction(mailAction)
 		}
 		alertController.addAction(openInAction)
+		alertController.addAction(exportAction)
 		alertController.addAction(cancelAction)
 		alertController.popoverPresentationController?.barButtonItem = sender
 
