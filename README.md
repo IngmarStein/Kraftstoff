@@ -1,4 +1,4 @@
-# Kraftstoff [![Build Status](https://travis-ci.org/IngmarStein/Kraftstoff.svg?branch=master)](https://travis-ci.org/IngmarStein/Kraftstoff)
+# Kraftstoff [![Build Status](https://img.shields.io/travis/IngmarStein/Kraftstoff.svg)](https://travis-ci.org/IngmarStein/Kraftstoff) [![Dependencies](https://img.shields.io/gemnasium/IngmarStein/Kraftstoff.svg)](https://gemnasium.com/IngmarStein/Kraftstoff) [![Code Climate](https://img.shields.io/codeclimate/github/IngmarStein/Kraftstoff.svg)](https://codeclimate.com/github/IngmarStein/Kraftstoff)
 
 *Kraftstoff* is an app for iOS 9.x or higher to track your fuel economy.
 

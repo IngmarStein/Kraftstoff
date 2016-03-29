@@ -1,0 +1,10 @@
+---
+engines:
+  bundler-audit:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - Gemfile.lock
+exclude_paths: []
