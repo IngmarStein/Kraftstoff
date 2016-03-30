@@ -8,4 +8,4 @@ Kraftstoff is available on the [App Store](https://itunes.apple.com/app/id471634
 
 ## Developers
 
-Kraftstoff is written in Swift 2.1 and requires Xcode 7.1 or above.
+Kraftstoff is written in Swift 2.2 and requires Xcode 7.3 or above.
