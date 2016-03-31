@@ -39,8 +39,6 @@
 	<string>2215</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -58,11 +56,11 @@
 			<key>TintColor</key>
 			<dict>
 				<key>Blue</key>
-				<real>0.20000000000000001</real>
+				<real>0.2</real>
 				<key>Green</key>
-				<real>0.20000000000000001</real>
+				<real>0.2</real>
 				<key>Red</key>
-				<real>0.20000000000000001</real>
+				<real>0.2</real>
 			</dict>
 			<key>Translucent</key>
 			<false/>
