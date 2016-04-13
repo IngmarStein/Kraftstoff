@@ -4,4 +4,4 @@ xcode_project: Kraftstoff.xcodeproj
 xcode_scheme: Kraftstoff
 xcode_sdk: iphonesimulator
 before_script:
-- brew update && brew reinstall --HEAD xctool || true
+- brew update && brew upgrade xctool || true
