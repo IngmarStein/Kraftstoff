@@ -26,39 +26,39 @@ final class SwitchTableCell: PageCell {
 		super.init()
 
 		// No highlight on touch
-		self.selectionStyle = .None
+		self.selectionStyle = .none
 
 		// Create switch
-		valueSwitch.addTarget(self, action:#selector(SwitchTableCell.switchToggledAction(_:)), forControlEvents:.ValueChanged)
+		valueSwitch.addTarget(self, action:#selector(SwitchTableCell.switchToggledAction(_:)), for: .valueChanged)
 		valueSwitch.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueSwitch)
 
 		// Configure the alternate textlabel
 
-		valueLabel.textAlignment          = .Right
-		valueLabel.backgroundColor        = UIColor.clearColor()
-		valueLabel.textColor              = UIColor.blackColor()
-		valueLabel.hidden                 = true
-		valueLabel.userInteractionEnabled = false
+		valueLabel.textAlignment          = .right
+		valueLabel.backgroundColor        = UIColor.clear()
+		valueLabel.textColor              = UIColor.black()
+		valueLabel.isHidden                 = true
+		valueLabel.isUserInteractionEnabled = false
 		valueLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueLabel)
 
 		// Configure the default textlabel
-		keyLabel.textAlignment        = .Left
-		keyLabel.highlightedTextColor = UIColor.blackColor()
-		keyLabel.textColor            = UIColor.blackColor()
+		keyLabel.textAlignment        = .left
+		keyLabel.highlightedTextColor = UIColor.black()
+		keyLabel.textColor            = UIColor.black()
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(keyLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueSwitch]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[valueLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[keyLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-(>=4)-[valueSwitch]-(>=4)-|", options: [], metrics: nil, views: ["valueSwitch" : valueSwitch]))
-		self.contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueSwitch]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[keyLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=4)-[valueSwitch]-(>=4)-|", options: [], metrics: nil, views: ["valueSwitch" : valueSwitch]))
+		self.contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -90,17 +90,17 @@ final class SwitchTableCell: PageCell {
 
 		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier)?.boolValue ?? false
 
-		self.valueSwitch.on = isON
+		self.valueSwitch.isOn = isON
 		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment:"")
 
 		let showAlternate = self.delegate?.valueForIdentifier("showValueLabel")?.boolValue ?? false
 
-		self.valueSwitch.hidden =  showAlternate
-		self.valueLabel.hidden  = !showAlternate
+		self.valueSwitch.isHidden =  showAlternate
+		self.valueLabel.isHidden  = !showAlternate
 	}
 
 	func switchToggledAction(sender: UISwitch) {
-		let isON = sender.on
+		let isON = sender.isOn
 
 		self.delegate?.valueChanged(isON, identifier:self.valueIdentifier)
 		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment:"")

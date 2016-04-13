@@ -36,7 +36,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2215</string>
+	<string>2216</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -56,11 +56,11 @@
 			<key>TintColor</key>
 			<dict>
 				<key>Blue</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 				<key>Green</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 				<key>Red</key>
-				<real>0.2</real>
+				<real>0.20000000000000001</real>
 			</dict>
 			<key>Translucent</key>
 			<false/>

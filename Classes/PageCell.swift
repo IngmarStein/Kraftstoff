@@ -14,9 +14,9 @@ class PageCell: UITableViewCell {
 	}
 
 	required init() {
-		super.init(style: .Default, reuseIdentifier: self.dynamicType.reuseIdentifier)
+		super.init(style: .`default`, reuseIdentifier: self.dynamicType.reuseIdentifier)
 
-		self.detailTextLabel?.hidden = true
+		self.detailTextLabel?.isHidden = true
 	}
 
 	required init(coder aDecoder: NSCoder) {

@@ -11,29 +11,29 @@ import UIKit
 final class Formatters {
 	static let sharedLongDateFormatter : NSDateFormatter = {
 		let dateFormatter = NSDateFormatter()
-		dateFormatter.timeStyle = .ShortStyle
-		dateFormatter.dateStyle = .LongStyle
+		dateFormatter.timeStyle = .shortStyle
+		dateFormatter.dateStyle = .longStyle
 		return dateFormatter
 	}()
 
 	static let sharedDateFormatter : NSDateFormatter = {
 		let dateFormatter = NSDateFormatter()
-		dateFormatter.timeStyle = .NoStyle
-		dateFormatter.dateStyle = .MediumStyle
+		dateFormatter.timeStyle = .noStyle
+		dateFormatter.dateStyle = .mediumStyle
 		return dateFormatter
 	}()
 
 	static let sharedDateTimeFormatter : NSDateFormatter = {
         let dateTimeFormatter = NSDateFormatter()
-		dateTimeFormatter.timeStyle = .ShortStyle
-		dateTimeFormatter.dateStyle = .MediumStyle
+		dateTimeFormatter.timeStyle = .shortStyle
+		dateTimeFormatter.dateStyle = .mediumStyle
 		return dateTimeFormatter
     }()
 
 	static let sharedDistanceFormatter : NSNumberFormatter = {
         let distanceFormatter = NSNumberFormatter()
         distanceFormatter.generatesDecimalNumbers = true
-        distanceFormatter.numberStyle = .DecimalStyle
+        distanceFormatter.numberStyle = .decimalStyle
         distanceFormatter.minimumFractionDigits = 1
         distanceFormatter.maximumFractionDigits = 1
 		return distanceFormatter
@@ -42,7 +42,7 @@ final class Formatters {
 	static let sharedFuelVolumeFormatter : NSNumberFormatter = {
         let fuelVolumeFormatter = NSNumberFormatter()
         fuelVolumeFormatter.generatesDecimalNumbers = true
-        fuelVolumeFormatter.numberStyle = .DecimalStyle
+        fuelVolumeFormatter.numberStyle = .decimalStyle
         fuelVolumeFormatter.minimumFractionDigits = 2
         fuelVolumeFormatter.maximumFractionDigits = 2
 		return fuelVolumeFormatter
@@ -51,7 +51,7 @@ final class Formatters {
 	static let sharedPreciseFuelVolumeFormatter : NSNumberFormatter = {
         let preciseFuelVolumeFormatter = NSNumberFormatter()
         preciseFuelVolumeFormatter.generatesDecimalNumbers = true
-        preciseFuelVolumeFormatter.numberStyle = .DecimalStyle
+        preciseFuelVolumeFormatter.numberStyle = .decimalStyle
         preciseFuelVolumeFormatter.minimumFractionDigits = 3
         preciseFuelVolumeFormatter.maximumFractionDigits = 3
 		return preciseFuelVolumeFormatter
@@ -61,7 +61,7 @@ final class Formatters {
 	static let sharedCurrencyFormatter : NSNumberFormatter = {
         let currencyFormatter = NSNumberFormatter()
         currencyFormatter.generatesDecimalNumbers = true
-        currencyFormatter.numberStyle = .CurrencyStyle
+        currencyFormatter.numberStyle = .currencyStyle
 		return currencyFormatter
     }()
 
@@ -69,7 +69,7 @@ final class Formatters {
 	static let sharedAxisCurrencyFormatter : NSNumberFormatter = {
         let axisCurrencyFormatter = NSNumberFormatter()
         axisCurrencyFormatter.generatesDecimalNumbers = true
-        axisCurrencyFormatter.numberStyle = .CurrencyStyle
+        axisCurrencyFormatter.numberStyle = .currencyStyle
         axisCurrencyFormatter.currencySymbol = ""
 		return axisCurrencyFormatter
     }()
@@ -85,7 +85,7 @@ final class Formatters {
 
         let editPreciseCurrencyFormatter = NSNumberFormatter()
         editPreciseCurrencyFormatter.generatesDecimalNumbers = true
-        editPreciseCurrencyFormatter.numberStyle = .CurrencyStyle
+        editPreciseCurrencyFormatter.numberStyle = .currencyStyle
         editPreciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.maximumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.currencySymbol = ""
@@ -94,7 +94,7 @@ final class Formatters {
         editPreciseCurrencyFormatter.roundingIncrement = 0
 
         // Needed since NSNumberFormatters can't parse their own € output
-        editPreciseCurrencyFormatter.lenient = true
+        editPreciseCurrencyFormatter.isLenient = true
 
 		return editPreciseCurrencyFormatter
     }()
@@ -110,7 +110,7 @@ final class Formatters {
 
         let preciseCurrencyFormatter = NSNumberFormatter()
         preciseCurrencyFormatter.generatesDecimalNumbers = true
-        preciseCurrencyFormatter.numberStyle = .CurrencyStyle
+        preciseCurrencyFormatter.numberStyle = .currencyStyle
         preciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         preciseCurrencyFormatter.maximumFractionDigits = fractionDigits
 
@@ -118,7 +118,7 @@ final class Formatters {
         preciseCurrencyFormatter.roundingIncrement = 0
 
         // Needed since NSNumberFormatters can't parse their own € output
-        preciseCurrencyFormatter.lenient = true
+        preciseCurrencyFormatter.isLenient = true
 
 		return preciseCurrencyFormatter
     }()
@@ -127,7 +127,7 @@ final class Formatters {
 	static let sharedConsumptionRoundingHandler : NSDecimalNumberHandler = {
         let fractionDigits = sharedFuelVolumeFormatter.maximumFractionDigits
         return NSDecimalNumberHandler(
-			roundingMode: .RoundPlain,
+			roundingMode: .roundPlain,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,
@@ -139,7 +139,7 @@ final class Formatters {
 	static let sharedPriceRoundingHandler : NSDecimalNumberHandler = {
         let fractionDigits = sharedEditPreciseCurrencyFormatter.maximumFractionDigits
 		return NSDecimalNumberHandler(
-			roundingMode: .RoundUp,
+			roundingMode: .roundUp,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,

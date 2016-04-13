@@ -10,12 +10,12 @@ import UIKit
 
 // Unit Constants
 enum KSDistance: Int32 {
-	case Invalid = -1
-	case Kilometer
-	case StatuteMile
+	case invalid = -1
+	case kilometer
+	case statuteMile
 
 	var isMetric: Bool {
-		return self == .Kilometer
+		return self == .kilometer
 	}
 
 	var description: String {
@@ -28,17 +28,17 @@ enum KSDistance: Int32 {
 }
 
 enum KSVolume: Int32 {
-	case Invalid = -1
-	case Liter
-	case GalUS
-	case GalUK
+	case invalid = -1
+	case liter
+	case galUS
+	case galUK
 
 	var isMetric: Bool {
-		return self == .Liter
+		return self == .liter
 	}
 
 	var description: String {
-		if self == .Liter {
+		if self == .liter {
 			return "l"
 		} else {
 			return "gal"
@@ -47,68 +47,68 @@ enum KSVolume: Int32 {
 }
 
 enum KSFuelConsumption: Int32 {
-	case Invalid = -1
-	case LitersPer100km
-	case KilometersPerLiter
-	case MilesPerGallonUS
-	case MilesPerGallonUK
-	case GP10KUS
-	case GP10KUK
+	case invalid = -1
+	case litersPer100km
+	case kilometersPerLiter
+	case milesPerGallonUS
+	case milesPerGallonUK
+	case gp10KUS
+	case gp10KUK
 
 	var isMetric: Bool {
-		return self == .LitersPer100km || self == .KilometersPerLiter
+		return self == .litersPer100km || self == .kilometersPerLiter
 	}
 
 	var isEfficiency: Bool {
-		return self == .KilometersPerLiter || self == .MilesPerGallonUS || self == .MilesPerGallonUK
+		return self == .kilometersPerLiter || self == .milesPerGallonUS || self == .milesPerGallonUK
 	}
 
 	var isGP10K: Bool {
-		return self == .GP10KUS || self == .GP10KUS
+		return self == .gp10KUS || self == .gp10KUS
 	}
 
 	var localizedString: String {
 		switch self {
-		case .LitersPer100km: return NSLocalizedString("l/100km", comment:"")
-		case .KilometersPerLiter: return NSLocalizedString("km/l", comment:"")
-		case .MilesPerGallonUS: return NSLocalizedString("mpg", comment:"")
-		case .MilesPerGallonUK: return NSLocalizedString("mpg.uk", comment:"")
-		case .GP10KUS: return NSLocalizedString("gp10k", comment:"")
-		case .GP10KUK: return NSLocalizedString("gp10k.uk", comment:"")
+		case .litersPer100km: return NSLocalizedString("l/100km", comment:"")
+		case .kilometersPerLiter: return NSLocalizedString("km/l", comment:"")
+		case .milesPerGallonUS: return NSLocalizedString("mpg", comment:"")
+		case .milesPerGallonUK: return NSLocalizedString("mpg.uk", comment:"")
+		case .gp10KUS: return NSLocalizedString("gp10k", comment:"")
+		case .gp10KUK: return NSLocalizedString("gp10k.uk", comment:"")
 		default: return ""
 		}
 	}
 
 	var description: String {
 		switch self {
-		case .LitersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
-		case .KilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
-		case .MilesPerGallonUS: return NSLocalizedString("Miles per Gallon (US)", comment:"")
-		case .MilesPerGallonUK: return NSLocalizedString("Miles per Gallon (UK)", comment:"")
-		case .GP10KUS: return NSLocalizedString("Gallons per 10000 Miles (US)", comment:"")
-		case .GP10KUK: return NSLocalizedString("Gallons per 10000 Miles (UK)", comment:"")
+		case .litersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
+		case .kilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
+		case .milesPerGallonUS: return NSLocalizedString("Miles per Gallon (US)", comment:"")
+		case .milesPerGallonUK: return NSLocalizedString("Miles per Gallon (UK)", comment:"")
+		case .gp10KUS: return NSLocalizedString("Gallons per 10000 Miles (US)", comment:"")
+		case .gp10KUK: return NSLocalizedString("Gallons per 10000 Miles (UK)", comment:"")
 		default: return ""
 		}
 	}
 
 	var shortDescription: String {
 		switch self {
-		case .LitersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
-		case .KilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
-		case .MilesPerGallonUS: return NSLocalizedString("Miles per Gallon (US)", comment:"")
-		case .MilesPerGallonUK: return NSLocalizedString("Miles per Gallon (UK)", comment:"")
-		case .GP10KUS: return NSLocalizedString("gp10k_short_us", comment:"")
-		case .GP10KUK: return NSLocalizedString("gp10k_short_uk", comment:"")
+		case .litersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
+		case .kilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
+		case .milesPerGallonUS: return NSLocalizedString("Miles per Gallon (US)", comment:"")
+		case .milesPerGallonUK: return NSLocalizedString("Miles per Gallon (UK)", comment:"")
+		case .gp10KUS: return NSLocalizedString("gp10k_short_us", comment:"")
+		case .gp10KUK: return NSLocalizedString("gp10k_short_uk", comment:"")
 		default: return ""
 		}
 	}
 
 	var accessibilityDescription: String {
 		switch self {
-		case .LitersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
-		case .KilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
-		case .MilesPerGallonUS, .MilesPerGallonUK: return NSLocalizedString("Miles per Gallon", comment:"")
-		case .GP10KUS, .GP10KUK: return NSLocalizedString("Gallons per 10000 Miles", comment:"")
+		case .litersPer100km: return NSLocalizedString("Liters per 100 Kilometers", comment:"")
+		case .kilometersPerLiter: return NSLocalizedString("Kilometers per Liter", comment:"")
+		case .milesPerGallonUS, .milesPerGallonUK: return NSLocalizedString("Miles per Gallon", comment:"")
+		case .gp10KUS, .gp10KUK: return NSLocalizedString("Gallons per 10000 Miles", comment:"")
 		default: return ""
 		}
 	}
@@ -120,26 +120,26 @@ final class Units {
 	//MARK: - Unit Guessing from Current Locale
 
 	static var volumeUnitFromLocale: KSVolume {
-		if let country = NSLocale.autoupdatingCurrentLocale().objectForKey(NSLocaleCountryCode) as? String where country == "US" {
-			return .GalUS
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+			return .galUS
 		} else {
-			return .Liter
+			return .liter
 		}
 	}
 
 	static var fuelConsumptionUnitFromLocale: KSFuelConsumption {
-		if let country = NSLocale.autoupdatingCurrentLocale().objectForKey(NSLocaleCountryCode) as? String where country == "US" {
-			return .MilesPerGallonUS
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+			return .milesPerGallonUS
 		} else {
-			return .LitersPer100km
+			return .litersPer100km
 		}
 	}
 
 	static var distanceUnitFromLocale: KSDistance {
-		if let country = NSLocale.autoupdatingCurrentLocale().objectForKey(NSLocaleCountryCode) as? String where country == "US" {
-			return .StatuteMile
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+			return .statuteMile
 		} else {
-			return .Kilometer
+			return .kilometer
 		}
 	}
 
@@ -157,24 +157,24 @@ final class Units {
 
 	static func litersForVolume(volume: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return volume * litersPerUSGallon
-        case .GalUK: return volume * litersPerImperialGallon
-        case .Liter: return volume
+        case .galUS: return volume * litersPerUSGallon
+        case .galUK: return volume * litersPerImperialGallon
+        case .liter: return volume
 		default:     return NSDecimalNumber.zero()
 		}
 	}
 
 	static func volumeForLiters(liters: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return liters / litersPerUSGallon
-        case .GalUK: return liters / litersPerImperialGallon
-        case .Liter: return liters
+        case .galUS: return liters / litersPerUSGallon
+        case .galUK: return liters / litersPerImperialGallon
+        case .liter: return liters
 		default:     return NSDecimalNumber.zero()
 		}
 	}
 
 	static func kilometersForDistance(distance: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
-		if unit == .StatuteMile {
+		if unit == .statuteMile {
 			return distance * kilometersPerStatuteMile
 		} else {
 			return distance
@@ -182,7 +182,7 @@ final class Units {
 	}
 
 	static func distanceForKilometers(kilometers: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
-		if unit == .StatuteMile {
+		if unit == .statuteMile {
 			return kilometers / kilometersPerStatuteMile
 		} else {
 			return kilometers
@@ -191,18 +191,18 @@ final class Units {
 
 	static func pricePerLiter(price: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return price / litersPerUSGallon
-        case .GalUK: return price / litersPerImperialGallon
-        case .Liter: return price
+        case .galUS: return price / litersPerUSGallon
+        case .galUK: return price / litersPerImperialGallon
+        case .liter: return price
 		default:     return NSDecimalNumber.zero()
 		}
 	}
 
 	static func pricePerUnit(literPrice: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
-        case .GalUS: return literPrice * litersPerUSGallon
-        case .GalUK: return literPrice * litersPerImperialGallon
-        case .Liter: return literPrice
+        case .galUS: return literPrice * litersPerUSGallon
+        case .galUK: return literPrice * litersPerImperialGallon
+        case .liter: return literPrice
 		default:     return NSDecimalNumber.zero()
 		}
 	}
@@ -213,11 +213,11 @@ final class Units {
 		let handler = Formatters.sharedConsumptionRoundingHandler
 
 		if kilometers <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notANumber()
+			return NSDecimalNumber.notA()
 		}
 
 		if liters <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notANumber()
+			return NSDecimalNumber.notA()
 		}
 
 		if unit.isEfficiency {
@@ -225,14 +225,14 @@ final class Units {
 
 			switch unit {
 
-            case .KilometersPerLiter:
-                return kmPerLiter.decimalNumberByRoundingAccordingToBehavior(handler)
+            case .kilometersPerLiter:
+                return kmPerLiter.rounding(accordingToBehavior: handler)
+
+            case .milesPerGallonUS:
+                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior:handler)
                 
-            case .MilesPerGallonUS:
-                return kmPerLiter.decimalNumberByMultiplyingBy(kilometersPerLiterToMilesPerUSGallon, withBehavior:handler)
-                
-            default: // .MilesPerGallonUK:
-                return kmPerLiter.decimalNumberByMultiplyingBy(kilometersPerLiterToMilesPerImperialGallon, withBehavior:handler)
+            default: // .milesPerGallonUK:
+                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior:handler)
 
 			}
 
@@ -242,39 +242,39 @@ final class Units {
     
 			switch unit {
 
-            case .LitersPer100km:
-                return literPer100km.decimalNumberByRoundingAccordingToBehavior(handler)
+            case .litersPer100km:
+				return literPer100km.rounding(accordingToBehavior: handler)
 
-            case .GP10KUS:
-                return literPer100km.decimalNumberByMultiplyingBy(litersPer100KilometersToMilesPer10KUSGallon, withBehavior:handler)
+            case .gp10KUS:
+                return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior:handler)
 
-            default: // .GP10KUK:
-				return literPer100km.decimalNumberByMultiplyingBy(litersPer100KilometersToMilesPer10KImperialGallon, withBehavior:handler)
+            default: // .gp10KUK:
+				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KImperialGallon, withBehavior:handler)
 			}
 		}
 	}
 
 	//MARK: - Unit Strings/Descriptions
 
-	static func fuelUnitDescription(unit: KSVolume, discernGallons: Bool, pluralization plural: Bool, bundle: NSBundle = NSBundle.mainBundle()) -> String {
+	static func fuelUnitDescription(unit: KSVolume, discernGallons: Bool, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
 		if plural {
 			switch unit {
-			case .Liter: return NSLocalizedString("Liters", bundle: bundle, comment:"")
-            case .GalUS: return discernGallons ? NSLocalizedString("Gallons (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
-            case .GalUK: return discernGallons ? NSLocalizedString("Gallons (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
+			case .liter: return NSLocalizedString("Liters", bundle: bundle, comment:"")
+            case .galUS: return discernGallons ? NSLocalizedString("Gallons (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
+            case .galUK: return discernGallons ? NSLocalizedString("Gallons (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallons", comment:"")
 			default:     return ""
 			}
 		} else {
 			switch unit {
-            case .Liter: return NSLocalizedString("Liter", bundle: bundle, comment:"")
-            case .GalUS: return discernGallons ? NSLocalizedString("Gallon (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
-            case .GalUK: return discernGallons ? NSLocalizedString("Gallon (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
+            case .liter: return NSLocalizedString("Liter", bundle: bundle, comment:"")
+            case .galUS: return discernGallons ? NSLocalizedString("Gallon (US)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
+            case .galUK: return discernGallons ? NSLocalizedString("Gallon (UK)", bundle: bundle, comment:"") : NSLocalizedString("Gallon", comment:"")
 			default:     return ""
 			}
 		}
 	}
 
-	static func fuelPriceUnitDescription(unit: KSVolume, bundle: NSBundle = NSBundle.mainBundle()) -> String {
+	static func fuelPriceUnitDescription(unit: KSVolume, bundle: NSBundle = NSBundle.main()) -> String {
 		if unit.isMetric {
 			return NSLocalizedString("Price per Liter", bundle: bundle, comment:"")
 		} else {
@@ -282,7 +282,7 @@ final class Units {
 		}
 	}
 
-	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool, bundle: NSBundle = NSBundle.mainBundle()) -> String {
+	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
 		if plural {
 			return unit.isMetric ? NSLocalizedString("Kilometers", bundle: bundle, comment:"") : NSLocalizedString("Miles", comment:"")
 		} else {

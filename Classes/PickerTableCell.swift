@@ -26,16 +26,16 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		pickerView.dataSource              = self
 		pickerView.delegate                = self
 		pickerView.translatesAutoresizingMaskIntoConstraints = false
-		pickerView.hidden = true
+		pickerView.isHidden = true
 
 		let stackView = UIStackView(arrangedSubviews: [pickerView])
 		stackView.translatesAutoresizingMaskIntoConstraints = false
-		stackView.axis = .Vertical
-		stackView.alignment = .Center
+		stackView.axis = .vertical
+		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -72,12 +72,13 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	}
 
 	private func showPicker(show: Bool) {
-		pickerView.hidden = !show
+		pickerView.isHidden = !show
 	}
 
 	//MARK: - UIPickerViewDataSource
 
-	func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+	@objc(numberOfComponentsInPickerView:)
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
 
@@ -103,12 +104,12 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		return self.pickerLabels[row]
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
 		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
 		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
-		label.backgroundColor = UIColor.clearColor()
+		label.backgroundColor = UIColor.clear()
 
 		label.text = self.pickerView(pickerView, titleForRow:row, forComponent:component)
 

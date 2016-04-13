@@ -37,7 +37,7 @@ class FuelStatisticsViewController: UIViewController {
 			// Update selection status of all buttons
 			for view in self.view.subviews {
 				if let button = view as? UIButton {
-					button.selected = button.tag == displayedNumberOfMonths
+					button.isSelected = button.tag == displayedNumberOfMonths
 				}
 			}
 
@@ -89,15 +89,15 @@ class FuelStatisticsViewController: UIViewController {
 		self.rightLabel.font = titleFont
 
 		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0)]
-		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName:UIColor.whiteColor()]
+		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName:UIColor.white()]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
 				let label = NSAttributedString(string:text, attributes:labelAttributes)
 				let labelSelected = NSAttributedString(string:text, attributes: labelSelectedAttributes)
-				button.setAttributedTitle(label, forState:.Normal)
-				button.setAttributedTitle(label, forState:.Highlighted)
-				button.setAttributedTitle(labelSelected, forState:.Selected)
+				button.setAttributedTitle(label, for: .normal)
+				button.setAttributedTitle(label, for: .highlighted)
+				button.setAttributedTitle(labelSelected, for: .selected)
 				button.titleLabel?.shadowColor = nil
 			}
 		}
@@ -109,7 +109,7 @@ class FuelStatisticsViewController: UIViewController {
 		leftLabel.text  = selectedCar.name
 		rightLabel.text = ""
 
-		displayedNumberOfMonths = NSUserDefaults.standardUserDefaults().integerForKey("statisticTimeSpan")
+		displayedNumberOfMonths = NSUserDefaults.standard().integer(forKey: "statisticTimeSpan")
 	}
 
 	//MARK: - View Rotation
@@ -118,13 +118,13 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-		return .Landscape
+		return .landscape
 	}
 
 	//MARK: - Cache Handling
 
 	func invalidateCaches() {
-		contentCache.removeAll(keepCapacity: false)
+		contentCache.removeAll(keepingCapacity: false)
 		invalidationCounter += 1
 	}
 
@@ -154,11 +154,11 @@ class FuelStatisticsViewController: UIViewController {
 		let selectedCarID = self.selectedCar.objectID
 
 		let parentContext = self.selectedCar.managedObjectContext
-		let sampleContext = NSManagedObjectContext(concurrencyType:.PrivateQueueConcurrencyType)
-		sampleContext.parentContext = parentContext
-		sampleContext.performBlock {
+		let sampleContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		sampleContext.parent = parentContext
+		sampleContext.perform {
 			// Get the selected car
-			if let sampleCar = (try? sampleContext.existingObjectWithID(selectedCarID)) as? Car {
+			if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
 
 				// Fetch some young events to get the most recent fillup date
 				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,

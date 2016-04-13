@@ -35,10 +35,10 @@ private let contentSizeDelta: [String:CGFloat] = [
 extension UIFont {
 	private static func applicationFontForStyle(textStyle: String, weight: CGFloat) -> UIFont {
 		let baseSize = textStyleSize[textStyle] ?? 0.0
-		let contentSize = UIApplication.sharedApplication().preferredContentSizeCategory
+		let contentSize = UIApplication.shared().preferredContentSizeCategory
 		let sizeDelta = contentSizeDelta[contentSize] ?? 0.0
 		let fontSize = baseSize + sizeDelta
-		return UIFont.systemFontOfSize(fontSize, weight: weight)
+		return UIFont.systemFont(ofSize: fontSize, weight: weight)
 	}
 
 	static func lightApplicationFontForStyle(textStyle: String) -> UIFont {

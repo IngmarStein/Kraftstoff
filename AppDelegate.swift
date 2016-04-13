@@ -14,7 +14,7 @@ import StoreKit
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
-		return sharedApplication().delegate as! AppDelegate
+		return shared().delegate as! AppDelegate
 	}
 }
 
@@ -36,7 +36,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	//MARK: - Application Lifecycle
 
 	override init() {
-		NSUserDefaults.standardUserDefaults().registerDefaults(
+		NSUserDefaults.standard().register(
 		   ["statisticTimeSpan": 6,
 			"preferredStatisticsPage": 1,
 			"preferredCarID": "",
@@ -57,7 +57,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		dispatch_once(&launchInitPred) {
 			self.window?.makeKeyAndVisible()
 
-			self.validateReceipt(NSBundle.mainBundle().appStoreReceiptURL) { (success) -> Void in
+			self.validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
 				self.appReceiptValid = success
 				if !success {
 					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
@@ -69,9 +69,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
 			CoreDataManager.migrateToiCloud()
 
-			if NSProcessInfo.processInfo().arguments.indexOf("-STARTFRESH") != nil {
+			if NSProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
-				let userDefaults = NSUserDefaults.standardUserDefaults()
+				let userDefaults = NSUserDefaults.standard()
 				for key in ["statisticTimeSpan",
 					"preferredStatisticsPage",
 					"preferredCarID",
@@ -82,7 +82,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					"recentComment",
 					"editHelpCounter",
 					"firstStartup"] {
-					userDefaults.removeObjectForKey(key)
+					userDefaults.removeObject(forKey: key)
 				}
 			}
 
@@ -90,10 +90,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
-				let defaults = NSUserDefaults.standardUserDefaults()
+				let defaults = NSUserDefaults.standard()
 
-				if defaults.boolForKey("firstStartup") {
-					if defaults.stringForKey("preferredCarID") == "" {
+				if defaults.bool(forKey: "firstStartup") {
+					if defaults.string(forKey: "preferredCarID") == "" {
 						if let tabBarController = self.window?.rootViewController as? UITabBarController {
 							tabBarController.selectedIndex = 1
 						}
@@ -107,7 +107,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private func updateShortcutItems() {
 		if let cars = self.carsFetchedResultsController.fetchedObjects as? [Car] {
-			UIApplication.sharedApplication().shortcutItems = cars.map { car in
+			UIApplication.shared().shortcutItems = cars.map { car in
 				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
 				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
 			}
@@ -125,23 +125,23 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+	func application(application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
 			// switch to fill-up tab and select the car
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
 				tabBarController.selectedIndex = 0
 				if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-					navigationController.popToRootViewControllerAnimated(false)
+					navigationController.popToRootViewController(animated: false)
 					if let fuelCalculatorController = navigationController.viewControllers.first as? FuelCalculatorController {
 						fuelCalculatorController.selectedCarId = shortcutItem.userInfo?["objectId"] as? String
-						fuelCalculatorController.recreateTableContentsWithAnimation(.None)
+						fuelCalculatorController.recreateTableContentsWithAnimation(.none)
 					}
 				}
 			}
 		}
 	}
 
-	func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+	func application(application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
 		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -155,10 +155,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
 					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
-						let fuelEventController = tabBarController.storyboard!.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
+						let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
 						fuelEventController.selectedCarId = carIdentifier
 						if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-							navigationController.popToRootViewControllerAnimated(false)
+							navigationController.popToRootViewController(animated: false)
 							navigationController.pushViewController(fuelEventController, animated: false)
 						}
 					}
@@ -195,7 +195,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-		let bundleVersion = NSBundle.mainBundle().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
+		let bundleVersion = NSBundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
@@ -206,48 +206,48 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private func showImportAlert() {
 		if self.importAlert == nil {
-			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:"") + "\n\n", message:"", preferredStyle:.Alert)
+			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:"") + "\n\n", message:"", preferredStyle:.alert)
 
 			let progress = UIActivityIndicatorView(frame:self.importAlert!.view.bounds)
-			progress.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-			progress.userInteractionEnabled = false
-			progress.activityIndicatorViewStyle = .WhiteLarge
-			progress.color = UIColor.blackColor()
+			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			progress.isUserInteractionEnabled = false
+			progress.activityIndicatorViewStyle = .whiteLarge
+			progress.color = UIColor.black()
 			let center = self.importAlert!.view.center
 			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
 			progress.startAnimating()
 
 			self.importAlert!.view.addSubview(progress)
 
-			self.window?.rootViewController?.presentViewController(self.importAlert!, animated:true, completion:nil)
+			self.window?.rootViewController?.present(self.importAlert!, animated:true, completion:nil)
 		}
 	}
 
 	private func hideImportAlert() {
-		self.window?.rootViewController?.dismissViewControllerAnimated(true, completion:nil)
+		self.window?.rootViewController?.dismiss(animated: true, completion:nil)
 		self.importAlert = nil
 	}
 
 	// Read file contents from given URL, guess file encoding
 	private static func contentsOfURL(url: NSURL) -> String? {
 		var enc: NSStringEncoding = NSUTF8StringEncoding
-		if let contents = try? String(contentsOfURL: url, usedEncoding: &enc) { return contents }
-		if let contents = try? String(contentsOfURL: url, encoding: NSMacOSRomanStringEncoding) { return contents }
+		if let contents = try? String(contentsOf: url, usedEncoding: &enc) { return contents }
+		if let contents = try? String(contentsOf: url, encoding: NSMacOSRomanStringEncoding) { return contents }
 		return nil
 	}
 
 	// Removes files from the inbox
 	private func removeFileItemAtURL(url: NSURL) {
-		if url.fileURL {
+		if url.isFileURL {
 			do {
-				try NSFileManager.defaultManager().removeItemAtURL(url)
+				try NSFileManager.defaultManager().removeItem(at: url)
 			} catch let error as NSError {
 				NSLog("%@", error.localizedDescription)
 			}
 		}
 	}
 
-	func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+	func application(application: UIApplication, open url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItemAtURL(url)
@@ -264,10 +264,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 		// Import in context with private queue
 		let parentContext = CoreDataManager.managedObjectContext
-		let importContext = NSManagedObjectContext(concurrencyType:.PrivateQueueConcurrencyType)
-		importContext.parentContext = parentContext
+		let importContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		importContext.parent = parentContext
 
-		importContext.performBlock {
+		importContext.perform {
 			// Read file contents from given URL, guess file encoding
 			let CSVString = AppDelegate.contentsOfURL(url)
 			self.removeFileItemAtURL(url)
@@ -288,7 +288,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// On success propagate changes to parent context
 				if success {
 					CoreDataManager.saveContext(importContext)
-					parentContext.performBlock { CoreDataManager.saveContext(parentContext) }
+					parentContext.perform { CoreDataManager.saveContext(parentContext) }
 				}
 
 				dispatch_async(dispatch_get_main_queue()) {
@@ -300,10 +300,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment:""), numCars, numEvents)
 						: NSLocalizedString("No valid CSV-data could be found.", comment:"")
 
-					let alertController = UIAlertController(title:title, message:message, preferredStyle:.Alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in () }
+					let alertController = UIAlertController(title:title, message:message, preferredStyle: .alert)
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.`default`) { _ in () }
 					alertController.addAction(defaultAction)
-					self.window?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
+					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
 			} else {
 				dispatch_async(dispatch_get_main_queue()) {
@@ -311,16 +311,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 					let alertController = UIAlertController(title:NSLocalizedString("Import Failed", comment:""),
 						message:NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment:""),
-						preferredStyle:.Alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default, handler: nil)
+						preferredStyle: .alert)
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`, handler: nil)
 					alertController.addAction(defaultAction)
-					self.window?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
+					self.window?.rootViewController?.present(alertController, animated:true, completion:nil)
 				}
 			}
 		}
 
 		// Treat imports as successful first startups
-		NSUserDefaults.standardUserDefaults().setObject(false, forKey:"firstStartup")
+		NSUserDefaults.standard().setObject(false, forKey:"firstStartup")
 		return true
 	}
 
@@ -333,7 +333,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	//MARK: - SKRequestDelegate
 
 	func requestDidFinish(request: SKRequest) {
-		validateReceipt(NSBundle.mainBundle().appStoreReceiptURL) { (success) -> Void in
+		validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
 			self.appReceiptValid = success
 		}
 	}
@@ -345,12 +345,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Receipt validation
 
 	private func receiptData(appStoreReceiptURL : NSURL?) -> NSData? {
-		guard let receiptURL = appStoreReceiptURL, receipt = NSData(contentsOfURL: receiptURL) else { return nil }
+		guard let receiptURL = appStoreReceiptURL, receipt = NSData(contentsOf: receiptURL) else { return nil }
 
 		do {
-			let receiptData = receipt.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+			let receiptData = receipt.base64EncodedString(NSDataBase64EncodingOptions(rawValue: 0))
 			let requestContents = ["receipt-data" : receiptData]
-			let requestData = try NSJSONSerialization.dataWithJSONObject(requestContents, options: [])
+			let requestData = try NSJSONSerialization.data(withJSONObject: requestContents, options: [])
 			return requestData
 		} catch let error as NSError {
 			print(error)
@@ -367,11 +367,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			return
 		}
 
-		let request = NSMutableURLRequest(URL: url)
-		request.HTTPMethod = "POST"
-		request.HTTPBody = receiptData
+		let request = NSMutableURLRequest(url: url)
+		request.httpMethod = "POST"
+		request.httpBody = receiptData
 
-		let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+		let task = NSURLSession.shared().dataTask(with: request, completionHandler: {data, response, error -> Void in
 
 			guard let data = data where error == nil else {
 				onCompletion(nil, nil)
@@ -379,7 +379,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			}
 
 			do {
-				let json = try NSJSONSerialization.JSONObjectWithData(data, options:[])
+				let json = try NSJSONSerialization.jsonObject(with: data, options:[])
 				//print(json)
 				guard let statusCode = json["status"] as? Int else {
 					onCompletion(nil, json)
@@ -442,7 +442,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	//MARK: - Shared Color Gradients
 
-	static let blueGradient: CGGradientRef = {
+	static let blueGradient: CGGradient = {
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -451,7 +451,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return blueGradient
 	}()
 
-	static let greenGradient: CGGradientRef = {
+	static let greenGradient: CGGradient = {
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -460,7 +460,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return greenGradient
     }()
 
-	static let orangeGradient: CGGradientRef = {
+	static let orangeGradient: CGGradient = {
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()

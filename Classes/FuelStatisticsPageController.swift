@@ -19,7 +19,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		self.modalTransitionStyle = .CrossDissolve
+		self.modalTransitionStyle = .crossDissolve
 		self.dataSource = self
 		self.delegate = self
 	}
@@ -28,33 +28,33 @@ final class FuelStatisticsPageController: UIPageViewController {
 		super.viewDidLoad()
 
 		// Load content pages
-		let priceDistanceViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		let priceDistanceViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		priceDistanceViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
 		priceDistanceViewController.selectedCar = self.selectedCar
 		priceDistanceViewController.pageIndex = 0
 
-		let avgConsumptionViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		let avgConsumptionViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		avgConsumptionViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
 		avgConsumptionViewController.selectedCar = self.selectedCar
 		avgConsumptionViewController.pageIndex = 1
 
-		let priceAmountViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
+		let priceAmountViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		priceAmountViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
 		priceAmountViewController.selectedCar = self.selectedCar
 		priceAmountViewController.pageIndex = 2
 
-		let statisticsViewController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsTextViewController") as! FuelStatisticsTextViewController
+		let statisticsViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsTextViewController") as! FuelStatisticsTextViewController
 		statisticsViewController.selectedCar = self.selectedCar
 		statisticsViewController.pageIndex = 3
 
 		statisticsViewControllers = [priceDistanceViewController, avgConsumptionViewController, priceAmountViewController, statisticsViewController]
 
 		dispatch_async (dispatch_get_main_queue()) {
-			var page = NSUserDefaults.standardUserDefaults().integerForKey("preferredStatisticsPage")
+			var page = NSUserDefaults.standard().integer(forKey: "preferredStatisticsPage")
 			if page < 0 || page >= self.statisticsViewControllers.count {
 				page = 0
 			}
-			self.setViewControllers([self.statisticsViewControllers[page]], direction: .Forward, animated: false, completion: nil)
+			self.setViewControllers([self.statisticsViewControllers[page]], direction: .forward, animated: false, completion: nil)
 		}
     
 		NSNotificationCenter.defaultCenter().addObserver(self,
@@ -84,14 +84,14 @@ final class FuelStatisticsPageController: UIPageViewController {
 	}
 
 	override func preferredStatusBarStyle() -> UIStatusBarStyle {
-		return .LightContent
+		return .lightContent
 	}
 
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		NSUserDefaults.standardUserDefaults().setInteger(currentPage, forKey:"preferredStatisticsPage")
-		NSUserDefaults.standardUserDefaults().synchronize()
+		NSUserDefaults.standard().setInteger(currentPage, forKey:"preferredStatisticsPage")
+		NSUserDefaults.standard().synchronize()
 	}
 
 	//MARK: - View Rotation
@@ -115,8 +115,8 @@ final class FuelStatisticsPageController: UIPageViewController {
 	}
 
 	func didEnterBackground(object: AnyObject) {
-		NSUserDefaults.standardUserDefaults().setInteger(currentPage, forKey:"preferredStatisticsPage")
-		NSUserDefaults.standardUserDefaults().synchronize()
+		NSUserDefaults.standard().setInteger(currentPage, forKey:"preferredStatisticsPage")
+		NSUserDefaults.standard().synchronize()
 
 		for controller in statisticsViewControllers {
 			controller.purgeDiscardableCacheContent()
@@ -140,7 +140,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	func numberOfMonthsSelected(notification: NSNotification) {
 		// Remember selection in preferences
 		if let numberOfMonths = notification.userInfo?["span"] as? Int {
-			NSUserDefaults.standardUserDefaults().setInteger(numberOfMonths, forKey:"statisticTimeSpan")
+			NSUserDefaults.standard().setInteger(numberOfMonths, forKey:"statisticTimeSpan")
 
 			// Update all statistics controllers
 			for controller in self.childViewControllers as! [FuelStatisticsViewController] {
@@ -158,7 +158,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 	func pageViewControllerSupportedInterfaceOrientations(pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
-		return .Landscape
+		return .landscape
 	}
 
 	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
@@ -169,7 +169,8 @@ extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 }
 
 extension FuelStatisticsPageController : UIPageViewControllerDataSource {
-	func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+	@objc(pageViewController:viewControllerAfterViewController:)
+	func pageViewController(pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
 		if statisticsViewController.pageIndex < statisticsViewControllers.count - 1 {
@@ -179,7 +180,8 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+	@objc(pageViewController:viewControllerBeforeViewController:)
+	func pageViewController(pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
 		if page > 0 {
@@ -189,11 +191,11 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
+	func presentationCountFor(pageViewController: UIPageViewController) -> Int {
 		return statisticsViewControllers.count
 	}
 
-	func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
+	func presentationIndexFor(pageViewController: UIPageViewController) -> Int {
 		return currentPage
 	}
 }

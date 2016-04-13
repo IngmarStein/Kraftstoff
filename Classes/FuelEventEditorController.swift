@@ -57,15 +57,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		super.viewDidLoad()
 
 		// Title bar
-		self.editButton   = UIBarButtonItem(barButtonSystemItem:.Edit, target:self, action:#selector(FuelEventEditorController.enterEditingMode(_:)))
-		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(FuelEventEditorController.endEditingModeAndSave(_:)))
-		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.Stop, target:self, action:#selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
+		self.editButton   = UIBarButtonItem(barButtonSystemItem:.edit, target:self, action:#selector(FuelEventEditorController.enterEditingMode(_:)))
+		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.done, target:self, action:#selector(FuelEventEditorController.endEditingModeAndSave(_:)))
+		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.stop, target:self, action:#selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
 
 		self.editButton.accessibilityIdentifier = "edit"
 		self.doneButton.accessibilityIdentifier = "done"
 		self.cancelButton.accessibilityIdentifier = "cancel"
 
-		self.title = Formatters.sharedDateFormatter.stringFromDate(self.event.timestamp)
+		self.title = Formatters.sharedDateFormatter.string(from: self.event.timestamp)
 		self.navigationItem.rightBarButtonItem = self.editButton
 
 		// Remove tint from navigation bar
@@ -74,7 +74,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Table contents
 		self.tableView.allowsSelection = false
 
-		createTableContentsWithAnimation(.None)
+		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
     
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
@@ -82,9 +82,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - State Restoration
 
-	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
+	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+			let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as! FuelEventEditorController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as! String
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
@@ -98,38 +98,38 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		return nil
 	}
 
-	override func encodeRestorableStateWithCoder(coder: NSCoder) {
+	override func encodeRestorableState(with coder: NSCoder) {
 		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow
 
-		coder.encodeBool(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
-		coder.encodeBool(dataChanged, forKey:kSRFuelEventDataChanged)
-		coder.encodeObject(indexPath, forKey:kSRFuelEventSelectionIndex)
-		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
-		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
-		coder.encodeObject(date, forKey:kSRFuelEventDate)
-		coder.encodeObject(distance, forKey:kSRFuelEventDistance)
-		coder.encodeObject(price, forKey:kSRFuelEventPrice)
-		coder.encodeObject(fuelVolume, forKey:kSRFuelEventVolume)
-		coder.encodeBool(filledUp, forKey:kSRFuelEventFilledUp)
-		coder.encodeObject(comment, forKey:kSRFuelEventComment)
-		coder.encodeBool(self.editing, forKey:kSRFuelEventEditing)
+		coder.encode(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
+		coder.encode(dataChanged, forKey:kSRFuelEventDataChanged)
+		coder.encode(indexPath, forKey:kSRFuelEventSelectionIndex)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
+		coder.encode(date, forKey:kSRFuelEventDate)
+		coder.encode(distance, forKey:kSRFuelEventDistance)
+		coder.encode(price, forKey:kSRFuelEventPrice)
+		coder.encode(fuelVolume, forKey:kSRFuelEventVolume)
+		coder.encode(filledUp, forKey:kSRFuelEventFilledUp)
+		coder.encode(comment, forKey:kSRFuelEventComment)
+		coder.encode(self.isEditing, forKey:kSRFuelEventEditing)
 
-		super.encodeRestorableStateWithCoder(coder)
+		super.encodeRestorableState(with: coder)
 	}
 
-	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		isShowingCancelSheet   = coder.decodeBoolForKey(kSRFuelEventCancelSheet)
-		dataChanged            = coder.decodeBoolForKey(kSRFuelEventDataChanged)
+	override func decodeRestorableState(with coder: NSCoder) {
+		isShowingCancelSheet   = coder.decodeBool(forKey: kSRFuelEventCancelSheet)
+		dataChanged            = coder.decodeBool(forKey: kSRFuelEventDataChanged)
 		restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRFuelEventSelectionIndex)
 		car                    = CoreDataManager.managedObjectForModelIdentifier(coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventCarID) as! String) as? Car
 		date                   = coder.decodeObjectOfClass(NSDate.self, forKey: kSRFuelEventDate)
 		distance               = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventDistance)
 		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice)
 		fuelVolume             = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventVolume)
-		filledUp               = coder.decodeBoolForKey(kSRFuelEventFilledUp)
+		filledUp               = coder.decodeBool(forKey: kSRFuelEventFilledUp)
 		comment                = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventComment) as? String
 
-		if coder.decodeBoolForKey(kSRFuelEventEditing) {
+		if coder.decodeBool(forKey: kSRFuelEventEditing) {
 			setEditing(true, animated:false)
             
 			if isShowingCancelSheet {
@@ -140,7 +140,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			}
 		}
 
-		super.decodeRestorableStateWithCoder(coder)
+		super.decodeRestorableState(with: coder)
 	}
 
 	//MARK: - Saving and Restoring the Fuel Event
@@ -172,7 +172,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit     = car.ksFuelUnit
     
-		self.title = Formatters.sharedDateFormatter.stringFromDate(event.timestamp)
+		self.title = Formatters.sharedDateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
 		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
 		price      = Units.pricePerUnit(event.price, withUnit:fuelUnit)
@@ -186,7 +186,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	//MARK: - Mode Switching for Table Rows
 
 	private func reconfigureRowAtIndexPath(indexPath: NSIndexPath) {
-		if let cell = self.tableView.cellForRowAtIndexPath(indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
+		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
 			cell.configureForData(cellData,
                 viewController:self,
                      tableView:self.tableView,
@@ -197,8 +197,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
     }
 
 	override func setEditing(enabled: Bool, animated: Bool) {
-		if self.editing != enabled {
-			let animation: UITableViewRowAnimation = animated ? .Fade : .None
+		if self.isEditing != enabled {
+			let animation: UITableViewRowAnimation = animated ? .fade : .none
 
 			super.setEditing(enabled, animated:animated)
         
@@ -259,13 +259,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private func showRevertActionSheet() {
 		let alertController = UIAlertController(title:NSLocalizedString("Revert Changes for Event?", comment:""),
 																			 message:nil,
-																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.Cancel) { _ in
+																	  preferredStyle:.actionSheet)
+		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.restoredSelectionIndex)
 			self.restoredSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:NSLocalizedString("Revert", comment:""), style:.Destructive) { _ in
+		let destructiveAction = UIAlertAction(title:NSLocalizedString("Revert", comment:""), style:.destructive) { _ in
 			self.isShowingCancelSheet = false
 			self.endEditingModeAndRevertCompletion()
 			self.restoredSelectionIndex = nil
@@ -276,7 +276,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
 
 		isShowingCancelSheet = true
-		presentViewController(alertController, animated:true, completion:nil)
+		present(alertController, animated:true, completion:nil)
 	}
 
 	func endEditingModeAndRevertCompletion() {
@@ -309,9 +309,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
 		let consumptionString = String(format:"%@ %@ %@ %@",
-                                      Formatters.sharedCurrencyFormatter.stringFromNumber(cost)!,
+									  Formatters.sharedCurrencyFormatter.string(from: cost)!,
 									  NSLocalizedString("/", comment:""),
-                                      Formatters.sharedFuelVolumeFormatter.stringFromNumber(consumption)!,
+									  Formatters.sharedFuelVolumeFormatter.string(from: consumption)!,
                                       consumptionUnit.localizedString)
 
 		// Substrings for highlighting
@@ -345,7 +345,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection:0,
               cellClass:NumberEditTableCell.self,
 			   cellData:["label": NSLocalizedString("Distance", comment:""),
-                         "suffix": " ".stringByAppendingString(odometerUnit.description),
+                         "suffix": " ".appending(odometerUnit.description),
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
           withAnimation:animation)
@@ -365,7 +365,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection:0,
               cellClass:NumberEditTableCell.self,
                cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                         "suffix": " ".stringByAppendingString(fuelUnit.description),
+                         "suffix": " ".appending(fuelUnit.description),
                          "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
@@ -384,7 +384,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 				"valueIdentifier": "comment"],
 			withAnimation:animation)
 
-		if !self.editing {
+		if !self.isEditing {
 			createConsumptionRowWithAnimation(animation)
 		}
 	}
@@ -395,8 +395,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let previousSelection = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
-			self.removeAllSectionsWithAnimation(.None)
-			self.createTableContentsWithAnimation(.None)
+			self.removeAllSectionsWithAnimation(.none)
+			self.createTableContentsWithAnimation(.none)
 			self.tableView.reloadData()
 
 			self.selectRowAtIndexPath(previousSelection)
@@ -406,7 +406,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	//MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
-		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
+		let cell = self.tableView.cellForRow(at: indexPath)!
 		let field : UITextField?
 
 		if let carCell = cell as? CarTableCell {
@@ -425,7 +425,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
-			field.userInteractionEnabled = true
+			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {
 				self.tableView.beginUpdates()
@@ -436,8 +436,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	private func selectRowAtIndexPath(path: NSIndexPath?) {
 		if let path = path {
-			self.tableView.selectRowAtIndexPath(path, animated:false, scrollPosition:.None)
-			self.tableView(self.tableView, didSelectRowAtIndexPath:path)
+			self.tableView.selectRow(at: path, animated:false, scrollPosition:.none)
+			self.tableView(self.tableView, didSelectRowAt:path)
 		}
 	}
 
@@ -451,7 +451,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			case "fuelVolume": return fuelVolume
 			case "filledUp": return filledUp
 			case "comment": return comment
-			case "showValueLabel": return !self.editing
+			case "showValueLabel": return !self.isEditing
 			default: return nil
 		}
 	}
@@ -461,7 +461,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			if let dateValue = newValue as? NSDate {
 				let newDate = NSDate.dateWithoutSeconds(dateValue)
 
-				if !date.isEqualToDate(newDate) {
+				if !date.isEqual(to: newDate) {
 					date = newDate
 					dataChanged = true
 				}
@@ -506,13 +506,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		if !(distance > zero && fuelVolume > zero) {
 			canBeSaved = false
-		} else if !date.isEqualToDate(event.timestamp) {
+		} else if !date.isEqual(to: event.timestamp) {
 			if CoreDataManager.containsEventWithCar(car, andDate:date) {
 				canBeSaved = false
 			}
 		}
 
-		self.doneButton.enabled = canBeSaved
+		self.doneButton.isEnabled = canBeSaved
 	}
 
 	//MARK: - EditablePageCellValidator
@@ -521,7 +521,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
-				if !date.isEqualToDate(event.timestamp) {
+				if !date.isEqual(to: event.timestamp) {
 					if CoreDataManager.containsEventWithCar(car, andDate:date) {
 						return false
 					}
@@ -549,8 +549,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-		let cell = tableView.cellForRowAtIndexPath(indexPath)
+	override func tableView(tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
+		let cell = tableView.cellForRow(at: indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
 			return nil
@@ -559,12 +559,12 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at:.middle, animated:true)
 	}
 
-	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {

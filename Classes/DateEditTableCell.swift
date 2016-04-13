@@ -20,19 +20,19 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 		super.init()
 
-		datePicker.datePickerMode = .DateAndTime
-		datePicker.addTarget(self, action:#selector(DateEditTableCell.datePickerValueChanged(_:)), forControlEvents:.ValueChanged)
+		datePicker.datePickerMode = .dateAndTime
+		datePicker.addTarget(self, action:#selector(DateEditTableCell.datePickerValueChanged(_:)), for: .valueChanged)
 		datePicker.translatesAutoresizingMaskIntoConstraints = false
-		datePicker.hidden = true
+		datePicker.isHidden = true
 
 		let stackView = UIStackView(arrangedSubviews: [datePicker])
 		stackView.translatesAutoresizingMaskIntoConstraints = false
-		stackView.axis = .Vertical
-		stackView.alignment = .Center
+		stackView.axis = .vertical
+		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
 												selector:#selector(DateEditTableCell.significantTimeChange(_:)),
@@ -57,7 +57,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		} else {
 			valid = true
 		}
-		self.textFieldProxy.textColor = valid ? UIColor.blackColor() : invalidTextColor
+		self.textFieldProxy.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
 	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
@@ -68,7 +68,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		self.autoRefreshedDate = dictionary["autorefresh"]?.boolValue ?? false
 
 		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate
-		self.textFieldProxy.text = value.flatMap { self.dateFormatter.stringFromDate($0) } ?? ""
+		self.textFieldProxy.text = value.flatMap { self.dateFormatter.string(from: $0) } ?? ""
 		updateTextFieldColorForValue(value)
 	}
 
@@ -87,8 +87,8 @@ final class DateEditTableCell: EditableProxyPageCell {
 	func datePickerValueChanged(sender: UIDatePicker) {
 		let selectedDate = NSDate.dateWithoutSeconds(sender.date)
 
-		if !(self.delegate.valueForIdentifier(self.valueIdentifier)?.isEqualToDate(selectedDate) ?? false) {
-			self.textFieldProxy.text = self.dateFormatter.stringFromDate(selectedDate)
+		if !(self.delegate.valueForIdentifier(self.valueIdentifier)?.isEqual(to: selectedDate) ?? false) {
+			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier:self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {
 				self.delegate.valueChanged(NSDate(), identifier:timestamp)
@@ -111,7 +111,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 	}
 
 	private func showDatePicker(show: Bool) {
-		datePicker.hidden = !show
+		datePicker.isHidden = !show
 	}
 
 	//MARK: - UITextFieldDelegate
@@ -123,7 +123,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		if self.autoRefreshedDate {
 			let now = NSDate()
 			if let timestamp = self.valueTimestamp, lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? NSDate {
-				let noChangeInterval = now.timeIntervalSinceDate(lastChangeDate)
+				let noChangeInterval = now.timeInterval(since: lastChangeDate)
 				if noChangeInterval >= 300 || noChangeInterval < 0 {
 					selectedDate = now
 				}

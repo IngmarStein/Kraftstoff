@@ -13,9 +13,9 @@ final class CSVParser {
 
 	private var separator: String! {
 		didSet {
-			let endTextMutableCharacterSet = NSCharacterSet.newlineCharacterSet().mutableCopy() as! NSMutableCharacterSet
-			endTextMutableCharacterSet.addCharactersInString("\"")
-			endTextMutableCharacterSet.addCharactersInString(separator.substringToIndex(separator.startIndex.successor()))
+			let endTextMutableCharacterSet = NSCharacterSet.newline().mutableCopy() as! NSMutableCharacterSet
+			endTextMutableCharacterSet.addCharacters(in: "\"")
+			endTextMutableCharacterSet.addCharacters(in: separator.substring(to: separator.startIndex.successor()))
 			endTextCharacterSet = endTextMutableCharacterSet
 		}
 	}
@@ -25,16 +25,14 @@ final class CSVParser {
 	private var endTextCharacterSet = NSCharacterSet()
 
 	static func simplifyCSVHeaderName(header: String) -> String {
-		return header.stringByReplacingOccurrencesOfString("[? :_\\-]+",
-                                              withString:"",
-                                                 options:.RegularExpressionSearch).uppercaseString
+		return header.replacingOccurrences(of: "[? :_\\-]+",
+												with: "",
+                                                 options: .regularExpressionSearch).uppercased()
 	}
 
 	init(inputCSVString: String) {
         // Convert DOS and legacy Mac line endings to Unix
-        csvString = inputCSVString.stringByReplacingOccurrencesOfString("\r\n?",
-                                                              withString:"\n",
-                                                                 options:.RegularExpressionSearch)
+		csvString = inputCSVString.replacingOccurrences(of: "\r\n?", with: "\n", options: .regularExpressionSearch)
 
         scanner = NSScanner(string:csvString)
         scanner.charactersToBeSkipped = nil
@@ -49,7 +47,7 @@ final class CSVParser {
 	}
 
 	func parseTable() -> [CSVRecord]? {
-		scannerLoop: while !scanner.atEnd {
+		scannerLoop: while !scanner.isAtEnd {
 			parseEmptyLines()
 
 			let location = scanner.scanLocation
@@ -68,7 +66,7 @@ final class CSVParser {
 			skipLine()
 		}
 
-		if scanner.atEnd {
+		if scanner.isAtEnd {
 			return nil
 		}
 
@@ -132,7 +130,7 @@ final class CSVParser {
 			return nil
 		}
 
-		if scanner.atEnd {
+		if scanner.isAtEnd {
 			return nil
 		}
 
@@ -172,7 +170,7 @@ final class CSVParser {
 	}
 
 	private func parseField() -> String? {
-		scanner.scanCharactersFromSet(NSCharacterSet.whitespaceCharacterSet(), intoString:nil)
+		scanner.scanCharacters(from: NSCharacterSet.whitespace(), into: nil)
 
 		if let escapedString = parseEscaped() {
 			return escapedString
@@ -184,7 +182,7 @@ final class CSVParser {
 
 		let currentLocation = scanner.scanLocation
 
-		if parseSeparator() != nil || parseLineSeparator() != nil || scanner.atEnd {
+		if parseSeparator() != nil || parseLineSeparator() != nil || scanner.isAtEnd {
 			scanner.scanLocation = currentLocation
 			return ""
 		}
@@ -233,7 +231,7 @@ final class CSVParser {
 	}
 
 	private func parseTwoDoubleQuotes() -> String? {
-		if scanner.scanString("\"\"", intoString:nil) {
+		if scanner.scanString("\"\"", into: nil) {
 			return "\"\""
 		}
 
@@ -241,7 +239,7 @@ final class CSVParser {
 	}
 
 	private func parseDoubleQuote() -> String? {
-		if scanner.scanString("\"", intoString:nil) {
+		if scanner.scanString("\"", into: nil) {
 			return "\""
 		}
 
@@ -249,7 +247,7 @@ final class CSVParser {
 	}
 
 	private func parseSeparator() -> String? {
-		if scanner.scanString(separator, intoString:nil) {
+		if scanner.scanString(separator, into: nil) {
 			return separator
 		}
 
@@ -261,10 +259,10 @@ final class CSVParser {
 
 		let location = scanner.scanLocation
 
-		scanner.scanCharactersFromSet(NSCharacterSet.whitespaceCharacterSet(), intoString:&matchedNewlines)
+		scanner.scanCharacters(from: NSCharacterSet.whitespace(), into: &matchedNewlines)
 
 		if matchedNewlines == nil {
-			scanner.scanCharactersFromSet(NSCharacterSet(charactersInString:",;"), intoString:&matchedNewlines)
+			scanner.scanCharacters(from: NSCharacterSet(charactersIn: ",;"), into: &matchedNewlines)
 		}
 
 		if matchedNewlines == nil {
@@ -280,7 +278,7 @@ final class CSVParser {
 	}
 
 	private func parseLineSeparator() -> String? {
-		if scanner.scanString("\n", intoString:nil) {
+		if scanner.scanString("\n", into: nil) {
 			return "\n"
 		}
 
@@ -288,13 +286,13 @@ final class CSVParser {
 	}
 
 	private func skipLine() -> String? {
-		scanner.scanUpToCharactersFromSet(NSCharacterSet.newlineCharacterSet(), intoString:nil)
+		scanner.scanUpToCharacters(from: NSCharacterSet.newline(), into: nil)
 		return parseLineSeparator()
 	}
 
 	private func parseTextData() -> String? {
 		var data: NSString?
-		scanner.scanUpToCharactersFromSet(endTextCharacterSet, intoString:&data)
+		scanner.scanUpToCharacters(from: endTextCharacterSet, into: &data)
 		return data as? String
 	}
 }

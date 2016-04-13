@@ -130,18 +130,18 @@ final class DemoData {
 	static func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
 
-		df.locale = NSLocale.systemLocale()
+		df.locale = NSLocale.system()
 		df.dateFormat = "yyyy'-'MM'-'dd' 'HH':'mm':'Z"
 
 		autoreleasepool {
 			for item in demoData {
-				let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:context) as NSManagedObject
+				let newEvent = NSEntityDescription.insertNewObjectForEntity(forName: "fuelEvent", in: context) as NSManagedObject
 
-				let distance = NSDecimalNumber(mantissa:item.distance, exponent: -1, isNegative:false)
-				let fuelVolume = NSDecimalNumber(mantissa:item.fuelVolume, exponent: -2, isNegative:false)
-				let price = NSDecimalNumber(mantissa:item.price, exponent: -3, isNegative:false)
+				let distance = NSDecimalNumber(mantissa:item.distance, exponent: -1, isNegative: false)
+				let fuelVolume = NSDecimalNumber(mantissa:item.fuelVolume, exponent: -2, isNegative: false)
+				let price = NSDecimalNumber(mantissa:item.price, exponent: -3, isNegative: false)
 
-				newEvent.setValue(df.dateFromString(item.date), forKey:"timestamp")
+				newEvent.setValue(df.date(from: item.date), forKey:"timestamp")
 				newEvent.setValue(car, forKey:"car")
 				newEvent.setValue(distance, forKey:"distance")
 				newEvent.setValue(price, forKey:"price")

@@ -38,33 +38,33 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 		super.init()
 
-		textField.textAlignment            = .Right
-		textField.autocapitalizationType   = .None
-		textField.autocorrectionType       = .No
-		textField.backgroundColor          = UIColor.clearColor()
-		textField.clearButtonMode          = .WhileEditing
-		textField.contentVerticalAlignment = .Center
-		textField.userInteractionEnabled   = false
+		textField.textAlignment            = .right
+		textField.autocapitalizationType   = .none
+		textField.autocorrectionType       = .no
+		textField.backgroundColor          = UIColor.clear()
+		textField.clearButtonMode          = .whileEditing
+		textField.contentVerticalAlignment = .center
+		textField.isUserInteractionEnabled   = false
 		textField.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(textField)
 
-		keyLabel.textAlignment        = .Left
-		keyLabel.highlightedTextColor = UIColor.blackColor()
-		keyLabel.textColor            = UIColor.blackColor()
-		keyLabel.setContentHuggingPriority(750, forAxis: .Horizontal)
-		keyLabel.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+		keyLabel.textAlignment        = .left
+		keyLabel.highlightedTextColor = UIColor.black()
+		keyLabel.textColor            = UIColor.black()
+		keyLabel.setContentHuggingPriority(750, for: .horizontal)
+		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		contentView
 		self.contentView.addSubview(keyLabel)
 
-		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .Bottom, relatedBy: .Equal, toItem: contentView, attribute: .BottomMargin, multiplier: 1.0, constant: 0.0)
+		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottomMargin, multiplier: 1.0, constant: 0.0)
 		keyLabelBottomConstraint.priority = 500
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
-		self.contentView.addConstraint(NSLayoutConstraint(item: keyLabel, attribute: .Top, relatedBy: .Equal, toItem: contentView, attribute: .TopMargin, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
+		self.contentView.addConstraint(NSLayoutConstraint(item: keyLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .topMargin, multiplier: 1.0, constant: 0.0))
 		self.contentView.addConstraint(keyLabelBottomConstraint)
-		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .Baseline, relatedBy: .Equal, toItem: keyLabel, attribute: .Baseline, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .baseline, relatedBy: .equal, toItem: keyLabel, attribute: .baseline, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
@@ -108,12 +108,12 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	var invalidTextColor: UIColor? {
-		return UIApplication.sharedApplication().delegate!.window!!.tintColor
+		return UIApplication.shared().delegate!.window!!.tintColor
 	}
 
 	//MARK: - UITextFieldDelegate
 
 	func textFieldDidEndEditing(textField: UITextField) {
-		textField.userInteractionEnabled = false
+		textField.isUserInteractionEnabled = false
 	}
 }

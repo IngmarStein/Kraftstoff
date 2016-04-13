@@ -29,7 +29,7 @@ final class ConsumptionLabel: UILabel {
 			let attributedString = NSMutableAttributedString(string:text)
 			attributedString.beginEditing()
 			for subString in highlightStrings {
-				let range = (text as NSString).rangeOfString(subString)
+				let range = (text as NSString).range(of: subString)
 
 				if range.location != NSNotFound {
 					// Match in highlight colors

@@ -24,7 +24,7 @@ final class CSVImporter {
 
 	private func addCarWithName(name: String, order: Int, plate: String, odometerUnit: KSDistance, volumeUnit: KSVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
-		let newCar = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+		let newCar = NSEntityDescription.insertNewObjectForEntity(forName: "car", in: managedObjectContext) as! Car
 
 		newCar.order = Int32(order)
 		newCar.timestamp = NSDate()
@@ -39,7 +39,7 @@ final class CSVImporter {
 	}
 
 	private func addEventForCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
-		let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:managedObjectContext) as! FuelEvent
+		let newEvent = NSEntityDescription.insertNewObjectForEntity(forName: "fuelEvent", in: managedObjectContext) as! FuelEvent
 
 		newEvent.car = car
 		newEvent.timestamp = date
@@ -75,8 +75,8 @@ final class CSVImporter {
 	//MARK: - Data Import Helpers
 
 	private func guessModelFromURL(sourceURL: NSURL) -> String? {
-		if sourceURL.fileURL {
-			let nameComponents = (((sourceURL.path! as NSString).lastPathComponent as NSString).stringByDeletingPathExtension as NSString).componentsSeparatedByString("__")
+		if sourceURL.isFileURL {
+			let nameComponents = (((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension as NSString).componentsSeparated(by: "__")
 
 			// CSV file exported in new format: model is first part of filename
 			if nameComponents.count == 2 {
@@ -84,7 +84,7 @@ final class CSVImporter {
 
 				if !part.isEmpty {
 					if part.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
-						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.DefaultMaximumTextFieldLength))
+						return part.substring(to: part.startIndex.advanced(by: TextEditTableCell.DefaultMaximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -96,8 +96,8 @@ final class CSVImporter {
 	}
 
 	private func guessPlateFromURL(sourceURL: NSURL) -> String? {
-		if sourceURL.fileURL {
-			let nameComponents = ((sourceURL.path! as NSString).lastPathComponent as NSString).stringByDeletingPathExtension.componentsSeparatedByString("__")
+		if sourceURL.isFileURL {
+			let nameComponents = ((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension.componentsSeparated(by: "__")
 
 			// CSV file in new format: plate is second part of filename
 			//     for unknown format: use the whole filename if it is a single component
@@ -106,7 +106,7 @@ final class CSVImporter {
 
 				if !part.isEmpty {
 					if part.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
-						return part.substringToIndex(part.startIndex.advancedBy(TextEditTableCell.DefaultMaximumTextFieldLength))
+						return part.substring(to: part.startIndex.advanced(by: TextEditTableCell.DefaultMaximumTextFieldLength))
 					} else {
 						return part
 					}
@@ -155,7 +155,7 @@ final class CSVImporter {
 
 	private func truncateLongString(str: String) -> String {
 		if str.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
-			return str.substringToIndex(str.startIndex.advancedBy(TextEditTableCell.DefaultMaximumTextFieldLength))
+			return str.substring(to: str.startIndex.advanced(by: TextEditTableCell.DefaultMaximumTextFieldLength))
 		} else {
 			return str
 		}
@@ -200,16 +200,16 @@ final class CSVImporter {
 		}
 
 		// consumption with parsed distance
-		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit:.LitersPer100km)
+		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100km)
 
-		if rawConsumption == NSDecimalNumber.notANumber() {
+		if rawConsumption == NSDecimalNumber.notA() {
 			return distance
 		}
 
 		// consumption with increased distance
-		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit:.LitersPer100km)
+		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100km)
 
-		if convConsumption == NSDecimalNumber.notANumber() {
+		if convConsumption == NSDecimalNumber.notA() {
 			return distance
 		}
 
@@ -231,13 +231,13 @@ final class CSVImporter {
 		return convDistance
 	}
 
-	private func importRecords(records: [CSVRecord], formatIsTankPro isTankProImport: Bool, inout detectedEvents numEvents: Int, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	private func importRecords(records: [CSVRecord], formatIsTankPro isTankProImport: Bool, detectedEvents numEvents: inout Int, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		// Analyse record headers
 		let first = records.first!
 
-		var distanceUnit = KSDistance.Invalid
-		var odometerUnit = KSDistance.Invalid
-		var volumeUnit   = KSVolume.Invalid
+		var distanceUnit = KSDistance.invalid
+		var odometerUnit = KSDistance.invalid
+		var volumeUnit   = KSVolume.invalid
 
 		let IDKey           = keyForCarID(first)
 		let dateKey         = keyForDate(first)
@@ -267,7 +267,7 @@ final class CSVImporter {
 		}
 
 		// Sort records according time and odometer
-		let sortedRecords = records.sort { (record1, record2) -> Bool in
+		let sortedRecords = records.sorted { (record1, record2) -> Bool in
 			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
 				if date1 < date2 {
 					return true
@@ -308,14 +308,14 @@ final class CSVImporter {
 				}
 
 				var date  = scanDate(record[dateKey!]!, withOptionalTime:record[timeKey!])!
-				let delta = date.timeIntervalSinceDate(lastDate)
+				let delta = date.timeInterval(since: lastDate)
 
 				if delta <= 0.0 || lastDelta > 0.0 {
 					lastDelta = (delta > 0.0) ? 0.0 : ceil(fabs (delta) + 60.0)
-					date      = date.dateByAddingTimeInterval(lastDelta)
+					date      = date.addingTimeInterval(lastDelta)
 				}
 
-				if date.timeIntervalSinceDate(lastDate) <= 0.0 {
+				if date.timeInterval(since: lastDate) <= 0.0 {
 					continue
 				}
 
@@ -335,7 +335,7 @@ final class CSVImporter {
 
 				var volume: NSDecimalNumber?
 
-				if volumeUnit != .Invalid {
+				if volumeUnit != .invalid {
 					volume = scanNumberWithString(record[volumeKey!])
 					if volume != nil {
 						volume = Units.litersForVolume(volume!, withUnit:volumeUnit)
@@ -354,10 +354,10 @@ final class CSVImporter {
 					if volume == nil || volume == NSDecimalNumber.zero() {
 						price = NSDecimalNumber.zero()
 					} else {
-						price = price!.decimalNumberByDividingBy(volume!, withBehavior:Formatters.sharedPriceRoundingHandler)
+						price = price!.dividing(by: volume!, withBehavior:Formatters.sharedPriceRoundingHandler)
 					}
 				} else if price != nil {
-					if volumeUnit != .Invalid {
+					if volumeUnit != .invalid {
 						price = Units.pricePerLiter(price!, withUnit:volumeUnit)
 					} else {
 						price = Units.pricePerLiter(price!, withUnit:scanVolumeUnitWithString(record[volumeUnitKey!]))
@@ -421,7 +421,7 @@ final class CSVImporter {
 
 	//MARK: - Data Import
 
-	func importFromCSVString(CSVString: String, inout detectedCars numCars: Int, inout detectedEvents numEvents: Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	func importFromCSVString(CSVString: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString:CSVString)
 
 		// Check for TankPro import:search for tables containing car definitions
@@ -486,9 +486,9 @@ final class CSVImporter {
 
 		nfCurrent.generatesDecimalNumbers = true
 		nfCurrent.usesGroupingSeparator = true
-		nfCurrent.numberStyle = .DecimalStyle
-		nfCurrent.lenient = true
-		nfCurrent.locale = NSLocale.currentLocale()
+		nfCurrent.numberStyle = .decimalStyle
+		nfCurrent.isLenient = true
+		nfCurrent.locale = NSLocale.current()
 
 		return nfCurrent
 	}()
@@ -498,9 +498,9 @@ final class CSVImporter {
 
 		nfSystem.generatesDecimalNumbers = true
 		nfSystem.usesGroupingSeparator = true
-		nfSystem.numberStyle = .DecimalStyle
-		nfSystem.lenient = true
-		nfSystem.locale = NSLocale.systemLocale()
+		nfSystem.numberStyle = .decimalStyle
+		nfSystem.isLenient = true
+		nfSystem.locale = NSLocale.system()
 
 		return nfSystem
 	}()
@@ -513,26 +513,26 @@ final class CSVImporter {
 		// Scan via NSScanner (fast, strict)
 		let scanner = NSScanner(string:string)
 
-		scanner.locale = NSLocale.currentLocale()
+		scanner.locale = NSLocale.current()
 		scanner.scanLocation = 0
 
 		var d = NSDecimal()
-		if scanner.scanDecimal(&d) && scanner.atEnd {
+		if scanner.scanDecimal(&d) && scanner.isAtEnd {
 			return NSDecimalNumber(decimal:d)
 		}
 
-		scanner.locale = NSLocale.systemLocale()
+		scanner.locale = NSLocale.system()
 		scanner.scanLocation = 0
 
-		if scanner.scanDecimal(&d) && scanner.atEnd {
+		if scanner.scanDecimal(&d) && scanner.isAtEnd {
 			return NSDecimalNumber(decimal:d)
 		}
 
-		// Scan with localized numberformatter (sloppy, catches grouping separators)
-		if let dn = currentNumberFormatter.numberFromString(string) as? NSDecimalNumber {
+		// Scan with localized number formatter (sloppy, catches grouping separators)
+		if let dn = currentNumberFormatter.number(from: string) as? NSDecimalNumber {
 			return dn
 		}
-		if let dn = systemNumberFormatter.numberFromString(string) as? NSDecimalNumber {
+		if let dn = systemNumberFormatter.number(from: string) as? NSDecimalNumber {
 			return dn
 		}
 
@@ -542,9 +542,9 @@ final class CSVImporter {
 	private func scanDate(dateString: String, withOptionalTime timeString: String?) -> NSDate? {
 		if let date = scanDateWithString(dateString) {
 			if let time = timeString.flatMap({ self.scanTimeWithString($0) }) {
-				return date.dateByAddingTimeInterval(NSDate.timeIntervalSinceBeginningOfDay(time))
+				return date.addingTimeInterval(NSDate.timeIntervalSinceBeginningOfDay(time))
 			} else {
-				return date.dateByAddingTimeInterval(43200)
+				return date.addingTimeInterval(43200)
 			}
 		} else {
 			return nil
@@ -553,37 +553,37 @@ final class CSVImporter {
 
 	private let systemDateFormatter: NSDateFormatter = {
 		let df = NSDateFormatter()
-		df.locale = NSLocale.systemLocale()
+		df.locale = NSLocale.system()
 		df.dateFormat = "yyyy-MM-dd"
-		df.lenient = false
+		df.isLenient = false
 		return df
 	}()
 
 	private let currentDateFormatter: NSDateFormatter = {
 		let df = NSDateFormatter()
-		df.locale = NSLocale.currentLocale()
-		df.dateStyle = .ShortStyle
-		df.timeStyle = .NoStyle
-		df.lenient = true
+		df.locale = NSLocale.current()
+		df.dateStyle = .shortStyle
+		df.timeStyle = .noStyle
+		df.isLenient = true
 		return df
 	}()
 
 	private let systemTimeFormatter: NSDateFormatter = {
 		let df = NSDateFormatter()
 		df.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-		df.locale = NSLocale.systemLocale()
+		df.locale = NSLocale.system()
 		df.dateFormat = "HH:mm"
-		df.lenient = false
+		df.isLenient = false
 		return df
 	}()
 
 	private let currentTimeFormatter: NSDateFormatter = {
 		let df = NSDateFormatter()
 		df.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-		df.locale = NSLocale.currentLocale()
-		df.timeStyle = .ShortStyle
-		df.dateStyle = .NoStyle
-		df.lenient = true
+		df.locale = NSLocale.current()
+		df.timeStyle = .shortStyle
+		df.dateStyle = .noStyle
+		df.isLenient = true
 		return df
 	}()
 
@@ -591,12 +591,12 @@ final class CSVImporter {
 		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
-		if let d = systemDateFormatter.dateFromString(string) {
+		if let d = systemDateFormatter.date(from: string) {
 			return d
 		}
 
 		// Alternatively scan date in short local style
-		if let d = currentDateFormatter.dateFromString(string) {
+		if let d = currentDateFormatter.date(from: string) {
 			return d
 		}
 
@@ -608,12 +608,12 @@ final class CSVImporter {
 		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
-		if let d = systemTimeFormatter.dateFromString(string) {
+		if let d = systemTimeFormatter.date(from: string) {
 			return d
 		}
 
 		// Alternatively scan date in short local style
-		if let d = currentTimeFormatter.dateFromString(string) {
+		if let d = currentTimeFormatter.date(from: string) {
 			return d
 		}
 
@@ -626,49 +626,49 @@ final class CSVImporter {
 		if let n = scanNumberWithString(string) {
 			return n != 0
 		} else {
-			let uppercaseString = string.uppercaseString
+			let uppercaseString = string.uppercased()
 			return uppercaseString != "NO" && uppercaseString != "NEIN"
 		}
 	}
 
 	private func scanVolumeUnitWithString(string: String?) -> KSVolume {
-		guard let string = string else { return .Liter }
+		guard let string = string else { return .liter }
 
 		let header = CSVParser.simplifyCSVHeaderName(string)
 
 		// Catch Tank Pro exports
 		if header == "L" {
-			return .Liter
+			return .liter
 		}
 
 		if header == "G" {
 			// TankPro seems to export both gallons simply as "G" => search locale for feasible guess
-			if Units.volumeUnitFromLocale == .GalUS {
-				return .GalUS
+			if Units.volumeUnitFromLocale == .galUS {
+				return .galUS
 			} else {
-				return .GalUK
+				return .galUK
 			}
 		}
 
 		// Catch some other forms of gallons
-		if header.rangeOfString("GAL") != nil {
-			if header.rangeOfString("US") != nil {
-				return .GalUS
+		if header.range(of: "GAL") != nil {
+			if header.range(of: "US") != nil {
+				return .galUS
 			}
 
-			if header.rangeOfString("UK") != nil {
-				return .GalUK
+			if header.range(of: "UK") != nil {
+				return .galUK
 			}
 
-			if Units.volumeUnitFromLocale == .GalUS {
-				return .GalUS
+			if Units.volumeUnitFromLocale == .galUS {
+				return .galUS
 			} else {
-				return .GalUK
+				return .galUK
 			}
 		}
 
 		// Liters as default
-		return .Liter
+		return .liter
 	}
 
 	//MARK: - Interpretation of CSV Header Names
@@ -693,17 +693,17 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForDistance(record: CSVRecord, inout unit: KSDistance) -> String? {
+	private func keyForDistance(record: CSVRecord, unit: inout KSDistance) -> String? {
 		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] {
 			if record[key] != nil {
-				unit = .Kilometer
+				unit = .kilometer
 				return key
 			}
 		}
 
 		for key in [ "MILES", "MEILEN" ] {
 			if record[key] != nil {
-				unit = .StatuteMile
+				unit = .statuteMile
 				return key
 			}
 		}
@@ -711,17 +711,17 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForOdometer(record: CSVRecord, inout unit: KSDistance) -> String? {
+	private func keyForOdometer(record: CSVRecord, unit: inout KSDistance) -> String? {
 		for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] {
 			if record[key] != nil {
-				unit = .Kilometer
+				unit = .kilometer
 				return key
 			}
         }
 
 		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] {
 			if record[key] != nil {
-				unit = .StatuteMile
+				unit = .statuteMile
 				return key
 			}
         }
@@ -729,24 +729,24 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForVolume(record: CSVRecord, inout unit: KSVolume) -> String? {
+	private func keyForVolume(record: CSVRecord, unit: inout KSVolume) -> String? {
 		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] {
 			if record[key] != nil {
-				unit = .Liter
+				unit = .liter
 				return key
 			}
         }
 
 		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
 			if record[key] != nil {
-				unit = .GalUS
+				unit = .galUS
 				return key
 			}
 		}
 
 		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] {
 			if record[key] != nil {
-				unit = .GalUK
+				unit = .galUK
 				return key
 			}
         }

@@ -27,23 +27,23 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		super.init()
 
-		let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 162.0)
+		let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 162.0)
 		carPickerHeightConstraint.priority = 750
 		carPicker.showsSelectionIndicator = true
 		carPicker.dataSource              = self
 		carPicker.delegate                = self
 		carPicker.translatesAutoresizingMaskIntoConstraints = false
-		carPicker.hidden = true
+		carPicker.isHidden = true
 		carPicker.addConstraint(carPickerHeightConstraint)
 
 		let stackView = UIStackView(arrangedSubviews: [carPicker])
 		stackView.translatesAutoresizingMaskIntoConstraints = false
-		stackView.axis = .Vertical
-		stackView.alignment = .Center
+		stackView.axis = .vertical
+		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -54,9 +54,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		super.setupFonts()
 
 		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
-			NSForegroundColorAttributeName : UIColor.blackColor()]
+			NSForegroundColorAttributeName : UIColor.black()]
 		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
-			NSForegroundColorAttributeName : UIColor.darkGrayColor()]
+			NSForegroundColorAttributeName : UIColor.darkGray()]
 
 		self.carPicker.reloadAllComponents()
 	}
@@ -76,7 +76,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		// Look for index of selected car
 		let car = self.delegate.valueForIdentifier(self.valueIdentifier) as! Car
-		let initialIndex = self.cars.indexOf(car) ?? 0
+		let initialIndex = self.cars.index(of: car) ?? 0
 
 		// (Re-)configure car picker and select the initial item
 		self.carPicker.reloadAllComponents()
@@ -94,12 +94,13 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	}
 
 	private func showPicker(show: Bool) {
-		carPicker.hidden = !show
+		carPicker.isHidden = !show
 	}
 
 	//MARK: - UIPickerViewDataSource
 
-	func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+	@objc(numberOfComponentsInPickerView:)
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
 
@@ -121,7 +122,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		return PickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		// Strings to be displayed
 		let car = self.cars[row]
 		let name = car.name
@@ -130,7 +131,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		var label: UILabel! = view as? UILabel
 		if label == nil {
 			label = UILabel(frame: CGRectZero)
-			label.lineBreakMode = .ByTruncatingTail
+			label.lineBreakMode = .byTruncatingTail
 		}
 
 		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)

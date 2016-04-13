@@ -15,15 +15,15 @@ class Kraftstoff_Tests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!
 
 	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
-		let managedObjectModel = NSManagedObjectModel.mergedModelFromBundles([NSBundle.mainBundle()])!
+		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [NSBundle.main()])!
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		do {
-			try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
+			try persistentStoreCoordinator.addPersistentStore(withType: NSInMemoryStoreType, configuration: nil, url: nil, options: nil)
 		} catch _ {
 		}
 
-		let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+		let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 
 		return managedObjectContext
@@ -40,16 +40,16 @@ class Kraftstoff_Tests: XCTestCase {
     }
 
 	private func testRoundtrip(language: String) {
-		let car = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+		let car = NSEntityDescription.insertNewObjectForEntity(forName: "car", in:managedObjectContext) as! Car
 
 		car.order = 0
 		car.timestamp = NSDate()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .Kilometer
+		car.ksOdometerUnit = .kilometer
 		car.odometer = 1000
-		car.ksFuelUnit = .Liter
-		car.ksFuelConsumptionUnit = .LitersPer100km
+		car.ksFuelUnit = .liter
+		car.ksFuelConsumptionUnit = .litersPer100km
 
 		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
 
@@ -84,16 +84,16 @@ class Kraftstoff_Tests: XCTestCase {
 	}
 
     func testCSVExport() {
-		let car = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+		let car = NSEntityDescription.insertNewObjectForEntity(forName: "car", in: managedObjectContext) as! Car
 
 		car.order = 0
 		car.timestamp = NSDate()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .Kilometer
+		car.ksOdometerUnit = .kilometer
 		car.odometer = 1000
-		car.ksFuelUnit = .Liter
-		car.ksFuelConsumptionUnit = .LitersPer100km
+		car.ksFuelUnit = .liter
+		car.ksFuelConsumptionUnit = .litersPer100km
 
 		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
 

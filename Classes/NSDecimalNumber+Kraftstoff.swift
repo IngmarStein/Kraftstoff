@@ -13,43 +13,43 @@ import Foundation
 extension NSDecimalNumber: Comparable {}
 
 public func ==(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-	return lhs.compare(rhs) == .OrderedSame
+	return lhs.compare(rhs) == .orderedSame
 }
 
 public func <(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-	return lhs.compare(rhs) == .OrderedAscending
+	return lhs.compare(rhs) == .orderedAscending
 }
 
 // MARK: - Arithmetic Operators
 
 public prefix func -(value: NSDecimalNumber) -> NSDecimalNumber {
-	return NSDecimalNumber.zero().decimalNumberBySubtracting(value)
+	return NSDecimalNumber.zero().subtracting(value)
 }
 
 public func +(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.decimalNumberByAdding(rhs)
+	return lhs.adding(rhs)
 }
 
 public func -(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.decimalNumberBySubtracting(rhs)
+	return lhs.subtracting(rhs)
 }
 
 public func *(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.decimalNumberByMultiplyingBy(rhs)
+	return lhs.multiplying(by: rhs)
 }
 
 public func /(lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.decimalNumberByDividingBy(rhs)
+	return lhs.dividing(by: rhs)
 }
 
 public func ^(lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.decimalNumberByRaisingToPower(rhs)
+	return lhs.raising(toPower: rhs)
 }
 
 public func <<(lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.decimalNumberByMultiplyingByPowerOf10(Int16(rhs))
+	return lhs.multiplying(byPowerOf10: Int16(rhs))
 }
 
 public func >>(lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.decimalNumberByMultiplyingByPowerOf10(Int16(-rhs))
+	return lhs.multiplying(byPowerOf10: Int16(-rhs))
 }

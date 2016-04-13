@@ -23,7 +23,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 
 		migratePurchases()
 
-		SKPaymentQueue.defaultQueue().addTransactionObserver(self)
+		SKPaymentQueue.defaultQueue().add(self)
 	}
 
 	private var maxCarCount : Int {
@@ -33,56 +33,56 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 	func checkCarCount() -> Bool {
 		let moc = CoreDataManager.managedObjectContext
 		let carsFetchRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(moc)
-		let count = moc.countForFetchRequest(carsFetchRequest, error: nil)
+		let count = moc.count(for: carsFetchRequest, error: nil)
 		return count == NSNotFound || unlimitedCars || count < maxCarCount
 	}
 
 	func showBuyOptions(parent: UIViewController) {
 		let alert = UIAlertController(title: NSLocalizedString("Car limit reached", comment: ""),
-			message: NSLocalizedString("Would you like to buy more cars?", comment: ""), preferredStyle: .ActionSheet)
+			message: NSLocalizedString("Would you like to buy more cars?", comment: ""), preferredStyle: .actionSheet)
 
 		if maxCarCount < 2 {
-			let twoCarsAction = UIAlertAction(title: NSLocalizedString("2 Cars", comment: ""), style: .Default) { _ in
+			let twoCarsAction = UIAlertAction(title: NSLocalizedString("2 Cars", comment: ""), style: .`default`) { _ in
 				self.buyProduct(self.twoCarsProductId)
 			}
 			alert.addAction(twoCarsAction)
 		}
 
 		if maxCarCount < 5 {
-			let fiveCarsAction = UIAlertAction(title: NSLocalizedString("5 Cars", comment: ""), style: .Default) { _ in
+			let fiveCarsAction = UIAlertAction(title: NSLocalizedString("5 Cars", comment: ""), style: .`default`) { _ in
 				self.buyProduct(self.fiveCarsProductId)
 			}
 			alert.addAction(fiveCarsAction)
 		}
 
-		let unlimitedCarsAction = UIAlertAction(title: NSLocalizedString("Unlimited Cars", comment: ""), style: .Default) { _ in
+		let unlimitedCarsAction = UIAlertAction(title: NSLocalizedString("Unlimited Cars", comment: ""), style: .`default`) { _ in
 			self.buyProduct(self.unlimitedCarsProductId)
 		}
 		alert.addAction(unlimitedCarsAction)
 
-		let restoreAction = UIAlertAction(title: NSLocalizedString("Restore Purchases", comment: ""), style: .Default) { _ in
+		let restoreAction = UIAlertAction(title: NSLocalizedString("Restore Purchases", comment: ""), style: .`default`) { _ in
 			SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
 		}
 		alert.addAction(restoreAction)
 
-		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .Cancel, handler: nil)
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: nil)
 		alert.addAction(cancelAction)
 
 		alert.popoverPresentationController?.sourceView = parent.view
 		alert.popoverPresentationController?.sourceRect = parent.view.bounds
 		alert.popoverPresentationController?.permittedArrowDirections = []
-		parent.presentViewController(alert, animated: true, completion: nil)
+		parent.present(alert, animated: true, completion: nil)
 	}
 
 	// migrate purchases from NSUserDefaults to Keychain
 	private func migratePurchases() {
-		let userDefaults = NSUserDefaults.standardUserDefaults()
-		if let purchasedProducts = userDefaults.arrayForKey(purchasedProductsKey) as? [String] {
+		let userDefaults = NSUserDefaults.standard()
+		if let purchasedProducts = userDefaults.array(forKey: purchasedProductsKey) as? [String] {
 			for product in purchasedProducts {
 				setProductPurchased(product, purchased: true)
 			}
 		}
-		userDefaults.removeObjectForKey(purchasedProductsKey)
+		userDefaults.removeObject(forKey: purchasedProductsKey)
 		userDefaults.synchronize()
 	}
 
@@ -128,20 +128,21 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+	@objc(productsRequest:didReceiveResponse:)
+	func productsRequest(_: SKProductsRequest, didReceive response: SKProductsResponse) {
 		if let product = response.products.first where response.products.count == 1 {
 			let payment = SKPayment(product: product)
-			SKPaymentQueue.defaultQueue().addPayment(payment)
+			SKPaymentQueue.defaultQueue().add(payment)
 		}
 	}
 
 	func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
 		for transaction in transactions {
 			switch transaction.transactionState {
-			case .Purchased, .Restored:
+			case .purchased, .restored:
 				setProductPurchased(transaction.payment.productIdentifier, purchased: true)
 				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-			case .Failed:
+			case .failed:
 				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
 				print("Transaction failed: \(transaction.error)")
 			default: ()

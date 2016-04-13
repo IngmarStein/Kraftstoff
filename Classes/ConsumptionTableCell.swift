@@ -17,21 +17,21 @@ final class ConsumptionTableCell: PageCell {
 
 		super.init()
 
-		self.selectionStyle = .None
+		self.selectionStyle = .none
 
-		self.coloredLabel.textAlignment             = .Center
+		self.coloredLabel.textAlignment             = .center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
-		self.coloredLabel.backgroundColor           = UIColor.clearColor()
+		self.coloredLabel.backgroundColor           = UIColor.clear()
 		self.coloredLabel.highlightedTextColor      = UIColor(white:0.5, alpha:1.0)
-		self.coloredLabel.textColor                 = UIColor.blackColor()
+		self.coloredLabel.textColor                 = UIColor.black()
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		setupFonts()
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}

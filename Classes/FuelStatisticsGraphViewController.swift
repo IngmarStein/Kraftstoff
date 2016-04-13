@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 protocol FuelStatisticsViewControllerDataSource {
-	var curveGradient: CGGradientRef { get }
+	var curveGradient: CGGradient { get }
 
 	func averageFormatter(precise: Bool, forCar: Car) -> NSNumberFormatter
 	func averageFormatString(avgPrefix: Bool, forCar: Car) -> String
@@ -43,20 +43,20 @@ private let MAX_SAMPLES = 256
 
 private class FuelStatisticsSamplingData : DiscardableDataObject {
     // Curve data
-	var data = [CGPoint](count: MAX_SAMPLES, repeatedValue: CGPointZero)
+	var data = [CGPoint](repeating: CGPointZero, count: MAX_SAMPLES)
 	var dataCount = 0
 
     // Lens data
-	var lensDate = [[NSTimeInterval]](count: MAX_SAMPLES, repeatedValue: [NSTimeInterval](count: 2, repeatedValue: 0.0))
-	var lensValue = [CGFloat](count: MAX_SAMPLES, repeatedValue: 0.0)
+	var lensDate = [[NSTimeInterval]](repeating: [NSTimeInterval](repeating: 0.0, count: 2), count: MAX_SAMPLES)
+	var lensValue = [CGFloat](repeating: 0.0, count: MAX_SAMPLES)
 
     // Data for marker positions
-	var hMarkPositions = [CGFloat](count: 5, repeatedValue: 0.0)
-	var hMarkNames = [String?](count: 5, repeatedValue: nil)
+	var hMarkPositions = [CGFloat](repeating: 0.0, count: 5)
+	var hMarkNames = [String?](repeating: nil, count: 5)
 	var hMarkCount = 0
 
-	var vMarkPositions = [CGFloat](count: 3, repeatedValue: 0.0)
-	var vMarkNames = [String?](count: 3, repeatedValue: nil)
+	var vMarkPositions = [CGFloat](repeating: 0.0, count: 3)
+	var vMarkNames = [String?](repeating: nil, count: 3)
 	var vMarkCount = 0
 
 	var contentImage: UIImage!
@@ -74,9 +74,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			for subview in self.view.subviews {
 				if subview.tag > 0 {
 					if subview.tag < 1000 {
-						subview.hidden = zooming
+						subview.isHidden = zooming
 					} else {
-						subview.hidden = !zooming
+						subview.isHidden = !zooming
 					}
 				}
 			}
@@ -135,7 +135,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		zoomRecognizer = UILongPressGestureRecognizer(target:self, action:#selector(FuelStatisticsGraphViewController.longPressChanged(_:)))
 		zoomRecognizer.minimumPressDuration = 0.4
 		zoomRecognizer.numberOfTouchesRequired = 1
-		zoomRecognizer.enabled = false
+		zoomRecognizer.isEnabled = false
 
 		self.view.addGestureRecognizer(zoomRecognizer)
 	}
@@ -159,7 +159,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var valRange: CGFloat
 		var valStretchFactorForDisplay: CGFloat
 
-		for i in (0..<fetchedObjects.count).reverse() {
+		for i in (0..<fetchedObjects.count).reversed() {
 			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
@@ -192,7 +192,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			state.hMarkCount = 0
 			state.vMarkCount = 0
 
-			return valCount == 0 ? CGFloat.NaN : valAverage
+			return valCount == 0 ? CGFloat.nan : valAverage
 		}
 
 		valAverage /= CGFloat(valCount)
@@ -225,8 +225,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		}
 
 		// Resampling of fetched data
-		var samples = [CGFloat](count: MAX_SAMPLES, repeatedValue: 0.0)
-		var samplesCount = [Int](count: MAX_SAMPLES, repeatedValue: 0)
+		var samples = [CGFloat](repeating: 0.0, count: MAX_SAMPLES)
+		var samplesCount = [Int](repeating: 0, count: MAX_SAMPLES)
 
 		for i in 0..<MAX_SAMPLES {
 			state.lensDate  [i][0] = 0.0
@@ -234,15 +234,15 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			state.lensValue [i]    = 0.0
 		}
 
-		let rangeInterval = firstDate!.timeIntervalSinceDate(lastDate!)
+		let rangeInterval = firstDate!.timeInterval(since: lastDate!)
 
-		for i in (valFirstIndex...valLastIndex).reverse() {
+		for i in (valFirstIndex...valLastIndex).reversed() {
 			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext:moc) as? FuelEvent {
 				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar:car)
 
 				if !value.isNaN {
 					// Collect sample data
-					let sampleInterval = firstDate!.timeIntervalSinceDate(managedObject.timestamp)
+					let sampleInterval = firstDate!.timeInterval(since: managedObject.timestamp)
 					let sampleIndex = Int(rint (CGFloat((MAX_SAMPLES-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
 
 					if valRange < 0.0001 {
@@ -281,45 +281,45 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let numberFormatter = self.dataSource!.axisFormatterForCar(car)
 
 		state.hMarkPositions[0] = 1.0 - (1.0  * valStretchFactorForDisplay)
-		state.hMarkNames[0] = numberFormatter.stringFromNumber(valMin + valRange)!
+		state.hMarkNames[0] = numberFormatter.string(from: valMin + valRange)!
 
 		state.hMarkPositions[1] = 1.0 - (0.75 * valStretchFactorForDisplay)
-		state.hMarkNames[1] = numberFormatter.stringFromNumber(CGFloat(valMin + valRange*0.75))!
+		state.hMarkNames[1] = numberFormatter.string(from: CGFloat(valMin + valRange*0.75))!
 
 		state.hMarkPositions[2] = 1.0 - (0.5  * valStretchFactorForDisplay)
-		state.hMarkNames[2] = numberFormatter.stringFromNumber(CGFloat(valMin + valRange*0.5))!
+		state.hMarkNames[2] = numberFormatter.string(from: CGFloat(valMin + valRange*0.5))!
 
 		state.hMarkPositions[3] = 1.0 - (0.25 * valStretchFactorForDisplay)
-		state.hMarkNames[3] = numberFormatter.stringFromNumber(CGFloat(valMin + valRange*0.25))!
+		state.hMarkNames[3] = numberFormatter.string(from: CGFloat(valMin + valRange*0.25))!
 
 		state.hMarkPositions[4] = 1.0
-		state.hMarkNames[4] = numberFormatter.stringFromNumber(valMin)!
+		state.hMarkNames[4] = numberFormatter.string(from: valMin)!
 		state.hMarkCount = 5
 
 		// Markers for horizontal axis
 		let dateFormatter: NSDateFormatter
 
-		if state.dataCount < 3 || firstDate!.timeIntervalSinceDate(lastDate!) < 604800 {
+		if state.dataCount < 3 || firstDate!.timeInterval(since: lastDate!) < 604800 {
 			dateFormatter = Formatters.sharedDateTimeFormatter
 			midDate = nil
 		} else {
 			dateFormatter = Formatters.sharedDateFormatter
-			midDate = NSDate(timeInterval:firstDate!.timeIntervalSinceDate(lastDate!)/2.0, sinceDate:lastDate!)
+			midDate = NSDate(timeInterval:firstDate!.timeInterval(since: lastDate!)/2.0, since:lastDate!)
 		}
 
 		state.vMarkCount = 0
 		state.vMarkPositions[state.vMarkCount] = 0.0
-		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(lastDate!)!
+		state.vMarkNames[state.vMarkCount] = dateFormatter.string(for: lastDate!)!
 		state.vMarkCount += 1
 
 		if let midDate = midDate {
 			state.vMarkPositions[state.vMarkCount] = 0.5
-			state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(midDate)!
+			state.vMarkNames[state.vMarkCount] = dateFormatter.string(for: midDate)!
 			state.vMarkCount += 1
 		}
 
 		state.vMarkPositions[state.vMarkCount] = 1.0
-		state.vMarkNames[state.vMarkCount] = dateFormatter.stringForObjectValue(firstDate!)!
+		state.vMarkNames[state.vMarkCount] = dateFormatter.string(for: firstDate!)!
 		state.vMarkCount += 1
 
 		return valAverage
@@ -356,7 +356,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		UIColor(white:0.082, alpha:1.0).setFill()
 		CGContextFillRect(cgContext, self.view.bounds)
 
-		UIColor.blackColor().setFill()
+		UIColor.black().setFill()
 		CGContextFillRect(cgContext, CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28.0))
 
 		// Contents if there is a valid state
@@ -371,15 +371,15 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state.dataCount == 0	{
 
-			let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.whiteColor() ]
+			let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.white() ]
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment:"")
-            let size = text.sizeWithAttributes(attributes)
+			let size = text.size(attributes: attributes)
 
             let x = floor ((self.view.bounds.size.width - size.width)/2.0)
             let y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0)
 
-			text.drawAtPoint(CGPoint(x: x, y:y), withAttributes:attributes)
+			text.draw(at: CGPoint(x: x, y:y), withAttributes:attributes)
 
 		} else {
 
@@ -395,8 +395,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
             path.setLineDash(dashDotPattern, count:dashDotPatternLength, phase:0.0)
 
 			path.removeAllPoints()
-			path.moveToPoint(CGPoint(x: self.graphLeftBorder, y: 0.25))
-			path.addLineToPoint(CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: 0.25))
+			path.move(to: CGPoint(x: self.graphLeftBorder, y: 0.25))
+			path.addLine(to: CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: 0.25))
 
             CGContextSaveGState(cgContext)
 
@@ -417,17 +417,17 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for horizontal marker lines markers
         CGContextSaveGState (cgContext)
 
-		let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.whiteColor() ]
+		let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.white() ]
 
 		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
 
-				let size = mark.sizeWithAttributes(attributes)
+				let size = mark.size(attributes: attributes)
 
 				let x = self.graphRightBorder + 6
 				let y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state.hMarkPositions [i] - size.height) + 0.5
 
-				mark.drawAtPoint(CGPoint(x: x, y: y), withAttributes:attributes)
+				mark.draw(at: CGPoint(x: x, y: y), withAttributes:attributes)
 			}
 		}
 
@@ -438,8 +438,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         path.setLineDash(nil, count:0, phase:0.0)
 
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: 0.25, y: self.graphTopBorder))
-		path.addLineToPoint(CGPoint(x: 0.25, y: self.graphBottomBorder + 6))
+		path.move(to: CGPoint(x: 0.25, y: self.graphTopBorder))
+		path.addLine(to: CGPoint(x: 0.25, y: self.graphBottomBorder + 6))
 
         CGContextSaveGState(cgContext)
 
@@ -462,7 +462,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
 
-				let size = mark.sizeWithAttributes(attributes)
+				let size = mark.size(attributes: attributes)
 
 				var x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state.vMarkPositions[i] - size.width/2.0)
 				let y = self.graphBottomBorder + 5
@@ -475,7 +475,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					x = self.graphRightBorder - size.width
 				}
 
-				mark.drawAtPoint(CGPoint(x: x, y: y), withAttributes:vMarkAttributes)
+				mark.draw(at: CGPoint(x: x, y: y), withAttributes: vMarkAttributes)
 			}
 		}
 
@@ -486,7 +486,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         CGContextSaveGState(cgContext)
 
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: self.graphLeftBorder + 1, y: self.graphBottomBorder))
+		path.move(to: CGPoint(x: self.graphLeftBorder + 1, y: self.graphBottomBorder))
 
 		var minY = self.graphBottomBorder - 6
 
@@ -494,7 +494,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
 			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
 
-			path.addLineToPoint(CGPoint(x: x, y: y))
+			path.addLine(to: CGPoint(x: x, y: y))
 
 			if y < minY {
 				minY = y
@@ -505,8 +505,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			minY = self.graphTopBorder
 		}
 
-		path.addLineToPoint(CGPoint(x: self.graphRightBorder, y: self.graphBottomBorder))
-		path.closePath()
+		path.addLine(to: CGPoint(x: self.graphRightBorder, y: self.graphBottomBorder))
+		path.close()
 
 		// Color gradient
 		path.addClip()
@@ -514,7 +514,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 									self.dataSource!.curveGradient,
 									CGPoint(x: 0, y: self.graphBottomBorder - 6),
 									CGPoint(x: 0, y: minY),
-									[CGGradientDrawingOptions.DrawsBeforeStartLocation, CGGradientDrawingOptions.DrawsAfterEndLocation])
+									[CGGradientDrawingOptions.drawsBeforeStartLocation, CGGradientDrawingOptions.drawsAfterEndLocation])
 
 		CGContextRestoreGState(cgContext)
 
@@ -523,29 +523,29 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.lineWidth = 0.5
 
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: self.graphLeftBorder, y: self.graphTopBorder + 0.25))
-		path.addLineToPoint(CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: self.graphTopBorder + 0.25))
+		path.move(to: CGPoint(x: self.graphLeftBorder, y: self.graphTopBorder + 0.25))
+		path.addLine(to: CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: self.graphTopBorder + 0.25))
 		path.stroke()
 
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: self.graphLeftBorder, y: self.graphBottomBorder + 0.25))
-		path.addLineToPoint(CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: self.graphBottomBorder + 0.25))
+		path.move(to: CGPoint(x: self.graphLeftBorder, y: self.graphBottomBorder + 0.25))
+		path.addLine(to: CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: self.graphBottomBorder + 0.25))
 		path.stroke()
 
 		// The curve
 		path.lineWidth    = 1
-		path.lineCapStyle = .Round
-		UIColor.whiteColor().setStroke()
+		path.lineCapStyle = .round
+		UIColor.white().setStroke()
         
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: rint (self.graphLeftBorder + self.graphWidth * state.data [0].x),
+		path.move(to: CGPoint(x: rint (self.graphLeftBorder + self.graphWidth * state.data [0].x),
 								 y: rint (self.graphTopBorder + self.graphHeight * state.data [0].y)))
 
 		for i in 0..<state.dataCount {
 			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
 			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
             
-			path.addLineToPoint(CGPoint(x: x, y: y))
+			path.addLine(to: CGPoint(x: x, y: y))
 		}
 
 		path.stroke()
@@ -561,7 +561,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Update summary in top right of view
 		if let average = average where !average.floatValue.isNaN {
-			self.rightLabel.text = String(format:self.dataSource!.averageFormatString(true, forCar:self.selectedCar), self.dataSource!.averageFormatter(false, forCar:self.selectedCar).stringFromNumber(average)!)
+			self.rightLabel.text = String(format:self.dataSource!.averageFormatString(true, forCar:self.selectedCar), self.dataSource!.averageFormatter(false, forCar:self.selectedCar).string(from: average)!)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)
 		}
@@ -571,13 +571,13 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			self.activityView.stopAnimating()
 
-			UIView.transitionWithView(imageView,
+			UIView.transition(with: imageView,
                           duration:StatisticTransitionDuration,
-                           options:.TransitionCrossDissolve,
+                           options:.transitionCrossDissolve,
                         animations:{ imageView.image = image },
                         completion:nil)
 
-			zoomRecognizer.enabled = (cell?.dataCount ?? 0) > 0
+			zoomRecognizer.isEnabled = (cell?.dataCount ?? 0) > 0
 
 			return true
 
@@ -591,9 +591,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			UIGraphicsEndImageContext()
 
-			UIView.transitionWithView(imageView,
+			UIView.transition(with: imageView,
                           duration:StatisticTransitionDuration,
-                           options:.TransitionCrossDissolve,
+                           options:.transitionCrossDissolve,
                         animations:{ imageView.image = image },
                         completion:{ finished in
 							if finished {
@@ -601,7 +601,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 							}
 			})
 
-			zoomRecognizer.enabled = false
+			zoomRecognizer.isEnabled = false
 
 			return false
 		}
@@ -611,16 +611,16 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	func longPressChanged(sender: AnyObject) {
 		switch zoomRecognizer.state {
-        case .Possible:
+        case .possible:
             break
 
-		case .Began:
+		case .began:
 
 			// Cancel long press gesture when located above the graph (new the radio buttons)
-            if zoomRecognizer.locationInView(self.view).y < self.graphTopBorder {
+			if zoomRecognizer.location(in: self.view).y < self.graphTopBorder {
 
-				zoomRecognizer.enabled = false
-                zoomRecognizer.enabled = true
+				zoomRecognizer.isEnabled = false
+                zoomRecognizer.isEnabled = true
                 break
             }
 
@@ -630,8 +630,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			fallthrough
             // no break
 
-        case .Changed:
-			var lensLocation = zoomRecognizer.locationInView(self.view)
+        case .changed:
+			var lensLocation = zoomRecognizer.location(in: self.view)
 
             // Keep horizontal position above graphics
 			if lensLocation.x < self.graphLeftBorder {
@@ -676,11 +676,11 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     let df = Formatters.sharedLongDateFormatter
 
 					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
-                        self.centerLabel.text = df.stringFromDate(NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0]))
+                        self.centerLabel.text = df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0]))
 					} else {
                         self.centerLabel.text = String(format:"%@  ➡  %@",
-                                                    df.stringFromDate(NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0])),
-                                                    df.stringFromDate(NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][1])))
+                                                    df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0])),
+                                                    df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][1])))
 					}
 
                     // Knob position
@@ -692,7 +692,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 					let valueString = String(format:
                                                     self.dataSource!.averageFormatString(false, forCar:self.selectedCar),
-														self.dataSource!.averageFormatter(true, forCar:self.selectedCar).stringFromNumber(cell.lensValue [minIndex])!)
+														self.dataSource!.averageFormatter(true, forCar:self.selectedCar).string(from: cell.lensValue [minIndex])!)
 
 					drawFlatLensWithBGImage(cell.contentImage, lensLocation:lensLocation, info:valueString)
 
@@ -703,8 +703,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                 }
             }
 
-        case .Ended, .Cancelled, .Failed:
-			if NSProcessInfo.processInfo().arguments.indexOf("-KEEPLENS") == nil {
+        case .ended, .cancelled, .failed:
+			if NSProcessInfo.processInfo().arguments.index(of: "-KEEPLENS") == nil {
 				self.zooming = false
 			}
 		}
@@ -714,7 +714,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var path = UIBezierPath()
 
 		// Graph as background
-		background.drawAtPoint(CGPointZero, blendMode:.Copy, alpha:1.0)
+		background.draw(at: CGPointZero, blendMode: .copy, alpha: 1.0)
 
 		// Marker line
 		self.view.tintColor.set()
@@ -722,13 +722,13 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.lineWidth = 0.5
 
 		path.removeAllPoints()
-		path.moveToPoint(CGPoint(x: location.x + 0.25, y: self.graphTopBorder + 0.5))
-		path.addLineToPoint(CGPoint(x: location.x + 0.25, y: self.graphBottomBorder))
+		path.move(to: CGPoint(x: location.x + 0.25, y: self.graphTopBorder + 0.5))
+		path.addLine(to: CGPoint(x: location.x + 0.25, y: self.graphBottomBorder))
 		path.stroke()
 
 		// Marker knob
 		path = UIBezierPath(arcCenter:location, radius:5.5, startAngle:0.0, endAngle:CGFloat(M_PI)*2.0, clockwise:false)
-		UIColor.blackColor().set()
+		UIColor.black().set()
 		path.fill()
 
 		path = UIBezierPath(arcCenter:location, radius:5.0, startAngle:0.0, endAngle:CGFloat(M_PI)*2.0, clockwise:false)
@@ -737,10 +737,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Layout for info box
 		let attributes = [ NSFontAttributeName:UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2),
-                                 NSForegroundColorAttributeName:UIColor.whiteColor() ]
+                                 NSForegroundColorAttributeName:UIColor.white() ]
 
 		var infoRect = CGRect()
-		infoRect.size = info.sizeWithAttributes(attributes)
+		infoRect.size = info.size(attributes: attributes)
 		infoRect.size.width += StatisticTrackInfoXMarginFlat * 2.0
 		infoRect.size.height += StatisticTrackInfoYMarginFlat * 2.0
 		infoRect.origin.x = rint (location.x - infoRect.size.width/2)
@@ -756,14 +756,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Info box
 		path = UIBezierPath(roundedRect:infoRect,
-                                 byRoundingCorners:.AllCorners,
-									   cornerRadii:CGSize(width: 4.0, height: 4.0))
+                                 byRoundingCorners: .allCorners,
+									   cornerRadii: CGSize(width: 4.0, height: 4.0))
 
 		self.view.tintColor.set()
 		path.fill()
 
 		// Info text
-		info.drawAtPoint(CGPoint(x: infoRect.origin.x + StatisticTrackInfoXMarginFlat, y: infoRect.origin.y + StatisticTrackInfoYMarginFlat), withAttributes:attributes)
+		info.draw(at: CGPoint(x: infoRect.origin.x + StatisticTrackInfoXMarginFlat, y: infoRect.origin.y + StatisticTrackInfoYMarginFlat), withAttributes:attributes)
 	}
 }
 
@@ -781,7 +781,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 		return graphWidth - (consumptionUnit.isGP10K ? 16.0 : 0.0)
 	}
 
-	var curveGradient: CGGradientRef {
+	var curveGradient: CGGradient {
 		return AppDelegate.greenGradient
 	}
 
@@ -806,7 +806,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 
 	func valueForFuelEvent(fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		if !fuelEvent.filledUp {
-			return CGFloat.NaN
+			return CGFloat.nan
 		}
 
 		let consumptionUnit = car.ksFuelConsumptionUnit
@@ -818,7 +818,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewC
 }
 
 class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewControllerDataSource {
-	var curveGradient: CGGradientRef {
+	var curveGradient: CGGradient {
 		return AppDelegate.orangeGradient
 	}
 
@@ -849,7 +849,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 		let price = fuelEvent.price
 
 		if price == NSDecimalNumber.zero() {
-			return CGFloat.NaN
+			return CGFloat.nan
 		}
 
 		return CGFloat(Units.pricePerUnit(price, withUnit:car.ksFuelUnit).floatValue)
@@ -857,7 +857,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 }
 
 class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewControllerDataSource {
-	var curveGradient: CGGradientRef {
+	var curveGradient: CGGradient {
 		return AppDelegate.blueGradient
 	}
 
@@ -900,7 +900,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 
 	func valueForFuelEvent(fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		if !fuelEvent.filledUp {
-			return CGFloat.NaN
+			return CGFloat.nan
 		}
 
 		let handler = Formatters.sharedConsumptionRoundingHandler
@@ -913,13 +913,13 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 		cost     = cost + fuelEvent.inheritedCost
 
 		if cost == NSDecimalNumber.zero() {
-			return CGFloat.NaN
+			return CGFloat.nan
 		}
 
 		if distanceUnit.isMetric {
-			return CGFloat((cost << 2).decimalNumberByDividingBy(distance, withBehavior:handler).floatValue)
+			return CGFloat((cost << 2).dividing(by: distance, withBehavior:handler).floatValue)
 		} else {
-			return CGFloat(distance.decimalNumberByDividingBy(Units.kilometersPerStatuteMile).decimalNumberByDividingBy(cost, withBehavior:handler).floatValue)
+			return CGFloat(distance.dividing(by: Units.kilometersPerStatuteMile).dividing(by: cost, withBehavior:handler).floatValue)
 		}
 	}
 }

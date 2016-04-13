@@ -16,8 +16,8 @@ final class TextEditTableCell: EditablePageCell {
 	required init() {
 		super.init()
 
-		self.textField.keyboardType  = .Default
-		self.textField.returnKeyType = .Next
+		self.textField.keyboardType  = .`default`
+		self.textField.returnKeyType = .next
 		self.textField.allowCut      = true
 		self.textField.allowPaste    = true
 	}
@@ -30,9 +30,9 @@ final class TextEditTableCell: EditablePageCell {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		if let autocapitalizeAll = dictionary["autocapitalizeAll"] where autocapitalizeAll.boolValue == true {
-			self.textField.autocapitalizationType = .AllCharacters
+			self.textField.autocapitalizationType = .allCharacters
 		} else {
-			self.textField.autocapitalizationType = .Words
+			self.textField.autocapitalizationType = .words
 		}
 		if let maximumTextFieldLength = dictionary["maximumTextFieldLength"] as? Int {
 			self.maximumTextFieldLength = maximumTextFieldLength
@@ -63,16 +63,16 @@ final class TextEditTableCell: EditablePageCell {
 	}
 
 	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-		var newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
+		var newValue = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 
 		// Don't allow too large strings
 		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {
 			return false
 		}
 
-		if textField.textAlignment == .Right {
+		if textField.textAlignment == .right {
 			// http://stackoverflow.com/questions/19569688/right-aligned-uitextfield-spacebar-does-not-advance-cursor-in-ios-7
-			newValue = newValue.stringByReplacingOccurrencesOfString(" ", withString:"\u{00a0}")
+			newValue = newValue.replacingOccurrences(of: " ", with: "\u{00a0}")
 		}
 
 		// Do the update here and propagate the new value back to the delegate
@@ -86,6 +86,6 @@ final class TextEditTableCell: EditablePageCell {
 	override func textFieldDidEndEditing(textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
-		textField.text = textField.text?.stringByReplacingOccurrencesOfString("\u{00a0}", withString: " ")
+		textField.text = textField.text?.replacingOccurrences(of: "\u{00a0}", with: " ")
 	}
 }

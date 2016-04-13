@@ -79,15 +79,15 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
 		}
 
-		statisticsController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsPageController") as! FuelStatisticsPageController
+		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as! FuelStatisticsPageController
 
 		// Configure root view
 		self.title = selectedCar.name
 
 		// Export button in navigation bar
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Action, target:self, action:#selector(FuelEventController.showExportSheet(_:)))
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target:self, action: #selector(FuelEventController.showExportSheet(_:)))
 
-		self.navigationItem.rightBarButtonItem!.enabled = false
+		self.navigationItem.rightBarButtonItem!.isEnabled = false
 
 		// Reset tint color
 		self.navigationController?.navigationBar.tintColor = nil
@@ -98,8 +98,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.Bottom,  relatedBy:.Equal, toItem:backgroundImage, attribute:.Bottom,  multiplier:1.0, constant:90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier:1.0, constant:90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier:1.0, constant:0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
@@ -116,8 +116,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 
 		// Dismiss any presented view controllers
-		if presentedViewController != nil {
-			dismissViewControllerAnimated(false, completion:nil)
+		if presented != nil {
+			dismiss(animated: false, completion:nil)
 		}
 	}
 
@@ -149,16 +149,16 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		if presentedViewController == nil {
+		if presented == nil {
 			setObserveDeviceRotation(false)
 		}
 	}
 
 	//MARK: - State Restoration
 
-	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
+	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+			let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
 			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventSelectedCarID) as! String
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
@@ -171,26 +171,26 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return nil
 	}
 
-	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
-		coder.encodeBool(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
-		coder.encodeBool(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
-		coder.encodeBool(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
+	override func encodeRestorableState(with coder: NSCoder) {
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
+		coder.encode(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
+		coder.encode(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
+		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
 
 		// don't use a snapshot image for next launch when graph is currently visible
-		if presentedViewController != nil {
-			UIApplication.sharedApplication().ignoreSnapshotOnNextApplicationLaunch()
+		if presented != nil {
+			UIApplication.shared().ignoreSnapshotOnNextApplicationLaunch()
 		}
 
-		super.encodeRestorableStateWithCoder(coder)
+		super.encodeRestorableState(with: coder)
 	}
 
-	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		restoreExportSheet = coder.decodeBoolForKey(kSRFuelEventExportSheet)
-		restoreOpenIn = coder.decodeBoolForKey(kSRFuelEventShowOpenIn)
-		restoreMailComposer = coder.decodeBoolForKey(kSRFuelEventShowComposer)
+	override func decodeRestorableState(with coder: NSCoder) {
+		restoreExportSheet = coder.decodeBool(forKey: kSRFuelEventExportSheet)
+		restoreOpenIn = coder.decodeBool(forKey: kSRFuelEventShowOpenIn)
+		restoreMailComposer = coder.decodeBool(forKey: kSRFuelEventShowComposer)
 
-		super.decodeRestorableStateWithCoder(coder)
+		super.decodeRestorableState(with: coder)
 
 		// -> openradar #13438788
 		self.tableView.reloadData()
@@ -200,19 +200,19 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func setObserveDeviceRotation(observeRotation: Bool) {
 		if observeRotation && !isObservingRotationEvents {
-			UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
+			UIDevice.current().beginGeneratingDeviceOrientationNotifications()
 
 			NSNotificationCenter.defaultCenter().addObserver(self,
                selector:#selector(FuelEventController.orientationChanged(_:)),
                    name:UIDeviceOrientationDidChangeNotification,
-                 object:UIDevice.currentDevice())
+                 object:UIDevice.current())
 
 		} else if !observeRotation && isObservingRotationEvents {
 			NSNotificationCenter.defaultCenter().removeObserver(self,
                       name:UIDeviceOrientationDidChangeNotification,
-                    object:UIDevice.currentDevice())
+                    object:UIDevice.current())
 
-			UIDevice.currentDevice().endGeneratingDeviceOrientationNotifications()
+			UIDevice.current().endGeneratingDeviceOrientationNotifications()
 		}
 
 		isObservingRotationEvents = observeRotation
@@ -229,15 +229,15 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 
 		// Switch view controllers according rotation state
-		let deviceOrientation = UIDevice.currentDevice().orientation
+		let deviceOrientation = UIDevice.current().orientation
 
-		if UIDeviceOrientationIsLandscape(deviceOrientation) && presentedViewController == nil {
+		if UIDeviceOrientationIsLandscape(deviceOrientation) && presented == nil {
 			isPerformingRotation = true
 			statisticsController.selectedCar = selectedCar
-			presentViewController(statisticsController, animated:true, completion: { self.isPerformingRotation = false })
-		} else if UIDeviceOrientationIsPortrait(deviceOrientation) && presentedViewController != nil {
+			present(statisticsController, animated:true, completion: { self.isPerformingRotation = false })
+		} else if UIDeviceOrientationIsPortrait(deviceOrientation) && presented != nil {
 			isPerformingRotation = true
-			dismissViewControllerAnimated(true, completion: { self.isPerformingRotation = false })
+			dismiss(animated: true, completion: { self.isPerformingRotation = false })
 		}
 	}
 
@@ -250,31 +250,31 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	//MARK: - Export Support
 
 	func validateExport() {
-		self.navigationItem.rightBarButtonItem?.enabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
+		self.navigationItem.rightBarButtonItem?.isEnabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
 	}
 
 	private var exportFilename: String {
 		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
-		let illegalCharacters = NSCharacterSet(charactersInString:"/\\?%*|\"<>")
+		let illegalCharacters = NSCharacterSet(charactersIn:"/\\?%*|\"<>")
 
-		return rawFilename.componentsSeparatedByCharactersInSet(illegalCharacters).joinWithSeparator("")
+		return rawFilename.componentsSeparatedByCharacters(in: illegalCharacters).joined(separator: "")
 	}
 
 	private var exportURL: NSURL {
-		return NSURL(fileURLWithPath:(NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(exportFilename))
+		return NSURL(fileURLWithPath:(NSTemporaryDirectory() as NSString).appendingPathComponent(exportFilename))
 	}
 
 	func exportTextData() -> NSData {
 		let fetchedObjects = self.fetchedResultsController.fetchedObjects as! [FuelEvent]
 		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar:selectedCar)
-		return csvString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+		return csvString.data(usingEncoding: NSUTF8StringEncoding, allowLossyConversion: true)!
 	}
 
 	private func exportTextDescription() -> String {
 		let outputFormatter = NSDateFormatter()
 
-		outputFormatter.dateStyle = .MediumStyle
-		outputFormatter.timeStyle = .NoStyle
+		outputFormatter.dateStyle = .mediumStyle
+		outputFormatter.timeStyle = .noStyle
 
         let fetchedObjects = self.fetchedResultsController.fetchedObjects!
         let fetchCount = fetchedObjects.count
@@ -285,8 +285,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let period: String
         switch fetchCount {
 		case 0:  period = NSLocalizedString("", comment:"")
-		case 1:  period = String(format:NSLocalizedString("on %@", comment:""), outputFormatter.stringFromDate(last!.timestamp))
-		default: period = String(format:NSLocalizedString("in the period from %@ to %@", comment:""), outputFormatter.stringFromDate(last!.timestamp), outputFormatter.stringFromDate(first!.timestamp))
+		case 1:  period = String(format:NSLocalizedString("on %@", comment:""), outputFormatter.string(from: last!.timestamp))
+		default: period = String(format:NSLocalizedString("in the period from %@ to %@", comment:""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
         }
 
 		let count = String(format:NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment:""), fetchCount)
@@ -306,37 +306,37 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
 		} catch _ {
 			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
 				message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
-				preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+				preferredStyle:.alert)
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 			return
 		}
 
 		// show document interaction controller
-		openInController = UIDocumentInteractionController(URL:exportURL)
+		openInController = UIDocumentInteractionController(url: exportURL)
 
 		openInController.delegate = self
 		openInController.name = exportFilename
-		openInController.UTI = "public.comma-separated-values-text"
+		openInController.uti = "public.comma-separated-values-text"
 
-		if !openInController.presentOpenInMenuFromBarButtonItem(self.navigationItem.rightBarButtonItem!, animated:true) {
+		if !openInController.presentOpenInMenu(from: self.navigationItem.rightBarButtonItem!, animated:true) {
 			let alertController = UIAlertController(title:NSLocalizedString("Open In Failed", comment:""),
 				message:NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment:""),
-																		  preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+																		  preferredStyle: .alert)
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 
 			self.openInController = nil
 		}
@@ -348,47 +348,48 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
 		} catch _ {
 			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
 			                                        message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
-			                                        preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+			                                        preferredStyle: .alert)
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated:true, completion:nil)
 			return
 		}
 
-		documentPickerViewController = UIDocumentPickerViewController(URL: exportURL, inMode: .ExportToService)
+		documentPickerViewController = UIDocumentPickerViewController(url: exportURL, in: .exportToService)
 		documentPickerViewController.delegate = self
 
-		presentViewController(documentPickerViewController, animated: true, completion: nil)
+		present(documentPickerViewController, animated: true, completion: nil)
 	}
 
 	func documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try NSFileManager.defaultManager().removeItem(at: exportURL)
 		} catch _ {
 		}
 
 		documentPickerViewController = nil
 	}
 
-	func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+	@objc(documentPicker:didPickDocumentAtURL:)
+	func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAt url: NSURL) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try NSFileManager.defaultManager().removeItem(at: exportURL)
 		} catch _ {
 		}
 
 		documentPickerViewController = nil
 	}
 
-	func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
+	func documentInteractionControllerDidDismissOpen(inMenu controller: UIDocumentInteractionController) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try NSFileManager.defaultManager().removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -409,25 +410,25 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML:false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text/csv", fileName:exportFilename)
 
-			presentViewController(mailComposeController, animated:true, completion:nil)
+			present(mailComposeController, animated:true, completion:nil)
 		}
 	}
 
-	func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-		dismissViewControllerAnimated(true) {
+	func mailComposeController(controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: NSError?) {
+		dismiss(animated: true) {
 
 			self.mailComposeController = nil
 
 			if result == MFMailComposeResultFailed {
 				let alertController = UIAlertController(title:NSLocalizedString("Sending Failed", comment:""),
 					message:NSLocalizedString("The exported fuel data could not be sent.", comment:""),
-																			  preferredStyle:.Alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+																			  preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
 					self.isShowingAlert = false
 				}
 				alertController.addAction(defaultAction)
 				self.isShowingAlert = true
-				self.presentViewController(alertController, animated:true, completion:nil)
+				self.present(alertController, animated:true, completion:nil)
 			}
 		}
 	}
@@ -440,19 +441,19 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		let alertController = UIAlertController(title:NSLocalizedString("Export Fuel Data in CSV Format", comment:""),
 																			 message:nil,
-																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.Cancel) { _ in
+																	  preferredStyle:.actionSheet)
+		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.cancel) { _ in
 			self.isShowingExportSheet = false
 		}
-		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment:""), style:.Default) { _ in
+		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment:""), style: .`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showMailComposer() }
 		}
-		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment:""), style:.Default) { _ in
+		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment:""), style: .`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showOpenIn() }
 		}
-		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment:""), style:.Default) { _ in
+		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment:""), style:.`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showExportDocumentPicker() }
 		}
@@ -464,13 +465,13 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		alertController.addAction(cancelAction)
 		alertController.popoverPresentationController?.barButtonItem = sender
 
-		presentViewController(alertController, animated:true, completion:nil)
+		present(alertController, animated:true, completion:nil)
 	}
 
 	//MARK: - UITableViewDataSource
 
 	func configureCell(tableCell: QuadInfoCell, atIndexPath indexPath: NSIndexPath) {
-		let managedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
+		let managedObject = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
 
 		let car = managedObject.car
 		let distance = managedObject.distance
@@ -480,25 +481,25 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Timestamp
-		tableCell.topLeftLabel.text = Formatters.sharedDateFormatter.stringForObjectValue(managedObject.timestamp)
+		tableCell.topLeftLabel.text = Formatters.sharedDateFormatter.string(for: managedObject.timestamp)
 		tableCell.topLeftAccessibilityLabel = nil
 
 		// Distance
 		let convertedDistance: NSDecimalNumber
 
-		if odometerUnit == .Kilometer {
+		if odometerUnit == .kilometer {
 			convertedDistance = distance
 		} else {
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
 		tableCell.botLeftLabel.text = String(format:"%@ %@",
-                    Formatters.sharedDistanceFormatter.stringFromNumber(convertedDistance)!,
+                    Formatters.sharedDistanceFormatter.string(from: convertedDistance)!,
                     odometerUnit.description)
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
-		tableCell.topRightLabel.text = Formatters.sharedCurrencyFormatter.stringFromNumber(managedObject.cost)
+		tableCell.topRightLabel.text = Formatters.sharedCurrencyFormatter.string(from: managedObject.cost)
 		tableCell.topRightAccessibilityLabel = tableCell.topRightLabel.text
 
 		// Consumption combined with inherited data from earlier events
@@ -509,7 +510,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters:totalFuelVolume, inUnit:consumptionUnit)
 
-			consumptionDescription = Formatters.sharedFuelVolumeFormatter.stringFromNumber(avg)!
+			consumptionDescription = Formatters.sharedFuelVolumeFormatter.string(from: avg)!
 
 			tableCell.botRightAccessibilityLabel = String(format:", %@ %@",
                                                     consumptionDescription,
@@ -523,7 +524,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, consumptionUnit.localizedString)
 	}
 
-	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	override func numberOfSections(in tableView: UITableView) -> Int {
 		return self.fetchedResultsController.sections?.count ?? 0
 	}
 
@@ -532,22 +533,22 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return sectionInfo?.numberOfObjects ?? 0
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+	override func tableView(tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
 		let CellIdentifier = "FuelCell"
 
-		var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? QuadInfoCell
+		var cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as? QuadInfoCell
 
 		if cell == nil {
-			cell = QuadInfoCell(style:.Default, reuseIdentifier:CellIdentifier, enlargeTopRightLabel:false)
+			cell = QuadInfoCell(style:.`default`, reuseIdentifier:CellIdentifier, enlargeTopRightLabel:false)
 		}
 
 		configureCell(cell!, atIndexPath:indexPath)
 		return cell!
 	}
 
-	override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-		if editingStyle == .Delete {
-			let fuelEvent = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
+	override func tableView(tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: NSIndexPath) {
+		if editingStyle == .delete {
+			let fuelEvent = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
 			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate:false)
 			CoreDataManager.saveContext()
 		}
@@ -555,24 +556,26 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - UIDataSourceModelAssociation
 
-	func indexPathForElementWithModelIdentifier(identifier: String, inView view: UIView) -> NSIndexPath? {
+	@objc(indexPathForElementWithModelIdentifier:inView:)
+	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> NSIndexPath? {
 		let object = CoreDataManager.managedObjectForModelIdentifier(identifier)!
 
-		return self.fetchedResultsController.indexPathForObject(object)
+		return self.fetchedResultsController.indexPath(for: object)
 	}
 
-	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
+	@objc(modelIdentifierForElementAtIndexPath:inView:)
+	func modelIdentifierForElement(at idx: NSIndexPath, in view: UIView) -> String? {
+		let object = self.fetchedResultsController.object(at: idx) as! NSManagedObject
 
 		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		let editController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
+	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+		let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as! FuelEventEditorController
 
-		editController.event = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
+		editController.event = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
 
 		self.navigationController?.pushViewController(editController, animated:true)
 	}
@@ -583,28 +586,28 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.beginUpdates()
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, at sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
-        case .Insert:
-            self.tableView.insertSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
-        case .Delete:
-            self.tableView.deleteSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
-		case .Move, .Update:
-			self.tableView.reloadSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
+        case .insert:
+            self.tableView.insertSections(NSIndexSet(index:sectionIndex), with: .fade)
+        case .delete:
+            self.tableView.deleteSections(NSIndexSet(index:sectionIndex), with: .fade)
+		case .move, .update:
+			self.tableView.reloadSections(NSIndexSet(index:sectionIndex), with: .fade)
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(controller: NSFetchedResultsController, didChange anObject: AnyObject, at indexPath: NSIndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
-        case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
-        case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
-        case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
-        case .Update:
-            tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation:.Automatic)
+        case .insert:
+			tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+			tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .update:
+            tableView.reloadRows(at: [indexPath!], with: .automatic)
 		}
 	}
 

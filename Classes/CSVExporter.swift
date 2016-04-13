@@ -15,10 +15,10 @@ final class CSVExporter {
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		let bundle: NSBundle
-		if let language = language, path = NSBundle.mainBundle().pathForResource(language, ofType: "lproj"), localeBundle = NSBundle(path: path) {
+		if let language = language, path = NSBundle.main().path(forResource: language, ofType: "lproj"), localeBundle = NSBundle(path: path) {
 			bundle = localeBundle
 		} else {
-			bundle = NSBundle.mainBundle()
+			bundle = NSBundle.main()
 		}
 
 		var dataString = String()
@@ -50,12 +50,12 @@ final class CSVExporter {
 
 		let dateFormatter = NSDateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
-		dateFormatter.locale = NSLocale.systemLocale()
+		dateFormatter.locale = NSLocale.system()
 		dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
 
 		let numberFormatter = NSNumberFormatter()
-		numberFormatter.numberStyle = .DecimalStyle
-		numberFormatter.locale = NSLocale.currentLocale()
+		numberFormatter.numberStyle = .decimalStyle
+		numberFormatter.locale = NSLocale.current()
 		numberFormatter.usesGroupingSeparator = false
 		numberFormatter.alwaysShowsDecimalSeparator = true
 		numberFormatter.minimumFractionDigits = 2
@@ -66,12 +66,12 @@ final class CSVExporter {
 			let price = fuelEvent.price
 
 			dataString += String(format:"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\";\"%@\"\n",
-				dateFormatter.stringFromDate(fuelEvent.timestamp),
-				numberFormatter.stringFromNumber(Units.distanceForKilometers(distance, withUnit:odometerUnit))!,
-				numberFormatter.stringFromNumber(Units.volumeForLiters(fuelVolume, withUnit:fuelUnit))!,
+				dateFormatter.string(from: fuelEvent.timestamp),
+				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit:odometerUnit))!,
+				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit:fuelUnit))!,
 				fuelEvent.filledUp ? NSLocalizedString("Yes", comment:"") : NSLocalizedString("No", comment:""),
-				numberFormatter.stringFromNumber(Units.pricePerUnit(price, withUnit:fuelUnit))!,
-				fuelEvent.filledUp ? numberFormatter.stringFromNumber(
+				numberFormatter.string(from: Units.pricePerUnit(price, withUnit:fuelUnit))!,
+				fuelEvent.filledUp ? numberFormatter.string(from: 
 					Units.consumptionForKilometers(distance + fuelEvent.inheritedDistance,
 						liters:fuelVolume + fuelEvent.inheritedFuelVolume,
 						inUnit:consumptionUnit))!
