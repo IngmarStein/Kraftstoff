@@ -13,7 +13,7 @@ final class CSVParser {
 
 	private var separator: String! {
 		didSet {
-			let endTextMutableCharacterSet = NSCharacterSet.newline().mutableCopy() as! NSMutableCharacterSet
+			let endTextMutableCharacterSet = NSCharacterSet.newlines().mutableCopy() as! NSMutableCharacterSet
 			endTextMutableCharacterSet.addCharacters(in: "\"")
 			endTextMutableCharacterSet.addCharacters(in: separator.substring(to: separator.startIndex.successor()))
 			endTextCharacterSet = endTextMutableCharacterSet
@@ -24,7 +24,7 @@ final class CSVParser {
 	private var fieldNames = [String]()
 	private var endTextCharacterSet = NSCharacterSet()
 
-	static func simplifyCSVHeaderName(header: String) -> String {
+	static func simplifyCSVHeaderName(_ header: String) -> String {
 		return header.replacingOccurrences(of: "[? :_\\-]+",
 												with: "",
                                                  options: .regularExpressionSearch).uppercased()
@@ -42,7 +42,7 @@ final class CSVParser {
 		scanner.scanLocation = 0
 	}
 
-	private func numberOfNonEmtyFieldNames(array: [String]) -> Int {
+	private func numberOfNonEmtyFieldNames(_ array: [String]) -> Int {
 		return array.reduce(0) { (count, name) in name.isEmpty ? count : count + 1 }
 	}
 
@@ -170,7 +170,7 @@ final class CSVParser {
 	}
 
 	private func parseField() -> String? {
-		scanner.scanCharacters(from: NSCharacterSet.whitespace(), into: nil)
+		scanner.scanCharacters(from: NSCharacterSet.whitespaces(), into: nil)
 
 		if let escapedString = parseEscaped() {
 			return escapedString
@@ -259,7 +259,7 @@ final class CSVParser {
 
 		let location = scanner.scanLocation
 
-		scanner.scanCharacters(from: NSCharacterSet.whitespace(), into: &matchedNewlines)
+		scanner.scanCharacters(from: NSCharacterSet.whitespaces(), into: &matchedNewlines)
 
 		if matchedNewlines == nil {
 			scanner.scanCharacters(from: NSCharacterSet(charactersIn: ",;"), into: &matchedNewlines)
@@ -286,7 +286,7 @@ final class CSVParser {
 	}
 
 	private func skipLine() -> String? {
-		scanner.scanUpToCharacters(from: NSCharacterSet.newline(), into: nil)
+		scanner.scanUpToCharacters(from: NSCharacterSet.newlines(), into: nil)
 		return parseLineSeparator()
 	}
 

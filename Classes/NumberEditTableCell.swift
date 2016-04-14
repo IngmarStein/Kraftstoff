@@ -24,7 +24,7 @@ final class NumberEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	private func updateTextFieldColorForValue(value: AnyObject?) {
+	private func updateTextFieldColorForValue(_ value: AnyObject?) {
 		let valid: Bool
 		if let validator = self.delegate as? EditablePageCellValidator {
 			valid = validator.valueValid(value, identifier: self.valueIdentifier)
@@ -34,7 +34,7 @@ final class NumberEditTableCell: EditablePageCell {
 		self.textField.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.textFieldSuffix          = dictionary["suffix"] as? String
@@ -74,7 +74,7 @@ final class NumberEditTableCell: EditablePageCell {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string:string)
 
-				if digit == NSDecimalNumber.notA() {
+				if digit == NSDecimalNumber.notANumber() {
 					return false
 				}
 
@@ -156,7 +156,7 @@ final class NumberEditTableCell: EditablePageCell {
 	}
 
 	// Editing ends, switch back to alternate formatter and append specified suffix
-	override func textFieldDidEndEditing(textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
 		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()

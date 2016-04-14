@@ -13,7 +13,7 @@ final class ConsumptionTableCell: PageCell {
 	private(set) var coloredLabel: ConsumptionLabel
 
 	required init() {
-		self.coloredLabel = ConsumptionLabel(frame:CGRectZero)
+		self.coloredLabel = ConsumptionLabel(frame:CGRect.zero)
 
 		super.init()
 
@@ -33,7 +33,7 @@ final class ConsumptionTableCell: PageCell {
 		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -49,11 +49,11 @@ final class ConsumptionTableCell: PageCell {
 	}
 
 	private func setupFonts() {
-		self.coloredLabel.font               = UIFont.applicationFontForStyle(UIFontTextStyleCaption1)
+		self.coloredLabel.font               = UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption1)
 		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
 	}
 
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.coloredLabel.highlightStrings = dictionary["highlightStrings"] as? [String]

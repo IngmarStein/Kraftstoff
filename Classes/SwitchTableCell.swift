@@ -19,9 +19,9 @@ final class SwitchTableCell: PageCell {
 	weak var delegate: EditablePageCellDelegate?
 
 	required init () {
-		self.keyLabel = UILabel(frame: CGRectZero)
-		self.valueSwitch = UISwitch(frame:CGRectZero)
-		self.valueLabel = UILabel(frame:CGRectZero)
+		self.keyLabel = UILabel(frame: CGRect.zero)
+		self.valueSwitch = UISwitch(frame:CGRect.zero)
+		self.valueLabel = UILabel(frame:CGRect.zero)
 
 		super.init()
 
@@ -68,20 +68,20 @@ final class SwitchTableCell: PageCell {
 		NSNotificationCenter.defaultCenter().removeObserver(self)
 	}
 
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
+	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
 		setupFonts()
 	}
 
 	private func setupFonts() {
-		self.valueLabel.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
+		self.valueLabel.font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2)
+		self.keyLabel.font = UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String
@@ -99,7 +99,7 @@ final class SwitchTableCell: PageCell {
 		self.valueLabel.isHidden  = !showAlternate
 	}
 
-	func switchToggledAction(sender: UISwitch) {
+	func switchToggledAction(_ sender: UISwitch) {
 		let isON = sender.isOn
 
 		self.delegate?.valueChanged(isON, identifier:self.valueIdentifier)

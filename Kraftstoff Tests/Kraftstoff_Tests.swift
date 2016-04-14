@@ -51,9 +51,9 @@ class Kraftstoff_Tests: XCTestCase {
 		car.ksFuelUnit = .liter
 		car.ksFuelConsumptionUnit = .litersPer100km
 
-		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car: car, inContext: managedObjectContext)
 
-		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate:nil,
 			dateMatches:true,
 			inManagedObjectContext:managedObjectContext),
@@ -66,7 +66,7 @@ class Kraftstoff_Tests: XCTestCase {
 		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let importer = CSVImporter()
-		let success = importer.importFromCSVString(csvString,
+		let success = importer.`import`(csv: csvString,
 			detectedCars:&numCars,
 			detectedEvents:&numEvents,
 			sourceURL:url,
@@ -95,9 +95,9 @@ class Kraftstoff_Tests: XCTestCase {
 		car.ksFuelUnit = .liter
 		car.ksFuelConsumptionUnit = .litersPer100km
 
-		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car: car, inContext: managedObjectContext)
 
-		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate:nil,
 			dateMatches:true,
 			inManagedObjectContext:managedObjectContext),
@@ -116,7 +116,7 @@ class Kraftstoff_Tests: XCTestCase {
 		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let CSVString = "yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"
-		let success = importer.importFromCSVString(CSVString,
+		let success = importer.`import`(csv: CSVString,
 			detectedCars:&numCars,
 			detectedEvents:&numEvents,
 			sourceURL:url,

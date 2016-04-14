@@ -48,7 +48,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		showPicker(false)
 	}
 	
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		// Array of picker labels
@@ -65,13 +65,13 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[initialIndex]
 	}
 
-	private func selectRow(row: Int) {
+	private func selectRow(_ row: Int) {
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[row]
 
 		self.delegate.valueChanged(row, identifier:self.valueIdentifier)
 	}
 
-	private func showPicker(show: Bool) {
+	private func showPicker(_ show: Bool) {
 		pickerView.isHidden = !show
 	}
 
@@ -82,32 +82,32 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		return 1
 	}
 
-	func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		return self.pickerLabels.count
 	}
 
-	func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		selectRow(row)
 	}
 
 	//MARK: - UIPickerViewDelegate
 
-	func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
 		return PickerViewCellHeight
 	}
 
-	func pickerView(pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
 		return PickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		return self.pickerLabels[row]
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
-		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
+		label.font = UIFont.applicationFontForStyle(textStyle: self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
 		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
 		label.backgroundColor = UIColor.clear()
 
@@ -122,7 +122,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		showPicker(true)
 	}
 
-	override func textFieldDidEndEditing(textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showPicker(false)
 	}
 }

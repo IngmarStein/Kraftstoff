@@ -24,12 +24,12 @@ final class QuadInfoCell: UITableViewCell {
 	private var large: Bool
 
 	init(style: UITableViewCellStyle, reuseIdentifier: String?, enlargeTopRightLabel: Bool) {
-		cellState     = .defaultMask
+		cellState     = []
 		large         = enlargeTopRightLabel
-		botLeftLabel  = UILabel(frame:CGRectZero)
-		topLeftLabel  = UILabel(frame:CGRectZero)
-		topRightLabel = UILabel(frame:CGRectZero)
-		botRightLabel = UILabel(frame:CGRectZero)
+		botLeftLabel  = UILabel(frame:CGRect.zero)
+		topLeftLabel  = UILabel(frame:CGRect.zero)
+		topRightLabel = UILabel(frame:CGRect.zero)
+		botRightLabel = UILabel(frame:CGRect.zero)
 
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -70,7 +70,7 @@ final class QuadInfoCell: UITableViewCell {
 
 		setupFonts()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 
 		self.accessoryType = .disclosureIndicator
     }
@@ -84,13 +84,13 @@ final class QuadInfoCell: UITableViewCell {
 	}
 
 	private func setupFonts() {
-		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleSubheadline)
+		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleSubheadline)
 		topLeftLabel.minimumScaleFactor  = 12.0/topLeftLabel.font.pointSize
-		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
 		botLeftLabel.minimumScaleFactor  = 12.0/botLeftLabel.font.pointSize
-		topRightLabel.font               = UIFont.lightApplicationFontForStyle(large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
+		topRightLabel.font               = UIFont.lightApplicationFontForStyle(textStyle: large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
 		topRightLabel.minimumScaleFactor = 12.0/topRightLabel.font.pointSize
-		botRightLabel.font               = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		botRightLabel.font               = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
 		botRightLabel.minimumScaleFactor = 12.0/botRightLabel.font.pointSize
 	}
 
@@ -104,7 +104,7 @@ final class QuadInfoCell: UITableViewCell {
 							(topLeftAccessibilityLabel ?? topLeftLabel.text) ?? "",
 							(botLeftAccessibilityLabel ?? botLeftLabel.text) ?? "")
 
-			if cellState == .defaultMask {
+			if cellState == [] {
 				if let accessibilityLabel = topRightAccessibilityLabel {
 					label = "\(label), \(accessibilityLabel)"
 				}
@@ -129,7 +129,7 @@ final class QuadInfoCell: UITableViewCell {
 	// Reset to default state before reuse of cell
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		cellState = .defaultMask
+		cellState = []
 	}
 
 	override func layoutSubviews() {

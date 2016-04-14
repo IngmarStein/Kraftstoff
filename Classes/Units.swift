@@ -155,7 +155,7 @@ final class Units {
 
 	//MARK: - Conversion to/from Internal Data Format
 
-	static func litersForVolume(volume: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
+	static func litersForVolume(_ volume: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
         case .galUS: return volume * litersPerUSGallon
         case .galUK: return volume * litersPerImperialGallon
@@ -164,7 +164,7 @@ final class Units {
 		}
 	}
 
-	static func volumeForLiters(liters: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
+	static func volumeForLiters(_ liters: NSDecimalNumber, withUnit unit: KSVolume) -> NSDecimalNumber {
 		switch unit {
         case .galUS: return liters / litersPerUSGallon
         case .galUK: return liters / litersPerImperialGallon
@@ -173,7 +173,7 @@ final class Units {
 		}
 	}
 
-	static func kilometersForDistance(distance: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
+	static func kilometersForDistance(_ distance: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
 		if unit == .statuteMile {
 			return distance * kilometersPerStatuteMile
 		} else {
@@ -181,7 +181,7 @@ final class Units {
 		}
 	}
 
-	static func distanceForKilometers(kilometers: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
+	static func distanceForKilometers(_ kilometers: NSDecimalNumber, withUnit unit: KSDistance) -> NSDecimalNumber {
 		if unit == .statuteMile {
 			return kilometers / kilometersPerStatuteMile
 		} else {
@@ -209,15 +209,15 @@ final class Units {
 
 	//MARK: - Consumption/Efficiency Computation
 
-	static func consumptionForKilometers(kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: KSFuelConsumption) -> NSDecimalNumber {
+	static func consumptionForKilometers(_ kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: KSFuelConsumption) -> NSDecimalNumber {
 		let handler = Formatters.sharedConsumptionRoundingHandler
 
 		if kilometers <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notA()
+			return NSDecimalNumber.notANumber()
 		}
 
 		if liters <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notA()
+			return NSDecimalNumber.notANumber()
 		}
 
 		if unit.isEfficiency {
@@ -256,7 +256,7 @@ final class Units {
 
 	//MARK: - Unit Strings/Descriptions
 
-	static func fuelUnitDescription(unit: KSVolume, discernGallons: Bool, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
+	static func fuelUnitDescription(_ unit: KSVolume, discernGallons: Bool, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
 		if plural {
 			switch unit {
 			case .liter: return NSLocalizedString("Liters", bundle: bundle, comment:"")
@@ -274,7 +274,7 @@ final class Units {
 		}
 	}
 
-	static func fuelPriceUnitDescription(unit: KSVolume, bundle: NSBundle = NSBundle.main()) -> String {
+	static func fuelPriceUnitDescription(_ unit: KSVolume, bundle: NSBundle = NSBundle.main()) -> String {
 		if unit.isMetric {
 			return NSLocalizedString("Price per Liter", bundle: bundle, comment:"")
 		} else {
@@ -282,7 +282,7 @@ final class Units {
 		}
 	}
 
-	static func odometerUnitDescription(unit: KSDistance, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
+	static func odometerUnitDescription(_ unit: KSDistance, pluralization plural: Bool, bundle: NSBundle = NSBundle.main()) -> String {
 		if plural {
 			return unit.isMetric ? NSLocalizedString("Kilometers", bundle: bundle, comment:"") : NSLocalizedString("Miles", comment:"")
 		} else {

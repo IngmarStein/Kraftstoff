@@ -65,7 +65,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Background image
-		let backgroundView = UIView(frame:CGRectZero)
+		let backgroundView = UIView(frame:CGRect.zero)
 		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps")!)
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
@@ -91,21 +91,21 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
-	@objc func storesDidChange(notification: NSNotification) {
+	@objc func storesDidChange(_ notification: NSNotification) {
 		_fetchedResultsController = nil
 		NSFetchedResultsController.deleteCache(withName: nil)
 		updateHelp(true)
 		self.tableView.reloadData()
 	}
 
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		updateHelp(true)
 		checkEnableEditButton()
 	}
 
-	override func viewWillDisappear(animated: Bool) {
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
 		hideHelp(animated)
@@ -133,7 +133,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		// Invalidate fuelEvent-controller and any precomputed statistics
 		if self.navigationController!.topViewController === self {
 			fuelEventController = nil
@@ -144,7 +144,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - Help Badge
 
-	private func updateHelp(animated: Bool) {
+	private func updateHelp(_ animated: Bool) {
 		let defaults = NSUserDefaults.standard()
 
 		// Number of cars determines the help badge
@@ -159,30 +159,30 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			helpViewFrame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 70)
 			helpViewContentMode = .right
 
-			defaults.setInteger(0, forKey:"editHelpCounter")
+			defaults.set(0, forKey:"editHelpCounter")
 		} else if self.isEditing && 1 <= carCount && carCount <= 3 {
 			let editCounter = defaults.integer(forKey: "editHelpCounter")
 
 			if editCounter < maxEditHelpCounter {
-				defaults.setInteger(editCounter + 1, forKey: "editHelpCounter")
+				defaults.set(editCounter + 1, forKey: "editHelpCounter")
 				helpImageName = "EditFlat"
 				helpViewContentMode = .left
 				helpViewFrame = CGRect(x: 0.0, y: CGFloat(carCount) * 91.0 - 16.0, width: self.view.bounds.size.width, height: 92.0)
 			} else {
 				helpImageName = nil
 				helpViewContentMode = .left
-				helpViewFrame = CGRectZero
+				helpViewFrame = CGRect.zero
 			}
 		} else {
 			helpImageName = nil
 			helpViewContentMode = .left
-			helpViewFrame = CGRectZero
+			helpViewFrame = CGRect.zero
 		}
 
 		// Remove outdated help images
 		var helpView = self.view.withTag(100) as? UIImageView
 
-		if helpImageName == nil || (helpView != nil && !CGRectEqualToRect(helpView!.frame, helpViewFrame)) {
+		if helpImageName == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
 				UIView.animate(withDuration: 0.33, delay:0.0, options: .curveEaseOut,
                              animations: { helpView?.alpha = 0.0 },
@@ -223,7 +223,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		checkEnableEditButton()
 	}
 
-	private func hideHelp(animated: Bool) {
+	private func hideHelp(_ animated: Bool) {
 		if let helpView = self.view.withTag(100) as? UIImageView {
 			if animated {
 				UIView.animate(withDuration: 0.33,
@@ -239,7 +239,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - CarConfigurationControllerDelegate
 
-	func carConfigurationController(controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
+	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
 		if result == .CreateSucceeded {
 			var addDemoContents = false
 
@@ -261,23 +261,23 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			changeIsUserDriven = false
 
 			// Create a new instance of the entity managed by the fetched results controller.
-			let newManagedObject = NSEntityDescription.insertNewObjectForEntity(forName: "car", in: CoreDataManager.managedObjectContext) as! Car
+			let newManagedObject = NSEntityDescription.insertNewObject(forEntityName: "car", into: CoreDataManager.managedObjectContext) as! Car
 
 			newManagedObject.order = 0
 			newManagedObject.timestamp = NSDate()
 			newManagedObject.name = controller.name!
 			newManagedObject.numberPlate = controller.plate!
-			newManagedObject.odometerUnit = controller.odometerUnit!.intValue
+			newManagedObject.odometerUnit = controller.odometerUnit!.int32Value
 
 			newManagedObject.odometer = Units.kilometersForDistance(controller.odometer!,
-														withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!)
+														withUnit:KSDistance(rawValue: controller.odometerUnit!.int32Value)!)
 
-			newManagedObject.fuelUnit = controller.fuelUnit!.intValue
-			newManagedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.intValue
+			newManagedObject.fuelUnit = controller.fuelUnit!.int32Value
+			newManagedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.int32Value
 
 			// Add demo contents
 			if addDemoContents {
-				DemoData.addDemoEventsForCar(newManagedObject, inContext:CoreDataManager.managedObjectContext)
+				DemoData.addDemoEvents(car: newManagedObject, inContext:CoreDataManager.managedObjectContext)
 			}
 
 			// Saving here is important here to get a stable objectID for the fuelEvent fetches
@@ -287,14 +287,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 			editedObject.name = controller.name!
 			editedObject.numberPlate = controller.plate!
-			editedObject.odometerUnit = controller.odometerUnit!.intValue
+			editedObject.odometerUnit = controller.odometerUnit!.int32Value
 
 			let odometer = max(Units.kilometersForDistance(controller.odometer!,
-                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.intValue)!), editedObject.distanceTotalSum)
+                                                              withUnit:KSDistance(rawValue: controller.odometerUnit!.int32Value)!), editedObject.distanceTotalSum)
 
 			editedObject.odometer = odometer
-			editedObject.fuelUnit = controller.fuelUnit!.intValue
-			editedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.intValue
+			editedObject.fuelUnit = controller.fuelUnit!.int32Value
+			editedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.int32Value
 
 			CoreDataManager.saveContext()
 
@@ -310,7 +310,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - Adding a new Object
 
-	override func setEditing(editing: Bool, animated: Bool) {
+	override func setEditing(_ editing: Bool, animated: Bool) {
 		super.setEditing(editing, animated:animated)
 
 		checkEnableEditButton()
@@ -326,9 +326,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.editButtonItem().isEnabled = fetchedResultsController.fetchedObjects!.count > 0
 	}
 
-	func insertNewObject(sender: AnyObject) {
+	func insertNewObject(_ sender: AnyObject) {
 		if !StoreManager.sharedInstance.checkCarCount() {
-			StoreManager.sharedInstance.showBuyOptions(self)
+			StoreManager.sharedInstance.showBuyOptions(parent: self)
 			return
 		}
 
@@ -367,7 +367,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - Gesture Recognizer for Editing an Existing Object
 
-	func handleLongPress(sender: UILongPressGestureRecognizer) {
+	func handleLongPress(_ sender: UILongPressGestureRecognizer) {
 		if sender.state == .began {
 
 			if let indexPath = self.tableView.indexPathForRow(at: sender.location(in: self.tableView)) {
@@ -405,7 +405,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				present(navController, animated:true, completion:nil)
 
 				// Edit started => prevent edit help from now on
-				NSUserDefaults.standard().setInteger(maxEditHelpCounter, forKey:"editHelpCounter")
+				NSUserDefaults.standard().set(maxEditHelpCounter, forKey:"editHelpCounter")
 
 				// Quit editing mode
 				setEditing(false, animated:true)
@@ -415,7 +415,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - Removing an Existing Object
 
-	func removeExistingObjectAtPath(indexPath: NSIndexPath) {
+	func removeExistingObject(at indexPath: NSIndexPath) {
 		guard let deletedObject = self.fetchedResultsController.object(at: indexPath) as? Car else {
 			// catch nil objects
 			return
@@ -428,7 +428,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject)
 
 		if deletedCarID == preferredCarID {
-			NSUserDefaults.standard().setObject("", forKey:"preferredCarID")
+			NSUserDefaults.standard().set("", forKey:"preferredCarID")
 		}
 
 		// Delete the managed object for the given index path
@@ -464,7 +464,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - UITableViewDataSource
 
-	func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+	func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
 
 		let tableCell = cell as! QuadInfoCell
 		let managedObject = self.fetchedResultsController.object(at: indexPath) as! Car
@@ -501,13 +501,13 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return self.fetchedResultsController.sections?.count ?? 0
 	}
 
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		let sectionInfo = self.fetchedResultsController.sections![section]
 
 		return sectionInfo.numberOfObjects
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
 		let CellIdentifier = "ShadedTableViewCell"
 
 		var cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as? QuadInfoCell
@@ -521,13 +521,13 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return cell!
 	}
 
-	override func tableView(tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: NSIndexPath) {
 		if editingStyle == .delete {
-			removeExistingObjectAtPath(indexPath)
+			removeExistingObject(at: indexPath)
 		}
 	}
 
-	override func tableView(tableView: UITableView, moveRowAt sourceIndexPath: NSIndexPath, to destinationIndexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: NSIndexPath, to destinationIndexPath: NSIndexPath) {
 		let basePath = sourceIndexPath.removingLastIndex()
 
 		if basePath.compare(destinationIndexPath.removingLastIndex()) != .orderedSame {
@@ -565,7 +565,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = true
 	}
 
-	override func tableView(tableView: UITableView, canMoveRowAt indexPath: NSIndexPath) -> Bool {
+	override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: NSIndexPath) -> Bool {
 		return true
 	}
 
@@ -587,15 +587,15 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
+	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
 		return proposedDestinationIndexPath
 	}
 
-	override func tableView(tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
+	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
 		return self.isEditing ? nil : indexPath
 	}
 
-	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		let selectedCar = self.fetchedResultsController.object(at: indexPath) as! Car
 
 		if fuelEventController == nil || fuelEventController.selectedCar != selectedCar {
@@ -606,12 +606,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.navigationController?.pushViewController(fuelEventController, animated:true)
 	}
 
-	override func tableView(tableView: UITableView, willBeginEditingRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: NSIndexPath) {
 		editButtonItem().isEnabled = false
 		hideHelp(true)
 	}
 
-	override func tableView(tableView: UITableView, didEndEditingRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: NSIndexPath) {
 		checkEnableEditButton()
 		updateHelp(true)
 	}
@@ -672,7 +672,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	//MARK: - UIViewControllerPreviewingDelegate
 
 	@objc(previewingContext:viewControllerForLocation:)
-	func previewingContext(previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		guard let indexPath = tableView.indexPathForRow(at: location),
 			cell = tableView.cellForRow(at: indexPath),
 			selectedCar = self.fetchedResultsController.object(at: indexPath) as? Car else { return nil }
@@ -686,7 +686,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	@objc(previewingContext:commitViewController:)
-	func previewingContext(previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
 		show(viewControllerToCommit, sender: self)
 	}
 

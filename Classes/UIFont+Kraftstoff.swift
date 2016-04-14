@@ -42,14 +42,14 @@ extension UIFont {
 	}
 
 	static func lightApplicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, weight: UIFontWeightLight)
+		return applicationFontForStyle(textStyle: textStyle, weight: UIFontWeightLight)
 	}
 
 	static func applicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, weight: UIFontWeightRegular)
+		return applicationFontForStyle(textStyle: textStyle, weight: UIFontWeightRegular)
 	}
 
 	static func boldApplicationFontForStyle(textStyle: String) -> UIFont {
-		return applicationFontForStyle(textStyle, weight: UIFontWeightBold)
+		return applicationFontForStyle(textStyle: textStyle, weight: UIFontWeightBold)
 	}
 }

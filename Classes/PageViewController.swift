@@ -51,7 +51,7 @@ class PageViewController: UITableViewController {
 
 	//MARK: - Access to Table Cells
 
-	func cellDescriptionForRow(rowIndex: Int, inSection sectionIndex: Int) -> PageCellDescription? {
+	func cellDescriptionForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCellDescription? {
 		if tableSections.count <= sectionIndex {
 			return nil
 		}
@@ -65,15 +65,15 @@ class PageViewController: UITableViewController {
 		return section[rowIndex]
 	}
 
-	func classForRow(rowIndex: Int, inSection sectionIndex: Int) -> PageCell.Type? {
+	func classForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCell.Type? {
 		return cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellClass
 	}
 
-	func dataForRow(rowIndex: Int, inSection sectionIndex: Int) -> [NSObject:AnyObject]? {
+	func dataForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> [NSObject:AnyObject]? {
 		return cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellData
 	}
 
-	func setData(object: [NSObject:AnyObject], forRow rowIndex: Int, inSection sectionIndex: Int) {
+	func setData(_ object: [NSObject:AnyObject], forRow rowIndex: Int, inSection sectionIndex: Int) {
 		cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellData = object
 
 		let indexPath = NSIndexPath(forRow:rowIndex, inSection:sectionIndex)
@@ -84,7 +84,7 @@ class PageViewController: UITableViewController {
 
 	//MARK: - Access to Table Sections
 
-	func addSectionAtIndex(idx: Int, withAnimation animation: UITableViewRowAnimation) {
+	func addSectionAtIndex(_ idx: Int, withAnimation animation: UITableViewRowAnimation) {
 		let sectionIndex: Int
 		if idx > tableSections.count {
 			sectionIndex = tableSections.count
@@ -99,7 +99,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeSectionAtIndex(sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeSectionAtIndex(_ sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
 		if sectionIndex < tableSections.count {
 			tableSections.remove(at: sectionIndex)
 
@@ -109,7 +109,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeAllSectionsWithAnimation(animation: UITableViewRowAnimation) {
+	func removeAllSectionsWithAnimation(_ animation: UITableViewRowAnimation) {
 		tableSections.removeAll(keepingCapacity: false)
 
 		if animation != .none {
@@ -161,7 +161,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeRowAtIndex(rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeRow(at rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
 		if sectionIndex < tableSections.count {
 			if rowIndex < tableSections[sectionIndex].count {
 				tableSections[sectionIndex].remove(at: rowIndex)
@@ -180,23 +180,23 @@ class PageViewController: UITableViewController {
 		return tableSections.count
 	}
 
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return tableSections[section].count
 	}
 
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
-	override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: NSIndexPath) -> Bool {
+	override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: NSIndexPath) -> Bool {
 		return false
 	}
 
-	override func tableView(tableView: UITableView, editingStyleForRowAt indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
 		return .none
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
 		let description = cellDescriptionForRow(indexPath.row, inSection:indexPath.section)!
 
 		let cellClass = description.cellClass

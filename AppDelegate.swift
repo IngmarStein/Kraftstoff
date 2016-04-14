@@ -53,7 +53,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private var launchInitPred: dispatch_once_t = 0
 
-	private func commonLaunchInitialization(launchOptions: [NSObject : AnyObject]?) {
+	private func commonLaunchInitialization(_ launchOptions: [NSObject : AnyObject]?) {
 		dispatch_once(&launchInitPred) {
 			self.window?.makeKeyAndVisible()
 
@@ -99,7 +99,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						}
 					}
 
-					defaults.setObject(false, forKey:"firstStartup")
+					defaults.set(false, forKey:"firstStartup")
 				}
 			}
 		}
@@ -229,7 +229,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	// Read file contents from given URL, guess file encoding
-	private static func contentsOfURL(url: NSURL) -> String? {
+	private static func contentsOfURL(_ url: NSURL) -> String? {
 		var enc: NSStringEncoding = NSUTF8StringEncoding
 		if let contents = try? String(contentsOf: url, usedEncoding: &enc) { return contents }
 		if let contents = try? String(contentsOf: url, encoding: NSMacOSRomanStringEncoding) { return contents }
@@ -237,7 +237,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	// Removes files from the inbox
-	private func removeFileItemAtURL(url: NSURL) {
+	private func removeFileItem(at url: NSURL) {
 		if url.isFileURL {
 			do {
 				try NSFileManager.defaultManager().removeItem(at: url)
@@ -250,12 +250,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	func application(application: UIApplication, open url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
-			removeFileItemAtURL(url)
+			removeFileItem(at: url)
 			return false
 		}
 
 		if !StoreManager.sharedInstance.checkCarCount() {
-			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
+			StoreManager.sharedInstance.showBuyOptions(parent: self.window!.rootViewController!)
 			return false
 		}
 
@@ -270,7 +270,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		importContext.perform {
 			// Read file contents from given URL, guess file encoding
 			let CSVString = AppDelegate.contentsOfURL(url)
-			self.removeFileItemAtURL(url)
+			self.removeFileItem(at: url)
 
 			if let CSVString = CSVString {
 				// Try to import data from CSV file
@@ -279,7 +279,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				var numCars   = 0
 				var numEvents = 0
 
-				let success = importer.importFromCSVString(CSVString,
+				let success = importer.`import`(csv: CSVString,
                                             detectedCars:&numCars,
                                           detectedEvents:&numEvents,
                                                sourceURL:url,
@@ -320,7 +320,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 
 		// Treat imports as successful first startups
-		NSUserDefaults.standard().setObject(false, forKey:"firstStartup")
+		NSUserDefaults.standard().set(false, forKey:"firstStartup")
 		return true
 	}
 
@@ -344,7 +344,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - Receipt validation
 
-	private func receiptData(appStoreReceiptURL : NSURL?) -> NSData? {
+	private func receiptData(_ appStoreReceiptURL : NSURL?) -> NSData? {
 		guard let receiptURL = appStoreReceiptURL, receipt = NSData(contentsOf: receiptURL) else { return nil }
 
 		do {
@@ -359,7 +359,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return nil
 	}
 
-	private func validateReceiptInternal(appStoreReceiptURL : NSURL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
+	private func validateReceiptInternal(_ appStoreReceiptURL : NSURL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
 		guard let receiptData = receiptData(appStoreReceiptURL), url = NSURL(string: serverURL) else {
@@ -394,7 +394,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		task.resume()
 	}
 
-	private func validateReceipt(appStoreReceiptURL : NSURL?, onCompletion: (Bool) -> Void) {
+	private func validateReceipt(_ appStoreReceiptURL : NSURL?, onCompletion: (Bool) -> Void) {
 		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: AnyObject?) -> Void in
 			guard let status = statusCode else {
 				onCompletion(false)
@@ -428,7 +428,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func validReceiptForInAppPurchase(productId: String) -> Bool {
+	func validReceiptForInAppPurchase(_ productId: String) -> Bool {
 		guard let receipt = appReceipt, inApps = receipt["in_app"] as? [[String:AnyObject]] where appReceiptValid else { return false }
 		for inApp in inApps {
 			if let id = inApp["product_id"] as? String {
@@ -446,7 +446,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let blueGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
+        let blueGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return blueGradient
 	}()
@@ -455,7 +455,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
+		let greenGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return greenGradient
     }()
@@ -464,7 +464,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let orangeGradient = CGGradientCreateWithColorComponents(colorSpace, colorComponentsFlat, nil, 2)!
+		let orangeGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return orangeGradient
     }()

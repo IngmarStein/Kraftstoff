@@ -16,7 +16,7 @@ enum CarConfigurationResult: Int {
 }
 
 protocol CarConfigurationControllerDelegate: class {
-	func carConfigurationController(controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
+	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
 }
 
 private let kSRConfiguratorDelegate               = "FuelConfiguratorDelegate"
@@ -73,7 +73,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		dataChanged = false
@@ -134,8 +134,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - Creating the Table Rows
 
-	func createOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		let suffix = " ".appending(KSDistance(rawValue: self.odometerUnit!.intValue)!.description)
+	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+		let suffix = " ".appending(KSDistance(rawValue: self.odometerUnit!.int32Value)!.description)
 
 		if self.odometer == nil {
 			self.odometer = NSDecimalNumber.zero()
@@ -244,8 +244,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.tableView.reloadData()
 	}
 
-	func recreateOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		removeRowAtIndex(3, inSection:0, withAnimation: .none)
+	func recreateOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+		removeRow(at: 3, inSection:0, withAnimation: .none)
 		createOdometerRowWithAnimation(.none)
 
 		if animation == .none {
@@ -257,7 +257,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {
@@ -268,7 +268,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - Programmatically Selecting Table Rows
 
-	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
+	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
 		let cell = tableView.cellForRow(at: indexPath)!
 		let field: UITextField?
 
@@ -285,7 +285,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		return field
 	}
 
-	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func activateTextFieldAtIndexPath(_ indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
@@ -296,7 +296,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	func selectRowAtIndexPath(indexPath: NSIndexPath?) {
+	func selectRowAtIndexPath(_ indexPath: NSIndexPath?) {
 		if let indexPath = indexPath {
 			tableView.selectRow(at: indexPath, animated:true, scrollPosition: .middle)
 			activateTextFieldAtIndexPath(indexPath)
@@ -305,7 +305,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - Cancel Button
 
-	@IBAction func handleCancel(sender: AnyObject) {
+	@IBAction func handleCancel(_ sender: AnyObject) {
 		previousSelectionIndex = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion { self.handleCancelCompletion() }
@@ -347,7 +347,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment:"") : NSLocalizedString("Delete", comment:""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
-			self.delegate?.carConfigurationController(self, didFinishWithResult:.Canceled)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: .Canceled)
 			self.previousSelectionIndex = nil
 		}
 		alertController.addAction(cancelAction)
@@ -358,7 +358,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - Save Button
 
-	@IBAction func handleSave(sender: AnyObject) {
+	@IBAction func handleSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
 			self.delegate?.carConfigurationController(self, didFinishWithResult:self.editingExistingObject ? .EditSucceeded : .CreateSucceeded)
 		}
@@ -366,7 +366,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - EditablePageCellFocusHandler
 
-	func focusNextFieldForValueIdentifier(valueIdentifier: String) {
+	func focusNextFieldForValueIdentifier(_ valueIdentifier: String) {
 		if valueIdentifier == "name" {
 			selectRowAtIndexPath(NSIndexPath(forRow:1, inSection:0))
 		} else {
@@ -376,7 +376,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
 		case "name": return self.name
 		case "plate": return self.plate
@@ -388,7 +388,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	func valueChanged(newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: AnyObject?, identifier valueIdentifier: String) {
 		if let stringValue = newValue as? String {
 			if valueIdentifier == "name" {
 				self.name = stringValue
@@ -401,8 +401,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = KSDistance(rawValue: self.odometerUnit!.intValue)!
-				let newUnit = KSDistance(rawValue: numberValue.intValue)!
+				let oldUnit = KSDistance(rawValue: self.odometerUnit!.int32Value)!
+				let newUnit = KSDistance(rawValue: numberValue.int32Value)!
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue
@@ -422,12 +422,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRow(at: indexPath, at: .middle, animated:true)
 	}
 
-	override func tableView(tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {

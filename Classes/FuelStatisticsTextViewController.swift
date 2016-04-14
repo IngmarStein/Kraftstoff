@@ -52,7 +52,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 	//MARK: - Graph Computation
 
-	private func resampleFetchedObjects(fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsData, inManagedObjectContext moc: NSManagedObjectContext) {
+	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsData, inManagedObjectContext moc: NSManagedObjectContext) {
 		state.car = car
 		state.firstDate = nil
 		state.lastDate = nil
@@ -133,7 +133,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 	}
 
-	override func computeStatisticsForRecentMonths(numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+	override func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
 
 		// No cache cell exists => resample data and compute average value
 		var state: FuelStatisticsData! = self.contentCache[numberOfMonths] as? FuelStatisticsData
@@ -179,23 +179,23 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 	}
 
 	private func drawBackground() {
-		let cgContext = UIGraphicsGetCurrentContext()
+		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
 
 		// Background colors
 		UIColor(white: 0.082, alpha:1.0).setFill()
-		CGContextFillRect(cgContext, self.view.bounds)
+		cgContext.fill(self.view.bounds)
 
 		UIColor.black().setFill()
-		CGContextFillRect(cgContext, CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height:28))
+		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height:28))
 	}
 
-	private func drawStatisticsForState(state: FuelStatisticsData, withHeight height: CGFloat) {
-		let cgContext = UIGraphicsGetCurrentContext()
+	private func drawStatisticsForState(_ state: FuelStatisticsData, withHeight height: CGFloat) {
+		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
 
 		UIColor.clear().setFill()
-		CGContextFillRect(cgContext, CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
+		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
-		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		let font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
 		let labelAttributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0) ]
 		let valueAttributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.white() ]
 
@@ -204,7 +204,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		if state.numberOfFillups == 0 {
 
-			CGContextSaveGState (cgContext)
+			cgContext.saveGState()
 
 			UIColor.white().setFill()
 
@@ -216,7 +216,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			text.draw(at: CGPoint(x: x, y: y), withAttributes:valueAttributes)
 
-			CGContextRestoreGState (cgContext)
+			cgContext.restoreGState()
 
 		} else {
 
@@ -226,7 +226,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.lineWidth = GridTextHeight - 1
 			UIColor(white:0.224, alpha:0.1).setStroke()
 
-			CGContextSaveGState(cgContext)
+			cgContext.saveGState()
 
 			path.removeAllPoints()
 			path.move(to:    CGPoint(x: self.gridLeftBorder,  y: 1.0))
@@ -237,11 +237,11 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                 let lastY = y
                 y = rint (GridTextHeight*0.5 + GridTextHeight*CGFloat(i))
 
-                CGContextTranslateCTM(cgContext, 0.0, y - lastY)
+				cgContext.translateBy(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
-			CGContextRestoreGState(cgContext)
+			cgContext.restoreGState()
 
 			UIColor(white:0.45, alpha:0.5).setStroke()
 
@@ -252,7 +252,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			path.setLineDash(dashDotPattern, count:dashDotPatternLength, phase:0.0)
 
-			CGContextSaveGState (cgContext)
+			cgContext.saveGState()
 
 			path.removeAllPoints()
 			path.move(to:    CGPoint(x: self.gridLeftBorder,  y: 0.25))
@@ -263,29 +263,29 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                 let lastY = y
                 y = rint (GridTextHeight*CGFloat(i))
 
-                CGContextTranslateCTM(cgContext, 0.0, y - lastY)
+				cgContext.translateBy(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
-			CGContextRestoreGState(cgContext)
+			cgContext.restoreGState()
 
 			// Vertical grid line
 			path.lineWidth = 0.5
 			path.setLineDash(nil, count:0, phase:0.0)
 
-			CGContextSaveGState(cgContext)
+			cgContext.saveGState()
 
 			path.removeAllPoints()
 			path.move(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: 0.0))
 			path.addLine(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: GridTextHeight*CGFloat(GridLines)))
             path.stroke()
 
-			CGContextRestoreGState(cgContext)
+			cgContext.restoreGState()
 
 			// Textual information
-			CGContextSaveGState(cgContext)
+			cgContext.saveGState()
 
-			CGContextSetShadowWithColor(cgContext, CGSize(width: 0.0, height: -1.0), 0.0, UIColor.black().cgColor)
+			cgContext.setShadow(withOffset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: UIColor.black().cgColor)
 
             let nf = Formatters.sharedFuelVolumeFormatter
             let cf = Formatters.sharedCurrencyFormatter
@@ -301,7 +301,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let fuelUnit = state.car.ksFuelUnit
             let fuelUnitString = fuelUnit.description
 
-            let numberOfDays = NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate)
+            let numberOfDays = NSDate.numberOfCalendarDaysFrom(startDate: state.firstDate, to:state.lastDate)
 
 			y = (GridTextHeight - font.lineHeight) / 2.0
 
@@ -318,119 +318,119 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             // number of days
 			drawEntry(
-				NSLocalizedString("days", comment:""),
-				value: "\(NSDate.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate))")
+				label: NSLocalizedString("days", comment:""),
+				value: "\(NSDate.numberOfCalendarDaysFrom(startDate: state.firstDate, to:state.lastDate))")
 
             // avg consumption
             drawEntry(
-				NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment:""),
+				label: NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment:""),
 				value: String(format:"%@ %@", nf.string(from: state.avgConsumption)!, consumptionUnitString))
 
             // best consumption
 			drawEntry(
-				NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment:""),
+				label: NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment:""),
 				value: String(format:"%@ %@", nf.string(from: state.bestConsumption)!, consumptionUnitString))
 
             // worst consumption
 			drawEntry(
-				NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment:""),
+				label: NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment:""),
 				value: String(format:"%@ %@", nf.string(from: state.worstConsumption)!, consumptionUnitString))
 
             // total cost
-			drawEntry(NSLocalizedString("ttl_cost", comment:""), value: cf.string(from: state.totalCost)!)
+			drawEntry(label: NSLocalizedString("ttl_cost", comment:""), value: cf.string(from: state.totalCost)!)
 
             // total distance
 			let totalDistance = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit)
 			drawEntry(
-				NSLocalizedString("ttl_distance", comment:""),
+				label: NSLocalizedString("ttl_distance", comment:""),
                 value: String(format:"%@ %@", Formatters.sharedDistanceFormatter.string(from: totalDistance)!, odometerUnitString))
 
             // total volume
 			let totalVolume = Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit)
 			drawEntry(
-				NSLocalizedString("ttl_volume", comment:""),
+				label: NSLocalizedString("ttl_volume", comment:""),
 				value: String(format:"%@ %@", nf.string(from: totalVolume)!, fuelUnitString))
 
             // total events
-			drawEntry(NSLocalizedString("ttl_events", comment:""), value: "\(state.numberOfFillups)")
+			drawEntry(label: NSLocalizedString("ttl_events", comment:""), value: "\(state.numberOfFillups)")
 
             // volume per event
 			let volumePerEventLabel = NSLocalizedString("volume_event", comment:"")
 			if state.numberOfFillups > 0 {
-				let val = Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit) / NSDecimalNumber(integer:state.numberOfFillups)
-				drawEntry(volumePerEventLabel, value: String(format:"%@ %@", nf.string(from: val)!, fuelUnitString))
+				let val = Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit) / NSDecimalNumber(value: state.numberOfFillups)
+				drawEntry(label: volumePerEventLabel, value: String(format:"%@ %@", nf.string(from: val)!, fuelUnitString))
 			} else {
-				drawEntry(volumePerEventLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: volumePerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per distance
 			let costPerDistanceLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:false))
 			if zero < state.totalDistance {
 				let val = state.totalCost / Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit)
-				drawEntry(costPerDistanceLabel, value: String(format:"%@/%@", pcf.string(from: val)!, odometerUnitString))
+				drawEntry(label: costPerDistanceLabel, value: String(format:"%@/%@", pcf.string(from: val)!, odometerUnitString))
 			} else {
-				drawEntry(costPerDistanceLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: costPerDistanceLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per volume
 			let costPerVolumeLabel = String(format:NSLocalizedString("cost_per_x", comment:""), Units.fuelUnitDescription(fuelUnit, discernGallons:true, pluralization:false))
 			if zero < state.totalFuelVolume {
 				let val = state.totalCost / Units.volumeForLiters(state.totalFuelVolume, withUnit:fuelUnit)
-				drawEntry(costPerVolumeLabel, value: String(format:"%@/%@", pcf.string(from: val)!, fuelUnitString))
+				drawEntry(label: costPerVolumeLabel, value: String(format:"%@/%@", pcf.string(from: val)!, fuelUnitString))
 			} else {
-				drawEntry(costPerVolumeLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: costPerVolumeLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per day
 			let costPerDayLabel = String(format:NSLocalizedString("cost_per_x", comment:""), NSLocalizedString("day", comment:""))
 			if numberOfDays > 0 {
-				let val = state.totalCost / NSDecimalNumber(integer: numberOfDays)
-				drawEntry(costPerDayLabel, value: cf.string(from: val)!)
+				let val = state.totalCost / NSDecimalNumber(value: numberOfDays)
+				drawEntry(label: costPerDayLabel, value: cf.string(from: val)!)
 			} else {
-				drawEntry(costPerDayLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: costPerDayLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // cost per event
 			let costPerEventLabel = String(format:NSLocalizedString("cost_per_x", comment:""), NSLocalizedString("event", comment:""))
 			if state.numberOfFillups > 0 {
-				let val = state.totalCost / NSDecimalNumber(integer: state.numberOfFillups)
-				drawEntry(costPerEventLabel, value: cf.string(from: val)!)
+				let val = state.totalCost / NSDecimalNumber(value: state.numberOfFillups)
+				drawEntry(label: costPerEventLabel, value: cf.string(from: val)!)
 			} else {
-				drawEntry(costPerEventLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: costPerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per event
 			let distancePerEventLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), NSLocalizedString("event", comment:""))
 			if state.numberOfFillups > 0 {
-				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(integer: state.numberOfFillups)
-				drawEntry(distancePerEventLabel, value: String(format:"%@ %@", nf.string(from: val)!, odometerUnitString))
+				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(value: state.numberOfFillups)
+				drawEntry(label: distancePerEventLabel, value: String(format:"%@ %@", nf.string(from: val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerEventLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: distancePerEventLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per day
 			let distancePerDayLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), NSLocalizedString("day", comment:""))
 			if numberOfDays > 0 {
-				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(integer: numberOfDays)
-				drawEntry(distancePerDayLabel, value: String(format: "%@ %@", nf.string(from: val)!, odometerUnitString))
+				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / NSDecimalNumber(value: numberOfDays)
+				drawEntry(label: distancePerDayLabel, value: String(format: "%@ %@", nf.string(from: val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerDayLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: distancePerDayLabel, value: NSLocalizedString("-", comment:""))
 			}
 
             // distance per money
 			let distancePerMoneyLabel = String(format:NSLocalizedString("x_per_y", comment:""), Units.odometerUnitDescription(odometerUnit, pluralization:true), cf.currencySymbol!)
 			if zero < state.totalCost {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit:odometerUnit) / state.totalCost
-				drawEntry(distancePerMoneyLabel, value: String(format: "%@ %@", nf.string(from: val)!, odometerUnitString))
+				drawEntry(label: distancePerMoneyLabel, value: String(format: "%@ %@", nf.string(from: val)!, odometerUnitString))
 			} else {
-				drawEntry(distancePerMoneyLabel, value: NSLocalizedString("-", comment:""))
+				drawEntry(label: distancePerMoneyLabel, value: NSLocalizedString("-", comment:""))
 			}
 
-			CGContextRestoreGState (cgContext)
+			cgContext.restoreGState()
 		}
 	}
 
-	override func displayCachedStatisticsForRecentMonths(numberOfMonths: Int) -> Bool {
+	override func displayCachedStatisticsForRecentMonths(_ numberOfMonths: Int) -> Bool {
 		let cell = self.contentCache[numberOfMonths] as? FuelStatisticsData
 
 		// Cache Hit => Update image contents
@@ -451,7 +451,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				self.scrollView.addSubview(imageView)
 			}
 
-			if CGRectIsEmpty(imageView.frame) {
+			if imageView.frame.isEmpty {
 				imageView.image = contentImage
 				imageView.frame = imageFrame
 			} else {
@@ -486,8 +486,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 								let imageView: UIImageView! = self.scrollView.withTag(1) as? UIImageView
 								if imageView != nil {
                                      imageView.image = nil
-                                     imageView.frame = CGRectZero
-                                     self.scrollView.contentSize = CGSizeZero
+                                     imageView.frame = CGRect.zero
+                                     self.scrollView.contentSize = CGSize.zero
                                  }
                              }
                          })

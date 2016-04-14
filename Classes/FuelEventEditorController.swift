@@ -153,7 +153,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			CoreDataManager.removeEventFromArchive(event, forceOdometerUpdate:true)
 
 			// Reinsert new version of event
-			event = CoreDataManager.addToArchiveWithCar(car,
+			event = CoreDataManager.addToArchive(car: car,
                                              date:date,
                                          distance:distance,
                                             price:price,
@@ -175,7 +175,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.title = Formatters.sharedDateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
 		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
-		price      = Units.pricePerUnit(event.price, withUnit:fuelUnit)
+		price      = Units.pricePerUnit(literPrice: event.price, withUnit:fuelUnit)
 		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit:fuelUnit)
 		filledUp   = event.filledUp
 		comment    = event.comment
@@ -185,7 +185,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Mode Switching for Table Rows
 
-	private func reconfigureRowAtIndexPath(indexPath: NSIndexPath) {
+	private func reconfigureRowAtIndexPath(_ indexPath: NSIndexPath) {
 		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
 			cell.configureForData(cellData,
                 viewController:self,
@@ -196,7 +196,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
     }
 
-	override func setEditing(enabled: Bool, animated: Bool) {
+	override func setEditing(_ enabled: Bool, animated: Bool) {
 		if self.isEditing != enabled {
 			let animation: UITableViewRowAnimation = animated ? .fade : .none
 
@@ -228,14 +228,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Entering Editing Mode
 
-	@IBAction func enterEditingMode(sender: AnyObject) {
+	@IBAction func enterEditingMode(_ sender: AnyObject) {
 		setEditing(true, animated:true)
 		selectRowAtIndexPath(NSIndexPath(forRow:0, inSection:0))
 	}
 
 	//MARK: - Saving Edited Data
 
-	@IBAction func endEditingModeAndSave(sender: AnyObject) {
+	@IBAction func endEditingModeAndSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
 			self.saveStateToEvent()
 			self.setEditing(false, animated:true)
@@ -244,7 +244,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Aborting Editing Mode
 
-	@IBAction func endEditingModeAndRevert(sender: AnyObject) {
+	@IBAction func endEditingModeAndRevert(_ sender: AnyObject) {
 		restoredSelectionIndex = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
@@ -288,7 +288,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Creating the Table Rows
 
-	private func createConsumptionRowWithAnimation(animation: UITableViewRowAnimation) {
+	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Don't add the section when no value can be computed
 		let zero = NSDecimalNumber.zero()
 
@@ -328,7 +328,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
           withAnimation:animation)
 	}
 
-	private func createTableContentsWithAnimation(animation: UITableViewRowAnimation) {
+	private func createTableContentsWithAnimation(_ animation: UITableViewRowAnimation) {
 		addSectionAtIndex(0, withAnimation:animation)
 
 		addRowAtIndex(rowIndex: 0,
@@ -391,7 +391,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
     
 		dismissKeyboardWithCompletion {
@@ -405,7 +405,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - Programmatically Selecting Table Rows
 
-	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
+	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRow(at: indexPath)!
 		let field : UITextField?
 
@@ -423,7 +423,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		return field
 	}
 
-	func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	func activateTextFieldAtIndexPath(_ indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
@@ -434,7 +434,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	private func selectRowAtIndexPath(path: NSIndexPath?) {
+	private func selectRowAtIndexPath(_ path: NSIndexPath?) {
 		if let path = path {
 			self.tableView.selectRow(at: path, animated:false, scrollPosition:.none)
 			self.tableView(self.tableView, didSelectRowAt:path)
@@ -443,7 +443,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
 			case "date": return date
 			case "distance": return distance
@@ -456,10 +456,10 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	func valueChanged(newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: AnyObject?, identifier valueIdentifier: String) {
 		if valueIdentifier == "date" {
 			if let dateValue = newValue as? NSDate {
-				let newDate = NSDate.dateWithoutSeconds(dateValue)
+				let newDate = NSDate.dateWithoutSeconds(date: dateValue)
 
 				if !date.isEqual(to: newDate) {
 					date = newDate
@@ -517,7 +517,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - EditablePageCellValidator
 
-	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
+	func valueValid(_ newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Date must be collision free
 		if let date = newValue as? NSDate {
 			if valueIdentifier == "date" {
@@ -543,13 +543,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	//MARK: - UITableViewDataSource
 
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
+	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
 		let cell = tableView.cellForRow(at: indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
@@ -559,12 +559,12 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
 		tableView.scrollToRow(at: indexPath, at:.middle, animated:true)
 	}
 
-	override func tableView(tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
 			dispatch_async(dispatch_get_main_queue()) {

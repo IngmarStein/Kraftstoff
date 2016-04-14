@@ -21,7 +21,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	var selectedCar: Car!
 
 	private lazy var fetchRequest: NSFetchRequest = {
-		return CoreDataManager.fetchRequestForEventsForCar(self.selectedCar,
+		return CoreDataManager.fetchRequestForEvents(car: self.selectedCar,
 			afterDate:nil,
 			dateMatches:true)
 	}()
@@ -93,7 +93,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Background image
-		let backgroundView = UIView(frame:CGRectZero)
+		let backgroundView = UIView(frame:CGRect.zero)
 		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
@@ -121,18 +121,18 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	@objc func storesDidChange(notification: NSNotification) {
+	@objc func storesDidChange(_ notification: NSNotification) {
 		_fetchedResultsController = nil
 		self.tableView.reloadData()
 	}
 
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		validateExport()
 	}
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		setObserveDeviceRotation(true)
@@ -146,7 +146,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	override func viewWillDisappear(animated: Bool) {
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
 		if presented == nil {
@@ -198,7 +198,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - Device Rotation
 
-	func setObserveDeviceRotation(observeRotation: Bool) {
+	func setObserveDeviceRotation(_ observeRotation: Bool) {
 		if observeRotation && !isObservingRotationEvents {
 			UIDevice.current().beginGeneratingDeviceOrientationNotifications()
 
@@ -218,7 +218,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		isObservingRotationEvents = observeRotation
 	}
 
-	func orientationChanged(aNotification: NSNotification) {
+	func orientationChanged(_ aNotification: NSNotification) {
 		// Ignore rotation when sheets or alerts are visible
 		if openInController != nil || documentPickerViewController != nil || mailComposeController != nil {
 			return
@@ -243,7 +243,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		self.tableView.reloadData()
 	}
 
@@ -257,7 +257,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
 		let illegalCharacters = NSCharacterSet(charactersIn:"/\\?%*|\"<>")
 
-		return rawFilename.componentsSeparatedByCharacters(in: illegalCharacters).joined(separator: "")
+		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
 	}
 
 	private var exportURL: NSURL {
@@ -267,7 +267,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	func exportTextData() -> NSData {
 		let fetchedObjects = self.fetchedResultsController.fetchedObjects as! [FuelEvent]
 		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar:selectedCar)
-		return csvString.data(usingEncoding: NSUTF8StringEncoding, allowLossyConversion: true)!
+		return csvString.data(using: NSUTF8StringEncoding, allowLossyConversion: true)!
 	}
 
 	private func exportTextDescription() -> String {
@@ -378,7 +378,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	@objc(documentPicker:didPickDocumentAtURL:)
-	func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAt url: NSURL) {
+	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: NSURL) {
 		do {
 			try NSFileManager.defaultManager().removeItem(at: exportURL)
 		} catch _ {
@@ -435,7 +435,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - Export Action Sheet
 
-	func showExportSheet(sender: UIBarButtonItem!) {
+	func showExportSheet(_ sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 
@@ -470,7 +470,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - UITableViewDataSource
 
-	func configureCell(tableCell: QuadInfoCell, atIndexPath indexPath: NSIndexPath) {
+	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: NSIndexPath) {
 		let managedObject = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
 
 		let car = managedObject.car
@@ -528,12 +528,12 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return self.fetchedResultsController.sections?.count ?? 0
 	}
 
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		let sectionInfo = self.fetchedResultsController.sections?[section]
 		return sectionInfo?.numberOfObjects ?? 0
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
 		let CellIdentifier = "FuelCell"
 
 		var cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as? QuadInfoCell
@@ -546,7 +546,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return cell!
 	}
 
-	override func tableView(tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: NSIndexPath) {
 		if editingStyle == .delete {
 			let fuelEvent = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
 			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate:false)
@@ -572,7 +572,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as! FuelEventEditorController
 
 		editController.event = self.fetchedResultsController.object(at: indexPath) as! FuelEvent

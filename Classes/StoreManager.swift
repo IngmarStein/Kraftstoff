@@ -86,7 +86,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		userDefaults.synchronize()
 	}
 
-	private func keychainItemForProduct(product: String) -> [String:AnyObject] {
+	private func keychainItemForProduct(_ product: String) -> [String:AnyObject] {
 		return [
 			String(kSecClass) : kSecClassGenericPassword,
 			String(kSecAttrService) : "com.github.ingmarstein.kraftstoff",
@@ -95,11 +95,11 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		]
 	}
 
-	private func isProductPurchased(product: String) -> Bool {
+	private func isProductPurchased(_ product: String) -> Bool {
 		return UIApplication.kraftstoffAppDelegate.validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product), nil) == 0
 	}
 
-	private func setProductPurchased(product: String, purchased: Bool) {
+	private func setProductPurchased(_ product: String, purchased: Bool) {
 		let keychainItem = keychainItemForProduct(product)
 		if purchased {
 			SecItemAdd(keychainItem, nil)
@@ -120,7 +120,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		return isProductPurchased(unlimitedCarsProductId)
 	}
 
-	private func buyProduct(productIdentifier: String) {
+	private func buyProduct(_ productIdentifier: String) {
 		if SKPaymentQueue.canMakePayments() {
 			let productsRequest = SKProductsRequest(productIdentifiers: [productIdentifier])
 			productsRequest.delegate = self
@@ -136,7 +136,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+	func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
 		for transaction in transactions {
 			switch transaction.transactionState {
 			case .purchased, .restored:

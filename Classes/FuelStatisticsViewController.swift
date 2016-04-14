@@ -74,15 +74,15 @@ class FuelStatisticsViewController: UIViewController {
 		NSNotificationCenter.defaultCenter().removeObserver(self)
 	}
 
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
+	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
 		setupFonts()
 		invalidateCaches()
 	}
 
 	private func setupFonts() {
-		let titleFont = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
-		let fontSelected = UIFont.boldApplicationFontForStyle(UIFontTextStyleBody)
+		let titleFont = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2)
+		let font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
+		let fontSelected = UIFont.boldApplicationFontForStyle(textStyle: UIFontTextStyleBody)
 
 		self.leftLabel.font = titleFont
 		self.centerLabel.font = titleFont
@@ -95,7 +95,7 @@ class FuelStatisticsViewController: UIViewController {
 				let text = button.titleLabel!.text!
 				let label = NSAttributedString(string:text, attributes:labelAttributes)
 				let labelSelected = NSAttributedString(string:text, attributes: labelSelectedAttributes)
-				button.setAttributedTitle(label, for: .normal)
+				button.setAttributedTitle(label, for: [])
 				button.setAttributedTitle(label, for: .highlighted)
 				button.setAttributedTitle(labelSelected, for: .selected)
 				button.titleLabel?.shadowColor = nil
@@ -103,7 +103,7 @@ class FuelStatisticsViewController: UIViewController {
 		}
 	}
 
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		leftLabel.text  = selectedCar.name
@@ -138,7 +138,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	//MARK: - Statistics Computation and Display
 
-	func displayStatisticsForRecentMonths(numberOfMonths: Int) {
+	func displayStatisticsForRecentMonths(_ numberOfMonths: Int) {
 		if numberOfMonths != displayedNumberOfMonths {
 			displayedNumberOfMonths = numberOfMonths
 		}
@@ -161,7 +161,7 @@ class FuelStatisticsViewController: UIViewController {
 			if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
 
 				// Fetch some young events to get the most recent fillup date
-				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
+				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
 																									  beforeDate:NSDate(),
 																									 dateMatches:true,
 																						  inManagedObjectContext:sampleContext),
@@ -176,8 +176,8 @@ class FuelStatisticsViewController: UIViewController {
 				}
 
 				// Fetch events for the selected time period
-				let samplingStart = NSDate.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
-				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(sampleCar,
+				let samplingStart = NSDate.dateWithOffsetInMonths(numberOfMonths: -numberOfMonths, fromDate:recentFillupDate)
+				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
 																										  afterDate:samplingStart,
 																										dateMatches:true,
 																							 inManagedObjectContext:sampleContext),
@@ -203,12 +203,12 @@ class FuelStatisticsViewController: UIViewController {
 		}
 	}
 
-	func displayCachedStatisticsForRecentMonths(numberOfMonths: Int) -> Bool {
+	func displayCachedStatisticsForRecentMonths(_ numberOfMonths: Int) -> Bool {
 		// for subclasses
 		return false
 	}
 
-	func computeStatisticsForRecentMonths(numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+	func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
 		fatalError("computeStatisticsForRecentMonths not implemented")
 	}
 
@@ -218,7 +218,7 @@ class FuelStatisticsViewController: UIViewController {
 	//MARK: - Button Handling
 
 	@IBAction func buttonAction(sender: UIButton) {
-		NSNotificationCenter.defaultCenter().postNotificationName("numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
+		NSNotificationCenter.defaultCenter().post(name: "numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
 	}
 
 	//MARK: - Memory Management

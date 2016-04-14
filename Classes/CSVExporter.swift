@@ -9,13 +9,13 @@
 import Foundation
 
 final class CSVExporter {
-	static func exportFuelEvents(fuelEvents: [FuelEvent], forCar car: Car, language: String? = nil) -> String {
+	static func exportFuelEvents(_ fuelEvents: [FuelEvent], forCar car: Car, language: String? = nil) -> String {
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit = car.ksFuelUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		let bundle: NSBundle
-		if let language = language, path = NSBundle.main().path(forResource: language, ofType: "lproj"), localeBundle = NSBundle(path: path) {
+		if let language = language, path = NSBundle.main().pathForResource(language, ofType: "lproj"), localeBundle = NSBundle(path: path) {
 			bundle = localeBundle
 		} else {
 			bundle = NSBundle.main()
@@ -70,7 +70,7 @@ final class CSVExporter {
 				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit:odometerUnit))!,
 				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit:fuelUnit))!,
 				fuelEvent.filledUp ? NSLocalizedString("Yes", comment:"") : NSLocalizedString("No", comment:""),
-				numberFormatter.string(from: Units.pricePerUnit(price, withUnit:fuelUnit))!,
+				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit:fuelUnit))!,
 				fuelEvent.filledUp ? numberFormatter.string(from: 
 					Units.consumptionForKilometers(distance + fuelEvent.inheritedDistance,
 						liters:fuelVolume + fuelEvent.inheritedFuelVolume,

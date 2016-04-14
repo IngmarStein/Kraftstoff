@@ -19,7 +19,7 @@ final class CoreDataManager {
 	}()
 
 	private static let managedObjectModel: NSManagedObjectModel = {
-		let modelPath = NSBundle.main().path(forResource: "Kraftstoffrechner", ofType:"momd")!
+		let modelPath = NSBundle.main().pathForResource("Kraftstoffrechner", ofType:"momd")!
 		return NSManagedObjectModel(contentsOf:NSURL(fileURLWithPath: modelPath))!
 	}()
 
@@ -59,7 +59,7 @@ final class CoreDataManager {
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
 
 		do {
-			try persistentStoreCoordinator.addPersistentStore(withType: NSSQLiteStoreType, configuration:nil, url:iCloudStoreURL, options:iCloudStoreOptions)
+			try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName:nil, at:iCloudStoreURL, options:iCloudStoreOptions)
 		} catch let error as NSError {
 			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
 				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
@@ -78,7 +78,7 @@ final class CoreDataManager {
 
 	//MARK: - Core Data Support
 
-	static func saveContext(context: NSManagedObjectContext = managedObjectContext) -> Bool {
+	static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
 			do {
 				try context.save()
@@ -99,7 +99,7 @@ final class CoreDataManager {
 		return false
 	}
 
-	static func modelIdentifierForManagedObject(object: NSManagedObject) -> String? {
+	static func modelIdentifierForManagedObject(_ object: NSManagedObject) -> String? {
 		if object.objectID.isTemporaryID {
 			do {
 				try managedObjectContext.obtainPermanentIDs(for: [object])
@@ -110,7 +110,7 @@ final class CoreDataManager {
 		return object.objectID.uriRepresentation().absoluteString
 	}
 
-	static func managedObjectForModelIdentifier(identifier: String) -> NSManagedObject? {
+	static func managedObjectForModelIdentifier(_ identifier: String) -> NSManagedObject? {
 		let objectURL = NSURL(string:identifier)!
 
 		if objectURL.scheme == "x-coredata" {
@@ -122,7 +122,7 @@ final class CoreDataManager {
 		return nil
 	}
 
-	static func existingObject(object: NSManagedObject, inManagedObjectContext moc: NSManagedObjectContext) -> NSManagedObject? {
+	static func existingObject(_ object: NSManagedObject, inManagedObjectContext moc: NSManagedObjectContext) -> NSManagedObject? {
 		if object.isDeleted {
 			return nil
 		} else {
@@ -132,7 +132,7 @@ final class CoreDataManager {
 
 	//MARK: - iCloud support
 
-	private static func migrateStore(sourceStoreURL: NSURL, options: [NSObject : AnyObject]) {
+	private static func migrateStore(_ sourceStoreURL: NSURL, options: [NSObject : AnyObject]) {
 		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 
 		var migrationOptions = options
@@ -140,13 +140,13 @@ final class CoreDataManager {
 
 		// Open the existing local store
 		do {
-			let sourceStore = try migrationPSC.addPersistentStore(withType: NSSQLiteStoreType, configuration:nil, url:sourceStoreURL, options:migrationOptions)
+			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName:nil, at:sourceStoreURL, options:migrationOptions)
 			do {
 				try migrationPSC.migratePersistentStore(sourceStore, to: iCloudStoreURL, options: iCloudStoreOptions, withType:NSSQLiteStoreType)
 				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 					let fileCoordinator = NSFileCoordinator()
 					var error: NSError?
-					fileCoordinator.coordinateWritingItem(at: sourceStoreURL, options: .forMoving, error: &error) { writingURL in
+					fileCoordinator.coordinate(writingItemAt: sourceStoreURL, options: .forMoving, error: &error) { writingURL in
 						let targetURL = sourceStoreURL.appendingPathExtension("migrated")
 						do {
 							try NSFileManager.defaultManager().moveItem(at: sourceStoreURL, to: targetURL)
@@ -194,9 +194,9 @@ final class CoreDataManager {
 			object: CoreDataManager.persistentStoreCoordinator)
 	}
 
-	private static func cleanupDetachedFuelEvents(moc : NSManagedObjectContext) {
+	private static func cleanupDetachedFuelEvents(_ moc : NSManagedObjectContext) {
 		let fetchRequest = NSFetchRequest()
-		fetchRequest.entity = NSEntityDescription.entity(forName: "fuelEvent", in:moc)
+		fetchRequest.entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in:moc)
 		fetchRequest.predicate = NSPredicate(format:"car == nil")
 
 		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -207,7 +207,7 @@ final class CoreDataManager {
 		}
 	}
 
-	@objc func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
+	@objc func persistentStoreDidImportUbiquitousContentChanges(_ changeNotification: NSNotification) {
 		let context = CoreDataManager.managedObjectContext
 
 		context.perform {
@@ -216,10 +216,10 @@ final class CoreDataManager {
 		}
 	}
 
-	@objc func storesWillChange(notification: NSNotification) {
+	@objc func storesWillChange(_ notification: NSNotification) {
 		let context = CoreDataManager.managedObjectContext
 
-		context.performBlockAndWait {
+		context.performAndWait {
 			if context.hasChanges {
 				do {
 					try context.save()
@@ -234,17 +234,17 @@ final class CoreDataManager {
 		}
 	}
 
-	@objc func storesDidChange(notification: NSNotification) {
+	@objc func storesDidChange(_ notification: NSNotification) {
 		NSLog("storesDidChange: %@", notification)
 	}
 
 	//MARK: - Preconfigured Core Data Fetches
 
-	static func fetchRequestForCarsInManagedObjectContext(moc: NSManagedObjectContext) -> NSFetchRequest {
+	static func fetchRequestForCarsInManagedObjectContext(_ moc: NSManagedObjectContext) -> NSFetchRequest {
 		let fetchRequest = NSFetchRequest()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forName: "car", in: moc)
+		let entity = NSEntityDescription.entity(forEntityName: "car", in: moc)
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = 32
 
@@ -255,7 +255,7 @@ final class CoreDataManager {
 		return fetchRequest
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEvents(car: Car,
                                        andDate date: NSDate?,
                                 dateComparator dateCompare: String,
                                      fetchSize: Int,
@@ -263,7 +263,7 @@ final class CoreDataManager {
 		let fetchRequest = NSFetchRequest()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forName: "fuelEvent", in: moc)
+		let entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = fetchSize
 
@@ -284,22 +284,22 @@ final class CoreDataManager {
 		return fetchRequest
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEvents(car: Car,
                                      afterDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
-		return fetchRequestForEventsForCar(car,
+		return fetchRequestForEvents(car: car,
                                      andDate:date,
                               dateComparator:dateMatches ? ">=" : ">",
                                    fetchSize:128,
                       inManagedObjectContext:moc)
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
+	static func fetchRequestForEvents(car: Car,
                                     beforeDate date: NSDate?,
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
-		return fetchRequestForEventsForCar(car,
+		return fetchRequestForEvents(car: car,
                                      andDate:date,
                               dateComparator:dateMatches ? "<=" : "<",
                                    fetchSize:8,
@@ -325,10 +325,10 @@ final class CoreDataManager {
 		return fetchedResultsController
 	}
 
-	static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
+	static func objectsForFetchRequest(_ fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
 		let fetchedObjects: [AnyObject]?
 		do {
-			fetchedObjects = try moc.execute(fetchRequest)
+			fetchedObjects = try moc.fetch(fetchRequest)
 		} catch let error as NSError {
 			fatalError(error.localizedDescription)
 		}
@@ -336,11 +336,11 @@ final class CoreDataManager {
 		return fetchedObjects as! [NSManagedObject]
 	}
 
-	static func containsEventWithCar(car: Car, andDate date: NSDate, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
+	static func containsEventWithCar(_ car: Car, andDate date: NSDate, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
 		let fetchRequest = NSFetchRequest()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forName: "fuelEvent", in: moc)
+		let entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = 2
 
@@ -363,7 +363,7 @@ final class CoreDataManager {
 
 	//MARK: - Core Data Updates
 
-	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
+	static func addToArchive(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
 		let zero = NSDecimalNumber.zero()
 
 		// Convert distance and fuelvolume to SI units
@@ -372,7 +372,7 @@ final class CoreDataManager {
 
 		let liters        = Units.litersForVolume(fuelVolume, withUnit:fuelUnit)
 		let kilometers    = Units.kilometersForDistance(distance, withUnit:odometerUnit)
-		let pricePerLiter = Units.pricePerLiter(price, withUnit:fuelUnit)
+		let pricePerLiter = Units.pricePerLiter(price: price, withUnit:fuelUnit)
 
 		var inheritedCost       = zero
 		var inheritedDistance   = zero
@@ -383,7 +383,7 @@ final class CoreDataManager {
 		// Compute inherited data from older element
 
 		// Fetch older events
-        let olderEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
+        let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                     beforeDate:date,
                                                                                    dateMatches:false,
                                                                         inManagedObjectContext:moc),
@@ -403,7 +403,7 @@ final class CoreDataManager {
 
 		// Update inherited distance/volume for younger events, probably mark the car odometer for an update
         // Fetch younger events
-        let youngerEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
+		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                        afterDate:date,
                                                                                      dateMatches:false,
                                                                           inManagedObjectContext:moc),
@@ -438,7 +438,7 @@ final class CoreDataManager {
 		}
 
 		// Create new managed object for this event
-		let newEvent = NSEntityDescription.insertNewObjectForEntity(forName: "fuelEvent", in: moc) as! FuelEvent
+		let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: moc) as! FuelEvent
 
 		newEvent.car = car
 		newEvent.timestamp = date
@@ -485,7 +485,7 @@ final class CoreDataManager {
 		return newEvent
 	}
 
-	static func removeEventFromArchive(event: FuelEvent!, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, forceOdometerUpdate odometerUpdate: Bool) {
+	static func removeEventFromArchive(_ event: FuelEvent!, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, forceOdometerUpdate odometerUpdate: Bool) {
 		// catch nil events
 		if event == nil {
 			return
@@ -498,7 +498,7 @@ final class CoreDataManager {
 		let zero = NSDecimalNumber.zero()
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
-		let youngerEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
+		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                   afterDate:event.timestamp,
                                                                                 dateMatches:false,
                                                                      inManagedObjectContext:moc),

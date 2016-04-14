@@ -127,7 +127,7 @@ private let demoData = [
 
 final class DemoData {
    
-	static func addDemoEventsForCar(car: Car, inContext context: NSManagedObjectContext) {
+	static func addDemoEvents(car: Car, inContext context: NSManagedObjectContext) {
 		let df = NSDateFormatter()
 
 		df.locale = NSLocale.system()
@@ -135,7 +135,7 @@ final class DemoData {
 
 		autoreleasepool {
 			for item in demoData {
-				let newEvent = NSEntityDescription.insertNewObjectForEntity(forName: "fuelEvent", in: context) as NSManagedObject
+				let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: context) as NSManagedObject
 
 				let distance = NSDecimalNumber(mantissa:item.distance, exponent: -1, isNegative: false)
 				let fuelVolume = NSDecimalNumber(mantissa:item.fuelVolume, exponent: -2, isNegative: false)

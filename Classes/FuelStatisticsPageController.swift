@@ -73,7 +73,7 @@ final class FuelStatisticsPageController: UIPageViewController {
              object:nil)
 
 		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
+           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(notification:)),
                name:"numberOfMonthsSelected",
              object:nil)
 	}
@@ -87,10 +87,10 @@ final class FuelStatisticsPageController: UIPageViewController {
 		return .lightContent
 	}
 
-	override func viewWillDisappear(animated: Bool) {
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		NSUserDefaults.standard().setInteger(currentPage, forKey:"preferredStatisticsPage")
+		NSUserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
 		NSUserDefaults.standard().synchronize()
 	}
 
@@ -110,12 +110,12 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	//MARK: - System Events
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		invalidateCaches()
 	}
 
-	func didEnterBackground(object: AnyObject) {
-		NSUserDefaults.standard().setInteger(currentPage, forKey:"preferredStatisticsPage")
+	func didEnterBackground(_ object: AnyObject) {
+		NSUserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
 		NSUserDefaults.standard().synchronize()
 
 		for controller in statisticsViewControllers {
@@ -131,7 +131,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
 	}
 
-	func didBecomeActive(object: AnyObject) {
+	func didBecomeActive(_ object: AnyObject) {
 		updatePageVisibility()
 	}
 
@@ -140,7 +140,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	func numberOfMonthsSelected(notification: NSNotification) {
 		// Remember selection in preferences
 		if let numberOfMonths = notification.userInfo?["span"] as? Int {
-			NSUserDefaults.standard().setInteger(numberOfMonths, forKey:"statisticTimeSpan")
+			NSUserDefaults.standard().set(numberOfMonths, forKey:"statisticTimeSpan")
 
 			// Update all statistics controllers
 			for controller in self.childViewControllers as! [FuelStatisticsViewController] {
@@ -161,7 +161,7 @@ extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 		return .landscape
 	}
 
-	func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		if completed {
 			updatePageVisibility()
 		}
@@ -170,7 +170,7 @@ extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 
 extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 	@objc(pageViewController:viewControllerAfterViewController:)
-	func pageViewController(pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
 		if statisticsViewController.pageIndex < statisticsViewControllers.count - 1 {
@@ -181,7 +181,7 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 	}
 
 	@objc(pageViewController:viewControllerBeforeViewController:)
-	func pageViewController(pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
 		if page > 0 {
@@ -191,11 +191,11 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	func presentationCountFor(pageViewController: UIPageViewController) -> Int {
+	func presentationCountFor(_ pageViewController: UIPageViewController) -> Int {
 		return statisticsViewControllers.count
 	}
 
-	func presentationIndexFor(pageViewController: UIPageViewController) -> Int {
+	func presentationIndexFor(_ pageViewController: UIPageViewController) -> Int {
 		return currentPage
 	}
 }

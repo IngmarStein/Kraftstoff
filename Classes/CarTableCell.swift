@@ -53,9 +53,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	override func setupFonts() {
 		super.setupFonts()
 
-		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
+		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(textStyle: UIFontTextStyleSubheadline),
 			NSForegroundColorAttributeName : UIColor.black()]
-		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
+		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2),
 			NSForegroundColorAttributeName : UIColor.darkGray()]
 
 		self.carPicker.reloadAllComponents()
@@ -68,7 +68,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		// Array of possible cars
@@ -85,7 +85,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		selectCar(self.cars[initialIndex])
 	}
 
-	private func selectCar(car: Car) {
+	private func selectCar(_ car: Car) {
 		// Update textfield in cell
 		self.textFieldProxy.text = "\(car.name) \(car.numberPlate)"
 
@@ -93,7 +93,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.delegate.valueChanged(car, identifier:self.valueIdentifier)
 	}
 
-	private func showPicker(show: Bool) {
+	private func showPicker(_ show: Bool) {
 		carPicker.isHidden = !show
 	}
 
@@ -104,11 +104,11 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		return 1
 	}
 
-	func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		return self.cars.count
 	}
 
-	func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		selectCar(self.cars[row])
 	}
 
@@ -130,7 +130,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		var label: UILabel! = view as? UILabel
 		if label == nil {
-			label = UILabel(frame: CGRectZero)
+			label = UILabel(frame: CGRect.zero)
 			label.lineBreakMode = .byTruncatingTail
 		}
 
@@ -149,11 +149,11 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	//MARK: - UITextFieldDelegate
 
-	func textFieldDidBeginEditing(textField: UITextField) {
+	func textFieldDidBeginEditing(_ textField: UITextField) {
 		showPicker(true)
 	}
 
-	override func textFieldDidEndEditing(textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showPicker(false)
 	}
 }
