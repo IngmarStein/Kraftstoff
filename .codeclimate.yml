@@ -4,7 +4,10 @@ engines:
     enabled: true
   fixme:
     enabled: true
+  tailor:
+    enabled: true
 ratings:
   paths:
   - Gemfile.lock
+  - "**.swift"
 exclude_paths: []
