@@ -860,7 +860,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	//MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		recreateTableContentsWithAnimation(changeIsUserDriven ? .right : .none)
 		updateSaveButtonState()
 

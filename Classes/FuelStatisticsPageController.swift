@@ -157,7 +157,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 }
 
 extension FuelStatisticsPageController : UIPageViewControllerDelegate {
-	func pageViewControllerSupportedInterfaceOrientations(pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
+	@objc(pageViewControllerSupportedInterfaceOrientations:) func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
 		return .landscape
 	}
 
@@ -191,11 +191,11 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	func presentationCountFor(_ pageViewController: UIPageViewController) -> Int {
+	@objc(presentationCountForPageViewController:) func presentationCount(for pageViewController: UIPageViewController) -> Int {
 		return statisticsViewControllers.count
 	}
 
-	func presentationIndexFor(_ pageViewController: UIPageViewController) -> Int {
+	@objc(presentationIndexForPageViewController:) func presentationIndex(for pageViewController: UIPageViewController) -> Int {
 		return currentPage
 	}
 }

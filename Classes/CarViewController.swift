@@ -66,7 +66,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		// Background image
 		let backgroundView = UIView(frame:CGRect.zero)
-		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
+		backgroundView.backgroundColor = UIColor(red:CGFloat(0.935), green:CGFloat(0.935), blue:CGFloat(0.956), alpha:CGFloat(1.0))
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps")!)
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
@@ -347,7 +347,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - UIGestureRecognizerDelegate
 
-	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+	@objc(gestureRecognizer:shouldReceiveTouch:) func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		// Editing mode must be enabled
 		if self.isEditing {
 			var view: UIView? = touch.view
@@ -618,7 +618,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	//MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerWillChangeContent:) func controllerWillChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.beginUpdates()
 	}
 
@@ -634,7 +634,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	// see https://forums.developer.apple.com/thread/4999 why this currently crashes on iOS 9
-	func controller(controller: NSFetchedResultsController, didChange anObject: AnyObject, at indexPath: NSIndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	@objc(controller:didChangeObject:atIndexPath:forChangeType:newIndexPath:) func controller(_ controller: NSFetchedResultsController, didChange anObject: AnyObject, at indexPath: NSIndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		if changeIsUserDriven {
 			return
 		}
@@ -660,7 +660,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.endUpdates()
 
 		updateHelp(true)

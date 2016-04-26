@@ -19,7 +19,7 @@ class Kraftstoff_Tests: XCTestCase {
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		do {
-			try persistentStoreCoordinator.addPersistentStore(withType: NSInMemoryStoreType, configuration: nil, url: nil, options: nil)
+			try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
 		} catch _ {
 		}
 
@@ -40,7 +40,7 @@ class Kraftstoff_Tests: XCTestCase {
     }
 
 	private func testRoundtrip(language: String) {
-		let car = NSEntityDescription.insertNewObjectForEntity(forName: "car", in:managedObjectContext) as! Car
+		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into:managedObjectContext) as! Car
 
 		car.order = 0
 		car.timestamp = NSDate()
@@ -79,12 +79,12 @@ class Kraftstoff_Tests: XCTestCase {
 
 	func testLanguages() {
 		for language in ["en", "de", "fr"] {
-			testRoundtrip(language)
+			testRoundtrip(language: language)
 		}
 	}
 
     func testCSVExport() {
-		let car = NSEntityDescription.insertNewObjectForEntity(forName: "car", in: managedObjectContext) as! Car
+		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
 
 		car.order = 0
 		car.timestamp = NSDate()

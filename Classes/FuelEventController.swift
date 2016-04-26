@@ -94,7 +94,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		// Background image
 		let backgroundView = UIView(frame:CGRect.zero)
-		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
+		backgroundView.backgroundColor = UIColor(red:CGFloat(0.935), green:CGFloat(0.935), blue:CGFloat(0.956), alpha:CGFloat(1.0))
 		let backgroundImage = UIImageView(image:UIImage(named:"Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
@@ -368,7 +368,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		present(documentPickerViewController, animated: true, completion: nil)
 	}
 
-	func documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
+	@objc(documentPickerWasCancelled:) func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
 		do {
 			try NSFileManager.defaultManager().removeItem(at: exportURL)
 		} catch _ {
@@ -414,7 +414,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	func mailComposeController(controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: NSError?) {
+	@objc(mailComposeController:didFinishWithResult:error:) func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: NSError?) {
 		dismiss(animated: true) {
 
 			self.mailComposeController = nil
@@ -582,7 +582,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	//MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerWillChangeContent:) func controllerWillChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.beginUpdates()
 	}
 
@@ -597,7 +597,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChange anObject: AnyObject, at indexPath: NSIndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	@objc(controller:didChangeObject:atIndexPath:forChangeType:newIndexPath:) func controller(_ controller: NSFetchedResultsController, didChange anObject: AnyObject, at indexPath: NSIndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		switch type {
         case .insert:
 			tableView.insertRows(at: [newIndexPath!], with: .fade)
@@ -611,7 +611,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.endUpdates()
 
 		validateExport()

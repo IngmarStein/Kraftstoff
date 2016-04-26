@@ -125,7 +125,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+	@objc(application:performActionForShortcutItem:completionHandler:) func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
 			// switch to fill-up tab and select the car
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -141,7 +141,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+	@objc(application:continueUserActivity:restorationHandler:) func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
 		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -170,31 +170,31 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	func application(application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	@objc(application:willFinishLaunchingWithOptions:) func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	@objc(application:didFinishLaunchingWithOptions:) func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func applicationDidEnterBackground(application: UIApplication) {
+	@objc(applicationDidEnterBackground:) func applicationDidEnterBackground(_ application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
-	func applicationWillTerminate(application: UIApplication) {
+	@objc(applicationWillTerminate:) func applicationWillTerminate(_ application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
 	//MARK: - State Restoration
 
-	func application(application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+	@objc(application:shouldSaveApplicationState:) func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	func application(application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+	@objc(application:shouldRestoreApplicationState:) func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = NSBundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
@@ -247,7 +247,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(application: UIApplication, open url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+	@objc(application:openURL:sourceApplication:annotation:) func application(_ application: UIApplication, open url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItem(at: url)
@@ -326,19 +326,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	//MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		updateShortcutItems()
 	}
 
 	//MARK: - SKRequestDelegate
 
-	func requestDidFinish(request: SKRequest) {
+	@objc(requestDidFinish:) func requestDidFinish(_ request: SKRequest) {
 		validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
 			self.appReceiptValid = success
 		}
 	}
 
-	func request(request: SKRequest, didFailWithError error: NSError) {
+	@objc(request:didFailWithError:) func request(_ request: SKRequest, didFailWithError error: NSError) {
 		print("receipt request failed: \(error)")
 	}
 

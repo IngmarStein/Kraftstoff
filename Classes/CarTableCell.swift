@@ -114,15 +114,15 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	//MARK: - UIPickerViewDelegate
 
-	func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+	@objc(pickerView:rowHeightForComponent:) func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
 		return PickerViewCellHeight
 	}
 
-	func pickerView(pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+	@objc(pickerView:widthForComponent:) func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
 		return PickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+	@objc(pickerView:viewForRow:forComponent:reusingView:) func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		// Strings to be displayed
 		let car = self.cars[row]
 		let name = car.name
