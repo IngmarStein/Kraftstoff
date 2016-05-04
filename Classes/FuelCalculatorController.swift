@@ -76,9 +76,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name:UIApplicationWillEnterForegroundNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name:UIApplicationWillEnterForegroundNotification, object:nil)
+		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
 	//MARK: - State Restoration
@@ -904,7 +904,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	//MARK: -
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 
 }

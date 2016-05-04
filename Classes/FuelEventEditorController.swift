@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
     
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
 	//MARK: - State Restoration
@@ -577,6 +577,6 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	//MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 }

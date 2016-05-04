@@ -81,11 +81,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			registerForPreviewing(with: self, sourceView: view)
 		}
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(CarViewController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
 			selector: #selector(CarViewController.storesDidChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
@@ -436,7 +436,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		CoreDataManager.saveContext()
 
 		if let itemID = deletedCarID {
-			CSSearchableIndex.defaultSearchableIndex().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
+			CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
 		}
 
 		// Update order of existing objects
@@ -701,6 +701,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 }

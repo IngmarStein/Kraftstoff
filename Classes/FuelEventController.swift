@@ -105,12 +105,12 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(FuelEventController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
 			selector: #selector(FuelEventController.storesDidChange(_:)),
 			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
@@ -202,13 +202,13 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if observeRotation && !isObservingRotationEvents {
 			UIDevice.current().beginGeneratingDeviceOrientationNotifications()
 
-			NSNotificationCenter.defaultCenter().addObserver(self,
+			NSNotificationCenter.default().addObserver(self,
                selector:#selector(FuelEventController.orientationChanged(_:)),
                    name:UIDeviceOrientationDidChangeNotification,
                  object:UIDevice.current())
 
 		} else if !observeRotation && isObservingRotationEvents {
-			NSNotificationCenter.defaultCenter().removeObserver(self,
+			NSNotificationCenter.default().removeObserver(self,
                       name:UIDeviceOrientationDidChangeNotification,
                     object:UIDevice.current())
 
@@ -370,7 +370,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	@objc(documentPickerWasCancelled:) func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
 		do {
-			try NSFileManager.defaultManager().removeItem(at: exportURL)
+			try NSFileManager.default().removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -380,7 +380,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	@objc(documentPicker:didPickDocumentAtURL:)
 	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: NSURL) {
 		do {
-			try NSFileManager.defaultManager().removeItem(at: exportURL)
+			try NSFileManager.default().removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -389,7 +389,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func documentInteractionControllerDidDismissOpen(inMenu controller: UIDocumentInteractionController) {
 		do {
-			try NSFileManager.defaultManager().removeItem(at: exportURL)
+			try NSFileManager.default().removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -621,6 +621,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	//MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 }

@@ -33,7 +33,7 @@ final class ConsumptionTableCell: PageCell {
 		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.default().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -41,7 +41,7 @@ final class ConsumptionTableCell: PageCell {
 	}
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {

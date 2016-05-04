@@ -70,13 +70,13 @@ final class QuadInfoCell: UITableViewCell {
 
 		setupFonts()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.default().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 
 		self.accessoryType = .disclosureIndicator
     }
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {

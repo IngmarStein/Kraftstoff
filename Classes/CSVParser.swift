@@ -15,7 +15,7 @@ final class CSVParser {
 		didSet {
 			let endTextMutableCharacterSet = NSCharacterSet.newlines().mutableCopy() as! NSMutableCharacterSet
 			endTextMutableCharacterSet.addCharacters(in: "\"")
-			endTextMutableCharacterSet.addCharacters(in: separator.substring(to: separator.startIndex.successor()))
+			endTextMutableCharacterSet.addCharacters(in: separator.substring(to: separator.index(after: separator.startIndex)))
 			endTextCharacterSet = endTextMutableCharacterSet
 		}
 	}

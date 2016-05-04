@@ -30,8 +30,8 @@ final class CoreDataManager {
 
 	private static var iCloudLocalStoreURL : NSURL? {
 		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory).appendingPathComponent("CoreDataUbiquitySupport")
-		if let peers = try? NSFileManager.defaultManager().contentsOfDirectory(at: ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
-			let fileManager = NSFileManager.defaultManager()
+		if let peers = try? NSFileManager.default().contentsOfDirectory(at: ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
+			let fileManager = NSFileManager.default()
 			for peer in peers {
 				let localStoreURL = peer.appendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
 				if fileManager.fileExists(atPath: localStoreURL.path!) {
@@ -149,7 +149,7 @@ final class CoreDataManager {
 					fileCoordinator.coordinate(writingItemAt: sourceStoreURL, options: .forMoving, error: &error) { writingURL in
 						let targetURL = sourceStoreURL.appendingPathExtension("migrated")
 						do {
-							try NSFileManager.defaultManager().moveItem(at: sourceStoreURL, to: targetURL)
+							try NSFileManager.default().moveItem(at: sourceStoreURL, to: targetURL)
 						} catch let error as NSError {
 							NSLog("error renaming store after migration: %@", error.localizedDescription)
 						}
@@ -165,18 +165,18 @@ final class CoreDataManager {
 
 	static func migrateToiCloud() {
 		// migrate old non-iCloud store
-		if NSFileManager.defaultManager().fileExists(atPath: localStoreURL.path!) {
+		if NSFileManager.default().fileExists(atPath: localStoreURL.path!) {
 			migrateStore(localStoreURL, options: localStoreOptions)
 		}
 
 		// migrate old iCloud store without iCloud Documents entitlement
-		if let url = iCloudLocalStoreURL where NSFileManager.defaultManager().fileExists(atPath: url.path!) {
+		if let url = iCloudLocalStoreURL where NSFileManager.default().fileExists(atPath: url.path!) {
 			migrateStore(url, options: localStoreOptions)
 		}
 	}
 
 	func registerForiCloudNotifications() {
-		let notificationCenter = NSNotificationCenter.defaultCenter()
+		let notificationCenter = NSNotificationCenter.default()
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.storesWillChange(_:)),

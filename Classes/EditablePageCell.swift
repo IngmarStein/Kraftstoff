@@ -67,7 +67,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .baseline, relatedBy: .equal, toItem: keyLabel, attribute: .baseline, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.default().addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -75,7 +75,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {

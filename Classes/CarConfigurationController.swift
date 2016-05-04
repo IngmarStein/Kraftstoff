@@ -70,7 +70,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NSNotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -440,6 +440,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	//MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 }

@@ -57,22 +57,22 @@ final class FuelStatisticsPageController: UIPageViewController {
 			self.setViewControllers([self.statisticsViewControllers[page]], direction: .forward, animated: false, completion: nil)
 		}
     
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.localeChanged(_:)),
                name:NSCurrentLocaleDidChangeNotification,
              object:nil)
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.didEnterBackground(_:)),
                name:UIApplicationDidEnterBackgroundNotification,
              object:nil)
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.didBecomeActive(_:)),
                name:UIApplicationDidBecomeActiveNotification,
              object:nil)
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
+		NSNotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(notification:)),
                name:"numberOfMonthsSelected",
              object:nil)
@@ -152,7 +152,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	//MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 }
 

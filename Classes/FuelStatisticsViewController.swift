@@ -67,11 +67,11 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		setupFonts()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NSNotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
 	}
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
@@ -218,7 +218,7 @@ class FuelStatisticsViewController: UIViewController {
 	//MARK: - Button Handling
 
 	@IBAction func buttonAction(sender: UIButton) {
-		NSNotificationCenter.defaultCenter().post(name: "numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
+		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
 	}
 
 	//MARK: - Memory Management

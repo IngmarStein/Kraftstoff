@@ -120,7 +120,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					attributeset.contentDescription = car.numberPlate
 					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.m-schmidt.Kraftstoff.cars", attributeSet: attributeset)
 				}
-				CSSearchableIndex.defaultSearchableIndex().indexSearchableItems(searchableItems, completionHandler: nil)
+				CSSearchableIndex.default().indexSearchableItems(searchableItems, completionHandler: nil)
 			}
 		}
 	}
@@ -240,7 +240,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func removeFileItem(at url: NSURL) {
 		if url.isFileURL {
 			do {
-				try NSFileManager.defaultManager().removeItem(at: url)
+				try NSFileManager.default().removeItem(at: url)
 			} catch let error as NSError {
 				NSLog("%@", error.localizedDescription)
 			}

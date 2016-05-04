@@ -23,7 +23,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 
 		migratePurchases()
 
-		SKPaymentQueue.defaultQueue().add(self)
+		SKPaymentQueue.default().add(self)
 	}
 
 	private var maxCarCount : Int {
@@ -61,7 +61,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		alert.addAction(unlimitedCarsAction)
 
 		let restoreAction = UIAlertAction(title: NSLocalizedString("Restore Purchases", comment: ""), style: .`default`) { _ in
-			SKPaymentQueue.defaultQueue().restoreCompletedTransactions()
+			SKPaymentQueue.default().restoreCompletedTransactions()
 		}
 		alert.addAction(restoreAction)
 
@@ -132,7 +132,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 	func productsRequest(_: SKProductsRequest, didReceive response: SKProductsResponse) {
 		if let product = response.products.first where response.products.count == 1 {
 			let payment = SKPayment(product: product)
-			SKPaymentQueue.defaultQueue().add(payment)
+			SKPaymentQueue.default().add(payment)
 		}
 	}
 
@@ -141,9 +141,9 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 			switch transaction.transactionState {
 			case .purchased, .restored:
 				setProductPurchased(transaction.payment.productIdentifier, purchased: true)
-				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+				SKPaymentQueue.default().finishTransaction(transaction)
 			case .failed:
-				SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+				SKPaymentQueue.default().finishTransaction(transaction)
 				print("Transaction failed: \(transaction.error)")
 			default: ()
 			}
