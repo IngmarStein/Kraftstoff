@@ -46,7 +46,7 @@ final class TextEditTableCell: EditablePageCell {
 
 	//MARK: - UITextFieldDelegate
 
-	func textFieldShouldReturn(textField: UITextField) -> Bool {
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		// Let the focus handler handle switching to next textfield
 		if let focusHandler = self.delegate as? EditablePageCellFocusHandler {
 			focusHandler.focusNextFieldForValueIdentifier(self.valueIdentifier)
@@ -55,14 +55,15 @@ final class TextEditTableCell: EditablePageCell {
 		return false
 	}
 
-	func textFieldShouldClear(textField: UITextField) -> Bool {
+	func textFieldShouldClear(_ textField: UITextField) -> Bool {
 		// Propagate cleared value to the delegate
 		self.delegate.valueChanged("", identifier:self.valueIdentifier)
 
 		return true
 	}
 
-	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+	@objc(textField:shouldChangeCharactersInRange:replacementString:)
+	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 		var newValue = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 
 		// Don't allow too large strings

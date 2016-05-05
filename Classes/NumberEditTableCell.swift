@@ -60,7 +60,8 @@ final class NumberEditTableCell: EditablePageCell {
 	// MARK: - UITextFieldDelegate
 
 	// Implement special behavior for newly added characters
-	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+	@objc(textField:shouldChangeCharactersInRange:replacementString:)
+	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 		// Modify text
 		var text = textField.text!
 		guard let textValue = self.numberFormatter.number(from: text) as? NSDecimalNumber else {
@@ -119,7 +120,7 @@ final class NumberEditTableCell: EditablePageCell {
 	}
 
 	// Reset to zero value on clear
-	func textFieldShouldClear(textField: UITextField) -> Bool {
+	func textFieldShouldClear(_ textField: UITextField) -> Bool {
 		let clearedValue = NSDecimalNumber.zero()
 
 		if textField.isEditing {
@@ -140,7 +141,7 @@ final class NumberEditTableCell: EditablePageCell {
 	}
 
 	// Editing starts, remove suffix and switch to normal formatter
-	func textFieldDidBeginEditing(textField: UITextField) {
+	func textFieldDidBeginEditing(_ textField: UITextField) {
 		if let suffix = self.textFieldSuffix {
 			if textField.text!.hasSuffix(suffix) {
 				textField.text = textField.text!.substring(to: textField.text!.index(textField.text!.endIndex, offsetBy: -suffix.characters.count))

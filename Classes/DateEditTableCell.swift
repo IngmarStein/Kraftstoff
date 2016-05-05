@@ -116,7 +116,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 	//MARK: - UITextFieldDelegate
 
-	func textFieldDidBeginEditing(textField: UITextField) {
+	func textFieldDidBeginEditing(_ textField: UITextField) {
 		// Optional: update selected value to current time when no change was done in the last 5 minutes
 		var selectedDate: NSDate?
 
