@@ -8,6 +8,9 @@ cache:
 before_script:
 - brew update && brew upgrade xctool || true
 - "./scripts/install-swift.sh"
+script:
+- set -o pipefail && xcodebuild -project Kraftstoff.xcodeproj -scheme Kraftstoff -sdk iphonesimulator build | xcpretty
+- xctool -project Kraftstoff.xcodeproj -scheme Kraftstoff -sdk iphonesimulator test -parallelize
 env:
   global:
     - TOOLCHAINS=swift
