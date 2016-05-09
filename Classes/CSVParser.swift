@@ -34,7 +34,7 @@ final class CSVParser {
         // Convert DOS and legacy Mac line endings to Unix
 		csvString = inputCSVString.replacingOccurrences(of: "\r\n?", with: "\n", options: .regularExpressionSearch)
 
-        scanner = NSScanner(string:csvString)
+        scanner = NSScanner(string: csvString)
         scanner.charactersToBeSkipped = nil
 	}
 
@@ -143,7 +143,7 @@ final class CSVParser {
 		var fieldNamesCount = fieldNames.count
 		var fieldCount = 0
 
-		var record = CSVRecord(minimumCapacity:fieldNamesCount)
+		var record = CSVRecord(minimumCapacity: fieldNamesCount)
 
 		while field != nil {
 			let fieldName: String
@@ -295,4 +295,5 @@ final class CSVParser {
 		scanner.scanUpToCharacters(from: endTextCharacterSet, into: &data)
 		return data as? String
 	}
+
 }

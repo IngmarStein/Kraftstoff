@@ -34,8 +34,8 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -47,9 +47,9 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 
 		showPicker(false)
 	}
-	
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+
+	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of picker labels
 		self.pickerLabels = dictionary["labels"] as? [String]
@@ -59,7 +59,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		// (Re-)configure initial selected row
 		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier)?.integerValue ?? 0
 
-		self.pickerView.selectRow(initialIndex, inComponent:0, animated:false)
+		self.pickerView.selectRow(initialIndex, inComponent: 0, animated: false)
 		self.pickerView.reloadComponent(0)
 
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[initialIndex]
@@ -68,7 +68,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	private func selectRow(_ row: Int) {
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[row]
 
-		self.delegate.valueChanged(row, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(row, identifier: self.valueIdentifier)
 	}
 
 	private func showPicker(_ show: Bool) {
@@ -108,10 +108,10 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		let label = (view as? UILabel) ?? UILabel()
 
 		label.font = UIFont.applicationFontForStyle(textStyle: self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
-		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
+		label.frame = CGRect(x: 0.0, y: 0.0, width: PickerViewCellWidth-20.0, height: PickerViewCellHeight)
 		label.backgroundColor = UIColor.clear()
 
-		label.text = self.pickerView(pickerView, titleForRow:row, forComponent:component)
+		label.text = self.pickerView(pickerView, titleForRow: row, forComponent: component)
 
 		return label
 	}
@@ -125,4 +125,5 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showPicker(false)
 	}
+
 }

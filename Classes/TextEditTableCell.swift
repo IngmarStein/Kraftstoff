@@ -26,8 +26,8 @@ final class TextEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		if let autocapitalizeAll = dictionary["autocapitalizeAll"] where autocapitalizeAll.boolValue == true {
 			self.textField.autocapitalizationType = .allCharacters
@@ -57,7 +57,7 @@ final class TextEditTableCell: EditablePageCell {
 
 	func textFieldShouldClear(_ textField: UITextField) -> Bool {
 		// Propagate cleared value to the delegate
-		self.delegate.valueChanged("", identifier:self.valueIdentifier)
+		self.delegate.valueChanged("", identifier: self.valueIdentifier)
 
 		return true
 	}
@@ -79,7 +79,7 @@ final class TextEditTableCell: EditablePageCell {
 		// Do the update here and propagate the new value back to the delegate
 		textField.text = newValue
 
-		self.delegate.valueChanged(newValue, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(newValue, identifier: self.valueIdentifier)
 
 		return false
 	}
@@ -89,4 +89,5 @@ final class TextEditTableCell: EditablePageCell {
 
 		textField.text = textField.text?.replacingOccurrences(of: "\u{00a0}", with: " ")
 	}
+
 }

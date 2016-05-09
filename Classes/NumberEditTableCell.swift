@@ -34,8 +34,8 @@ final class NumberEditTableCell: EditablePageCell {
 		self.textField.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.textFieldSuffix          = dictionary["suffix"] as? String
 		self.numberFormatter          = dictionary["formatter"] as? NSNumberFormatter
@@ -68,12 +68,12 @@ final class NumberEditTableCell: EditablePageCell {
 			return false
 		}
 		var value = textValue
-		let scale = NSDecimalNumber(mantissa:1, exponent:Int16(self.numberFormatter.maximumFractionDigits), isNegative:false)
+		let scale = NSDecimalNumber(mantissa: 1, exponent: Int16(self.numberFormatter.maximumFractionDigits), isNegative: false)
 
 		if range.length == 0 {
 			if range.location == text.characters.count && string.characters.count == 1 {
 				// New character must be a digit
-				let digit = NSDecimalNumber(string:string)
+				let digit = NSDecimalNumber(string: string)
 
 				if digit == NSDecimalNumber.notANumber() {
 					return false
@@ -90,7 +90,7 @@ final class NumberEditTableCell: EditablePageCell {
 			}
 
 			// Don't append when the result gets too large or below zero
-			if value >= NSDecimalNumber(mantissa:1, exponent:6, isNegative:false) {
+			if value >= NSDecimalNumber(mantissa: 1, exponent: 6, isNegative: false) {
 				return false
 			}
 
@@ -98,12 +98,12 @@ final class NumberEditTableCell: EditablePageCell {
 				return false
 			}
 		} else if range.location >= text.characters.count - 1 {
-			let handler = NSDecimalNumberHandler(roundingMode:.roundDown,
-												 scale:Int16(self.numberFormatter.maximumFractionDigits),
-                                                 raiseOnExactness:false,
-                                                 raiseOnOverflow:false,
-                                                 raiseOnUnderflow:false,
-                                                 raiseOnDivideByZero:false)
+			let handler = NSDecimalNumberHandler(roundingMode: .roundDown,
+												 scale: Int16(self.numberFormatter.maximumFractionDigits),
+                                                 raiseOnExactness: false,
+                                                 raiseOnOverflow: false,
+                                                 raiseOnUnderflow: false,
+                                                 raiseOnDivideByZero: false)
 
 			// Delete only the last digit
 			value = value.multiplying(byPowerOf10: -1, withBehavior: handler)
@@ -113,7 +113,7 @@ final class NumberEditTableCell: EditablePageCell {
 		textField.text = self.numberFormatter.string(from: value)
 
 		// Tell delegate about new value
-		self.delegate.valueChanged(value, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(value, identifier: self.valueIdentifier)
 		updateTextFieldColorForValue(value)
 
 		return false
@@ -134,7 +134,7 @@ final class NumberEditTableCell: EditablePageCell {
 		}
 
 		// Tell delegate about new value
-		self.delegate.valueChanged(clearedValue, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(clearedValue, identifier: self.valueIdentifier)
 		updateTextFieldColorForValue(clearedValue)
 
 		return false
@@ -151,7 +151,7 @@ final class NumberEditTableCell: EditablePageCell {
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
 			let value = alternateNumberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()
 			textField.text = numberFormatter.string(from: value)
-			self.delegate.valueChanged(value, identifier:self.valueIdentifier)
+			self.delegate.valueChanged(value, identifier: self.valueIdentifier)
 			updateTextFieldColorForValue(value)
 		}
 	}
@@ -172,7 +172,8 @@ final class NumberEditTableCell: EditablePageCell {
 			}
 		}
 
-		self.delegate.valueChanged(value, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(value, identifier: self.valueIdentifier)
 		updateTextFieldColorForValue(value)
 	}
+
 }

@@ -18,8 +18,8 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	private let PickerViewCellHeight: CGFloat       =  44.0
 
 	// Attributes for custom PickerViews
-	private var prefixAttributes = [String:AnyObject]()
-	private var suffixAttributes = [String:AnyObject]()
+	private var prefixAttributes = [String: AnyObject]()
+	private var suffixAttributes = [String: AnyObject]()
 
 	required init() {
 		carPicker = UIPickerView()
@@ -42,8 +42,8 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -53,10 +53,10 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	override func setupFonts() {
 		super.setupFonts()
 
-		prefixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(textStyle: UIFontTextStyleSubheadline),
-			NSForegroundColorAttributeName : UIColor.black()]
-		suffixAttributes = [NSFontAttributeName : UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2),
-			NSForegroundColorAttributeName : UIColor.darkGray()]
+		prefixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(textStyle: UIFontTextStyleSubheadline),
+			NSForegroundColorAttributeName: UIColor.black()]
+		suffixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2),
+			NSForegroundColorAttributeName: UIColor.darkGray()]
 
 		self.carPicker.reloadAllComponents()
 	}
@@ -68,8 +68,8 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of possible cars
 		self.cars = dictionary["fetchedObjects"] as? [Car] ?? []
@@ -80,7 +80,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		// (Re-)configure car picker and select the initial item
 		self.carPicker.reloadAllComponents()
-		self.carPicker.selectRow(initialIndex, inComponent:0, animated:false)
+		self.carPicker.selectRow(initialIndex, inComponent: 0, animated: false)
 
 		selectCar(self.cars[initialIndex])
 	}
@@ -90,7 +90,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.textFieldProxy.text = "\(car.name) \(car.numberPlate)"
 
 		// Store selected car in delegate
-		self.delegate.valueChanged(car, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(car, identifier: self.valueIdentifier)
 	}
 
 	private func showPicker(_ show: Bool) {
@@ -136,7 +136,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)
 		attributedText.beginEditing()
-		attributedText.setAttributes(prefixAttributes, range:NSRange(location:0, length:name.characters.count))
+		attributedText.setAttributes(prefixAttributes, range: NSRange(location: 0, length: name.characters.count))
 		attributedText.endEditing()
 		label.attributedText = attributedText
 
@@ -156,4 +156,5 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showPicker(false)
 	}
+
 }

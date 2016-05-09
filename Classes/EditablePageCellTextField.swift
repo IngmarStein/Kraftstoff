@@ -23,6 +23,7 @@ class EditablePageCellTextField: UITextField {
 			return false
 		}
 
-		return super.canPerformAction(action, withSender:sender)
+		return super.canPerformAction(action, withSender: sender)
 	}
+
 }
