@@ -8,11 +8,11 @@
 
 import XCTest
 
-class Kraftstoff_UI_Tests: XCTestCase {
-        
+class KraftstoffUITests: XCTestCase {
+
     override func setUp() {
         super.setUp()
-        
+
 		continueAfterFailure = false
 
 		let app = XCUIApplication()
@@ -22,11 +22,11 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		XCUIDevice.shared().orientation = .portrait
     }
-    
+
     override func tearDown() {
         super.tearDown()
     }
-    
+
     func testSnapshots() {
 
 		let app = XCUIApplication()
@@ -64,11 +64,11 @@ class Kraftstoff_UI_Tests: XCTestCase {
 		imagesQuery["graphImage"].coordinate(withNormalizedOffset: CGVector(dx: 0.536, dy: 0.5)).press(forDuration: 0.6)
 		snapshot(name: "04_chart_cost")
 
-		//app.pageIndicators.element(boundBy: 0).tap()
+		// app.pageIndicators.element(boundBy: 0).tap()
 		app.scrollViews.element(boundBy: 0).swipeLeft()
 
 		snapshot(name: "05_chart_fuel")
-		
+
 		XCUIDevice.shared().orientation = .portrait
 
 		tabBarsQuery.buttons.element(boundBy: 0).tap() // Fill-Up
@@ -101,5 +101,5 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		snapshot(name: "01_entry")
     }
-    
+
 }
