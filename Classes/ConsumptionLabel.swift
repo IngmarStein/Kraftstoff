@@ -24,16 +24,16 @@ final class ConsumptionLabel: UILabel {
 
 	private func computeHighlights() {
 		if let text = text, highlightStrings = highlightStrings, highlightedTextColor = highlightedTextColor {
-			let highlightAttributes = [ NSForegroundColorAttributeName:highlightedTextColor ]
+			let highlightAttributes = [ NSForegroundColorAttributeName: highlightedTextColor ]
 
-			let attributedString = NSMutableAttributedString(string:text)
+			let attributedString = NSMutableAttributedString(string: text)
 			attributedString.beginEditing()
 			for subString in highlightStrings {
 				let range = (text as NSString).range(of: subString)
 
 				if range.location != NSNotFound {
 					// Match in highlight colors
-					attributedString.setAttributes(highlightAttributes, range:range)
+					attributedString.setAttributes(highlightAttributes, range: range)
 				}
 			}
 			attributedString.endEditing()

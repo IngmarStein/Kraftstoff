@@ -61,10 +61,10 @@ final class CoreDataManager {
 		do {
 			try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName:nil, at:iCloudStoreURL, options:iCloudStoreOptions)
 		} catch let error as NSError {
-			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
-				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
+			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment: ""),
+				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
 				preferredStyle: .alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 				fatalError(error.localizedDescription)
 			}
 			alertController.addAction(defaultAction)
@@ -76,17 +76,17 @@ final class CoreDataManager {
 		return persistentStoreCoordinator
 	}()
 
-	//MARK: - Core Data Support
+	// MARK: - Core Data Support
 
 	static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
 			do {
 				try context.save()
 			} catch let error as NSError {
-				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment:""),
-					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment:""),
+				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment: ""),
+					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
 					preferredStyle: .alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
@@ -130,7 +130,7 @@ final class CoreDataManager {
 		}
 	}
 
-	//MARK: - iCloud support
+	// MARK: - iCloud support
 
 	private static func migrateStore(_ sourceStoreURL: NSURL, options: [NSObject : AnyObject]) {
 		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
@@ -197,7 +197,7 @@ final class CoreDataManager {
 	private static func cleanupDetachedFuelEvents(_ moc : NSManagedObjectContext) {
 		let fetchRequest = NSFetchRequest()
 		fetchRequest.entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in:moc)
-		fetchRequest.predicate = NSPredicate(format:"car == nil")
+		fetchRequest.predicate = NSPredicate(format: "car == nil")
 
 		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 		do {
@@ -238,7 +238,7 @@ final class CoreDataManager {
 		NSLog("storesDidChange: %@", notification)
 	}
 
-	//MARK: - Preconfigured Core Data Fetches
+	// MARK: - Preconfigured Core Data Fetches
 
 	static func fetchRequestForCarsInManagedObjectContext(_ moc: NSManagedObjectContext) -> NSFetchRequest {
 		let fetchRequest = NSFetchRequest()
@@ -268,10 +268,10 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = fetchSize
 
 		// Predicates
-		let parentPredicate = NSPredicate(format:"car == %@", car)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
 
 		if let date = date {
-			let datePredicate = NSPredicate(format:"timestamp \(dateCompare) %@", date)
+			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date)
 			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
@@ -345,8 +345,8 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = 2
 
 		// Predicates
-		let parentPredicate = NSPredicate(format:"car == %@", car)
-		let datePredicate = NSPredicate(format:"timestamp == %@", date)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
+		let datePredicate = NSPredicate(format: "timestamp == %@", date)
 
 		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 
@@ -361,7 +361,7 @@ final class CoreDataManager {
 		return objectCount > 0
 	}
 
-	//MARK: - Core Data Updates
+	// MARK: - Core Data Updates
 
 	static func addToArchive(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
 		let zero = NSDecimalNumber.zero()
@@ -370,9 +370,9 @@ final class CoreDataManager {
 		let fuelUnit     = car.ksFuelUnit
 		let odometerUnit = car.ksOdometerUnit
 
-		let liters        = Units.litersForVolume(fuelVolume, withUnit:fuelUnit)
+		let liters        = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
 		let kilometers    = Units.kilometersForDistance(distance, withUnit:odometerUnit)
-		let pricePerLiter = Units.pricePerLiter(price: price, withUnit:fuelUnit)
+		let pricePerLiter = Units.pricePerLiter(price: price, withUnit: fuelUnit)
 
 		var inheritedCost       = zero
 		var inheritedDistance   = zero

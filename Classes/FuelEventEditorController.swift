@@ -45,7 +45,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private var dataChanged = false
 	private var restoredSelectionIndex: NSIndexPath?
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -80,7 +80,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
@@ -143,7 +143,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		super.decodeRestorableState(with: coder)
 	}
 
-	//MARK: - Saving and Restoring the Fuel Event
+	// MARK: - Saving and Restoring the Fuel Event
 
 	private func saveStateToEvent() {
 		if dataChanged {
@@ -175,15 +175,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.title = Formatters.sharedDateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
 		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
-		price      = Units.pricePerUnit(literPrice: event.price, withUnit:fuelUnit)
-		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit:fuelUnit)
+		price      = Units.pricePerUnit(literPrice: event.price, withUnit: fuelUnit)
+		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit: fuelUnit)
 		filledUp   = event.filledUp
 		comment    = event.comment
 
 		dataChanged = false
 	}
 
-	//MARK: - Mode Switching for Table Rows
+	// MARK: - Mode Switching for Table Rows
 
 	private func reconfigureRowAtIndexPath(_ indexPath: NSIndexPath) {
 		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
@@ -226,14 +226,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - Entering Editing Mode
+	// MARK: - Entering Editing Mode
 
 	@IBAction func enterEditingMode(_ sender: AnyObject) {
 		setEditing(true, animated:true)
 		selectRowAtIndexPath(NSIndexPath(forRow:0, inSection:0))
 	}
 
-	//MARK: - Saving Edited Data
+	// MARK: - Saving Edited Data
 
 	@IBAction func endEditingModeAndSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
@@ -242,7 +242,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - Aborting Editing Mode
+	// MARK: - Aborting Editing Mode
 
 	@IBAction func endEditingModeAndRevert(_ sender: AnyObject) {
 		restoredSelectionIndex = self.tableView.indexPathForSelectedRow
@@ -257,15 +257,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	}
 
 	private func showRevertActionSheet() {
-		let alertController = UIAlertController(title:NSLocalizedString("Revert Changes for Event?", comment:""),
+		let alertController = UIAlertController(title:NSLocalizedString("Revert Changes for Event?", comment: ""),
 																			 message:nil,
 																	  preferredStyle:.actionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.cancel) { _ in
+		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment: ""), style:.cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.restoredSelectionIndex)
 			self.restoredSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:NSLocalizedString("Revert", comment:""), style:.destructive) { _ in
+		let destructiveAction = UIAlertAction(title:NSLocalizedString("Revert", comment: ""), style:.destructive) { _ in
 			self.isShowingCancelSheet = false
 			self.endEditingModeAndRevertCompletion()
 			self.restoredSelectionIndex = nil
@@ -286,7 +286,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		restoredSelectionIndex = nil
 	}
 
-	//MARK: - Creating the Table Rows
+	// MARK: - Creating the Table Rows
 
 	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Don't add the section when no value can be computed
@@ -304,13 +304,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Compute the average consumption
 		let cost = fuelVolume * price
 
-		let liters      = Units.litersForVolume(fuelVolume, withUnit:fuelUnit)
+		let liters      = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
 		let kilometers  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
-		let consumptionString = String(format:"%@ %@ %@ %@",
+		let consumptionString = String(format: "%@ %@ %@ %@",
 									  Formatters.sharedCurrencyFormatter.string(from: cost)!,
-									  NSLocalizedString("/", comment:""),
+									  NSLocalizedString("/", comment: ""),
 									  Formatters.sharedFuelVolumeFormatter.string(from: consumption)!,
                                       consumptionUnit.localizedString)
 
@@ -334,7 +334,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment:""),
+			   cellData:["label": NSLocalizedString("Date", comment: ""),
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date"],
           withAnimation:animation)
@@ -344,7 +344,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Distance", comment:""),
+			   cellData:["label": NSLocalizedString("Distance", comment: ""),
                          "suffix": " ".appending(odometerUnit.description),
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
@@ -373,14 +373,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:SwitchTableCell.self,
-			   cellData:["label": NSLocalizedString("Full Fill-Up", comment:""),
+			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
                          "valueIdentifier": "filledUp"],
           withAnimation:animation)
 
 		addRowAtIndex(rowIndex: 5,
 			inSection:0,
 			cellClass:TextEditTableCell.self,
-			cellData:["label": NSLocalizedString("Comment", comment:""),
+			cellData:["label": NSLocalizedString("Comment", comment: ""),
 				"valueIdentifier": "comment"],
 			withAnimation:animation)
 
@@ -389,7 +389,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
 	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
@@ -403,7 +403,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - Programmatically Selecting Table Rows
+	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRow(at: indexPath)!
@@ -441,7 +441,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - EditablePageCellDelegate
+	// MARK: - EditablePageCellDelegate
 
 	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
@@ -515,7 +515,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.doneButton.isEnabled = canBeSaved
 	}
 
-	//MARK: - EditablePageCellValidator
+	// MARK: - EditablePageCellValidator
 
 	func valueValid(_ newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
 		// Date must be collision free
@@ -541,13 +541,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		return true
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
 		let cell = tableView.cellForRow(at: indexPath)
@@ -574,7 +574,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
 		NSNotificationCenter.default().removeObserver(self)

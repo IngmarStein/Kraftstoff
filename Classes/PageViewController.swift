@@ -27,7 +27,7 @@ class PageViewController: UITableViewController {
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Dismissing the Keyboard
+	// MARK: - Dismissing the Keyboard
 
 	func dismissKeyboardWithCompletion(completion: () -> Void) {
 		let scrollToTop = (self.tableView.contentOffset.y > 0.0)
@@ -49,7 +49,7 @@ class PageViewController: UITableViewController {
 		})
 	}
 
-	//MARK: - Access to Table Cells
+	// MARK: - Access to Table Cells
 
 	func cellDescriptionForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCellDescription? {
 		if tableSections.count <= sectionIndex {
@@ -82,7 +82,7 @@ class PageViewController: UITableViewController {
 		cell.configureForData(object, viewController:self, tableView:self.tableView, indexPath:indexPath)
 	}
 
-	//MARK: - Access to Table Sections
+	// MARK: - Access to Table Sections
 
 	func addSectionAtIndex(_ idx: Int, withAnimation animation: UITableViewRowAnimation) {
 		let sectionIndex: Int
@@ -118,7 +118,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	//MARK: - Access to Table Rows
+	// MARK: - Access to Table Rows
 
 	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [NSObject:AnyObject], withAnimation animation: UITableViewRowAnimation) {
 		// Get valid section index and section
@@ -174,7 +174,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
 		return tableSections.count

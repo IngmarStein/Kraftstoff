@@ -106,7 +106,7 @@ final class NumberEditTableCell: EditablePageCell {
                                                  raiseOnDivideByZero:false)
 
 			// Delete only the last digit
-			value = value.multiplying(byPowerOf10: -1, withBehavior:handler)
+			value = value.multiplying(byPowerOf10: -1, withBehavior: handler)
 			value = value.rounding(accordingToBehavior: handler)
 		}
 

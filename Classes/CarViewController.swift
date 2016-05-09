@@ -42,7 +42,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	private var changeIsUserDriven = false
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -50,7 +50,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = false
 
 		// Navigation Bar
-		self.title = NSLocalizedString("Cars", comment:"")
+		self.title = NSLocalizedString("Cars", comment: "")
 		self.navigationItem.leftBarButtonItem = nil
 
 		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target:self, action:#selector(CarViewController.insertNewObject(_:)))
@@ -111,7 +111,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		hideHelp(animated)
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
@@ -131,7 +131,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
 	func localeChanged(_ object: AnyObject) {
 		// Invalidate fuelEvent-controller and any precomputed statistics
@@ -142,7 +142,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Help Badge
+	// MARK: - Help Badge
 
 	private func updateHelp(_ animated: Bool) {
 		let defaults = NSUserDefaults.standard()
@@ -198,7 +198,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				helpView.image = UIImage(named:helpImageName)
 				helpView.frame = helpViewFrame
 			} else {
-				let helpImage   = UIImage(named:NSLocalizedString(helpImageName, comment:""))!.withRenderingMode(.alwaysTemplate)
+				let helpImage   = UIImage(named:NSLocalizedString(helpImageName, comment: ""))!.withRenderingMode(.alwaysTemplate)
 
 				helpView        = UIImageView(image:helpImage)
 				helpView!.tag   = 100
@@ -237,7 +237,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	//MARK: - CarConfigurationControllerDelegate
+	// MARK: - CarConfigurationControllerDelegate
 
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
 		if result == .CreateSucceeded {
@@ -308,7 +308,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		dismiss(animated: result != .Aborted, completion:nil)
 	}
 
-	//MARK: - Adding a new Object
+	// MARK: - Adding a new Object
 
 	override func setEditing(_ editing: Bool, animated: Bool) {
 		super.setEditing(editing, animated:animated)
@@ -345,7 +345,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		present(navController, animated:true, completion:nil)
 	}
 
-	//MARK: - UIGestureRecognizerDelegate
+	// MARK: - UIGestureRecognizerDelegate
 
 	@objc(gestureRecognizer:shouldReceiveTouch:) func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
 		// Editing mode must be enabled
@@ -365,7 +365,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return false
 	}
 
-	//MARK: - Gesture Recognizer for Editing an Existing Object
+	// MARK: - Gesture Recognizer for Editing an Existing Object
 
 	func handleLongPress(_ sender: UILongPressGestureRecognizer) {
 		if sender.state == .began {
@@ -413,7 +413,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	//MARK: - Removing an Existing Object
+	// MARK: - Removing an Existing Object
 
 	func removeExistingObject(at indexPath: NSIndexPath) {
 		guard let deletedObject = self.fetchedResultsController.object(at: indexPath) as? Car else {
@@ -462,7 +462,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
 	func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
 
@@ -488,8 +488,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = consumptionUnit.accessibilityDescription
 		} else {
-			avgConsumption = NSLocalizedString("-", comment:"")
-			tableCell.topRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
+			avgConsumption = NSLocalizedString("-", comment: "")
+			tableCell.topRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
 			tableCell.botRightAccessibilityLabel = nil
 		}
 
@@ -569,7 +569,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return true
 	}
 
-	//MARK: - UIDataSourceModelAssociation
+	// MARK: - UIDataSourceModelAssociation
 
 	@objc(indexPathForElementWithModelIdentifier:inView:)
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> NSIndexPath? {
@@ -585,7 +585,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
 		return proposedDestinationIndexPath
@@ -616,7 +616,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		updateHelp(true)
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
 	@objc(controllerWillChangeContent:) func controllerWillChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.beginUpdates()
@@ -669,7 +669,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = false
 	}
 
-	//MARK: - UIViewControllerPreviewingDelegate
+	// MARK: - UIViewControllerPreviewingDelegate
 
 	@objc(previewingContext:viewControllerForLocation:)
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
@@ -690,7 +690,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		show(viewControllerToCommit, sender: self)
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()

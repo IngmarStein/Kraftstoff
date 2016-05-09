@@ -10,10 +10,11 @@ import Foundation
 
 final class PageCellDescription {
 	private(set) var cellClass: PageCell.Type
-	var cellData: [NSObject:AnyObject]
+	var cellData: [NSObject: AnyObject]
 
-	init(cellClass: PageCell.Type, andData data: [NSObject:AnyObject]) {
+	init(cellClass: PageCell.Type, andData data: [NSObject: AnyObject]) {
 		self.cellClass = cellClass
 		self.cellData = data
 	}
+
 }

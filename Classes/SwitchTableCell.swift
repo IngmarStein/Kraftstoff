@@ -91,7 +91,7 @@ final class SwitchTableCell: PageCell {
 		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier)?.boolValue ?? false
 
 		self.valueSwitch.isOn = isON
-		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment:"")
+		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment: "")
 
 		let showAlternate = self.delegate?.valueForIdentifier("showValueLabel")?.boolValue ?? false
 
@@ -103,6 +103,6 @@ final class SwitchTableCell: PageCell {
 		let isON = sender.isOn
 
 		self.delegate?.valueChanged(isON, identifier:self.valueIdentifier)
-		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment:"")
+		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment: "")
 	}
 }

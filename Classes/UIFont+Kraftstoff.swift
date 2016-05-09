@@ -8,7 +8,7 @@
 
 import UIKit
 
-private let textStyleSize: [String:CGFloat] = [
+private let textStyleSize: [String: CGFloat] = [
 	UIFontTextStyleFootnote: 12.0,
 	UIFontTextStyleBody: 15.0,
 	UIFontTextStyleCaption2: 17.0,
@@ -17,7 +17,7 @@ private let textStyleSize: [String:CGFloat] = [
 	UIFontTextStyleHeadline: 28.0
 ]
 
-private let contentSizeDelta: [String:CGFloat] = [
+private let contentSizeDelta: [String: CGFloat] = [
 	UIContentSizeCategoryAccessibilityExtraExtraExtraLarge: 8,
 	UIContentSizeCategoryAccessibilityExtraExtraLarge: 7,
 	UIContentSizeCategoryAccessibilityExtraLarge: 6,
@@ -33,6 +33,7 @@ private let contentSizeDelta: [String:CGFloat] = [
 ]
 
 extension UIFont {
+
 	private static func applicationFontForStyle(textStyle: String, weight: CGFloat) -> UIFont {
 		let baseSize = textStyleSize[textStyle] ?? 0.0
 		let contentSize = UIApplication.shared().preferredContentSizeCategory
@@ -52,4 +53,5 @@ extension UIFont {
 	static func boldApplicationFontForStyle(textStyle: String) -> UIFont {
 		return applicationFontForStyle(textStyle: textStyle, weight: UIFontWeightBold)
 	}
+
 }

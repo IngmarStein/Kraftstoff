@@ -114,7 +114,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		datePicker.isHidden = !show
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		// Optional: update selected value to current time when no change was done in the last 5 minutes

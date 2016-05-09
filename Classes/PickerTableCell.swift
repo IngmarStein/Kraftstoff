@@ -75,7 +75,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		pickerView.isHidden = !show
 	}
 
-	//MARK: - UIPickerViewDataSource
+	// MARK: - UIPickerViewDataSource
 
 	@objc(numberOfComponentsInPickerView:)
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -90,7 +90,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		selectRow(row)
 	}
 
-	//MARK: - UIPickerViewDelegate
+	// MARK: - UIPickerViewDelegate
 
 	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
 		return PickerViewCellHeight
@@ -116,7 +116,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		return label
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		showPicker(true)

@@ -44,7 +44,7 @@ final class TextEditTableCell: EditablePageCell {
 		self.textField.accessibilityIdentifier = self.valueIdentifier
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		// Let the focus handler handle switching to next textfield

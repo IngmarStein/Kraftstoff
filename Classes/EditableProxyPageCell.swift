@@ -15,7 +15,7 @@ class EditableProxyPageCell: EditablePageCell {
 	required init() {
 		// Create a proxy overlay for the textfield that is used to display the textField contents
 		// without a flashing cursor and no cut & paste possibilities
-		textFieldProxy = UILabel(frame:CGRect.zero)
+		textFieldProxy = UILabel(frame: CGRect.zero)
 
 		super.init()
 

@@ -51,8 +51,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		super.init(coder: aDecoder)
 
 		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")
-		userActivity?.title = NSLocalizedString("Fill-Up", comment:"")
-		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment:"") ]
+		userActivity?.title = NSLocalizedString("Fill-Up", comment: "")
+		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
 		userActivity?.isEligibleForSearch = true
 
 		// Title bar
@@ -60,10 +60,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.doneButton.accessibilityIdentifier = "done"
 		self.saveButton = UIBarButtonItem(barButtonSystemItem: .save, target:self, action:#selector(FuelCalculatorController.saveAction(_:)))
 		self.saveButton.accessibilityIdentifier = "save"
-		self.title = NSLocalizedString("Fill-Up", comment:"")
+		self.title = NSLocalizedString("Fill-Up", comment: "")
 	}
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -81,7 +81,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		NSNotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	private let kSRCalculatorSelectedIndex = "FuelCalculatorSelectedIndex"
 	private let kSRCalculatorConvertSheet  = "FuelCalculatorConvertSheet"
@@ -116,7 +116,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		super.decodeRestorableState(with: coder)
 	}
 
-	//MARK: - Modeswitching for Table Rows
+	// MARK: - Modeswitching for Table Rows
 
 	override func setEditing(_ enabled: Bool, animated: Bool) {
 		if self.isEditing != enabled {
@@ -146,7 +146,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - Shake Events
+	// MARK: - Shake Events
 
 	override func canBecomeFirstResponder() -> Bool {
 		return true
@@ -203,7 +203,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                      })
 	}
 
-	//MARK: - Creating the Table Rows
+	// MARK: - Creating the Table Rows
 
 	func consumptionRowNeeded() -> Bool {
 
@@ -239,13 +239,13 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// Compute the average consumption
 		let cost = fuelVolume! * price!
 
-		let liters      = Units.litersForVolume(fuelVolume!, withUnit:fuelUnit)
+		let liters      = Units.litersForVolume(fuelVolume!, withUnit: fuelUnit)
 		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
-		let consumptionString = String(format:"%@ %@ %@ %@",
+		let consumptionString = String(format: "%@ %@ %@ %@",
                                         Formatters.sharedCurrencyFormatter.string(from: cost)!,
-										NSLocalizedString("/", comment:""),
+										NSLocalizedString("/", comment: ""),
                                         Formatters.sharedFuelVolumeFormatter.string(from: consumption)!,
                                         consumptionUnit.localizedString)
 
@@ -286,7 +286,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 0 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-				   cellData:["label": NSLocalizedString("Distance", comment:""),
+				   cellData:["label": NSLocalizedString("Distance", comment: ""),
                              "suffix": " ".appending(odometerUnit.description),
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
@@ -347,7 +347,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				addRowAtIndex(rowIndex: 0,
                       inSection:0,
                       cellClass:CarTableCell.self,
-					   cellData:["label": NSLocalizedString("Car", comment:""),
+					   cellData:["label": NSLocalizedString("Car", comment: ""),
                                  "valueIdentifier": "car",
                                  "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
                   withAnimation:animation)
@@ -367,7 +367,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		addRowAtIndex(rowIndex: self.car != nil ? 1 : 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment:""),
+			   cellData:["label": NSLocalizedString("Date", comment: ""),
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date",
                          "valueTimestamp": "lastChangeDate",
@@ -384,7 +384,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 5,
                   inSection:0,
                   cellClass:SwitchTableCell.self,
-				   cellData:["label": NSLocalizedString("Full Fill-Up", comment:""),
+				   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
                              "valueIdentifier": "filledUp"],
               withAnimation:animation)
 
@@ -395,7 +395,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 6,
 				inSection:0,
 				cellClass:TextEditTableCell.self,
-				cellData:["label": NSLocalizedString("Comment", comment:""),
+				cellData:["label": NSLocalizedString("Comment", comment: ""),
 					"valueIdentifier": "comment",
 					"maximumTextFieldLength": 0],
 				withAnimation:animation)
@@ -407,7 +407,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - Updating the Table Rows
+	// MARK: - Updating the Table Rows
 
 	func recreateTableContentsWithAnimation(_ anim: UITableViewRowAnimation) {
 		// Update model contents
@@ -476,7 +476,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
 	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
@@ -487,7 +487,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - System Events
+	// MARK: - System Events
 
 	func willEnterForeground(_ notification: NSNotification) {
 		if tableSections.isEmpty {
@@ -524,7 +524,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		updateSaveButtonState()
 	}
 
-	//MARK: - Programmatically Selecting Table Rows
+	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRow(at: indexPath)!
@@ -562,7 +562,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - Storing Information in the Database
+	// MARK: - Storing Information in the Database
 
 	func saveAction(_ sender: AnyObject) {
 		self.navigationItem.rightBarButtonItem = nil
@@ -613,7 +613,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	}
 
 
-	//MARK: - Conversion for Odometer
+	// MARK: - Conversion for Odometer
 
 	// A simple heuristic when to ask for distance conversion
 	func needsOdometerConversionSheet() -> Bool {
@@ -704,11 +704,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                 distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!,
                                 odometerUnit.description)
 
-		let convButton = String(format:"%@ %@",
+		let convButton = String(format: "%@ %@",
                                 distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!,
 								odometerUnit.description)
 
-		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment:""),
+		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,
 																	  preferredStyle: .actionSheet)
 		let cancelAction = UIAlertAction(title:rawButton, style: .`default`) { _ in
@@ -739,7 +739,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		present(alertController, animated:true, completion:nil)
 	}
 
-	//MARK: - Leaving Editing Mode
+	// MARK: - Leaving Editing Mode
 
 	@IBAction func endEditingMode(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
@@ -751,7 +751,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
     }
 
-	//MARK: - EditablePageCellDelegate
+	// MARK: - EditablePageCellDelegate
 
 	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
@@ -858,7 +858,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		return true
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
 	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		recreateTableContentsWithAnimation(changeIsUserDriven ? .right : .none)
@@ -867,13 +867,13 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		changeIsUserDriven = false
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: NSIndexPath) -> NSIndexPath? {
 		let cell = tableView.cellForRow(at: indexPath)
@@ -901,7 +901,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: -
+	// MARK: -
 
 	deinit {
 		NSNotificationCenter.default().removeObserver(self)

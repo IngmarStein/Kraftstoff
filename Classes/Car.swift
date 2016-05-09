@@ -1,6 +1,6 @@
 //
-//  NSManagedObject.swift
-//  
+//  Car.swift
+//
 //
 //  Created by Ingmar Stein on 04.05.15.
 //

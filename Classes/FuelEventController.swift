@@ -64,7 +64,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	private var mailComposeController: MFMailComposeViewController!
 	private var documentPickerViewController: UIDocumentPickerViewController!
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -154,7 +154,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
@@ -196,7 +196,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Device Rotation
+	// MARK: - Device Rotation
 
 	func setObserveDeviceRotation(_ observeRotation: Bool) {
 		if observeRotation && !isObservingRotationEvents {
@@ -241,20 +241,20 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
 	func localeChanged(_ object: AnyObject) {
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Export Support
+	// MARK: - Export Support
 
 	func validateExport() {
 		self.navigationItem.rightBarButtonItem?.isEnabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
 	}
 
 	private var exportFilename: String {
-		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
+		let rawFilename = String(format: "%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
 		let illegalCharacters = NSCharacterSet(charactersIn:"/\\?%*|\"<>")
 
 		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
@@ -284,21 +284,21 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		let period: String
         switch fetchCount {
-		case 0:  period = NSLocalizedString("", comment:"")
-		case 1:  period = String(format:NSLocalizedString("on %@", comment:""), outputFormatter.string(from: last!.timestamp))
-		default: period = String(format:NSLocalizedString("in the period from %@ to %@", comment:""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
+		case 0:  period = NSLocalizedString("", comment: "")
+		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
         }
 
-		let count = String(format:NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment:""), fetchCount)
+		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
-		return String(format:NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment:""),
+		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
             selectedCar.name,
             selectedCar.numberPlate,
             period,
             count)
 	}
 
-	//MARK: - Export data
+	// MARK: - Export data
 
 	func showOpenIn() {
 		restoreOpenIn = false
@@ -308,10 +308,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		do {
 			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
 		} catch _ {
-			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
-				message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
+			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment: ""),
+				message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
 				preferredStyle:.alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
@@ -328,10 +328,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		openInController.uti = "public.comma-separated-values-text"
 
 		if !openInController.presentOpenInMenu(from: self.navigationItem.rightBarButtonItem!, animated:true) {
-			let alertController = UIAlertController(title:NSLocalizedString("Open In Failed", comment:""),
-				message:NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment:""),
+			let alertController = UIAlertController(title:NSLocalizedString("Open In Failed", comment: ""),
+				message:NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment: ""),
 																		  preferredStyle: .alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
@@ -350,10 +350,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		do {
 			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
 		} catch _ {
-			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
-			                                        message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
+			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment: ""),
+			                                        message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
 			                                        preferredStyle: .alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
@@ -396,7 +396,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		openInController = nil
 	}
 
-	//MARK: - Export Objects via email
+	// MARK: - Export Objects via email
 
 	func showMailComposer() {
 		restoreMailComposer = false
@@ -406,7 +406,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format:NSLocalizedString("Your fuel data for %@", comment:""), selectedCar.numberPlate))
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML:false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text/csv", fileName:exportFilename)
 
@@ -420,10 +420,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			self.mailComposeController = nil
 
 			if result == MFMailComposeResultFailed {
-				let alertController = UIAlertController(title:NSLocalizedString("Sending Failed", comment:""),
-					message:NSLocalizedString("The exported fuel data could not be sent.", comment:""),
+				let alertController = UIAlertController(title:NSLocalizedString("Sending Failed", comment: ""),
+					message:NSLocalizedString("The exported fuel data could not be sent.", comment: ""),
 																			  preferredStyle: .alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`) { _ in
+				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`) { _ in
 					self.isShowingAlert = false
 				}
 				alertController.addAction(defaultAction)
@@ -433,27 +433,27 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	//MARK: - Export Action Sheet
+	// MARK: - Export Action Sheet
 
 	func showExportSheet(_ sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 
-		let alertController = UIAlertController(title:NSLocalizedString("Export Fuel Data in CSV Format", comment:""),
+		let alertController = UIAlertController(title:NSLocalizedString("Export Fuel Data in CSV Format", comment: ""),
 																			 message:nil,
 																	  preferredStyle:.actionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.cancel) { _ in
+		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment: ""), style:.cancel) { _ in
 			self.isShowingExportSheet = false
 		}
-		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment:""), style: .`default`) { _ in
+		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment: ""), style: .`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showMailComposer() }
 		}
-		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment:""), style: .`default`) { _ in
+		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment: ""), style: .`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showOpenIn() }
 		}
-		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment:""), style:.`default`) { _ in
+		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment: ""), style:.`default`) { _ in
 			self.isShowingExportSheet = false
 			dispatch_async(dispatch_get_main_queue()) { self.showExportDocumentPicker() }
 		}
@@ -468,7 +468,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		present(alertController, animated:true, completion:nil)
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
 	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: NSIndexPath) {
 		let managedObject = self.fetchedResultsController.object(at: indexPath) as! FuelEvent
@@ -493,7 +493,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = String(format:"%@ %@",
+		tableCell.botLeftLabel.text = String(format: "%@ %@",
                     Formatters.sharedDistanceFormatter.string(from: convertedDistance)!,
                     odometerUnit.description)
 		tableCell.botLeftAccessibilityLabel = nil
@@ -512,16 +512,16 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			consumptionDescription = Formatters.sharedFuelVolumeFormatter.string(from: avg)!
 
-			tableCell.botRightAccessibilityLabel = String(format:", %@ %@",
+			tableCell.botRightAccessibilityLabel = String(format: ", %@ %@",
                                                     consumptionDescription,
                                                     consumptionUnit.accessibilityDescription)
 
 		} else {
-			consumptionDescription = NSLocalizedString("-", comment:"")
-			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
+			consumptionDescription = NSLocalizedString("-", comment: "")
+			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
 		}
 
-		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, consumptionUnit.localizedString)
+		tableCell.botRightLabel.text = String(format: "%@ %@", consumptionDescription, consumptionUnit.localizedString)
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -554,7 +554,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	//MARK: - UIDataSourceModelAssociation
+	// MARK: - UIDataSourceModelAssociation
 
 	@objc(indexPathForElementWithModelIdentifier:inView:)
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> NSIndexPath? {
@@ -570,7 +570,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as! FuelEventEditorController
@@ -580,7 +580,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.navigationController?.pushViewController(editController, animated:true)
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
 	@objc(controllerWillChangeContent:) func controllerWillChangeContent(_ controller: NSFetchedResultsController) {
 		self.tableView.beginUpdates()
@@ -618,7 +618,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		statisticsController.invalidateCaches()
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
 		NSNotificationCenter.default().removeObserver(self)

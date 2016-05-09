@@ -89,7 +89,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	override var accessibilityLabel: String? {
 		get {
-			return String(format:"%@ %@", self.keyLabel.text!, self.textField.text!)
+			return String(format: "%@ %@", self.keyLabel.text!, self.textField.text!)
 		}
 		set {
 
@@ -111,7 +111,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		return UIApplication.shared().delegate!.window!!.tintColor
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
 	func textFieldDidEndEditing(_ textField: UITextField) {
 		textField.isUserInteractionEnabled = false

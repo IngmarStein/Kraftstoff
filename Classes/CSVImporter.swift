@@ -20,7 +20,7 @@ final class CSVImporter {
 
 	init() {}
 
-	//MARK: - Core Data Support
+	// MARK: - Core Data Support
 
 	private func addCar(name: String, order: Int, plate: String, odometerUnit: KSDistance, volumeUnit: KSVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
@@ -72,7 +72,7 @@ final class CSVImporter {
 		return newEvent
 	}
 
-	//MARK: - Data Import Helpers
+	// MARK: - Data Import Helpers
 
 	private func guessModelFromURL(_ sourceURL: NSURL) -> String? {
 		if sourceURL.isFileURL {
@@ -170,7 +170,7 @@ final class CSVImporter {
 		carForID.removeAll()
 
 		for carID in carIDs {
-			let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment:""))
+			let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment: ""))
 			let plate = truncateLongString(plateForID[carID] ?? "")
 
 			let newCar = addCar(name: model,
@@ -419,7 +419,7 @@ final class CSVImporter {
 		return true
 	}
 
-	//MARK: - Data Import
+	// MARK: - Data Import
 
 	func `import`(csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString: csv)
@@ -479,7 +479,7 @@ final class CSVImporter {
 		return numEvents > 0
 	}
 
-	//MARK: - Scanning Support
+	// MARK: - Scanning Support
 
 	private let currentNumberFormatter: NSNumberFormatter = {
 		let nfCurrent = NSNumberFormatter()
@@ -671,7 +671,7 @@ final class CSVImporter {
 		return .liter
 	}
 
-	//MARK: - Interpretation of CSV Header Names
+	// MARK: - Interpretation of CSV Header Names
 
 	private func keyForDate(_ record: CSVRecord) -> String? {
 		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ" ] {

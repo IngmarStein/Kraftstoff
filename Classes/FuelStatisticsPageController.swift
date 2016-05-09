@@ -14,7 +14,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	var selectedCar: Car!
 	var statisticsViewControllers = [FuelStatisticsViewController]()
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -94,13 +94,13 @@ final class FuelStatisticsPageController: UIPageViewController {
 		NSUserDefaults.standard().synchronize()
 	}
 
-	//MARK: - View Rotation
+	// MARK: - View Rotation
 
 	override func shouldAutorotate() -> Bool {
 		return true
 	}
 
-	//MARK: - Cache Handling
+	// MARK: - Cache Handling
 
 	func invalidateCaches() {
 		for controller in self.childViewControllers as! [FuelStatisticsViewController] {
@@ -108,7 +108,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
 	}
 
-	//MARK: - System Events
+	// MARK: - System Events
 
 	func localeChanged(_ object: AnyObject) {
 		invalidateCaches()
@@ -135,7 +135,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		updatePageVisibility()
 	}
 
-	//MARK: - User Events
+	// MARK: - User Events
 
 	func numberOfMonthsSelected(notification: NSNotification) {
 		// Remember selection in preferences
@@ -149,7 +149,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
 		NSNotificationCenter.default().removeObserver(self)

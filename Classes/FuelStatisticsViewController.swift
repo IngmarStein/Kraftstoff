@@ -49,7 +49,7 @@ class FuelStatisticsViewController: UIViewController {
 	private var invalidationCounter = 0
 	private var expectedCounter = 0
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -112,7 +112,7 @@ class FuelStatisticsViewController: UIViewController {
 		displayedNumberOfMonths = NSUserDefaults.standard().integer(forKey: "statisticTimeSpan")
 	}
 
-	//MARK: - View Rotation
+	// MARK: - View Rotation
 	override func shouldAutorotate() -> Bool {
 		return true
 	}
@@ -121,7 +121,7 @@ class FuelStatisticsViewController: UIViewController {
 		return .landscape
 	}
 
-	//MARK: - Cache Handling
+	// MARK: - Cache Handling
 
 	func invalidateCaches() {
 		contentCache.removeAll(keepingCapacity: false)
@@ -136,7 +136,7 @@ class FuelStatisticsViewController: UIViewController {
         }
 	}
 
-	//MARK: - Statistics Computation and Display
+	// MARK: - Statistics Computation and Display
 
 	func displayStatisticsForRecentMonths(_ numberOfMonths: Int) {
 		if numberOfMonths != displayedNumberOfMonths {
@@ -215,13 +215,13 @@ class FuelStatisticsViewController: UIViewController {
 	func noteStatisticsPageBecomesVisible() {
 	}
 
-	//MARK: - Button Handling
+	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
 		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()

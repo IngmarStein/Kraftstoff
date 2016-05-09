@@ -97,7 +97,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		carPicker.isHidden = !show
 	}
 
-	//MARK: - UIPickerViewDataSource
+	// MARK: - UIPickerViewDataSource
 
 	@objc(numberOfComponentsInPickerView:)
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -112,7 +112,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		selectCar(self.cars[row])
 	}
 
-	//MARK: - UIPickerViewDelegate
+	// MARK: - UIPickerViewDelegate
 
 	@objc(pickerView:rowHeightForComponent:) func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
 		return PickerViewCellHeight
@@ -147,7 +147,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		return label
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		showPicker(true)

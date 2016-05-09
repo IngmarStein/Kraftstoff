@@ -33,7 +33,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return fetchedResultsController
 	}()
 
-	//MARK: - Application Lifecycle
+	// MARK: - Application Lifecycle
 
 	override init() {
 		NSUserDefaults.standard().register(
@@ -188,7 +188,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		CoreDataManager.saveContext()
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	@objc(application:shouldSaveApplicationState:) func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
@@ -202,11 +202,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return stateVersion >= 1572 && stateVersion <= bundleVersion
 	}
 
-	//MARK: - Data Import
+	// MARK: - Data Import
 
 	private func showImportAlert() {
 		if self.importAlert == nil {
-			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment:"") + "\n\n", message:"", preferredStyle:.alert)
+			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment: "") + "\n\n", message:"", preferredStyle:.alert)
 
 			let progress = UIActivityIndicatorView(frame:self.importAlert!.view.bounds)
 			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -294,14 +294,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				dispatch_async(dispatch_get_main_queue()) {
 					self.hideImportAlert()
 
-					let title = success ? NSLocalizedString("Import Finished", comment:"") : NSLocalizedString("Import Failed", comment:"")
+					let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
 
 					let message = success
-						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment:""), numCars, numEvents)
-						: NSLocalizedString("No valid CSV-data could be found.", comment:"")
+						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
+						: NSLocalizedString("No valid CSV-data could be found.", comment: "")
 
 					let alertController = UIAlertController(title:title, message:message, preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.`default`) { _ in () }
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style:.`default`) { _ in () }
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
@@ -309,10 +309,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				dispatch_async(dispatch_get_main_queue()) {
 					self.hideImportAlert()
 
-					let alertController = UIAlertController(title:NSLocalizedString("Import Failed", comment:""),
-						message:NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment:""),
+					let alertController = UIAlertController(title:NSLocalizedString("Import Failed", comment: ""),
+						message:NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment: ""),
 						preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style: .`default`, handler: nil)
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`, handler: nil)
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated:true, completion:nil)
 				}
@@ -324,13 +324,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return true
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
 	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
 		updateShortcutItems()
 	}
 
-	//MARK: - SKRequestDelegate
+	// MARK: - SKRequestDelegate
 
 	@objc(requestDidFinish:) func requestDidFinish(_ request: SKRequest) {
 		validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
@@ -440,7 +440,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	//MARK: - Shared Color Gradients
+	// MARK: - Shared Color Gradients
 
 	static let blueGradient: CGGradient = {
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]

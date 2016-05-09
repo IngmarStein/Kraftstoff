@@ -9,6 +9,7 @@
 import Foundation
 
 final class CSVExporter {
+
 	static func exportFuelEvents(_ fuelEvents: [FuelEvent], forCar car: Car, language: String? = nil) -> String {
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit = car.ksFuelUnit
@@ -24,19 +25,19 @@ final class CSVExporter {
 		var dataString = String()
 		dataString.reserveCapacity(4096)
 
-		dataString += NSLocalizedString("yyyy-MM-dd", bundle: bundle, comment:"")
+		dataString += NSLocalizedString("yyyy-MM-dd", bundle: bundle, comment: "")
 		dataString += ";"
 
-		dataString += NSLocalizedString("HH:mm", bundle: bundle, comment:"")
+		dataString += NSLocalizedString("HH:mm", bundle: bundle, comment: "")
 		dataString += ";"
 
-		dataString += Units.odometerUnitDescription(odometerUnit, pluralization:true, bundle: bundle)
+		dataString += Units.odometerUnitDescription(odometerUnit, pluralization: true, bundle: bundle)
 		dataString += ";"
 
-		dataString += Units.fuelUnitDescription(fuelUnit, discernGallons:true, pluralization:true, bundle: bundle)
+		dataString += Units.fuelUnitDescription(fuelUnit, discernGallons: true, pluralization: true, bundle: bundle)
 		dataString += ";"
 
-		dataString += NSLocalizedString("Full Fill-Up", bundle: bundle, comment:"")
+		dataString += NSLocalizedString("Full Fill-Up", bundle: bundle, comment: "")
 		dataString += ";"
 
 		dataString += Units.fuelPriceUnitDescription(fuelUnit, bundle: bundle)
@@ -45,7 +46,7 @@ final class CSVExporter {
 		dataString += consumptionUnit.description
 		dataString += ";"
 
-		dataString += NSLocalizedString("Comment", bundle: bundle, comment:"")
+		dataString += NSLocalizedString("Comment", bundle: bundle, comment: "")
 		dataString += "\n"
 
 		let dateFormatter = NSDateFormatter()
@@ -65,20 +66,21 @@ final class CSVExporter {
 			let fuelVolume = fuelEvent.fuelVolume
 			let price = fuelEvent.price
 
-			dataString += String(format:"%@;\"%@\";\"%@\";%@;\"%@\";\"%@\";\"%@\"\n",
+			dataString += String(format: "%@;\"%@\";\"%@\";%@;\"%@\";\"%@\";\"%@\"\n",
 				dateFormatter.string(from: fuelEvent.timestamp),
-				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit:odometerUnit))!,
-				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit:fuelUnit))!,
-				fuelEvent.filledUp ? NSLocalizedString("Yes", comment:"") : NSLocalizedString("No", comment:""),
-				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit:fuelUnit))!,
-				fuelEvent.filledUp ? numberFormatter.string(from: 
+				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit: odometerUnit))!,
+				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit: fuelUnit))!,
+				fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: ""),
+				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit: fuelUnit))!,
+				fuelEvent.filledUp ? numberFormatter.string(from:
 					Units.consumptionForKilometers(distance + fuelEvent.inheritedDistance,
-						liters:fuelVolume + fuelEvent.inheritedFuelVolume,
-						inUnit:consumptionUnit))!
+						liters: fuelVolume + fuelEvent.inheritedFuelVolume,
+						inUnit: consumptionUnit))!
 					: " ",
 				fuelEvent.comment ?? "")
 		}
 
 		return dataString
 	}
+
 }

@@ -47,7 +47,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	weak var delegate: CarConfigurationControllerDelegate?
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -65,7 +65,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		leftBarButtonItem.accessibilityIdentifier = "done"
 		self.navigationItem.leftBarButtonItem = leftBarButtonItem
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.cancel, target:self, action:#selector(CarConfigurationController.handleCancel(_:)))
-		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
+		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment: "") : NSLocalizedString("New Car", comment: "")
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
@@ -81,7 +81,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		selectRowAtIndexPath(NSIndexPath(forRow:0, inSection:0))
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
@@ -132,7 +132,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		super.decodeRestorableState(with: coder)
 	}
 
-	//MARK: - Creating the Table Rows
+	// MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		let suffix = " ".appending(KSDistance(rawValue: self.odometerUnit!.int32Value)!.description)
@@ -144,7 +144,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Reading", comment:""),
+			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: ""),
                          "suffix":          suffix,
                          "formatter":       Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "odometer"],
@@ -161,7 +161,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Name", comment:""),
+			   cellData:["label":           NSLocalizedString("Name", comment: ""),
                          "valueIdentifier": "name"],
           withAnimation: .none)
 
@@ -172,7 +172,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":             NSLocalizedString("License Plate", comment:""),
+			   cellData:["label":             NSLocalizedString("License Plate", comment: ""),
                          "valueIdentifier":   "plate",
                          "autocapitalizeAll": true],
           withAnimation: .none)
@@ -187,7 +187,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Type", comment:""),
+			   cellData:["label":           NSLocalizedString("Odometer Type", comment: ""),
                          "valueIdentifier": "odometerUnit",
                          "labels":          odometerUnitPickerLabels],
           withAnimation: .none)
@@ -205,7 +205,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Fuel Unit", comment:""),
+			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: ""),
 						 "valueIdentifier": "fuelUnit",
                          "labels":          fuelUnitPickerLabels],
           withAnimation: .none)
@@ -231,7 +231,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 5,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Mileage", comment:""),
+			   cellData:["label":           NSLocalizedString("Mileage", comment: ""),
                          "valueIdentifier": "fuelConsumptionUnit",
                          "labels":          fuelConsumptionUnitPickerLabels,
                          "shortLabels":     fuelConsumptionUnitPickerShortLabels],
@@ -255,7 +255,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
 	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
@@ -266,7 +266,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - Programmatically Selecting Table Rows
+	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
 		let cell = tableView.cellForRow(at: indexPath)!
@@ -303,7 +303,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - Cancel Button
+	// MARK: - Cancel Button
 
 	@IBAction func handleCancel(_ sender: AnyObject) {
 		previousSelectionIndex = self.tableView.indexPathForSelectedRow
@@ -337,15 +337,15 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	func showCancelSheet() {
 		isShowingCancelSheet = true
 
-		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment:"") : NSLocalizedString("Delete the newly created car?", comment:""),
+		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment: "") : NSLocalizedString("Delete the newly created car?", comment: ""),
 																			 message: nil,
 																	  preferredStyle: .actionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style: .cancel) { _ in
+		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.previousSelectionIndex)
 			self.previousSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment:"") : NSLocalizedString("Delete", comment:""), style: .destructive) { _ in
+		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment: "") : NSLocalizedString("Delete", comment: ""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
 			self.delegate?.carConfigurationController(self, didFinishWithResult: .Canceled)
 			self.previousSelectionIndex = nil
@@ -356,7 +356,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		present(alertController, animated:true, completion:nil)
 	}
 
-	//MARK: - Save Button
+	// MARK: - Save Button
 
 	@IBAction func handleSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
@@ -364,7 +364,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - EditablePageCellFocusHandler
+	// MARK: - EditablePageCellFocusHandler
 
 	func focusNextFieldForValueIdentifier(_ valueIdentifier: String) {
 		if valueIdentifier == "name" {
@@ -374,7 +374,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - EditablePageCellDelegate
+	// MARK: - EditablePageCellDelegate
 
 	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
@@ -420,7 +420,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		dataChanged = true
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
@@ -437,7 +437,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
 		NSNotificationCenter.default().removeObserver(self)

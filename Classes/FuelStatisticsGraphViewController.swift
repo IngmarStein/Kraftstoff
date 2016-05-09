@@ -39,7 +39,7 @@ private let StatisticTrackInfoYMarginFlat: CGFloat = 3.0
 
 private let MAX_SAMPLES = 256
 
-//MARK: - Disposable Sampling Data Objects for ContentCache
+// MARK: - Disposable Sampling Data Objects for ContentCache
 
 private class FuelStatisticsSamplingData : DiscardableDataObject {
     // Curve data
@@ -91,7 +91,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	private var zoomIndex = 0
 	var dataSource: FuelStatisticsViewControllerDataSource?
 
-	//MARK: -  Default Position/Dimension Data for Graphs
+	// MARK: -  Default Position/Dimension Data for Graphs
 
 	var graphLeftBorder: CGFloat {
 		return StatisticGraphMargin
@@ -127,7 +127,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		return self.view.bounds.size.height - self.graphTopBorder - StatisticGraphXAxisLabelHeight
 	}
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -140,7 +140,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		self.view.addGestureRecognizer(zoomRecognizer)
 	}
 
-	//MARK: - Graph Computation
+	// MARK: - Graph Computation
 
 	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsSamplingData, inManagedObjectContext moc: NSManagedObjectContext) -> CGFloat {
 		var firstDate: NSDate? = nil
@@ -347,7 +347,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		return state
 	}
 
-	//MARK: - Graph Display
+	// MARK: - Graph Display
 
 	private func drawFlatStatisticsForState(_ state: FuelStatisticsSamplingData!) {
 		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
@@ -373,7 +373,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			let attributes = [ NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.white() ]
 
-			let text = NSLocalizedString("Not enough data to display statistics", comment:"")
+			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(attributes: attributes)
 
             let x = floor ((self.view.bounds.size.width - size.width)/2.0)
@@ -605,7 +605,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		}
 	}
 
-	//MARK: - Zoom Lens Handling
+	// MARK: - Zoom Lens Handling
 
 	func longPressChanged(_ sender: AnyObject) {
 		switch zoomRecognizer.state {
@@ -676,7 +676,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
                         self.centerLabel.text = df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0]))
 					} else {
-                        self.centerLabel.text = String(format:"%@  ➡  %@",
+                        self.centerLabel.text = String(format: "%@  ➡  %@",
                                                     df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][0])),
                                                     df.string(from: NSDate(timeIntervalSinceReferenceDate:cell.lensDate [minIndex][1])))
 					}
@@ -765,7 +765,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	}
 }
 
-//MARK - Data Sources for Different Statistic Graphs
+// MARK - Data Sources for Different Statistic Graphs
 
 class FuelStatisticsViewControllerDataSourceAvgConsumption : FuelStatisticsViewControllerDataSource, FuelStatisticsViewControllerDelegate {
 
@@ -834,7 +834,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount : FuelStatisticsViewCont
 	func noAverageStringForCar(_ car: Car) -> String {
 		let fuelUnit = car.ksFuelUnit
 
-		return String(format:"%@/%@",
+		return String(format: "%@/%@",
             Formatters.sharedCurrencyFormatter.currencySymbol!,
             fuelUnit.description)
 	}
@@ -915,9 +915,9 @@ class FuelStatisticsViewControllerDataSourcePriceDistance : FuelStatisticsViewCo
 		}
 
 		if distanceUnit.isMetric {
-			return CGFloat((cost << 2).dividing(by: distance, withBehavior:handler).floatValue)
+			return CGFloat((cost << 2).dividing(by: distance, withBehavior: handler).floatValue)
 		} else {
-			return CGFloat(distance.dividing(by: Units.kilometersPerStatuteMile).dividing(by: cost, withBehavior:handler).floatValue)
+			return CGFloat(distance.dividing(by: Units.kilometersPerStatuteMile).dividing(by: cost, withBehavior: handler).floatValue)
 		}
 	}
 }
