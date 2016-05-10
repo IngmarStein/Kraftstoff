@@ -172,7 +172,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func encodeRestorableState(with coder: NSCoder) {
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey:kSRFuelEventSelectedCarID)
 		coder.encode(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
 		coder.encode(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
 		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
@@ -254,7 +254,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	private var exportFilename: String {
-		let rawFilename = String(format: "%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
+		let rawFilename = "\(selectedCar.name)__\(selectedCar.numberPlate).csv"
 		let illegalCharacters = NSCharacterSet(charactersIn:"/\\?%*|\"<>")
 
 		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
@@ -285,17 +285,17 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let period: String
         switch fetchCount {
 		case 0:  period = NSLocalizedString("", comment: "")
-		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
-		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
+		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp) as NSString)
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp) as NSString, outputFormatter.string(from: first!.timestamp) as NSString)
         }
 
 		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
 		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
-            selectedCar.name,
-            selectedCar.numberPlate,
-            period,
-            count)
+            selectedCar.name as NSString,
+            selectedCar.numberPlate as NSString,
+            period as NSString,
+            count as NSString)
 	}
 
 	// MARK: - Export data
@@ -377,7 +377,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		documentPickerViewController = nil
 	}
 
-	@objc(documentPicker:didPickDocumentAtURL:)
 	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: NSURL) {
 		do {
 			try NSFileManager.default().removeItem(at: exportURL)
@@ -406,7 +405,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate as NSString))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML:false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text/csv", fileName:exportFilename)
 
@@ -494,8 +493,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 
 		tableCell.botLeftLabel.text = String(format: "%@ %@",
-                    Formatters.sharedDistanceFormatter.string(from: convertedDistance)!,
-                    odometerUnit.description)
+                    Formatters.sharedDistanceFormatter.string(from: convertedDistance)! as NSString,
+                    odometerUnit.description as NSString)
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
@@ -512,16 +511,14 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			consumptionDescription = Formatters.sharedFuelVolumeFormatter.string(from: avg)!
 
-			tableCell.botRightAccessibilityLabel = String(format: ", %@ %@",
-                                                    consumptionDescription,
-                                                    consumptionUnit.accessibilityDescription)
+			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(consumptionUnit.accessibilityDescription)"
 
 		} else {
 			consumptionDescription = NSLocalizedString("-", comment: "")
 			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
 		}
 
-		tableCell.botRightLabel.text = String(format: "%@ %@", consumptionDescription, consumptionUnit.localizedString)
+		tableCell.botRightLabel.text = "\(consumptionDescription) \(consumptionUnit.localizedString)"
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -586,7 +583,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.beginUpdates()
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, at sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+	@objc(controller:didChangeSection:atIndex:forChangeType:) func controller(_ controller: NSFetchedResultsController, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
         case .insert:
             self.tableView.insertSections(NSIndexSet(index:sectionIndex), with: .fade)

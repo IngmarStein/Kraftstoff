@@ -282,19 +282,19 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let numberFormatter = self.dataSource!.axisFormatterForCar(car)
 
 		state.hMarkPositions[0] = 1.0 - (1.0  * valStretchFactorForDisplay)
-		state.hMarkNames[0] = numberFormatter.string(from: valMin + valRange)!
+		state.hMarkNames[0] = numberFormatter.string(from: (valMin + valRange) as NSNumber)!
 
 		state.hMarkPositions[1] = 1.0 - (0.75 * valStretchFactorForDisplay)
-		state.hMarkNames[1] = numberFormatter.string(from: CGFloat(valMin + valRange*0.75))!
+		state.hMarkNames[1] = numberFormatter.string(from: (valMin + valRange*0.75) as NSNumber)!
 
 		state.hMarkPositions[2] = 1.0 - (0.5  * valStretchFactorForDisplay)
-		state.hMarkNames[2] = numberFormatter.string(from: CGFloat(valMin + valRange*0.5))!
+		state.hMarkNames[2] = numberFormatter.string(from: (valMin + valRange*0.5) as NSNumber)!
 
 		state.hMarkPositions[3] = 1.0 - (0.25 * valStretchFactorForDisplay)
-		state.hMarkNames[3] = numberFormatter.string(from: CGFloat(valMin + valRange*0.25))!
+		state.hMarkNames[3] = numberFormatter.string(from: (valMin + valRange*0.25) as NSNumber)!
 
 		state.hMarkPositions[4] = 1.0
-		state.hMarkNames[4] = numberFormatter.string(from: valMin)!
+		state.hMarkNames[4] = numberFormatter.string(from: valMin as NSNumber)!
 		state.hMarkCount = 5
 
 		// Markers for horizontal axis
@@ -332,7 +332,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state == nil {
 			state = FuelStatisticsSamplingData()
-			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc)
+			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc) as NSNumber
 		}
 
 		// Create image data from resampled data
@@ -406,7 +406,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				let lastY = y
 				y = rint (self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
 
-				cgContext.translateBy(x: 0.0, y: y - lastY)
+				cgContext.translate(x: 0.0, y: y - lastY)
 				path.stroke()
 			}
 
@@ -449,7 +449,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			let lastX = x
 			x = rint (self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
 
-			cgContext.translateBy(x: x - lastX, y: 0.0)
+			cgContext.translate(x: x - lastX, y: 0.0)
 			path.stroke()
         }
 
@@ -560,7 +560,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Update summary in top right of view
 		if let average = average where !average.floatValue.isNaN {
-			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(prefix: true, forCar: self.selectedCar), self.dataSource!.averageFormatter(precise: false, forCar: self.selectedCar).string(from: average)!)
+			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(prefix: true, forCar: self.selectedCar), self.dataSource!.averageFormatter(precise: false, forCar: self.selectedCar).string(from: average)! as NSString)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)
 		}
@@ -691,7 +691,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 					let valueString = String(format:
                                                     self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
-														self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex])!)
+														self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)!)
 
 					drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString)
 
@@ -837,11 +837,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		let fuelUnit = car.ksFuelUnit
-
-		return String(format: "%@/%@",
-            Formatters.sharedCurrencyFormatter.currencySymbol!,
-            fuelUnit.description)
+		return "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/\(car.ksFuelUnit.description)"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter {
@@ -888,8 +884,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	func noAverageStringForCar(_ car: Car) -> String {
 		let distanceUnit = car.ksOdometerUnit
 
-		return String(format: distanceUnit.isMetric ? "%@/100km" : "mi/%@",
-				Formatters.sharedCurrencyFormatter.currencySymbol!)
+		return distanceUnit.isMetric ? "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.sharedCurrencyFormatter.currencySymbol!)"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter {

@@ -218,7 +218,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object:self, userInfo:["span":sender.tag])
+		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object:self, userInfo:["span": sender.tag as NSNumber])
 	}
 
 	// MARK: - Memory Management

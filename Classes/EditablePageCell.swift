@@ -89,7 +89,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	override var accessibilityLabel: String? {
 		get {
-			return String(format: "%@ %@", self.keyLabel.text!, self.textField.text!)
+			return "\(self.keyLabel.text!) \(self.textField.text!)"
 		}
 		set {
 

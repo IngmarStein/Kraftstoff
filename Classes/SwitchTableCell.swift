@@ -100,9 +100,9 @@ final class SwitchTableCell: PageCell {
 	}
 
 	func switchToggledAction(_ sender: UISwitch) {
-		let isON = sender.isOn
+		let isOn = sender.isOn
 
-		self.delegate?.valueChanged(isON, identifier:self.valueIdentifier)
-		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment: "")
+		self.delegate?.valueChanged(isOn as NSNumber, identifier:self.valueIdentifier)
+		self.valueLabel.text = NSLocalizedString(isOn ? "Yes" : "No", comment: "")
 	}
 }

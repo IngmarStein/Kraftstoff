@@ -243,12 +243,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
-		let consumptionString = String(format: "%@ %@ %@ %@",
-                                        Formatters.sharedCurrencyFormatter.string(from: cost)!,
-										NSLocalizedString("/", comment: ""),
-                                        Formatters.sharedFuelVolumeFormatter.string(from: consumption)!,
-                                        consumptionUnit.localizedString)
-
+		let consumptionString = "\(Formatters.sharedCurrencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.sharedFuelVolumeFormatter.string(from: consumption)!) \(consumptionUnit.localizedString)"
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
@@ -259,8 +254,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		addRowAtIndex(rowIndex: 0,
               inSection:1,
               cellClass:ConsumptionTableCell.self,
-               cellData:["label":consumptionString,
-                         "highlightStrings":highlightStrings],
+               cellData:["label": consumptionString as NSString,
+                         "highlightStrings": highlightStrings as NSArray],
           withAnimation:animation)
 	}
 
@@ -286,8 +281,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 0 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-				   cellData:["label": NSLocalizedString("Distance", comment: ""),
-                             "suffix": " ".appending(odometerUnit.description),
+				   cellData:["label": NSLocalizedString("Distance", comment: "") as NSString,
+                             "suffix": " ".appending(odometerUnit.description) as NSString,
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
               withAnimation:animation)
@@ -301,7 +296,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 1 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
+                   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit) as NSString,
 							 "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
                              "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
                              "valueIdentifier": "price"],
@@ -316,8 +311,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 2 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                             "suffix": " ".appending(fuelUnit.description),
+                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true) as NSString,
+                             "suffix": " ".appending(fuelUnit.description) as NSString,
                              "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
@@ -347,9 +342,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				addRowAtIndex(rowIndex: 0,
                       inSection:0,
                       cellClass:CarTableCell.self,
-					   cellData:["label": NSLocalizedString("Car", comment: ""),
+					   cellData:["label": NSLocalizedString("Car", comment: "") as NSString,
                                  "valueIdentifier": "car",
-                                 "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
+                                 "fetchedObjects": self.fetchedResultsController.fetchedObjects! as NSArray],
                   withAnimation:animation)
 			}
 		}
@@ -367,7 +362,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		addRowAtIndex(rowIndex: self.car != nil ? 1 : 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment: ""),
+			   cellData:["label": NSLocalizedString("Date", comment: "") as NSString,
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date",
                          "valueTimestamp": "lastChangeDate",
@@ -384,7 +379,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 5,
                   inSection:0,
                   cellClass:SwitchTableCell.self,
-				   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
+				   cellData:["label": NSLocalizedString("Full Fill-Up", comment: "") as NSString,
                              "valueIdentifier": "filledUp"],
               withAnimation:animation)
 
@@ -395,7 +390,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 6,
 				inSection:0,
 				cellClass:TextEditTableCell.self,
-				cellData:["label": NSLocalizedString("Comment", comment: ""),
+				cellData:["label": NSLocalizedString("Comment", comment: "") as NSString,
 					"valueIdentifier": "comment",
 					"maximumTextFieldLength": 0],
 				withAnimation:animation)
@@ -700,13 +695,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let distanceFormatter = Formatters.sharedDistanceFormatter
 
-		let rawButton = String(format: "%@ %@",
-                                distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!,
-                                odometerUnit.description)
+		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!) \(odometerUnit.description)"
 
-		let convButton = String(format: "%@ %@",
-                                distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!,
-								odometerUnit.description)
+		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!) \(odometerUnit.description)"
 
 		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,
@@ -761,8 +752,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		case "distance": return self.distance
 		case "price": return self.price
 		case "fuelVolume": return self.fuelVolume
-		case "filledUp": return self.filledUp
-		case "comment": return self.comment
+		case "filledUp": return self.filledUp as NSNumber?
+		case "comment": return self.comment as NSString?
 		default: return nil
 		}
 	}
@@ -825,7 +816,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			if !self.car!.objectID.isTemporaryID {
 				let defaults = NSUserDefaults.standard()
 
-				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
+				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!) as NSString?, forKey:"preferredCarID")
 				defaults.synchronize()
 			}
 		}

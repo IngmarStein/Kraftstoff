@@ -136,7 +136,7 @@ final class CoreDataManager {
 		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 
 		var migrationOptions = options
-		migrationOptions[NSReadOnlyPersistentStoreOption] = true
+		migrationOptions[NSReadOnlyPersistentStoreOption as NSString] = true
 
 		// Open the existing local store
 		do {
@@ -151,15 +151,15 @@ final class CoreDataManager {
 						do {
 							try NSFileManager.default().moveItem(at: sourceStoreURL, to: targetURL)
 						} catch let error as NSError {
-							NSLog("error renaming store after migration: %@", error.localizedDescription)
+							print("error renaming store after migration: \(error.localizedDescription)")
 						}
 					}
 				}
 			} catch let error as NSError {
-				NSLog("error while migrating to iCloud: %@", error.localizedDescription)
+				print("error while migrating to iCloud: \(error.localizedDescription)")
 			}
 		} catch let error as NSError {
-			NSLog("failed to open local store for migration: %@", error.localizedDescription)
+			print("failed to open local store for migration: \(error.localizedDescription)")
 		}
 	}
 
@@ -224,7 +224,7 @@ final class CoreDataManager {
 				do {
 					try context.save()
 				} catch let error as NSError {
-					NSLog("%@", error.localizedDescription)
+					print(error.localizedDescription)
 				} catch {
 					fatalError()
 				}
@@ -235,7 +235,7 @@ final class CoreDataManager {
 	}
 
 	@objc func storesDidChange(_ notification: NSNotification) {
-		NSLog("storesDidChange: %@", notification)
+		print("storesDidChange: \(notification)")
 	}
 
 	// MARK: - Preconfigured Core Data Fetches

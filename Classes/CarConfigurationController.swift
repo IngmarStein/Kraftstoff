@@ -102,8 +102,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		coder.encode(isShowingCancelSheet,       forKey:kSRConfiguratorCancelSheet)
 		coder.encode(dataChanged,                forKey:kSRConfiguratorDataChanged)
 		coder.encode(indexPath,                forKey:kSRConfiguratorPreviousSelectionIndex)
-		coder.encode(self.name,                forKey:kSRConfiguratorName)
-		coder.encode(self.plate,               forKey:kSRConfiguratorPlate)
+		coder.encode(self.name as NSString?,   forKey:kSRConfiguratorName)
+		coder.encode(self.plate as NSString?,  forKey:kSRConfiguratorPlate)
 		coder.encode(self.fuelUnit,            forKey:kSRConfiguratorFuelUnit)
 		coder.encode(self.fuelConsumptionUnit, forKey:kSRConfiguratorFuelConsumptionUnit)
 
@@ -144,8 +144,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: ""),
-                         "suffix":          suffix,
+			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: "") as NSString,
+                         "suffix":          suffix as NSString,
                          "formatter":       Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "odometer"],
           withAnimation:animation)
@@ -161,7 +161,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Name", comment: ""),
+			   cellData:["label":           NSLocalizedString("Name", comment: "") as NSString,
                          "valueIdentifier": "name"],
           withAnimation: .none)
 
@@ -172,13 +172,13 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":             NSLocalizedString("License Plate", comment: ""),
+			   cellData:["label":             NSLocalizedString("License Plate", comment: "") as NSString,
                          "valueIdentifier":   "plate",
                          "autocapitalizeAll": true],
           withAnimation: .none)
 
 		if self.odometerUnit == nil {
-			self.odometerUnit = Int(Units.distanceUnitFromLocale.rawValue)
+			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.rawValue)
 		}
 
 		let odometerUnitPickerLabels = [Units.odometerUnitDescription(.kilometer,   pluralization:true),
@@ -187,15 +187,15 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Type", comment: ""),
+			   cellData:["label":           NSLocalizedString("Odometer Type", comment: "") as NSString,
                          "valueIdentifier": "odometerUnit",
-                         "labels":          odometerUnitPickerLabels],
+                         "labels":          odometerUnitPickerLabels as NSArray],
           withAnimation: .none)
 
 		createOdometerRowWithAnimation(.none)
 
 		if self.fuelUnit == nil {
-			self.fuelUnit = Int(Units.volumeUnitFromLocale.rawValue)
+			self.fuelUnit = NSNumber(value: Units.volumeUnitFromLocale.rawValue)
 		}
 
 		let fuelUnitPickerLabels = [Units.fuelUnitDescription(.liter, discernGallons:true, pluralization:true),
@@ -205,13 +205,13 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: ""),
+			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: "") as NSString,
 						 "valueIdentifier": "fuelUnit",
-                         "labels":          fuelUnitPickerLabels],
+                         "labels":          fuelUnitPickerLabels as NSArray],
           withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
-			self.fuelConsumptionUnit = Int(Units.fuelConsumptionUnitFromLocale.rawValue)
+			self.fuelConsumptionUnit = NSNumber(value: Units.fuelConsumptionUnitFromLocale.rawValue)
 		}
 
 		let fuelConsumptionUnitPickerLabels = [KSFuelConsumption.litersPer100km.description,
@@ -231,10 +231,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 5,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Mileage", comment: ""),
+			   cellData:["label":           NSLocalizedString("Mileage", comment: "") as NSString,
                          "valueIdentifier": "fuelConsumptionUnit",
-                         "labels":          fuelConsumptionUnitPickerLabels,
-                         "shortLabels":     fuelConsumptionUnitPickerShortLabels],
+                         "labels":          fuelConsumptionUnitPickerLabels as NSArray,
+                         "shortLabels":     fuelConsumptionUnitPickerShortLabels as NSArray],
 			withAnimation: .none)
 	}
 
@@ -378,8 +378,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
 		switch valueIdentifier {
-		case "name": return self.name
-		case "plate": return self.plate
+		case "name": return self.name as NSString?
+		case "plate": return self.plate as NSString?
 		case "odometerUnit": return self.odometerUnit
 		case "odometer": return self.odometer
 		case "fuelUnit": return self.fuelUnit

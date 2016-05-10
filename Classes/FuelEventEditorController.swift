@@ -104,14 +104,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		coder.encode(isShowingCancelSheet, forKey:kSRFuelEventCancelSheet)
 		coder.encode(dataChanged, forKey:kSRFuelEventDataChanged)
 		coder.encode(indexPath, forKey:kSRFuelEventSelectionIndex)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event), forKey:kSRFuelEventEventID)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car), forKey:kSRFuelEventCarID)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event) as NSString?, forKey:kSRFuelEventEventID)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car) as NSString?, forKey:kSRFuelEventCarID)
 		coder.encode(date, forKey:kSRFuelEventDate)
 		coder.encode(distance, forKey:kSRFuelEventDistance)
 		coder.encode(price, forKey:kSRFuelEventPrice)
 		coder.encode(fuelVolume, forKey:kSRFuelEventVolume)
 		coder.encode(filledUp, forKey:kSRFuelEventFilledUp)
-		coder.encode(comment, forKey:kSRFuelEventComment)
+		coder.encode(comment as NSString?, forKey:kSRFuelEventComment)
 		coder.encode(self.isEditing, forKey:kSRFuelEventEditing)
 
 		super.encodeRestorableState(with: coder)
@@ -308,11 +308,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let kilometers  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
-		let consumptionString = String(format: "%@ %@ %@ %@",
-									  Formatters.sharedCurrencyFormatter.string(from: cost)!,
-									  NSLocalizedString("/", comment: ""),
-									  Formatters.sharedFuelVolumeFormatter.string(from: consumption)!,
-                                      consumptionUnit.localizedString)
+		let consumptionString = "\(Formatters.sharedCurrencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.sharedFuelVolumeFormatter.string(from: consumption)!) \(consumptionUnit.localizedString)"
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
@@ -323,8 +319,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection:1,
               cellClass:ConsumptionTableCell.self,
-               cellData:["label":            consumptionString,
-                         "highlightStrings": highlightStrings],
+               cellData:["label":            consumptionString as NSString,
+                         "highlightStrings": highlightStrings as NSArray],
           withAnimation:animation)
 	}
 
@@ -334,7 +330,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment: ""),
+			   cellData:["label": NSLocalizedString("Date", comment: "") as NSString,
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date"],
           withAnimation:animation)
@@ -344,8 +340,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Distance", comment: ""),
-                         "suffix": " ".appending(odometerUnit.description),
+			   cellData:["label": NSLocalizedString("Distance", comment: "") as NSString,
+                         "suffix": " ".appending(odometerUnit.description) as NSString,
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
           withAnimation:animation)
@@ -355,7 +351,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
+			   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit) as NSString,
                          "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
                          "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
                          "valueIdentifier": "price"],
@@ -364,8 +360,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                         "suffix": " ".appending(fuelUnit.description),
+               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true) as NSString,
+                         "suffix": " ".appending(fuelUnit.description) as NSString,
                          "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
@@ -373,14 +369,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:SwitchTableCell.self,
-			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
+			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: "") as NSString,
                          "valueIdentifier": "filledUp"],
           withAnimation:animation)
 
 		addRowAtIndex(rowIndex: 5,
 			inSection:0,
 			cellClass:TextEditTableCell.self,
-			cellData:["label": NSLocalizedString("Comment", comment: ""),
+			cellData:["label": NSLocalizedString("Comment", comment: "") as NSString,
 				"valueIdentifier": "comment"],
 			withAnimation:animation)
 
@@ -449,9 +445,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			case "distance": return distance
 			case "price": return price
 			case "fuelVolume": return fuelVolume
-			case "filledUp": return filledUp
-			case "comment": return comment
-			case "showValueLabel": return !self.isEditing
+			case "filledUp": return filledUp as NSNumber?
+			case "comment": return comment as NSString?
+			case "showValueLabel": return !self.isEditing as NSNumber?
 			default: return nil
 		}
 	}

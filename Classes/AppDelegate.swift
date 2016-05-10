@@ -89,7 +89,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			self.updateShortcutItems()
 
 			// Switch once to the car view for new users
-			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
+			if launchOptions?[UIApplicationLaunchOptionsURLKey as NSString] == nil {
 				let defaults = NSUserDefaults.standard()
 
 				if defaults.bool(forKey: "firstStartup") {
@@ -154,7 +154,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier as NSString] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
 						let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
 						fuelEventController.selectedCarId = carIdentifier
 						if let navigationController = tabBarController.selectedViewController as? UINavigationController {
@@ -242,7 +242,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			do {
 				try NSFileManager.default().removeItem(at: url)
 			} catch let error as NSError {
-				NSLog("%@", error.localizedDescription)
+				print(error.localizedDescription)
 			}
 		}
 	}
@@ -349,8 +349,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 		do {
 			let receiptData = receipt.base64EncodedString(NSDataBase64EncodingOptions(rawValue: 0))
-			let requestContents = ["receipt-data" : receiptData]
-			let requestData = try NSJSONSerialization.data(withJSONObject: requestContents, options: [])
+			let requestContents = ["receipt-data": receiptData]
+			let requestData = try NSJSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
 			return requestData
 		} catch let error as NSError {
 			print(error)
@@ -446,7 +446,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let blueGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+        let blueGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return blueGradient
 	}()
@@ -455,7 +455,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+		let greenGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return greenGradient
     }()
@@ -464,7 +464,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let orangeGradient = CGGradient(withColorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+		let orangeGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
 
 		return orangeGradient
     }()

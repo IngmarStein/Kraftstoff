@@ -120,7 +120,7 @@ final class Units {
 	// MARK: - Unit Guessing from Current Locale
 
 	static var volumeUnitFromLocale: KSVolume {
-		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode as NSString) as? String where country == "US" {
 			return .galUS
 		} else {
 			return .liter
@@ -128,7 +128,7 @@ final class Units {
 	}
 
 	static var fuelConsumptionUnitFromLocale: KSFuelConsumption {
-		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode as NSString) as? String where country == "US" {
 			return .milesPerGallonUS
 		} else {
 			return .litersPer100km
@@ -136,7 +136,7 @@ final class Units {
 	}
 
 	static var distanceUnitFromLocale: KSDistance {
-		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode) as? String where country == "US" {
+		if let country = NSLocale.autoupdatingCurrent().object(forKey: NSLocaleCountryCode as NSString) as? String where country == "US" {
 			return .statuteMile
 		} else {
 			return .kilometer

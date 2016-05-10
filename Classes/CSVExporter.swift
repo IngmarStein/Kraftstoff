@@ -67,17 +67,17 @@ final class CSVExporter {
 			let price = fuelEvent.price
 
 			dataString += String(format: "%@;\"%@\";\"%@\";%@;\"%@\";\"%@\";\"%@\"\n",
-				dateFormatter.string(from: fuelEvent.timestamp),
-				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit: odometerUnit))!,
-				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit: fuelUnit))!,
-				fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: ""),
-				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit: fuelUnit))!,
+				dateFormatter.string(from: fuelEvent.timestamp) as NSString,
+				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit: odometerUnit))! as NSString,
+				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit: fuelUnit))! as NSString,
+				fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") as NSString : NSLocalizedString("No", comment: "") as NSString,
+				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit: fuelUnit))! as NSString,
 				fuelEvent.filledUp ? numberFormatter.string(from:
 					Units.consumptionForKilometers(distance + fuelEvent.inheritedDistance,
 						liters: fuelVolume + fuelEvent.inheritedFuelVolume,
-						inUnit: consumptionUnit))!
+						inUnit: consumptionUnit))! as NSString
 					: " ",
-				fuelEvent.comment ?? "")
+				fuelEvent.comment as NSString? ?? "")
 		}
 
 		return dataString

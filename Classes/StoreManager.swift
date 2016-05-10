@@ -88,23 +88,23 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 
 	private func keychainItemForProduct(_ product: String) -> [String:AnyObject] {
 		return [
-			String(kSecClass) : kSecClassGenericPassword,
-			String(kSecAttrService) : "com.github.ingmarstein.kraftstoff",
-			String(kSecAttrAccount) : product,
-			String(kSecAttrAccessible) : kSecAttrAccessibleWhenUnlocked
+			String(kSecClass): kSecClassGenericPassword,
+			String(kSecAttrService): "com.github.ingmarstein.kraftstoff",
+			String(kSecAttrAccount): product as NSString,
+			String(kSecAttrAccessible): kSecAttrAccessibleWhenUnlocked
 		]
 	}
 
 	private func isProductPurchased(_ product: String) -> Bool {
-		return UIApplication.kraftstoffAppDelegate.validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product), nil) == 0
+		return UIApplication.kraftstoffAppDelegate.validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product) as CFDictionary, nil) == 0
 	}
 
 	private func setProductPurchased(_ product: String, purchased: Bool) {
 		let keychainItem = keychainItemForProduct(product)
 		if purchased {
-			SecItemAdd(keychainItem, nil)
+			SecItemAdd(keychainItem as CFDictionary, nil)
 		} else {
-			SecItemDelete(keychainItem)
+			SecItemDelete(keychainItem as CFDictionary)
 		}
 	}
 
@@ -128,8 +128,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	@objc(productsRequest:didReceiveResponse:)
-	func productsRequest(_: SKProductsRequest, didReceive response: SKProductsResponse) {
+	func productsRequest(_: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
 		if let product = response.products.first where response.products.count == 1 {
 			let payment = SKPayment(product: product)
 			SKPaymentQueue.default().add(payment)

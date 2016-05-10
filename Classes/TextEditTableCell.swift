@@ -79,7 +79,7 @@ final class TextEditTableCell: EditablePageCell {
 		// Do the update here and propagate the new value back to the delegate
 		textField.text = newValue
 
-		self.delegate.valueChanged(newValue, identifier: self.valueIdentifier)
+		self.delegate.valueChanged(newValue as NSString, identifier: self.valueIdentifier)
 
 		return false
 	}

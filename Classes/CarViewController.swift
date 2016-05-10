@@ -115,7 +115,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject), forKey:kSRCarViewEditedObject)
+			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey:kSRCarViewEditedObject)
 		}
 		super.encodeRestorableState(with: coder)
 	}
@@ -391,12 +391,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 					configurator.plate = ""
 				}
 
-				configurator.odometerUnit = Int(editedObject.odometerUnit)
+				configurator.odometerUnit = NSNumber(value: editedObject.odometerUnit)
 				configurator.odometer     = Units.distanceForKilometers(editedObject.odometer,
                                                                   withUnit:editedObject.ksOdometerUnit)
 
-				configurator.fuelUnit            = Int(editedObject.fuelUnit)
-				configurator.fuelConsumptionUnit = Int(editedObject.fuelConsumptionUnit)
+				configurator.fuelUnit            = NSNumber(value: editedObject.fuelUnit)
+				configurator.fuelConsumptionUnit = NSNumber(value: editedObject.fuelConsumptionUnit)
 
 				let navController = UINavigationController(rootViewController:configurator)
 				navController.restorationIdentifier = "CarConfigurationNavigationController"
@@ -622,7 +622,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.beginUpdates()
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, at sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+	@objc(controller:didChangeSection:atIndex:forChangeType:) func controller(_ controller: NSFetchedResultsController, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
         case .insert:
             self.tableView.insertSections(NSIndexSet(index:sectionIndex), with: .fade)
@@ -685,7 +685,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return fuelEventController
 	}
 
-	@objc(previewingContext:commitViewController:)
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
 		show(viewControllerToCommit, sender: self)
 	}
