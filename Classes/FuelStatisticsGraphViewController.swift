@@ -677,9 +677,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
                         self.centerLabel.text = df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0]))
 					} else {
-                        self.centerLabel.text = String(format: "%@  ➡  %@",
-                                                    df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0])),
-                                                    df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][1])))
+                        self.centerLabel.text = "\(df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0])))  ➡  \(df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][1])))"
 					}
 
                     // Knob position
@@ -689,9 +687,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     // Image with value information
                     UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
 
-					let valueString = String(format:
-                                                    self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
-														self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)!)
+					let valueString = String(format:self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
+													self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
 
 					drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString)
 

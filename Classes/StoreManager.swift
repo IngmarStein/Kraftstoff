@@ -86,7 +86,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		userDefaults.synchronize()
 	}
 
-	private func keychainItemForProduct(_ product: String) -> [String:AnyObject] {
+	private func keychainItemForProduct(_ product: String) -> [String: AnyObject] {
 		return [
 			String(kSecClass): kSecClassGenericPassword,
 			String(kSecAttrService): "com.github.ingmarstein.kraftstoff",
@@ -128,7 +128,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	func productsRequest(_: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+	@objc(productsRequest:didReceiveResponse:) func productsRequest(_ request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
 		if let product = response.products.first where response.products.count == 1 {
 			let payment = SKPayment(product: product)
 			SKPaymentQueue.default().add(payment)

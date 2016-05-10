@@ -302,7 +302,7 @@ final class CSVImporter {
 			for record in sortedRecords {
 				// Match car IDs when importing from Tank Pro
 				if isTankProImport {
-					if carID != scanNumberWithString(record[IDKey!]) {
+					if NSDecimalNumber(value: carID) != scanNumberWithString(record[IDKey!]) {
 						continue
 					}
 				}
