@@ -492,9 +492,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = String(format: "%@ %@",
-                    Formatters.sharedDistanceFormatter.string(from: convertedDistance)! as NSString,
-                    odometerUnit.description as NSString)
+		tableCell.botLeftLabel.text = "\(Formatters.sharedDistanceFormatter.string(from: convertedDistance)!) \(odometerUnit.description)"
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price

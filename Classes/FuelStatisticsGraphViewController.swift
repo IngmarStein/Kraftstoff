@@ -687,8 +687,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     // Image with value information
                     UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
 
-					let valueString = String(format:self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
-													self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
+					let valueString = String(format: self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
+													 self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
 
 					drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString)
 
