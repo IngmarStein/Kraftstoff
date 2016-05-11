@@ -81,19 +81,19 @@ final class SwitchTableCell: PageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String
 		self.delegate        = viewController as? EditablePageCellDelegate
 		self.valueIdentifier = dictionary["valueIdentifier"] as? String
 
-		let isON = self.delegate?.valueForIdentifier(self.valueIdentifier)?.boolValue ?? false
+		let isOn = self.delegate?.valueForIdentifier(self.valueIdentifier) as? Bool ?? false
 
-		self.valueSwitch.isOn = isON
-		self.valueLabel.text = NSLocalizedString(isON ? "Yes" : "No", comment: "")
+		self.valueSwitch.isOn = isOn
+		self.valueLabel.text = NSLocalizedString(isOn ? "Yes" : "No", comment: "")
 
-		let showAlternate = self.delegate?.valueForIdentifier("showValueLabel")?.boolValue ?? false
+		let showAlternate = self.delegate?.valueForIdentifier("showValueLabel") as? Bool ?? false
 
 		self.valueSwitch.isHidden =  showAlternate
 		self.valueLabel.isHidden  = !showAlternate

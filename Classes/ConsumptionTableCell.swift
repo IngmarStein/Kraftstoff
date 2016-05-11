@@ -53,7 +53,7 @@ final class ConsumptionTableCell: PageCell {
 		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.coloredLabel.highlightStrings = dictionary["highlightStrings"] as? [String]

@@ -60,12 +60,12 @@ final class DateEditTableCell: EditableProxyPageCell {
 		self.textFieldProxy.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
 		self.dateFormatter     = dictionary["formatter"] as! NSDateFormatter
-		self.autoRefreshedDate = dictionary["autorefresh"]?.boolValue ?? false
+		self.autoRefreshedDate = dictionary["autorefresh"] as? Bool ?? false
 
 		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate
 		self.textFieldProxy.text = value.flatMap { self.dateFormatter.string(from: $0) } ?? ""
@@ -87,7 +87,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 	func datePickerValueChanged(_ sender: UIDatePicker) {
 		let selectedDate = NSDate.dateWithoutSeconds(date: sender.date)
 
-		if !(self.delegate.valueForIdentifier(self.valueIdentifier)?.isEqual(to: selectedDate) ?? false) {
+		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate where !dateValue.isEqual(to: selectedDate) {
 			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier:self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {

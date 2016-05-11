@@ -48,7 +48,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		showPicker(false)
 	}
 
-	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of picker labels
@@ -57,7 +57,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		self.pickerView.reloadAllComponents()
 
 		// (Re-)configure initial selected row
-		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier)?.integerValue ?? 0
+		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier) as? Int ?? 0
 
 		self.pickerView.selectRow(initialIndex, inComponent: 0, animated: false)
 		self.pickerView.reloadComponent(0)

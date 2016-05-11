@@ -319,8 +319,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection:1,
               cellClass:ConsumptionTableCell.self,
-               cellData:["label":            consumptionString as NSString,
-                         "highlightStrings": highlightStrings as NSArray],
+               cellData:["label":            consumptionString,
+                         "highlightStrings": highlightStrings],
           withAnimation:animation)
 	}
 
@@ -330,7 +330,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment: "") as NSString,
+			   cellData:["label": NSLocalizedString("Date", comment: ""),
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date"],
           withAnimation:animation)
@@ -340,8 +340,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Distance", comment: "") as NSString,
-                         "suffix": " ".appending(odometerUnit.description) as NSString,
+			   cellData:["label": NSLocalizedString("Distance", comment: ""),
+                         "suffix": " ".appending(odometerUnit.description),
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
           withAnimation:animation)
@@ -351,7 +351,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit) as NSString,
+			   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
                          "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
                          "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
                          "valueIdentifier": "price"],
@@ -360,8 +360,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true) as NSString,
-                         "suffix": " ".appending(fuelUnit.description) as NSString,
+               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
+                         "suffix": " ".appending(fuelUnit.description),
                          "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
@@ -369,14 +369,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:SwitchTableCell.self,
-			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: "") as NSString,
+			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
                          "valueIdentifier": "filledUp"],
           withAnimation:animation)
 
 		addRowAtIndex(rowIndex: 5,
 			inSection:0,
 			cellClass:TextEditTableCell.self,
-			cellData:["label": NSLocalizedString("Comment", comment: "") as NSString,
+			cellData:["label": NSLocalizedString("Comment", comment: ""),
 				"valueIdentifier": "comment"],
 			withAnimation:animation)
 
@@ -439,15 +439,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
 			case "date": return date
 			case "distance": return distance
 			case "price": return price
 			case "fuelVolume": return fuelVolume
-			case "filledUp": return filledUp as NSNumber?
-			case "comment": return comment as NSString?
-			case "showValueLabel": return !self.isEditing as NSNumber?
+			case "filledUp": return filledUp
+			case "comment": return comment
+			case "showValueLabel": return !self.isEditing
 			default: return nil
 		}
 	}
