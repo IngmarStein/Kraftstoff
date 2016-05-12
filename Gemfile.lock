@@ -40,12 +40,12 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     fastimage (1.6.8)
       addressable (~> 2.3, >= 2.3.5)
-    fastlane (1.87.1)
+    fastlane (1.88.0)
       addressable (~> 2.3)
       cert (>= 1.4.1, < 2.0.0)
       credentials_manager (>= 0.16.0, < 1.0.0)
       deliver (>= 1.11.2, < 2.0.0)
-      fastlane_core (>= 0.43.2, < 1.0.0)
+      fastlane_core (>= 0.43.3, < 1.0.0)
       frameit (>= 2.6.2, < 3.0.0)
       gym (>= 1.6.3, < 2.0.0)
       krausefx-shenzhen (>= 0.14.7)
@@ -66,7 +66,7 @@ GEM
       terminal-table (~> 1.4.5)
       xcodeproj (>= 0.20, < 2.0.0)
       xcpretty (>= 0.2.1)
-    fastlane_core (0.43.2)
+    fastlane_core (0.43.3)
       babosa
       colored
       commander (= 4.3.5)
@@ -231,7 +231,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  fastlane (~> 1.87.1)
+  fastlane (~> 1.88.0)
 
 BUNDLED WITH
    1.12.3
