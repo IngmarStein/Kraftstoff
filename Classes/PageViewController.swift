@@ -69,11 +69,11 @@ class PageViewController: UITableViewController {
 		return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellClass
 	}
 
-	func dataForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> [NSObject: AnyObject]? {
+	func dataForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> [String: Any]? {
 		return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData
 	}
 
-	func setData(_ object: [NSObject: AnyObject], forRow rowIndex: Int, inSection sectionIndex: Int) {
+	func setData(_ object: [String: Any], forRow rowIndex: Int, inSection sectionIndex: Int) {
 		cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData = object
 
 		let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
@@ -120,7 +120,7 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Access to Table Rows
 
-	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [NSObject: AnyObject], withAnimation animation: UITableViewRowAnimation) {
+	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [String: Any], withAnimation animation: UITableViewRowAnimation) {
 		// Get valid section index and section
 		if tableSections.isEmpty {
 			addSectionAtIndex(0, withAnimation: animation)

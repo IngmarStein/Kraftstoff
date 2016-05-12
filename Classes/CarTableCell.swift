@@ -68,7 +68,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of possible cars

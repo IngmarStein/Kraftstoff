@@ -144,8 +144,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: "") as NSString,
-                         "suffix":          suffix as NSString,
+			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: ""),
+                         "suffix":          suffix,
                          "formatter":       Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "odometer"],
           withAnimation:animation)
@@ -161,7 +161,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 0,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Name", comment: "") as NSString,
+			   cellData:["label":           NSLocalizedString("Name", comment: ""),
                          "valueIdentifier": "name"],
           withAnimation: .none)
 
@@ -172,7 +172,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 1,
               inSection:0,
               cellClass:TextEditTableCell.self,
-			   cellData:["label":             NSLocalizedString("License Plate", comment: "") as NSString,
+			   cellData:["label":             NSLocalizedString("License Plate", comment: ""),
                          "valueIdentifier":   "plate",
                          "autocapitalizeAll": true],
           withAnimation: .none)
@@ -187,9 +187,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Type", comment: "") as NSString,
+			   cellData:["label":           NSLocalizedString("Odometer Type", comment: ""),
                          "valueIdentifier": "odometerUnit",
-                         "labels":          odometerUnitPickerLabels as NSArray],
+                         "labels":          odometerUnitPickerLabels],
           withAnimation: .none)
 
 		createOdometerRowWithAnimation(.none)
@@ -205,9 +205,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: "") as NSString,
+			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: ""),
 						 "valueIdentifier": "fuelUnit",
-                         "labels":          fuelUnitPickerLabels as NSArray],
+                         "labels":          fuelUnitPickerLabels],
           withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
@@ -231,10 +231,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 5,
               inSection:0,
               cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Mileage", comment: "") as NSString,
+			   cellData:["label":           NSLocalizedString("Mileage", comment: ""),
                          "valueIdentifier": "fuelConsumptionUnit",
-                         "labels":          fuelConsumptionUnitPickerLabels as NSArray,
-                         "shortLabels":     fuelConsumptionUnitPickerShortLabels as NSArray],
+                         "labels":          fuelConsumptionUnitPickerLabels,
+                         "shortLabels":     fuelConsumptionUnitPickerShortLabels],
 			withAnimation: .none)
 	}
 
@@ -376,10 +376,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
-		case "name": return self.name as NSString?
-		case "plate": return self.plate as NSString?
+		case "name": return self.name
+		case "plate": return self.plate
 		case "odometerUnit": return self.odometerUnit
 		case "odometer": return self.odometer
 		case "fuelUnit": return self.fuelUnit

@@ -26,10 +26,10 @@ final class TextEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(_ dictionary: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
-		if let autocapitalizeAll = dictionary["autocapitalizeAll"] where autocapitalizeAll.boolValue == true {
+		if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool where autocapitalizeAll {
 			self.textField.autocapitalizationType = .allCharacters
 		} else {
 			self.textField.autocapitalizationType = .words

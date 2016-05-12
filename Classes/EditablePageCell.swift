@@ -9,7 +9,7 @@
 import UIKit
 
 protocol EditablePageCellDelegate : class {
-	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject?
+	func valueForIdentifier(_ valueIdentifier: String) -> Any?
 	func valueChanged(_ newValue: AnyObject?, identifier: String)
 }
 
@@ -96,7 +96,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		}
 	}
 
-	override func configureForData(_ dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String

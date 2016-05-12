@@ -254,8 +254,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		addRowAtIndex(rowIndex: 0,
               inSection:1,
               cellClass:ConsumptionTableCell.self,
-               cellData:["label": consumptionString as NSString,
-                         "highlightStrings": highlightStrings as NSArray],
+               cellData:["label": consumptionString,
+                         "highlightStrings": highlightStrings],
           withAnimation:animation)
 	}
 
@@ -281,8 +281,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 0 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-				   cellData:["label": NSLocalizedString("Distance", comment: "") as NSString,
-                             "suffix": " ".appending(odometerUnit.description) as NSString,
+				   cellData:["label": NSLocalizedString("Distance", comment: ""),
+                             "suffix": " ".appending(odometerUnit.description),
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
               withAnimation:animation)
@@ -296,7 +296,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 1 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit) as NSString,
+                   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
 							 "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
                              "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
                              "valueIdentifier": "price"],
@@ -311,8 +311,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 2 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true) as NSString,
-                             "suffix": " ".appending(fuelUnit.description) as NSString,
+                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
+                             "suffix": " ".appending(fuelUnit.description),
                              "formatter": fuelUnit.isMetric
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
@@ -342,9 +342,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				addRowAtIndex(rowIndex: 0,
                       inSection:0,
                       cellClass:CarTableCell.self,
-					   cellData:["label": NSLocalizedString("Car", comment: "") as NSString,
+					   cellData:["label": NSLocalizedString("Car", comment: ""),
                                  "valueIdentifier": "car",
-                                 "fetchedObjects": self.fetchedResultsController.fetchedObjects! as NSArray],
+                                 "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
                   withAnimation:animation)
 			}
 		}
@@ -362,7 +362,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		addRowAtIndex(rowIndex: self.car != nil ? 1 : 0,
               inSection:0,
               cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment: "") as NSString,
+			   cellData:["label": NSLocalizedString("Date", comment: ""),
                          "formatter": Formatters.sharedDateTimeFormatter,
                          "valueIdentifier": "date",
                          "valueTimestamp": "lastChangeDate",
@@ -379,7 +379,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 5,
                   inSection:0,
                   cellClass:SwitchTableCell.self,
-				   cellData:["label": NSLocalizedString("Full Fill-Up", comment: "") as NSString,
+				   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
                              "valueIdentifier": "filledUp"],
               withAnimation:animation)
 
@@ -390,7 +390,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 6,
 				inSection:0,
 				cellClass:TextEditTableCell.self,
-				cellData:["label": NSLocalizedString("Comment", comment: "") as NSString,
+				cellData:["label": NSLocalizedString("Comment", comment: ""),
 					"valueIdentifier": "comment",
 					"maximumTextFieldLength": 0],
 				withAnimation:animation)
@@ -744,7 +744,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(_ valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
 		case "car": return self.car
 		case "date": return self.date
@@ -752,8 +752,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		case "distance": return self.distance
 		case "price": return self.price
 		case "fuelVolume": return self.fuelVolume
-		case "filledUp": return self.filledUp as NSNumber?
-		case "comment": return self.comment as NSString?
+		case "filledUp": return self.filledUp
+		case "comment": return self.comment
 		default: return nil
 		}
 	}

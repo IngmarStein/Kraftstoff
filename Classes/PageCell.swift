@@ -23,7 +23,7 @@ class PageCell: UITableViewCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	func configureForData(_ object: [NSObject: AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
 		// Overridepoint for subclasses
 	}
 

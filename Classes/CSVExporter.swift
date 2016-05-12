@@ -62,22 +62,19 @@ final class CSVExporter {
 		numberFormatter.minimumFractionDigits = 2
 
 		for fuelEvent in fuelEvents {
-			let distance = fuelEvent.distance
-			let fuelVolume = fuelEvent.fuelVolume
-			let price = fuelEvent.price
+			let timestamp = dateFormatter.string(from: fuelEvent.timestamp)
+			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.distance, withUnit: odometerUnit))!
+			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.fuelVolume, withUnit: fuelUnit))!
+			let filledUp = fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: "")
+			let price = numberFormatter.string(from: Units.pricePerUnit(literPrice: fuelEvent.price, withUnit: fuelUnit))!
+			let consumption = fuelEvent.filledUp ? numberFormatter.string(from:
+				Units.consumptionForKilometers(fuelEvent.distance + fuelEvent.inheritedDistance,
+				                               liters: fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume,
+				                               inUnit: consumptionUnit))!
+				: " "
+			let comment = fuelEvent.comment ?? ""
 
-			dataString += String(format: "%@;\"%@\";\"%@\";%@;\"%@\";\"%@\";\"%@\"\n",
-				dateFormatter.string(from: fuelEvent.timestamp) as NSString,
-				numberFormatter.string(from: Units.distanceForKilometers(distance, withUnit: odometerUnit))! as NSString,
-				numberFormatter.string(from: Units.volumeForLiters(fuelVolume, withUnit: fuelUnit))! as NSString,
-				fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") as NSString : NSLocalizedString("No", comment: "") as NSString,
-				numberFormatter.string(from: Units.pricePerUnit(literPrice: price, withUnit: fuelUnit))! as NSString,
-				fuelEvent.filledUp ? numberFormatter.string(from:
-					Units.consumptionForKilometers(distance + fuelEvent.inheritedDistance,
-						liters: fuelVolume + fuelEvent.inheritedFuelVolume,
-						inUnit: consumptionUnit))! as NSString
-					: " ",
-				fuelEvent.comment as NSString? ?? "")
+			dataString += "\(timestamp);\"\(distance)\";\"\(fuelVolume)\";\(filledUp);\"\(price)\";\"\(consumption)\";\"\(comment)\"\n"
 		}
 
 		return dataString
