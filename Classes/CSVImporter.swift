@@ -38,7 +38,7 @@ final class CSVImporter {
 		return newCar
 	}
 
-	private func addEvent(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
+	@discardableResult private func addEvent(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: managedObjectContext) as! FuelEvent
 
 		newEvent.car = car
@@ -117,7 +117,7 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func importCarIDs(records: [CSVRecord]) -> Bool {
+	@discardableResult private func importCarIDs(records: [CSVRecord]) -> Bool {
 		let first = records.first!
 
 		if first.count < 3 {
@@ -231,7 +231,7 @@ final class CSVImporter {
 		return convDistance
 	}
 
-	private func importRecords(_ records: [CSVRecord], formatIsTankPro isTankProImport: Bool, detectedEvents numEvents: inout Int, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	@discardableResult private func importRecords(_ records: [CSVRecord], formatIsTankPro isTankProImport: Bool, detectedEvents numEvents: inout Int, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		// Analyse record headers
 		let first = records.first!
 

@@ -78,7 +78,7 @@ final class CoreDataManager {
 
 	// MARK: - Core Data Support
 
-	static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
+	@discardableResult static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
 			do {
 				try context.save()
@@ -363,7 +363,7 @@ final class CoreDataManager {
 
 	// MARK: - Core Data Updates
 
-	static func addToArchive(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
+	@discardableResult static func addToArchive(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
 		let zero = NSDecimalNumber.zero()
 
 		// Convert distance and fuelvolume to SI units

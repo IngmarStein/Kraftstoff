@@ -56,7 +56,6 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
-		contentView
 		self.contentView.addSubview(keyLabel)
 
 		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottomMargin, multiplier: 1.0, constant: 0.0)

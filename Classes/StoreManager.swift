@@ -128,7 +128,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	@objc(productsRequest:didReceiveResponse:) func productsRequest(_ request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+	@objc(productsRequest:didReceiveResponse:) func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
 		if let product = response.products.first where response.products.count == 1 {
 			let payment = SKPayment(product: product)
 			SKPaymentQueue.default().add(payment)

@@ -203,7 +203,7 @@ class FuelStatisticsViewController: UIViewController {
 		}
 	}
 
-	func displayCachedStatisticsForRecentMonths(_ numberOfMonths: Int) -> Bool {
+	@discardableResult func displayCachedStatisticsForRecentMonths(_ numberOfMonths: Int) -> Bool {
 		// for subclasses
 		return false
 	}

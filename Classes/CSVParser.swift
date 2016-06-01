@@ -254,7 +254,7 @@ final class CSVParser {
 		return nil
 	}
 
-	private func parseEmptyLines() -> String? {
+	@discardableResult private func parseEmptyLines() -> String? {
 		var matchedNewlines: NSString?
 
 		let location = scanner.scanLocation
@@ -285,7 +285,7 @@ final class CSVParser {
 		return nil
 	}
 
-	private func skipLine() -> String? {
+	@discardableResult private func skipLine() -> String? {
 		scanner.scanUpToCharacters(from: NSCharacterSet.newlines(), into: nil)
 		return parseLineSeparator()
 	}

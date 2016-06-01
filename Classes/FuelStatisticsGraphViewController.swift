@@ -465,7 +465,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 				let size = mark.size(attributes: attributes)
 
-				var x = floor (self.graphLeftBorder + 0.5 + self.graphWidth * state.vMarkPositions[i] - size.width/2.0)
+				let center = size.width * 0.5
+				var x = floor(self.graphLeftBorder + 0.5 + self.graphWidth * state.vMarkPositions[i] - center)
 				let y = self.graphBottomBorder + 5
 
 				if x < self.graphLeftBorder {
