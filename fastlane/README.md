@@ -23,6 +23,21 @@ This will also make sure the profile is up to date
 fastlane ios deploy
 ```
 Deploy a new version to the App Store
+### ios bumpMajor
+```
+fastlane ios bumpMajor
+```
+Increment the app version major
+### ios bumpMinor
+```
+fastlane ios bumpMinor
+```
+Increment the app version minor
+### ios bumpPatch
+```
+fastlane ios bumpPatch
+```
+Increment the app version patch
 
 ----
 
