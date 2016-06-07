@@ -17,7 +17,8 @@ platform :ios do
 
     # increment_build_number
 
-    xctool :test, [  "-parallelize", "-scheme", "Kraftstoff", "-project", "Kraftstoff.xcodeproj", "-sdk", "iphonesimulator" ].join(" ")
+    #xctool :test, [  "-parallelize", "-scheme", "Kraftstoff", "-project", "Kraftstoff.xcodeproj", "-sdk", "iphonesimulator" ].join(" ")
+    scan(scheme: "Kraftstoff")
   end
 
   desc "Runs all the tests"
@@ -46,8 +47,6 @@ platform :ios do
 
     add_git_tag tag: version_number
   end
-
-  # You can define as many lanes as you want
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful
