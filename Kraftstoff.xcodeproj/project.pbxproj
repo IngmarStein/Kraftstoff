@@ -740,6 +740,7 @@
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_EXPORT_DECL = "\n#pragma clang diagnostic ignored \"-Wmissing-variable-declarations\"\n";
 			};
 			name = Debug;
 		};
@@ -760,6 +761,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_EXPORT_DECL = "\n#pragma clang diagnostic ignored \"-Wmissing-variable-declarations\"\n";
 			};
 			name = Release;
 		};
