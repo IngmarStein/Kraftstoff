@@ -1,0 +1,20 @@
+'Kraftstoff' (Carburant) offre une manière épurée et élégante pour suivre votre consommation de carburant.
+
+Voitures:
+○ Prend en charge plusieurs véhicules (disponibles en achat in-app)
+
+Ravitaillement:
+○ Sur chaque ravitaillement suffit de saisir la distance parcourue, du carburant prix unitaire et la quantité de carburant
+○ les données de carburant peuvent être ajoutés et modifiés suite
+○ pleins partiels sont pris en charge (les données sont installés sur le prochain ravitaillement complet)
+
+Affichage graphique:
+○ Sélectionnez une voiture et transformer votre iPhone en mode paysage pour obtenir les cartes d'histoire interactives pour kilométriques et les coûts de carburant ainsi que d'une table avec des valeurs statistiques intéressantes.
+
+Autres caractéristiques:
+○ Exportation de vos données courriel (pièce jointe CSV)
+○ Réimportation de données CSV via 'Ouvrez dans', par exemple à partir de Mail
+○ Pas de publicité
+○ Support 64 bits
+○ Optimisé pour iOS 9
+○ Les données sont synchronisées sur tous vos appareils avec iCloud

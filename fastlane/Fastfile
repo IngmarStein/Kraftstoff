@@ -7,7 +7,7 @@ opt_out_usage
 
 # This is the minimum version number required.
 # Update this, if you use features of a newer version
-fastlane_version "1.51.0"
+fastlane_version "1.94.1"
 
 default_platform :ios
 
@@ -17,7 +17,7 @@ platform :ios do
 
     # increment_build_number
 
-    # xctool # run the tests of your app
+    # xctool workspace Monolingual.xcworkspace scheme Travis test -parallelize
   end
 
   desc "Runs all the tests"
@@ -41,15 +41,17 @@ platform :ios do
     snapshot
     # sigh
     gym # Build your app - more options available
-    # deliver(force: true)
+    deliver(force: true)
     # frameit
+
+    add_git_tag tag: version_number
   end
 
   # You can define as many lanes as you want
 
   after_all do |lane|
     # This block is called, only if the executed lane was successful
-    
+
     # slack(
     #   message: "Successfully deployed new App Update."
     # )
