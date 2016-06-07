@@ -6,7 +6,6 @@ xcode_sdk: iphonesimulator
 cache:
 - bundler
 before_script:
-- brew update && brew upgrade xctool || true
 - "./scripts/install-swift.sh"
 script:
 - fastlane test
