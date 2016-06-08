@@ -22,20 +22,16 @@ platform :ios do
   desc "Runs all the tests"
   lane :test do
     scan(scheme: "Kraftstoff")
-    snapshot
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
-  desc "This will also make sure the profile is up to date"
   lane :beta do
     scan(scheme: "Kraftstoff")
+    snapshot
     increment_build_number
     # sigh
     gym(scheme: "Kraftstoff", configuration: "Release")
     pilot
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
   end
 
   desc "Deploy a new version to the App Store"
@@ -55,7 +51,7 @@ platform :ios do
   lane :bumpMajor do
     increment_version_number(bump_type: "major")
   end
-  
+
   desc "Increment the app version minor"
   lane :bumpMinor do
     increment_version_number(bump_type: "minor")
