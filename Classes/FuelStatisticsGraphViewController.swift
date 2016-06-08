@@ -41,8 +41,9 @@ private let MaxSamples = 256
 
 // MARK: - Disposable Sampling Data Objects for ContentCache
 
-private class FuelStatisticsSamplingData: DiscardableDataObject {
-    // Curve data
+private final class FuelStatisticsSamplingData: DiscardableDataObject {
+
+	// Curve data
 	var data = [CGPoint](repeating: CGPoint.zero, count: MaxSamples)
 	var dataCount = 0
 

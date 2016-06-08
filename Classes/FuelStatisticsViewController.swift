@@ -9,10 +9,6 @@
 import UIKit
 import CoreData
 
-// Coordinates for the content area
-let StatisticsHeight = CGFloat(214.0)
-let StatisticTransitionDuration = NSTimeInterval(0.3)
-
 // Protocol for objects containing computed statistics data
 protocol DiscardableDataObject {
 	// Throw away easily recomputable content
@@ -25,13 +21,19 @@ class FuelStatisticsViewController: UIViewController {
 	var selectedCar: Car!
 	var pageIndex = 0
 
+	// Coordinates for the content area
+	let StatisticsHeight = CGFloat(214.0)
+	let StatisticTransitionDuration = NSTimeInterval(0.3)
+
 	@IBOutlet weak var activityView: UIActivityIndicatorView!
 	@IBOutlet weak var leftLabel: UILabel!
 	@IBOutlet weak var rightLabel: UILabel!
 	@IBOutlet weak var centerLabel: UILabel!
 	@IBOutlet weak var scrollView: UIScrollView!
 
-	var contentCache = [Int : DiscardableDataObject]()
+	// Swift 2016-06-06: this should be [Int: DiscardableDataObject] instead of [Int: Any]
+	// but that currently causes a compiler crash, see https://bugs.swift.org/browse/SR-1696
+	var contentCache = [Int: Any]()
 	var displayedNumberOfMonths = 0 {
 		didSet {
 			// Update selection status of all buttons
@@ -131,7 +133,9 @@ class FuelStatisticsViewController: UIViewController {
 	func purgeDiscardableCacheContent() {
 		for (key, value) in contentCache {
 			if key != displayedNumberOfMonths {
-                value.discardContent()
+				// https://bugs.swift.org/browse/SR-1696
+                // value.discardContent()
+				(value as! DiscardableDataObject).discardContent()
 			}
         }
 	}
@@ -218,7 +222,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object:self, userInfo:["span": sender.tag as NSNumber])
+		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object: self, userInfo: ["span": sender.tag as NSNumber])
 	}
 
 	// MARK: - Memory Management
