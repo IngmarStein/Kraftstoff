@@ -60,6 +60,7 @@ final class NumberEditTableCell: EditablePageCell {
 	// MARK: - UITextFieldDelegate
 
 	// Implement special behavior for newly added characters
+	@objc(textField:shouldChangeCharactersInRange:replacementString:)
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 		// Modify text
 		var text = textField.text!
