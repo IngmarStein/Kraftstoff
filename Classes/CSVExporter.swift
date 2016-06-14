@@ -15,11 +15,11 @@ final class CSVExporter {
 		let fuelUnit = car.ksFuelUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
-		let bundle: NSBundle
-		if let language = language, path = NSBundle.main().pathForResource(language, ofType: "lproj"), localeBundle = NSBundle(path: path) {
+		let bundle: Bundle
+		if let language = language, path = Bundle.main().pathForResource(language, ofType: "lproj"), localeBundle = Bundle(path: path) {
 			bundle = localeBundle
 		} else {
-			bundle = NSBundle.main()
+			bundle = Bundle.main()
 		}
 
 		var dataString = String()
@@ -49,14 +49,14 @@ final class CSVExporter {
 		dataString += NSLocalizedString("Comment", bundle: bundle, comment: "")
 		dataString += "\n"
 
-		let dateFormatter = NSDateFormatter()
+		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
-		dateFormatter.locale = NSLocale.system()
-		dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+		dateFormatter.locale = Locale.system()
+		dateFormatter.timeZone = TimeZone(forSecondsFromGMT: 0)
 
-		let numberFormatter = NSNumberFormatter()
-		numberFormatter.numberStyle = .decimalStyle
-		numberFormatter.locale = NSLocale.current()
+		let numberFormatter = NumberFormatter()
+		numberFormatter.numberStyle = .decimal
+		numberFormatter.locale = Locale.current()
 		numberFormatter.usesGroupingSeparator = false
 		numberFormatter.alwaysShowsDecimalSeparator = true
 		numberFormatter.minimumFractionDigits = 2
@@ -66,7 +66,7 @@ final class CSVExporter {
 			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.distance, withUnit: odometerUnit))!
 			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.fuelVolume, withUnit: fuelUnit))!
 			let filledUp = fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: "")
-			let price = numberFormatter.string(from: Units.pricePerUnit(literPrice: fuelEvent.price, withUnit: fuelUnit))!
+			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.price, withUnit: fuelUnit))!
 			let consumption = fuelEvent.filledUp ? numberFormatter.string(from:
 				Units.consumptionForKilometers(fuelEvent.distance + fuelEvent.inheritedDistance,
 				                               liters: fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume,

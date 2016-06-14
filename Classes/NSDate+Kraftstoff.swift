@@ -1,5 +1,5 @@
 //
-//  NSDate+Kraftstoff.swift
+//  Date+Kraftstoff.swift
 //  kraftstoff
 //
 //  Created by Ingmar Stein on 30.04.15.
@@ -9,19 +9,19 @@
 import Foundation
 
 // Calendar component-mask for date+time but without seconds
-private let noSecondsComponentMask: NSCalendarUnit = [.year, .month, .day, .hour, .minute]
+private let noSecondsComponentMask: Calendar.Unit = [.year, .month, .day, .hour, .minute]
 
 // Calendar component-mask for hour+minutes
-private let timeOfDayComponentMask: NSCalendarUnit = [.hour, .minute]
+private let timeOfDayComponentMask: Calendar.Unit = [.hour, .minute]
 
 
-extension NSDate {
+extension Date {
 
-	static func dateWithOffsetInMonths(numberOfMonths: Int, fromDate date: NSDate) -> NSDate {
-		let gregorianCalendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+	static func dateWithOffsetInMonths(_ numberOfMonths: Int, fromDate date: Date) -> Date {
+		let gregorianCalendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
 
 		let noSecComponents = gregorianCalendar.components(noSecondsComponentMask, from: date)
-		let deltaComponents = NSDateComponents()
+		var deltaComponents = DateComponents()
 
 		deltaComponents.month = numberOfMonths
 
@@ -30,39 +30,30 @@ extension NSDate {
 		                              options: [])!
 	}
 
-	static func dateWithoutSeconds(date: NSDate) -> NSDate {
-		let gregorianCalendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+	static func dateWithoutSeconds(_ date: Date) -> Date {
+		let gregorianCalendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
 		let noSecComponents = gregorianCalendar.components(noSecondsComponentMask, from: date)
 
 		return gregorianCalendar.date(from: noSecComponents)!
 	}
 
 
-	static func timeIntervalSinceBeginningOfDay(date: NSDate) -> NSTimeInterval {
-		let gregorianCalendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+	static func timeIntervalSinceBeginningOfDay(_ date: Date) -> TimeInterval {
+		let gregorianCalendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
 		let timeOfDayComponents = gregorianCalendar.components(timeOfDayComponentMask, from: date)
 
-		return NSTimeInterval(timeOfDayComponents.hour * 3600 + timeOfDayComponents.minute * 60)
+		return TimeInterval(timeOfDayComponents.hour! * 3600 + timeOfDayComponents.minute! * 60)
 	}
 
-	static func numberOfCalendarDaysFrom(startDate: NSDate, to endDate: NSDate) -> Int {
-		let gregorianCalendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-		let referenceDate = NSDate(timeIntervalSinceReferenceDate: 0.0)
+	static func numberOfCalendarDaysFrom(_ startDate: Date, to endDate: Date) -> Int {
+		let gregorianCalendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
+		let referenceDate = Date(timeIntervalSinceReferenceDate: 0.0)
 
 		let daysToStart = gregorianCalendar.components(.day, from: referenceDate, to: startDate, options: []).day
 		let daysToEnd   = gregorianCalendar.components(.day, from: referenceDate, to: endDate, options: []).day
 
-		return daysToEnd - daysToStart + 1
+		return daysToEnd! - daysToStart! + 1
 	}
 
 }
 
-extension NSDate: Comparable {}
-
-public func == (lhs: NSDate, rhs: NSDate) -> Bool {
-	return lhs.compare(rhs) == .orderedSame
-}
-
-public func < (lhs: NSDate, rhs: NSDate) -> Bool {
-	return lhs.compare(rhs) == .orderedAscending
-}

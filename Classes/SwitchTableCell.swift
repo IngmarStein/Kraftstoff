@@ -61,11 +61,11 @@ final class SwitchTableCell: PageCell {
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
-		NSNotificationCenter.default().addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NotificationCenter.default().addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
@@ -73,15 +73,15 @@ final class SwitchTableCell: PageCell {
 	}
 
 	private func setupFonts() {
-		self.valueLabel.font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2)
-		self.keyLabel.font = UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2)
+		self.valueLabel.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String

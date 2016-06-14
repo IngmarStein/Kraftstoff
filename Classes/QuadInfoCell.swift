@@ -63,20 +63,20 @@ final class QuadInfoCell: UITableViewCell {
 		let views = ["topLeftLabel" : topLeftLabel, "botLeftLabel" : botLeftLabel, "topRightLabel" : topRightLabel, "botRightLabel" : botRightLabel]
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views))
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views))
-		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .baseline, relatedBy: .equal, toItem: topRightLabel, attribute: .baseline, multiplier: 1.0, constant: 0.0))
-		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .baseline, relatedBy: .equal, toItem: botRightLabel, attribute: .baseline, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: topRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
+		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: botRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .left, relatedBy: .equal, toItem: botLeftLabel, attribute: .left, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topRightLabel, attribute: .right, relatedBy: .equal, toItem: botRightLabel, attribute: .right, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
 
-		NSNotificationCenter.default().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NotificationCenter.default().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
 
 		self.accessoryType = .disclosureIndicator
     }
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {
@@ -84,13 +84,13 @@ final class QuadInfoCell: UITableViewCell {
 	}
 
 	private func setupFonts() {
-		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleSubheadline)
+		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleSubheadline)
 		topLeftLabel.minimumScaleFactor  = 12.0/topLeftLabel.font.pointSize
-		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
+		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
 		botLeftLabel.minimumScaleFactor  = 12.0/botLeftLabel.font.pointSize
-		topRightLabel.font               = UIFont.lightApplicationFontForStyle(textStyle: large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
+		topRightLabel.font               = UIFont.lightApplicationFontForStyle(large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
 		topRightLabel.minimumScaleFactor = 12.0/topRightLabel.font.pointSize
-		botRightLabel.font               = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
+		botRightLabel.font               = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
 		botRightLabel.minimumScaleFactor = 12.0/botRightLabel.font.pointSize
 	}
 

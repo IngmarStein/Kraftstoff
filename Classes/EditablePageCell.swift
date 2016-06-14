@@ -63,10 +63,10 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
 		self.contentView.addConstraint(NSLayoutConstraint(item: keyLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .topMargin, multiplier: 1.0, constant: 0.0))
 		self.contentView.addConstraint(keyLabelBottomConstraint)
-		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .baseline, relatedBy: .equal, toItem: keyLabel, attribute: .baseline, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .lastBaseline, relatedBy: .equal, toItem: keyLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
-		NSNotificationCenter.default().addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(notification:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NotificationCenter.default().addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(notification:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -74,7 +74,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(notification: NSNotification!) {
@@ -82,8 +82,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	func setupFonts() {
-		self.textField.font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2)
-		self.keyLabel.font = UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2)
+		self.textField.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	override var accessibilityLabel: String? {
@@ -95,7 +95,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		}
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String

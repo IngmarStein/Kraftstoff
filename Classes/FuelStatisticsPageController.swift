@@ -49,31 +49,31 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 		statisticsViewControllers = [priceDistanceViewController, avgConsumptionViewController, priceAmountViewController, statisticsViewController]
 
-		dispatch_async (dispatch_get_main_queue()) {
-			var page = NSUserDefaults.standard().integer(forKey: "preferredStatisticsPage")
+		DispatchQueue.main.async {
+			var page = UserDefaults.standard().integer(forKey: "preferredStatisticsPage")
 			if page < 0 || page >= self.statisticsViewControllers.count {
 				page = 0
 			}
 			self.setViewControllers([self.statisticsViewControllers[page]], direction: .forward, animated: false, completion: nil)
 		}
     
-		NSNotificationCenter.default().addObserver(self,
+		NotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.localeChanged(_:)),
-               name:NSCurrentLocaleDidChangeNotification,
+               name:Locale.currentLocaleDidChangeNotification,
              object:nil)
 
-		NSNotificationCenter.default().addObserver(self,
+		NotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.didEnterBackground(_:)),
-               name:UIApplicationDidEnterBackgroundNotification,
+               name:NSNotification.Name.UIApplicationDidEnterBackground,
              object:nil)
 
-		NSNotificationCenter.default().addObserver(self,
+		NotificationCenter.default().addObserver(self,
            selector:#selector(FuelStatisticsPageController.didBecomeActive(_:)),
-               name:UIApplicationDidBecomeActiveNotification,
+               name:NSNotification.Name.UIApplicationDidBecomeActive,
              object:nil)
 
-		NSNotificationCenter.default().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(notification:)),
+		NotificationCenter.default().addObserver(self,
+           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
                name:"numberOfMonthsSelected",
              object:nil)
 	}
@@ -90,8 +90,8 @@ final class FuelStatisticsPageController: UIPageViewController {
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		NSUserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
-		NSUserDefaults.standard().synchronize()
+		UserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
+		UserDefaults.standard().synchronize()
 	}
 
 	// MARK: - View Rotation
@@ -115,8 +115,8 @@ final class FuelStatisticsPageController: UIPageViewController {
 	}
 
 	func didEnterBackground(_ object: AnyObject) {
-		NSUserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
-		NSUserDefaults.standard().synchronize()
+		UserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
+		UserDefaults.standard().synchronize()
 
 		for controller in statisticsViewControllers {
 			controller.purgeDiscardableCacheContent()
@@ -137,10 +137,10 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	// MARK: - User Events
 
-	func numberOfMonthsSelected(notification: NSNotification) {
+	func numberOfMonthsSelected(_ notification: Notification) {
 		// Remember selection in preferences
-		if let numberOfMonths = notification.userInfo?["span"] as? Int {
-			NSUserDefaults.standard().set(numberOfMonths, forKey:"statisticTimeSpan")
+		if let numberOfMonths = (notification as NSNotification).userInfo?["span"] as? Int {
+			UserDefaults.standard().set(numberOfMonths, forKey:"statisticTimeSpan")
 
 			// Update all statistics controllers
 			for controller in self.childViewControllers as! [FuelStatisticsViewController] {
@@ -152,12 +152,12 @@ final class FuelStatisticsPageController: UIPageViewController {
 	// MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 }
 
 extension FuelStatisticsPageController : UIPageViewControllerDelegate {
-	@objc(pageViewControllerSupportedInterfaceOrientations:) func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
+	func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
 		return .landscape
 	}
 
@@ -169,7 +169,7 @@ extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 }
 
 extension FuelStatisticsPageController : UIPageViewControllerDataSource {
-	@objc(pageViewController:viewControllerAfterViewController:)
+
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
@@ -180,7 +180,6 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	@objc(pageViewController:viewControllerBeforeViewController:)
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }
 		let page = statisticsViewController.pageIndex
@@ -191,11 +190,11 @@ extension FuelStatisticsPageController : UIPageViewControllerDataSource {
 		}
 	}
 
-	@objc(presentationCountForPageViewController:) func presentationCount(for pageViewController: UIPageViewController) -> Int {
+	func presentationCount(for pageViewController: UIPageViewController) -> Int {
 		return statisticsViewControllers.count
 	}
 
-	@objc(presentationIndexForPageViewController:) func presentationIndex(for pageViewController: UIPageViewController) -> Int {
+	func presentationIndex(for pageViewController: UIPageViewController) -> Int {
 		return currentPage
 	}
 }

@@ -53,9 +53,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	override func setupFonts() {
 		super.setupFonts()
 
-		prefixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(textStyle: UIFontTextStyleSubheadline),
+		prefixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
 			NSForegroundColorAttributeName: UIColor.black()]
-		suffixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(textStyle: UIFontTextStyleCaption2),
+		suffixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
 			NSForegroundColorAttributeName: UIColor.darkGray()]
 
 		self.carPicker.reloadAllComponents()
@@ -68,7 +68,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.carPicker.reloadAllComponents()
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of possible cars
@@ -99,7 +99,6 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	// MARK: - UIPickerViewDataSource
 
-	@objc(numberOfComponentsInPickerView:)
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
@@ -114,15 +113,15 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	// MARK: - UIPickerViewDelegate
 
-	@objc(pickerView:rowHeightForComponent:) func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
 		return PickerViewCellHeight
 	}
 
-	@objc(pickerView:widthForComponent:) func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
 		return PickerViewCellWidth
 	}
 
-	@objc(pickerView:viewForRow:forComponent:reusingView:) func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		// Strings to be displayed
 		let car = self.cars[row]
 		let name = car.name

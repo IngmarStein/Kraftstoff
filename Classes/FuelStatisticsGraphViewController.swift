@@ -12,11 +12,11 @@ import CoreData
 protocol FuelStatisticsViewControllerDataSource {
 	var curveGradient: CGGradient { get }
 
-	func averageFormatter(precise: Bool, forCar: Car) -> NSNumberFormatter
-	func averageFormatString(prefix: Bool, forCar: Car) -> String
+	func averageFormatter(_ precise: Bool, forCar: Car) -> NumberFormatter
+	func averageFormatString(_ prefix: Bool, forCar: Car) -> String
 	func noAverageStringForCar(_ car: Car) -> String
 
-	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter
+	func axisFormatterForCar(_ car: Car) -> NumberFormatter
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar: Car) -> CGFloat
 }
 
@@ -48,7 +48,7 @@ private final class FuelStatisticsSamplingData: DiscardableDataObject {
 	var dataCount = 0
 
     // Lens data
-	var lensDate = [[NSTimeInterval]](repeating: [NSTimeInterval](repeating: 0.0, count: 2), count: MaxSamples)
+	var lensDate = [[TimeInterval]](repeating: [TimeInterval](repeating: 0.0, count: 2), count: MaxSamples)
 	var lensValue = [CGFloat](repeating: 0.0, count: MaxSamples)
 
     // Data for marker positions
@@ -145,9 +145,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	// MARK: - Graph Computation
 
 	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsSamplingData, inManagedObjectContext moc: NSManagedObjectContext) -> CGFloat {
-		var firstDate: NSDate? = nil
-		var midDate: NSDate? = nil
-		var lastDate: NSDate? = nil
+		var firstDate: Date? = nil
+		var midDate: Date? = nil
+		var lastDate: Date? = nil
 
 		// Compute vertical range of curve
 		var valCount = 0
@@ -299,14 +299,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		state.hMarkCount = 5
 
 		// Markers for horizontal axis
-		let dateFormatter: NSDateFormatter
+		let dateFormatter: DateFormatter
 
 		if state.dataCount < 3 || firstDate!.timeIntervalSince(lastDate!) < 604800 {
 			dateFormatter = Formatters.sharedDateTimeFormatter
 			midDate = nil
 		} else {
 			dateFormatter = Formatters.sharedDateFormatter
-			midDate = NSDate(timeInterval: firstDate!.timeIntervalSince(lastDate!)/2.0, since: lastDate!)
+			midDate = Date(timeInterval: firstDate!.timeIntervalSince(lastDate!)/2.0, since: lastDate!)
 		}
 
 		state.vMarkCount = 0
@@ -366,7 +366,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			return
 		}
 
-		let font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleFootnote)
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleFootnote)
 		let path = UIBezierPath()
 
 		cgContext.saveGState()
@@ -562,7 +562,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Update summary in top right of view
 		if let average = average where !average.floatValue.isNaN {
-			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(prefix: true, forCar: self.selectedCar), self.dataSource!.averageFormatter(precise: false, forCar: self.selectedCar).string(from: average)! as NSString)
+			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average)! as NSString)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)
 		}
@@ -677,9 +677,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     let df = Formatters.sharedLongDateFormatter
 
 					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
-                        self.centerLabel.text = df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0]))
+                        self.centerLabel.text = df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0]))
 					} else {
-                        self.centerLabel.text = "\(df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0])))  ➡  \(df.string(from: NSDate(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][1])))"
+                        self.centerLabel.text = "\(df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0])))  ➡  \(df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][1])))"
 					}
 
                     // Knob position
@@ -689,8 +689,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     // Image with value information
                     UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
 
-					let valueString = String(format: self.dataSource!.averageFormatString(prefix: false, forCar: self.selectedCar),
-													 self.dataSource!.averageFormatter(precise: true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
+					let valueString = String(format: self.dataSource!.averageFormatString(false, forCar: self.selectedCar),
+													 self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
 
 					drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString)
 
@@ -703,7 +703,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
             }
 
         case .ended, .cancelled, .failed:
-			if NSProcessInfo.processInfo().arguments.index(of: "-KEEPLENS") == nil {
+			if ProcessInfo.processInfo().arguments.index(of: "-KEEPLENS") == nil {
 				self.zooming = false
 			}
 		}
@@ -735,7 +735,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes = [ NSFontAttributeName: UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2),
+		let attributes = [ NSFontAttributeName: UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2),
                                  NSForegroundColorAttributeName: UIColor.white() ]
 
 		var infoRect = CGRect()
@@ -785,11 +785,11 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 		return AppDelegate.greenGradient
 	}
 
-	func averageFormatter(precise: Bool, forCar car: Car) -> NSNumberFormatter {
+	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		return Formatters.sharedFuelVolumeFormatter
 	}
 
-	func averageFormatString(prefix avgPrefix: Bool, forCar car: Car) -> String {
+	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
 		let unit = car.ksFuelConsumptionUnit.localizedString
 
@@ -800,7 +800,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 		return car.ksFuelConsumptionUnit.localizedString
 	}
 
-	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter {
+	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		return Formatters.sharedFuelVolumeFormatter
 	}
 
@@ -824,11 +824,11 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 		return AppDelegate.orangeGradient
 	}
 
-	func averageFormatter(precise: Bool, forCar car: Car) -> NSNumberFormatter {
+	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		return (precise) ? Formatters.sharedPreciseCurrencyFormatter : Formatters.sharedCurrencyFormatter
 	}
 
-	func averageFormatString(prefix avgPrefix: Bool, forCar car: Car) -> String {
+	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
 		let unit = car.ksFuelUnit.description
 
@@ -839,7 +839,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 		return "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/\(car.ksFuelUnit.description)"
 	}
 
-	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter {
+	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		return Formatters.sharedAxisCurrencyFormatter
 	}
 
@@ -850,7 +850,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 			return CGFloat.nan
 		}
 
-		return CGFloat(Units.pricePerUnit(literPrice: price, withUnit: car.ksFuelUnit).floatValue)
+		return CGFloat(Units.pricePerUnit(price, withUnit: car.ksFuelUnit).floatValue)
 	}
 
 }
@@ -860,7 +860,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		return AppDelegate.blueGradient
 	}
 
-	func averageFormatter(precise: Bool, forCar car: Car) -> NSNumberFormatter {
+	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
 		if distanceUnit.isMetric {
@@ -870,7 +870,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		}
 	}
 
-	func averageFormatString(prefix avgPrefix: Bool, forCar car: Car) -> String {
+	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
 		if car.ksOdometerUnit.isMetric {
 			return "\(prefix)%@/100km"
@@ -886,7 +886,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		return distanceUnit.isMetric ? "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.sharedCurrencyFormatter.currencySymbol!)"
 	}
 
-	func axisFormatterForCar(_ car: Car) -> NSNumberFormatter {
+	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
 		if distanceUnit.isMetric {

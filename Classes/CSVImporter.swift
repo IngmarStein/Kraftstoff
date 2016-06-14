@@ -22,12 +22,12 @@ final class CSVImporter {
 
 	// MARK: - Core Data Support
 
-	private func addCar(name: String, order: Int, plate: String, odometerUnit: KSDistance, volumeUnit: KSVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
+	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: KSDistance, volumeUnit: KSVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
 		let newCar = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
 
 		newCar.order = Int32(order)
-		newCar.timestamp = NSDate()
+		newCar.timestamp = Date()
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
@@ -38,7 +38,7 @@ final class CSVImporter {
 		return newCar
 	}
 
-	@discardableResult private func addEvent(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
+	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: managedObjectContext) as! FuelEvent
 
 		newEvent.car = car
@@ -74,7 +74,7 @@ final class CSVImporter {
 
 	// MARK: - Data Import Helpers
 
-	private func guessModelFromURL(_ sourceURL: NSURL) -> String? {
+	private func guessModelFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
 			let nameComponents = (((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension as NSString).components(separatedBy: "__")
 
@@ -95,7 +95,7 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func guessPlateFromURL(_ sourceURL: NSURL) -> String? {
+	private func guessPlateFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
 			let nameComponents = ((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension.components(separatedBy: "__")
 
@@ -117,7 +117,7 @@ final class CSVImporter {
 		return nil
 	}
 
-	@discardableResult private func importCarIDs(records: [CSVRecord]) -> Bool {
+	@discardableResult private func importCarIDs(_ records: [CSVRecord]) -> Bool {
 		let first = records.first!
 
 		if first.count < 3 {
@@ -141,11 +141,12 @@ final class CSVImporter {
 		let previousCarIDCount = carIDs.count
 
 		for record in records {
-			if let ID = scanNumberWithString(record["ID"])?.intValue where !carIDs.contains(ID) {
+			if let ID = scanNumberWithString(record["ID"])?.int32Value where !carIDs.contains(Int(ID)) {
 				if let model = record[modelKey!], plate = record["NAME"] {
-					carIDs.insert(ID)
-					modelForID[ID] = model
-					plateForID[ID] = plate
+					let intID = Int(ID)
+					carIDs.insert(intID)
+					modelForID[intID] = model
+					plateForID[intID] = plate
 				}
 			}
 		}
@@ -164,7 +165,7 @@ final class CSVImporter {
 	private func createCarObjectsInContext(_ managedObjectContext: NSManagedObjectContext) -> Int {
 		// Fetch already existing cars for later update of order attribute
 		let carRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
-		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext) as! [Car]
+		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext)
 
 		// Create car objects
 		carForID.removeAll()
@@ -173,7 +174,7 @@ final class CSVImporter {
 			let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment: ""))
 			let plate = truncateLongString(plateForID[carID] ?? "")
 
-			let newCar = addCar(name: model,
+			let newCar = addCar(model,
 							   order: carForID.count,
 							   plate: plate,
 						odometerUnit: Units.distanceUnitFromLocale,
@@ -287,8 +288,8 @@ final class CSVImporter {
 		for carID in carIDs {
 			let car = carForID[carID]!
 
-			var lastDate          = NSDate.distantPast() as NSDate
-			var lastDelta         = NSTimeInterval(0.0)
+			var lastDate          = Date.distantPast
+			var lastDelta         = TimeInterval(0.0)
 			var detectedEvents    = false
 			var initialFillUpSeen = false
 
@@ -358,9 +359,9 @@ final class CSVImporter {
 					}
 				} else if price != nil {
 					if volumeUnit != .invalid {
-						price = Units.pricePerLiter(price: price!, withUnit:volumeUnit)
+						price = Units.pricePerLiter(price!, withUnit:volumeUnit)
 					} else {
-						price = Units.pricePerLiter(price: price!, withUnit:scanVolumeUnitWithString(record[volumeUnitKey!]))
+						price = Units.pricePerLiter(price!, withUnit:scanVolumeUnitWithString(record[volumeUnitKey!]))
 					}
 				}
 
@@ -382,7 +383,7 @@ final class CSVImporter {
 					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume:volume)
 
 					// Add event for car
-					addEvent(car: car,
+					addEvent(car,
 									date:date,
 								distance:convertedDistance,
 								   price:price!,
@@ -421,7 +422,7 @@ final class CSVImporter {
 
 	// MARK: - Data Import
 
-	func `import`(csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: NSURL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	func `import`(_ csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: URL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString: csv)
 
 		// Check for TankPro import:search for tables containing car definitions
@@ -438,7 +439,7 @@ final class CSVImporter {
 				continue
 			}
 
-			importCarIDs(records: CSVTable!)
+			importCarIDs(CSVTable!)
 		}
 
 		// Not a TankPro import:create a dummy car definition
@@ -481,26 +482,26 @@ final class CSVImporter {
 
 	// MARK: - Scanning Support
 
-	private let currentNumberFormatter: NSNumberFormatter = {
-		let nfCurrent = NSNumberFormatter()
+	private let currentNumberFormatter: NumberFormatter = {
+		let nfCurrent = NumberFormatter()
 
 		nfCurrent.generatesDecimalNumbers = true
 		nfCurrent.usesGroupingSeparator = true
-		nfCurrent.numberStyle = .decimalStyle
+		nfCurrent.numberStyle = .decimal
 		nfCurrent.isLenient = true
-		nfCurrent.locale = NSLocale.current()
+		nfCurrent.locale = Locale.current()
 
 		return nfCurrent
 	}()
 
-	private let systemNumberFormatter: NSNumberFormatter = {
-		let nfSystem = NSNumberFormatter()
+	private let systemNumberFormatter: NumberFormatter = {
+		let nfSystem = NumberFormatter()
 
 		nfSystem.generatesDecimalNumbers = true
 		nfSystem.usesGroupingSeparator = true
-		nfSystem.numberStyle = .decimalStyle
+		nfSystem.numberStyle = .decimal
 		nfSystem.isLenient = true
-		nfSystem.locale = NSLocale.system()
+		nfSystem.locale = Locale.system()
 
 		return nfSystem
 	}()
@@ -511,17 +512,17 @@ final class CSVImporter {
 		}
 
 		// Scan via NSScanner (fast, strict)
-		let scanner = NSScanner(string:string)
+		let scanner = Scanner(string:string)
 
-		scanner.locale = NSLocale.current()
+		scanner.locale = Locale.current()
 		scanner.scanLocation = 0
 
-		var d = NSDecimal()
+		var d = Decimal()
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
 			return NSDecimalNumber(decimal:d)
 		}
 
-		scanner.locale = NSLocale.system()
+		scanner.locale = Locale.system()
 		scanner.scanLocation = 0
 
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
@@ -539,10 +540,10 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func scanDate(_ dateString: String, withOptionalTime timeString: String?) -> NSDate? {
+	private func scanDate(_ dateString: String, withOptionalTime timeString: String?) -> Date? {
 		if let date = scanDateWithString(dateString) {
 			if let time = timeString.flatMap({ self.scanTimeWithString($0) }) {
-				return date.addingTimeInterval(NSDate.timeIntervalSinceBeginningOfDay(date: time))
+				return date.addingTimeInterval(Date.timeIntervalSinceBeginningOfDay(time))
 			} else {
 				return date.addingTimeInterval(43200)
 			}
@@ -551,43 +552,43 @@ final class CSVImporter {
 		}
 	}
 
-	private let systemDateFormatter: NSDateFormatter = {
-		let df = NSDateFormatter()
-		df.locale = NSLocale.system()
+	private let systemDateFormatter: DateFormatter = {
+		let df = DateFormatter()
+		df.locale = Locale.system()
 		df.dateFormat = "yyyy-MM-dd"
 		df.isLenient = false
 		return df
 	}()
 
-	private let currentDateFormatter: NSDateFormatter = {
-		let df = NSDateFormatter()
-		df.locale = NSLocale.current()
+	private let currentDateFormatter: DateFormatter = {
+		let df = DateFormatter()
+		df.locale = Locale.current()
 		df.dateStyle = .shortStyle
 		df.timeStyle = .noStyle
 		df.isLenient = true
 		return df
 	}()
 
-	private let systemTimeFormatter: NSDateFormatter = {
-		let df = NSDateFormatter()
-		df.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-		df.locale = NSLocale.system()
+	private let systemTimeFormatter: DateFormatter = {
+		let df = DateFormatter()
+		df.timeZone = TimeZone(forSecondsFromGMT: 0)
+		df.locale = Locale.system()
 		df.dateFormat = "HH:mm"
 		df.isLenient = false
 		return df
 	}()
 
-	private let currentTimeFormatter: NSDateFormatter = {
-		let df = NSDateFormatter()
-		df.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-		df.locale = NSLocale.current()
+	private let currentTimeFormatter: DateFormatter = {
+		let df = DateFormatter()
+		df.timeZone = TimeZone(forSecondsFromGMT: 0)
+		df.locale = Locale.current()
 		df.timeStyle = .shortStyle
 		df.dateStyle = .noStyle
 		df.isLenient = true
 		return df
 	}()
 
-	private func scanDateWithString(_ string: String?) -> NSDate? {
+	private func scanDateWithString(_ string: String?) -> Date? {
 		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale
@@ -604,7 +605,7 @@ final class CSVImporter {
 	}
 
 
-	private func scanTimeWithString(_ string: String?) -> NSDate? {
+	private func scanTimeWithString(_ string: String?) -> Date? {
 		guard let string = string else { return nil }
 
 		// Strictly scan own format in system locale

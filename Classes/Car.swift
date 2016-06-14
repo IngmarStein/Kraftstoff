@@ -11,7 +11,7 @@ import CoreData
 
 final class Car: NSManagedObject {
 
-    @NSManaged var timestamp: NSDate
+    @NSManaged var timestamp: Date
     @NSManaged var distanceTotalSum: NSDecimalNumber
     @NSManaged var fuelUnit: Int32
     @NSManaged var order: Int32

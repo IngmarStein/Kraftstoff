@@ -9,73 +9,73 @@
 import UIKit
 
 final class Formatters {
-	static let sharedLongDateFormatter: NSDateFormatter = {
-		let dateFormatter = NSDateFormatter()
+	static let sharedLongDateFormatter: DateFormatter = {
+		let dateFormatter = DateFormatter()
 		dateFormatter.timeStyle = .shortStyle
 		dateFormatter.dateStyle = .longStyle
 		return dateFormatter
 	}()
 
-	static let sharedDateFormatter: NSDateFormatter = {
-		let dateFormatter = NSDateFormatter()
+	static let sharedDateFormatter: DateFormatter = {
+		let dateFormatter = DateFormatter()
 		dateFormatter.timeStyle = .noStyle
 		dateFormatter.dateStyle = .mediumStyle
 		return dateFormatter
 	}()
 
-	static let sharedDateTimeFormatter: NSDateFormatter = {
-        let dateTimeFormatter = NSDateFormatter()
+	static let sharedDateTimeFormatter: DateFormatter = {
+        let dateTimeFormatter = DateFormatter()
 		dateTimeFormatter.timeStyle = .shortStyle
 		dateTimeFormatter.dateStyle = .mediumStyle
 		return dateTimeFormatter
     }()
 
-	static let sharedDistanceFormatter: NSNumberFormatter = {
-        let distanceFormatter = NSNumberFormatter()
+	static let sharedDistanceFormatter: NumberFormatter = {
+        let distanceFormatter = NumberFormatter()
         distanceFormatter.generatesDecimalNumbers = true
-        distanceFormatter.numberStyle = .decimalStyle
+        distanceFormatter.numberStyle = .decimal
         distanceFormatter.minimumFractionDigits = 1
         distanceFormatter.maximumFractionDigits = 1
 		return distanceFormatter
     }()
 
-	static let sharedFuelVolumeFormatter: NSNumberFormatter = {
-        let fuelVolumeFormatter = NSNumberFormatter()
+	static let sharedFuelVolumeFormatter: NumberFormatter = {
+        let fuelVolumeFormatter = NumberFormatter()
         fuelVolumeFormatter.generatesDecimalNumbers = true
-        fuelVolumeFormatter.numberStyle = .decimalStyle
+        fuelVolumeFormatter.numberStyle = .decimal
         fuelVolumeFormatter.minimumFractionDigits = 2
         fuelVolumeFormatter.maximumFractionDigits = 2
 		return fuelVolumeFormatter
     }()
 
-	static let sharedPreciseFuelVolumeFormatter: NSNumberFormatter = {
-        let preciseFuelVolumeFormatter = NSNumberFormatter()
+	static let sharedPreciseFuelVolumeFormatter: NumberFormatter = {
+        let preciseFuelVolumeFormatter = NumberFormatter()
         preciseFuelVolumeFormatter.generatesDecimalNumbers = true
-        preciseFuelVolumeFormatter.numberStyle = .decimalStyle
+        preciseFuelVolumeFormatter.numberStyle = .decimal
         preciseFuelVolumeFormatter.minimumFractionDigits = 3
         preciseFuelVolumeFormatter.maximumFractionDigits = 3
 		return preciseFuelVolumeFormatter
     }()
 
 	// Standard currency formatter
-	static let sharedCurrencyFormatter: NSNumberFormatter = {
-        let currencyFormatter = NSNumberFormatter()
+	static let sharedCurrencyFormatter: NumberFormatter = {
+        let currencyFormatter = NumberFormatter()
         currencyFormatter.generatesDecimalNumbers = true
-        currencyFormatter.numberStyle = .currencyStyle
+        currencyFormatter.numberStyle = .currency
 		return currencyFormatter
     }()
 
 	// Currency formatter with empty currency symbol for axis of statistic graphs
-	static let sharedAxisCurrencyFormatter: NSNumberFormatter = {
-        let axisCurrencyFormatter = NSNumberFormatter()
+	static let sharedAxisCurrencyFormatter: NumberFormatter = {
+        let axisCurrencyFormatter = NumberFormatter()
         axisCurrencyFormatter.generatesDecimalNumbers = true
-        axisCurrencyFormatter.numberStyle = .currencyStyle
+        axisCurrencyFormatter.numberStyle = .currency
         axisCurrencyFormatter.currencySymbol = ""
 		return axisCurrencyFormatter
     }()
 
 	// Currency formatter with empty currency symbol and one additional fractional digit - used for active textfields
-	static let sharedEditPreciseCurrencyFormatter: NSNumberFormatter = {
+	static let sharedEditPreciseCurrencyFormatter: NumberFormatter = {
         var fractionDigits = sharedCurrencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
@@ -83,9 +83,9 @@ final class Formatters {
             fractionDigits += 1
 		}
 
-        let editPreciseCurrencyFormatter = NSNumberFormatter()
+        let editPreciseCurrencyFormatter = NumberFormatter()
         editPreciseCurrencyFormatter.generatesDecimalNumbers = true
-        editPreciseCurrencyFormatter.numberStyle = .currencyStyle
+        editPreciseCurrencyFormatter.numberStyle = .currency
         editPreciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.maximumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.currencySymbol = ""
@@ -100,7 +100,7 @@ final class Formatters {
     }()
 
 	// Currency formatter with one additional fractional digit - used for inactive textfields
-	static let sharedPreciseCurrencyFormatter: NSNumberFormatter = {
+	static let sharedPreciseCurrencyFormatter: NumberFormatter = {
         var fractionDigits = sharedCurrencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
@@ -108,9 +108,9 @@ final class Formatters {
             fractionDigits += 1
 		}
 
-        let preciseCurrencyFormatter = NSNumberFormatter()
+        let preciseCurrencyFormatter = NumberFormatter()
         preciseCurrencyFormatter.generatesDecimalNumbers = true
-        preciseCurrencyFormatter.numberStyle = .currencyStyle
+        preciseCurrencyFormatter.numberStyle = .currency
         preciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         preciseCurrencyFormatter.maximumFractionDigits = fractionDigits
 

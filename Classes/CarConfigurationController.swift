@@ -9,10 +9,10 @@
 import UIKit
 
 enum CarConfigurationResult: Int {
-	case Canceled
-	case CreateSucceeded
-	case EditSucceeded
-	case Aborted
+	case canceled
+	case createSucceeded
+	case editSucceeded
+	case aborted
 }
 
 protocol CarConfigurationControllerDelegate: class {
@@ -34,7 +34,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	var isShowingCancelSheet = false
 	var dataChanged = false
-	var previousSelectionIndex: NSIndexPath?
+	var previousSelectionIndex: IndexPath?
 
 	var name: String?
 	var plate: String?
@@ -70,7 +70,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NSNotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object:nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -78,7 +78,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 		dataChanged = false
 
-		selectRowAtIndexPath(NSIndexPath(forRow:0, inSection:0))
+		selectRowAtIndexPath(IndexPath(row: 0, section: 0))
 	}
 
 	// MARK: - State Restoration
@@ -97,15 +97,15 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	override func encodeRestorableState(with coder: NSCoder) {
 		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
-		coder.encode(self.delegate,            forKey:kSRConfiguratorDelegate)
-		coder.encode(self.editingExistingObject, forKey:kSRConfiguratorEditMode)
-		coder.encode(isShowingCancelSheet,       forKey:kSRConfiguratorCancelSheet)
-		coder.encode(dataChanged,                forKey:kSRConfiguratorDataChanged)
-		coder.encode(indexPath,                forKey:kSRConfiguratorPreviousSelectionIndex)
-		coder.encode(self.name as NSString?,   forKey:kSRConfiguratorName)
-		coder.encode(self.plate as NSString?,  forKey:kSRConfiguratorPlate)
-		coder.encode(self.fuelUnit,            forKey:kSRConfiguratorFuelUnit)
-		coder.encode(self.fuelConsumptionUnit, forKey:kSRConfiguratorFuelConsumptionUnit)
+		coder.encode(self.delegate,              forKey: kSRConfiguratorDelegate)
+		coder.encode(self.editingExistingObject, forKey: kSRConfiguratorEditMode)
+		coder.encode(isShowingCancelSheet,       forKey: kSRConfiguratorCancelSheet)
+		coder.encode(dataChanged,                forKey: kSRConfiguratorDataChanged)
+		coder.encode(indexPath,                  forKey: kSRConfiguratorPreviousSelectionIndex)
+		coder.encode(self.name as NSString?,     forKey: kSRConfiguratorName)
+		coder.encode(self.plate as NSString?,    forKey: kSRConfiguratorPlate)
+		coder.encode(self.fuelUnit,              forKey: kSRConfiguratorFuelUnit)
+		coder.encode(self.fuelConsumptionUnit,   forKey: kSRConfiguratorFuelConsumptionUnit)
 
 		super.encodeRestorableState(with: coder)
 	}
@@ -115,7 +115,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex)
+		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex) as? IndexPath
 		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
 		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
 		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit)
@@ -251,7 +251,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if animation == .none {
 			self.tableView.reloadData()
 		} else {
-			self.tableView.reloadRows(at: [NSIndexPath(forRow:3, inSection:0)], with: animation)
+			self.tableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: animation)
 		}
 	}
 
@@ -268,8 +268,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - Programmatically Selecting Table Rows
 
-	private func textFieldAtIndexPath(_ indexPath: NSIndexPath) -> UITextField? {
-		let cell = tableView.cellForRow(at: indexPath)!
+	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
+		let cell = tableView.cellForRow(at: indexPath as IndexPath)!
 		let field: UITextField?
 
 		if let textCell = cell as? TextEditTableCell {
@@ -285,20 +285,20 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		return field
 	}
 
-	private func activateTextFieldAtIndexPath(_ indexPath: NSIndexPath) {
+	private func activateTextFieldAtIndexPath(_ indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.tableView.beginUpdates()
 				self.tableView.endUpdates()
 			}
 		}
 	}
 
-	func selectRowAtIndexPath(_ indexPath: NSIndexPath?) {
+	func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let indexPath = indexPath {
-			tableView.selectRow(at: indexPath, animated:true, scrollPosition: .middle)
+			tableView.selectRow(at: indexPath as IndexPath, animated:true, scrollPosition: .middle)
 			activateTextFieldAtIndexPath(indexPath)
 		}
 	}
@@ -330,7 +330,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if showCancelSheet {
 			self.showCancelSheet()
 		} else {
-			self.delegate?.carConfigurationController(self, didFinishWithResult:.Canceled)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: .canceled)
 		}
 	}
 
@@ -347,7 +347,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment: "") : NSLocalizedString("Delete", comment: ""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
-			self.delegate?.carConfigurationController(self, didFinishWithResult: .Canceled)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: .canceled)
 			self.previousSelectionIndex = nil
 		}
 		alertController.addAction(cancelAction)
@@ -360,7 +360,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	@IBAction func handleSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
-			self.delegate?.carConfigurationController(self, didFinishWithResult:self.editingExistingObject ? .EditSucceeded : .CreateSucceeded)
+			self.delegate?.carConfigurationController(self, didFinishWithResult:self.editingExistingObject ? .editSucceeded : .createSucceeded)
 		}
 	}
 
@@ -368,9 +368,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	func focusNextFieldForValueIdentifier(_ valueIdentifier: String) {
 		if valueIdentifier == "name" {
-			selectRowAtIndexPath(NSIndexPath(forRow:1, inSection:0))
+			selectRowAtIndexPath(IndexPath(row: 1, section: 0))
 		} else {
-			selectRowAtIndexPath(NSIndexPath(forRow:2, inSection:0))
+			selectRowAtIndexPath(IndexPath(row: 2, section: 0))
 		}
 	}
 
@@ -422,15 +422,15 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - UITableViewDelegate
 
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRow(at: indexPath, at: .middle, animated:true)
+		tableView.scrollToRow(at: indexPath as IndexPath, at: .middle, animated:true)
 	}
 
-	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				tableView.beginUpdates()
 				tableView.endUpdates()
 			}
@@ -440,6 +440,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 }

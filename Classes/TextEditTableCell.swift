@@ -16,7 +16,7 @@ final class TextEditTableCell: EditablePageCell {
 	required init() {
 		super.init()
 
-		self.textField.keyboardType  = .`default`
+		self.textField.keyboardType  = .default
 		self.textField.returnKeyType = .next
 		self.textField.allowCut      = true
 		self.textField.allowPaste    = true
@@ -26,7 +26,7 @@ final class TextEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool where autocapitalizeAll {
@@ -62,7 +62,6 @@ final class TextEditTableCell: EditablePageCell {
 		return true
 	}
 
-	@objc(textField:shouldChangeCharactersInRange:replacementString:)
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 		var newValue = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 

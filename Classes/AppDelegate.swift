@@ -20,6 +20,7 @@ extension UIApplication {
 
 @UIApplicationMain
 final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
+	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
 	private var appReceipt : [String : AnyObject]?
@@ -27,7 +28,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private var importAlert: UIAlertController?
 
-	private lazy var carsFetchedResultsController: NSFetchedResultsController = {
+	private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
 		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
 		fetchedResultsController.delegate = self
 		return fetchedResultsController
@@ -36,7 +37,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Application Lifecycle
 
 	override init() {
-		NSUserDefaults.standard().register(
+		UserDefaults.standard().register(
 		   ["statisticTimeSpan": 6,
 			"preferredStatisticsPage": 1,
 			"preferredCarID": "",
@@ -51,13 +52,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		super.init()
 	}
 
-	private var launchInitPred: dispatch_once_t = 0
-
 	private func commonLaunchInitialization(_ launchOptions: [NSObject : AnyObject]?) {
-		dispatch_once(&launchInitPred) {
+		if !initialized {
+			initialized = true
+
 			self.window?.makeKeyAndVisible()
 
-			self.validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
+			self.validateReceipt(Bundle.main().appStoreReceiptURL) { (success) -> Void in
 				self.appReceiptValid = success
 				if !success {
 					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
@@ -69,20 +70,20 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			CoreDataManager.sharedInstance.registerForiCloudNotifications()
 			CoreDataManager.migrateToiCloud()
 
-			if NSProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
+			if ProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
-				let userDefaults = NSUserDefaults.standard()
+				let userDefaults = UserDefaults.standard()
 				for key in ["statisticTimeSpan",
-					"preferredStatisticsPage",
-					"preferredCarID",
-					"recentDistance",
-					"recentPrice",
-					"recentFuelVolume",
-					"recentFilledUp",
-					"recentComment",
-					"editHelpCounter",
-					"firstStartup"] {
-					userDefaults.removeObject(forKey: key)
+				            "preferredStatisticsPage",
+				            "preferredCarID",
+				            "recentDistance",
+				            "recentPrice",
+				            "recentFuelVolume",
+				            "recentFilledUp",
+				            "recentComment",
+				            "editHelpCounter",
+				            "firstStartup"] {
+								userDefaults.removeObject(forKey: key)
 				}
 			}
 
@@ -90,7 +91,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey as NSString] == nil {
-				let defaults = NSUserDefaults.standard()
+				let defaults = UserDefaults.standard()
 
 				if defaults.bool(forKey: "firstStartup") {
 					if defaults.string(forKey: "preferredCarID") == "" {
@@ -98,15 +99,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 							tabBarController.selectedIndex = 1
 						}
 					}
-
-					defaults.set(false, forKey:"firstStartup")
+					
+					defaults.set(false, forKey: "firstStartup")
 				}
 			}
 		}
 	}
 
 	private func updateShortcutItems() {
-		if let cars = self.carsFetchedResultsController.fetchedObjects as? [Car] {
+		if let cars = self.carsFetchedResultsController.fetchedObjects {
 			UIApplication.shared().shortcutItems = cars.map { car in
 				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
 				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
@@ -125,7 +126,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	@objc(application:performActionForShortcutItem:completionHandler:) func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
 			// switch to fill-up tab and select the car
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -141,7 +142,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	@objc(application:continueUserActivity:restorationHandler:) func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
 		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -170,32 +171,32 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	@objc(application:willFinishLaunchingWithOptions:) func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	@objc(application:didFinishLaunchingWithOptions:) func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	@objc(applicationDidEnterBackground:) func applicationDidEnterBackground(_ application: UIApplication) {
+	func applicationDidEnterBackground(_ application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
-	@objc(applicationWillTerminate:) func applicationWillTerminate(_ application: UIApplication) {
+	func applicationWillTerminate(_ application: UIApplication) {
 		CoreDataManager.saveContext()
 	}
 
 	// MARK: - State Restoration
 
-	@objc(application:shouldSaveApplicationState:) func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+	func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	@objc(application:shouldRestoreApplicationState:) func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-		let bundleVersion = NSBundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
+	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+		let bundleVersion = Bundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
@@ -229,25 +230,25 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	// Read file contents from given URL, guess file encoding
-	private static func contentsOfURL(_ url: NSURL) -> String? {
-		var enc: NSStringEncoding = NSUTF8StringEncoding
-		if let contents = try? String(contentsOf: url, usedEncoding: &enc) { return contents }
-		if let contents = try? String(contentsOf: url, encoding: NSMacOSRomanStringEncoding) { return contents }
+	private static func contentsOfURL(_ url: URL) -> String? {
+		var enc: String.Encoding = String.Encoding.utf8
+		if let contents = try? String(contentsOf: url as URL, usedEncoding: &enc) { return contents }
+		if let contents = try? String(contentsOf: url as URL, encoding: String.Encoding.macOSRoman) { return contents }
 		return nil
 	}
 
 	// Removes files from the inbox
-	private func removeFileItem(at url: NSURL) {
+	private func removeFileItem(at url: URL) {
 		if url.isFileURL {
 			do {
-				try NSFileManager.default().removeItem(at: url)
+				try FileManager.default().removeItem(at: url as URL)
 			} catch let error as NSError {
 				print(error.localizedDescription)
 			}
 		}
 	}
 
-	@objc(application:openURL:sourceApplication:annotation:) func application(_ application: UIApplication, open url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItem(at: url)
@@ -255,7 +256,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 
 		if !StoreManager.sharedInstance.checkCarCount() {
-			StoreManager.sharedInstance.showBuyOptions(parent: self.window!.rootViewController!)
+			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
 			return false
 		}
 
@@ -279,11 +280,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				var numCars   = 0
 				var numEvents = 0
 
-				let success = importer.`import`(csv: CSVString,
-                                            detectedCars:&numCars,
-                                          detectedEvents:&numEvents,
-                                               sourceURL:url,
-                                              inContext:importContext)
+				let success = importer.`import`(CSVString,
+                                            detectedCars: &numCars,
+                                          detectedEvents: &numEvents,
+                                               sourceURL: url,
+                                               inContext: importContext)
 
 				// On success propagate changes to parent context
 				if success {
@@ -291,7 +292,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					parentContext.perform { CoreDataManager.saveContext(parentContext) }
 				}
 
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					self.hideImportAlert()
 
 					let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
@@ -301,18 +302,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						: NSLocalizedString("No valid CSV-data could be found.", comment: "")
 
 					let alertController = UIAlertController(title:title, message:message, preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style:.`default`) { _ in () }
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style:.default) { _ in () }
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
 			} else {
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					self.hideImportAlert()
 
 					let alertController = UIAlertController(title:NSLocalizedString("Import Failed", comment: ""),
 						message:NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment: ""),
 						preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .`default`, handler: nil)
+					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated:true, completion:nil)
 				}
@@ -320,37 +321,37 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 
 		// Treat imports as successful first startups
-		NSUserDefaults.standard().set(false, forKey:"firstStartup")
+		UserDefaults.standard().set(false, forKey:"firstStartup")
 		return true
 	}
 
 	// MARK: - NSFetchedResultsControllerDelegate
 
-	@objc(controllerDidChangeContent:) func controllerDidChangeContent(_ controller: NSFetchedResultsController) {
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		updateShortcutItems()
 	}
 
 	// MARK: - SKRequestDelegate
 
-	@objc(requestDidFinish:) func requestDidFinish(_ request: SKRequest) {
-		validateReceipt(NSBundle.main().appStoreReceiptURL) { (success) -> Void in
+	func requestDidFinish(_ request: SKRequest) {
+		validateReceipt(Bundle.main().appStoreReceiptURL) { (success) -> Void in
 			self.appReceiptValid = success
 		}
 	}
 
-	@objc(request:didFailWithError:) func request(_ request: SKRequest, didFailWithError error: NSError) {
+	func request(_ request: SKRequest, didFailWithError error: NSError) {
 		print("receipt request failed: \(error)")
 	}
 
 	// MARK: - Receipt validation
 
-	private func receiptData(_ appStoreReceiptURL : NSURL?) -> NSData? {
-		guard let receiptURL = appStoreReceiptURL, receipt = NSData(contentsOf: receiptURL) else { return nil }
+	private func receiptData(_ appStoreReceiptURL : URL?) -> Data? {
+		guard let receiptURL = appStoreReceiptURL, receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
 
 		do {
-			let receiptData = receipt.base64EncodedString(NSDataBase64EncodingOptions(rawValue: 0))
+			let receiptData = receipt.base64EncodedString(Data.Base64EncodingOptions(rawValue: 0))
 			let requestContents = ["receipt-data": receiptData]
-			let requestData = try NSJSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
+			let requestData = try JSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
 			return requestData
 		} catch let error as NSError {
 			print(error)
@@ -359,19 +360,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return nil
 	}
 
-	private func validateReceiptInternal(_ appStoreReceiptURL : NSURL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
+	private func validateReceiptInternal(_ appStoreReceiptURL : URL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
-		guard let receiptData = receiptData(appStoreReceiptURL), url = NSURL(string: serverURL) else {
+		guard let receiptData = receiptData(appStoreReceiptURL), url = URL(string: serverURL) else {
 			onCompletion(nil, nil)
 			return
 		}
 
-		let request = NSMutableURLRequest(url: url)
+		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		request.httpBody = receiptData
 
-		let task = NSURLSession.shared().dataTask(with: request, completionHandler: {data, response, error -> Void in
+		let task = URLSession.shared().dataTask(with: request, completionHandler: {data, response, error -> Void in
 
 			guard let data = data where error == nil else {
 				onCompletion(nil, nil)
@@ -379,7 +380,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			}
 
 			do {
-				let json = try NSJSONSerialization.jsonObject(with: data, options:[])
+				let json = try JSONSerialization.jsonObject(with: data, options:[])
 				//print(json)
 				guard let statusCode = json["status"] as? Int else {
 					onCompletion(nil, json)
@@ -394,7 +395,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		task.resume()
 	}
 
-	private func validateReceipt(_ appStoreReceiptURL : NSURL?, onCompletion: (Bool) -> Void) {
+	private func validateReceipt(_ appStoreReceiptURL : URL?, onCompletion: (Bool) -> Void) {
 		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: AnyObject?) -> Void in
 			guard let status = statusCode else {
 				onCompletion(false)

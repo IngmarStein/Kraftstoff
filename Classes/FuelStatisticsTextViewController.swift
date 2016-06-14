@@ -19,8 +19,8 @@ private let GridTextHeight: CGFloat = 23.0
 private final class FuelStatisticsData: DiscardableDataObject {
 	var car: Car!
 
-	var firstDate: NSDate!
-	var lastDate: NSDate!
+	var firstDate: Date!
+	var lastDate: Date!
 
 	var totalCost = NSDecimalNumber.zero()
 	var totalFuelVolume = NSDecimalNumber.zero()
@@ -197,7 +197,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		UIColor.clear().setFill()
 		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
-		let font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
 		let labelAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0) ]
 		let valueAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.white() ]
 
@@ -303,7 +303,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let fuelUnit = state.car.ksFuelUnit
             let fuelUnitString = fuelUnit.description
 
-            let numberOfDays = NSDate.numberOfCalendarDaysFrom(startDate: state.firstDate, to: state.lastDate)
+            let numberOfDays = Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate)
 
 			y = (GridTextHeight - font.lineHeight) / 2.0
 
@@ -321,7 +321,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // number of days
 			drawEntry(
 				label: NSLocalizedString("days", comment: ""),
-				value: "\(NSDate.numberOfCalendarDaysFrom(startDate: state.firstDate, to:state.lastDate))")
+				value: "\(Date.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate))")
 
             // avg consumption
             drawEntry(
@@ -441,7 +441,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			let imageFrame = CGRect(x: 0, y: 0, width: contentImage.size.width, height: contentImage.size.height)
 
-			var imageView: UIImageView! = self.scrollView.withTag(1) as? UIImageView
+			var imageView: UIImageView! = self.scrollView.viewWithTag(1) as? UIImageView
 
 			if imageView == nil {
 				imageView = UIImageView(frame: imageFrame)
@@ -486,7 +486,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                          completion: { finished in
                              if finished {
 								self.activityView.startAnimating()
-								let imageView: UIImageView! = self.scrollView.withTag(1) as? UIImageView
+								let imageView: UIImageView! = self.scrollView.viewWithTag(1) as? UIImageView
 								if imageView != nil {
                                      imageView.image = nil
                                      imageView.frame = CGRect.zero

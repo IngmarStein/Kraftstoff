@@ -29,7 +29,7 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Dismissing the Keyboard
 
-	func dismissKeyboardWithCompletion(completion: () -> Void) {
+	func dismissKeyboardWithCompletion(_ completion: () -> Void) {
 		let scrollToTop = self.tableView.contentOffset.y > 0.0
 
 		UIView.animate(withDuration: scrollToTop ? 0.25 : 0.15, animations: {
@@ -39,7 +39,7 @@ class PageViewController: UITableViewController {
 			}
 
 			if scrollToTop {
-				self.tableView.scrollToRow(at: NSIndexPath(forRow: 0, inSection: 0),
+				self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
 					at: .top,
 					animated: false)
 			}
@@ -76,7 +76,7 @@ class PageViewController: UITableViewController {
 	func setData(_ object: [String: Any], forRow rowIndex: Int, inSection sectionIndex: Int) {
 		cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData = object
 
-		let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+		let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
 		let cell = self.tableView.cellForRow(at: indexPath) as! PageCell
 
 		cell.configureForData(object, viewController: self, tableView: self.tableView, indexPath: indexPath)
@@ -95,7 +95,7 @@ class PageViewController: UITableViewController {
 		tableSections.insert([PageCellDescription](), at: sectionIndex)
 
 		if animation != .none {
-			self.tableView.insertSections(NSIndexSet(index: sectionIndex), with: animation)
+			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: animation)
 		}
 	}
 
@@ -104,7 +104,7 @@ class PageViewController: UITableViewController {
 			tableSections.remove(at: sectionIndex)
 
 			if animation != .none {
-				self.tableView.deleteSections(NSIndexSet(index: sectionIndex), with: animation)
+				self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: animation)
 			}
 		}
 	}
@@ -113,7 +113,7 @@ class PageViewController: UITableViewController {
 		tableSections.removeAll(keepingCapacity: false)
 
 		if animation != .none {
-			let allSections = NSIndexSet(indexesIn: NSRange(location: 0, length: tableSections.count))
+			let allSections = IndexSet(integersIn: 0..<tableSections.count)
 			self.tableView.deleteSections(allSections, with: animation)
 		}
 	}
@@ -157,7 +157,7 @@ class PageViewController: UITableViewController {
 			}
 
 			// Add row to table
-			let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+			let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
 			self.tableView.insertRows(at: [indexPath], with: animation)
 		}
 	}
@@ -168,7 +168,7 @@ class PageViewController: UITableViewController {
 				tableSections[sectionIndex].remove(at: rowIndex)
 
 				if animation != .none {
-					let indexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+					let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
 					self.tableView.deleteRows(at: [indexPath], with: animation)
 				}
 			}
@@ -189,16 +189,16 @@ class PageViewController: UITableViewController {
 		return nil
 	}
 
-	override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: NSIndexPath) -> Bool {
+	override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
 		return false
 	}
 
-	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
 		return .none
 	}
 
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: NSIndexPath) -> UITableViewCell {
-		let description = cellDescriptionForRow(indexPath.row, inSection: indexPath.section)!
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let description = cellDescriptionForRow((indexPath as IndexPath).row, inSection: (indexPath as IndexPath).section)!
 
 		let cellClass = description.cellClass
 		let cell = tableView.dequeueReusableCell(withIdentifier: description.cellClass.reuseIdentifier) as? PageCell ?? cellClass.init()

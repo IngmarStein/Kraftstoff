@@ -48,7 +48,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		showPicker(false)
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of picker labels
@@ -77,7 +77,6 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 
 	// MARK: - UIPickerViewDataSource
 
-	@objc(numberOfComponentsInPickerView:)
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
@@ -104,10 +103,10 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		return self.pickerLabels[row]
 	}
 
-	@objc(pickerView:viewForRow:forComponent:reusingView:) func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
-		label.font = UIFont.applicationFontForStyle(textStyle: self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
+		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
 		label.frame = CGRect(x: 0.0, y: 0.0, width: PickerViewCellWidth-20.0, height: PickerViewCellHeight)
 		label.backgroundColor = UIColor.clear()
 

@@ -11,7 +11,7 @@ import UIKit
 final class DateEditTableCell: EditableProxyPageCell {
 
 	private var valueTimestamp: String?
-	private var dateFormatter: NSDateFormatter!
+	private var dateFormatter: DateFormatter!
 	private var autoRefreshedDate = false
 	private var datePicker: UIDatePicker
 
@@ -34,9 +34,9 @@ final class DateEditTableCell: EditableProxyPageCell {
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 
-		NSNotificationCenter.default().addObserver(self,
+		NotificationCenter.default().addObserver(self,
 												selector:#selector(DateEditTableCell.significantTimeChange(_:)),
-													name:UIApplicationSignificantTimeChangeNotification,
+													name:NSNotification.Name.UIApplicationSignificantTimeChange,
 												object:nil)
 	}
 
@@ -60,51 +60,51 @@ final class DateEditTableCell: EditableProxyPageCell {
 		self.textFieldProxy.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
 
 		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
-		self.dateFormatter     = dictionary["formatter"] as! NSDateFormatter
+		self.dateFormatter     = dictionary["formatter"] as! DateFormatter
 		self.autoRefreshedDate = dictionary["autorefresh"] as? Bool ?? false
 
-		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate
-		self.textFieldProxy.text = value.flatMap { self.dateFormatter.string(from: $0) } ?? ""
+		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date
+		self.textFieldProxy.text = value.flatMap { self.dateFormatter.string(from: $0 as Date) } ?? ""
 		updateTextFieldColorForValue(value)
 	}
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 
 	func significantTimeChange(_ object: AnyObject) {
 		if let timestamp = self.valueTimestamp {
-			self.delegate.valueChanged(NSDate.distantPast(), identifier:timestamp)
+			self.delegate.valueChanged(Date.distantPast, identifier:timestamp)
 		}
 
 		refreshDatePickerWithDate(nil)
 	}
 
 	func datePickerValueChanged(_ sender: UIDatePicker) {
-		let selectedDate = NSDate.dateWithoutSeconds(date: sender.date)
+		let selectedDate = Date.dateWithoutSeconds(sender.date)
 
-		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate where !dateValue.isEqual(to: selectedDate) {
+		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date where dateValue != selectedDate {
 			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier:self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {
-				self.delegate.valueChanged(NSDate(), identifier:timestamp)
+				self.delegate.valueChanged(Date(), identifier:timestamp)
 			}
 			updateTextFieldColorForValue(selectedDate)
 		}
 	}
 
-	private func refreshDatePickerWithDate(_ date: NSDate?) {
-		let now = NSDate()
+	private func refreshDatePickerWithDate(_ date: Date?) {
+		let now = Date()
 
 		// If not specified get the date to be selected from the delegate
-		let effectiveDate = (date ?? self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDate) ?? now
+		let effectiveDate = (date ?? self.delegate.valueForIdentifier(self.valueIdentifier) as? Date) ?? now
 
-		datePicker.maximumDate = NSDate.dateWithoutSeconds(date: now)
-		datePicker.setDate(NSDate.dateWithoutSeconds(date: effectiveDate), animated:false)
+		datePicker.maximumDate = Date.dateWithoutSeconds(now)
+		datePicker.setDate(Date.dateWithoutSeconds(effectiveDate), animated:false)
 
 		// Immediate update when we are the first responder and notify delegate about new value too
 		datePickerValueChanged(datePicker)
@@ -118,11 +118,11 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		// Optional: update selected value to current time when no change was done in the last 5 minutes
-		var selectedDate: NSDate?
+		var selectedDate: Date?
 
 		if self.autoRefreshedDate {
-			let now = NSDate()
-			if let timestamp = self.valueTimestamp, lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? NSDate {
+			let now = Date()
+			if let timestamp = self.valueTimestamp, lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? Date {
 				let noChangeInterval = now.timeIntervalSince(lastChangeDate)
 				if noChangeInterval >= 300 || noChangeInterval < 0 {
 					selectedDate = now

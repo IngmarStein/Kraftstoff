@@ -14,7 +14,7 @@ class PageCell: UITableViewCell {
 	}
 
 	required init() {
-		super.init(style: .`default`, reuseIdentifier: self.dynamicType.reuseIdentifier)
+		super.init(style: .default, reuseIdentifier: self.dynamicType.reuseIdentifier)
 
 		self.detailTextLabel?.isHidden = true
 	}
@@ -23,7 +23,7 @@ class PageCell: UITableViewCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		// Overridepoint for subclasses
 	}
 

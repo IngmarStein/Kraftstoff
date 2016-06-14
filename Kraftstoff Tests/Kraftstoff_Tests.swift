@@ -15,7 +15,7 @@ class KraftstoffTests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!
 
 	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
-		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [NSBundle.main()])!
+		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main()])!
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		do {
@@ -39,11 +39,11 @@ class KraftstoffTests: XCTestCase {
         super.tearDown()
     }
 
-	private func testRoundtrip(language: String) {
+	private func testRoundtrip(_ language: String) {
 		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
 
 		car.order = 0
-		car.timestamp = NSDate()
+		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
 		car.ksOdometerUnit = .kilometer
@@ -51,22 +51,22 @@ class KraftstoffTests: XCTestCase {
 		car.ksFuelUnit = .liter
 		car.ksFuelConsumptionUnit = .litersPer100km
 
-		DemoData.addDemoEvents(car: car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
 		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
 			dateMatches: true,
 			inManagedObjectContext: managedObjectContext),
-			inManagedObjectContext: managedObjectContext) as! [FuelEvent]
+			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car, language: language)
 
 		var numCars   = 0
 		var numEvents = 0
-		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let importer = CSVImporter()
-		let success = importer.`import`(csv: csvString,
+		let success = importer.`import`(csvString,
 			detectedCars: &numCars,
 			detectedEvents: &numEvents,
 			sourceURL: url,
@@ -79,7 +79,7 @@ class KraftstoffTests: XCTestCase {
 
 	func testLanguages() {
 		for language in ["en", "de", "fr"] {
-			testRoundtrip(language: language)
+			testRoundtrip(language)
 		}
 	}
 
@@ -87,7 +87,7 @@ class KraftstoffTests: XCTestCase {
 		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
 
 		car.order = 0
-		car.timestamp = NSDate()
+		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
 		car.ksOdometerUnit = .kilometer
@@ -95,13 +95,13 @@ class KraftstoffTests: XCTestCase {
 		car.ksFuelUnit = .liter
 		car.ksFuelConsumptionUnit = .litersPer100km
 
-		DemoData.addDemoEvents(car: car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
 		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
 			dateMatches: true,
 			inManagedObjectContext: managedObjectContext),
-			inManagedObjectContext: managedObjectContext) as! [FuelEvent]
+			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car)
 
@@ -113,10 +113,10 @@ class KraftstoffTests: XCTestCase {
 		let importer = CSVImporter()
 		var numCars   = 0
 		var numEvents = 0
-		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let CSVString = "yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"
-		let success = importer.`import`(csv: CSVString,
+		let success = importer.`import`(CSVString,
 			detectedCars: &numCars,
 			detectedEvents: &numEvents,
 			sourceURL: url,

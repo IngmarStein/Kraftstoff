@@ -23,7 +23,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	// Coordinates for the content area
 	let StatisticsHeight = CGFloat(214.0)
-	let StatisticTransitionDuration = NSTimeInterval(0.3)
+	let StatisticTransitionDuration = TimeInterval(0.3)
 
 	@IBOutlet weak var activityView: UIActivityIndicatorView!
 	@IBOutlet weak var leftLabel: UILabel!
@@ -69,11 +69,11 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		setupFonts()
-		NSNotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		NotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	deinit {
-		NSNotificationCenter.default().removeObserver(self)
+		NotificationCenter.default().removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
@@ -82,9 +82,9 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	private func setupFonts() {
-		let titleFont = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleCaption2)
-		let font = UIFont.lightApplicationFontForStyle(textStyle: UIFontTextStyleBody)
-		let fontSelected = UIFont.boldApplicationFontForStyle(textStyle: UIFontTextStyleBody)
+		let titleFont = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
+		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
+		let fontSelected = UIFont.boldApplicationFontForStyle(UIFontTextStyleBody)
 
 		self.leftLabel.font = titleFont
 		self.centerLabel.font = titleFont
@@ -95,8 +95,8 @@ class FuelStatisticsViewController: UIViewController {
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
-				let label = NSAttributedString(string:text, attributes:labelAttributes)
-				let labelSelected = NSAttributedString(string:text, attributes: labelSelectedAttributes)
+				let label = AttributedString(string:text, attributes:labelAttributes)
+				let labelSelected = AttributedString(string:text, attributes: labelSelectedAttributes)
 				button.setAttributedTitle(label, for: [])
 				button.setAttributedTitle(label, for: .highlighted)
 				button.setAttributedTitle(labelSelected, for: .selected)
@@ -111,7 +111,7 @@ class FuelStatisticsViewController: UIViewController {
 		leftLabel.text  = selectedCar.name
 		rightLabel.text = ""
 
-		displayedNumberOfMonths = NSUserDefaults.standard().integer(forKey: "statisticTimeSpan")
+		displayedNumberOfMonths = UserDefaults.standard().integer(forKey: "statisticTimeSpan")
 	}
 
 	// MARK: - View Rotation
@@ -166,26 +166,26 @@ class FuelStatisticsViewController: UIViewController {
 
 				// Fetch some young events to get the most recent fillup date
 				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
-																									  beforeDate:NSDate(),
-																									 dateMatches:true,
-																						  inManagedObjectContext:sampleContext),
+																									  beforeDate: Date(),
+																									 dateMatches: true,
+																						  inManagedObjectContext: sampleContext),
 												 inManagedObjectContext:sampleContext)
 
-				var recentFillupDate = NSDate()
+				var recentFillupDate = Date()
 
 				if recentEvents.count > 0 {
-					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext:sampleContext) as? FuelEvent {
+					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext: sampleContext) as? FuelEvent {
 						recentFillupDate = recentEvent.timestamp
 					}
 				}
 
 				// Fetch events for the selected time period
-				let samplingStart = NSDate.dateWithOffsetInMonths(numberOfMonths: -numberOfMonths, fromDate:recentFillupDate)
+				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
 				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
-																										  afterDate:samplingStart,
-																										dateMatches:true,
-																							 inManagedObjectContext:sampleContext),
-													inManagedObjectContext:sampleContext) as! [FuelEvent]
+																										  afterDate: samplingStart,
+																										dateMatches: true,
+																							 inManagedObjectContext: sampleContext),
+													inManagedObjectContext:sampleContext)
 
 				// Compute statistics
 				let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
@@ -194,7 +194,7 @@ class FuelStatisticsViewController: UIViewController {
 											inManagedObjectContext:sampleContext)
 
 				// Schedule update of cache and display in main thread
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					if self.invalidationCounter == self.expectedCounter {
 						self.contentCache[numberOfMonths] = sampleData
 
@@ -222,7 +222,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NSNotificationCenter.default().post(name: "numberOfMonthsSelected", object: self, userInfo: ["span": sender.tag as NSNumber])
+		NotificationCenter.default().post(name: "numberOfMonthsSelected" as NSNotification.Name, object: self, userInfo: ["span": sender.tag as NSNumber])
 	}
 
 	// MARK: - Memory Management

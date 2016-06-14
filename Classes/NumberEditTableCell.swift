@@ -10,8 +10,8 @@ import UIKit
 
 final class NumberEditTableCell: EditablePageCell {
 
-	var numberFormatter: NSNumberFormatter!
-	var alternateNumberFormatter: NSNumberFormatter?
+	var numberFormatter: NumberFormatter!
+	var alternateNumberFormatter: NumberFormatter?
 	var textFieldSuffix: String?
 
 	required init() {
@@ -34,12 +34,12 @@ final class NumberEditTableCell: EditablePageCell {
 		self.textField.textColor = valid ? UIColor.black() : invalidTextColor
 	}
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.textFieldSuffix          = dictionary["suffix"] as? String
-		self.numberFormatter          = dictionary["formatter"] as? NSNumberFormatter
-		self.alternateNumberFormatter = dictionary["alternateFormatter"] as? NSNumberFormatter
+		self.numberFormatter          = dictionary["formatter"] as? NumberFormatter
+		self.alternateNumberFormatter = dictionary["alternateFormatter"] as? NumberFormatter
 
 		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? NSDecimalNumber
 		if let value = value {
@@ -60,7 +60,6 @@ final class NumberEditTableCell: EditablePageCell {
 	// MARK: - UITextFieldDelegate
 
 	// Implement special behavior for newly added characters
-	@objc(textField:shouldChangeCharactersInRange:replacementString:)
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
 		// Modify text
 		var text = textField.text!
