@@ -16,8 +16,6 @@ Runs all the tests
 fastlane ios beta
 ```
 Submit a new Beta Build to Apple TestFlight
-
-This will also make sure the profile is up to date
 ### ios deploy
 ```
 fastlane ios deploy
