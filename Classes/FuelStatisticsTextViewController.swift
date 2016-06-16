@@ -298,10 +298,10 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let consumptionUnitString = consumptionUnit.localizedString
 
             let odometerUnit = state.car.ksOdometerUnit
-            let odometerUnitString = odometerUnit.description
+            let odometerUnitString = Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)
 
 			let fuelUnit = state.car.ksFuelUnit
-            let fuelUnitString = fuelUnit.description
+            let fuelUnitString = Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)
 
             let numberOfDays = Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate)
 

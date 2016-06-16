@@ -22,7 +22,7 @@ final class CSVImporter {
 
 	// MARK: - Core Data Support
 
-	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: KSDistance, volumeUnit: KSVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
+	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
 		let newCar = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
 
@@ -236,16 +236,16 @@ final class CSVImporter {
 		// Analyse record headers
 		let first = records.first!
 
-		var distanceUnit = KSDistance.invalid
-		var odometerUnit = KSDistance.invalid
-		var volumeUnit   = KSVolume.invalid
+		var distanceUnit: UnitLength?
+		var odometerUnit: UnitLength?
+		var volumeUnit: UnitVolume?
 
 		let IDKey           = keyForCarID(first)
 		let dateKey         = keyForDate(first)
 		let timeKey         = keyForTime(first)
-		let distanceKey     = keyForDistance(first, unit:&distanceUnit)
-		let odometerKey     = keyForOdometer(first, unit:&odometerUnit)
-		let volumeKey       = keyForVolume(first, unit:&volumeUnit)
+		let distanceKey     = keyForDistance(first, unit: &distanceUnit)
+		let odometerKey     = keyForOdometer(first, unit: &odometerUnit)
+		let volumeKey       = keyForVolume(first, unit: &volumeUnit)
 		let volumeAmountKey = keyForVolume(first)
 		let volumeUnitKey   = keyForVolumeUnit(first)
 		let priceKey        = keyForPrice(first)
@@ -326,25 +326,25 @@ final class CSVImporter {
 					distance = scanNumberWithString(record[distanceKey])
 
 					if distance != nil {
-						distance = Units.kilometersForDistance(distance!, withUnit:distanceUnit)
+						distance = Units.kilometersForDistance(distance!, withUnit: distanceUnit!)
 					}
 				} else if let newOdometer = scanNumberWithString(record[odometerKey!]) {
-					let km = Units.kilometersForDistance(newOdometer, withUnit:odometerUnit)
+					let km = Units.kilometersForDistance(newOdometer, withUnit: odometerUnit!)
 					distance = km - odometer
 					odometer = km
 				}
 
 				var volume: NSDecimalNumber?
 
-				if volumeUnit != .invalid {
+				if volumeUnit != nil {
 					volume = scanNumberWithString(record[volumeKey!])
 					if volume != nil {
-						volume = Units.litersForVolume(volume!, withUnit:volumeUnit)
+						volume = Units.litersForVolume(volume!, withUnit: volumeUnit!)
 					}
 				} else {
 					volume = scanNumberWithString(record[volumeAmountKey!])
 					if volume != nil {
-						volume = Units.litersForVolume(volume!, withUnit:scanVolumeUnitWithString(record[volumeUnitKey!]))
+						volume = Units.litersForVolume(volume!, withUnit: scanVolumeUnitWithString(record[volumeUnitKey!]))
 					}
 				}
 
@@ -358,10 +358,10 @@ final class CSVImporter {
 						price = price!.dividing(by: volume!, withBehavior:Formatters.sharedPriceRoundingHandler)
 					}
 				} else if price != nil {
-					if volumeUnit != .invalid {
-						price = Units.pricePerLiter(price!, withUnit:volumeUnit)
+					if volumeUnit != nil {
+						price = Units.pricePerLiter(price!, withUnit: volumeUnit!)
 					} else {
-						price = Units.pricePerLiter(price!, withUnit:scanVolumeUnitWithString(record[volumeUnitKey!]))
+						price = Units.pricePerLiter(price!, withUnit: scanVolumeUnitWithString(record[volumeUnitKey!]))
 					}
 				}
 
@@ -384,16 +384,16 @@ final class CSVImporter {
 
 					// Add event for car
 					addEvent(car,
-									date:date,
-								distance:convertedDistance,
-								   price:price!,
-							  fuelVolume:volume,
-						   inheritedCost:inheritedCost,
-					   inheritedDistance:inheritedDistance,
-					 inheritedFuelVolume:inheritedFuelVolume,
-								filledUp:filledUp,
-								 comment:comment,
-							   inContext:managedObjectContext)
+									date: date,
+								distance: convertedDistance,
+								   price: price!,
+							  fuelVolume: volume,
+						   inheritedCost: inheritedCost,
+					   inheritedDistance: inheritedDistance,
+					 inheritedFuelVolume: inheritedFuelVolume,
+								filledUp: filledUp,
+								 comment: comment,
+							   inContext: managedObjectContext)
 
 					if filledUp {
 						inheritedCost       = zero
@@ -632,44 +632,44 @@ final class CSVImporter {
 		}
 	}
 
-	private func scanVolumeUnitWithString(_ string: String?) -> KSVolume {
-		guard let string = string else { return .liter }
+	private func scanVolumeUnitWithString(_ string: String?) -> UnitVolume {
+		guard let string = string else { return UnitVolume.liters }
 
 		let header = CSVParser.simplifyCSVHeaderName(string)
 
 		// Catch Tank Pro exports
 		if header == "L" {
-			return .liter
+			return .liters
 		}
 
 		if header == "G" {
 			// TankPro seems to export both gallons simply as "G" => search locale for feasible guess
-			if Units.volumeUnitFromLocale == .galUS {
-				return .galUS
+			if Units.volumeUnitFromLocale == UnitVolume.gallons {
+				return .gallons
 			} else {
-				return .galUK
+				return .imperialGallons
 			}
 		}
 
 		// Catch some other forms of gallons
 		if header.range(of: "GAL") != nil {
 			if header.range(of: "US") != nil {
-				return .galUS
+				return .gallons
 			}
 
 			if header.range(of: "UK") != nil {
-				return .galUK
+				return .imperialGallons
 			}
 
-			if Units.volumeUnitFromLocale == .galUS {
-				return .galUS
+			if Units.volumeUnitFromLocale == UnitVolume.gallons {
+				return .gallons
 			} else {
-				return .galUK
+				return .imperialGallons
 			}
 		}
 
 		// Liters as default
-		return .liter
+		return .liters
 	}
 
 	// MARK: - Interpretation of CSV Header Names
@@ -694,17 +694,17 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForDistance(_ record: CSVRecord, unit: inout KSDistance) -> String? {
+	private func keyForDistance(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
 		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] {
 			if record[key] != nil {
-				unit = .kilometer
+				unit = .kilometers
 				return key
 			}
 		}
 
 		for key in [ "MILES", "MEILEN" ] {
 			if record[key] != nil {
-				unit = .statuteMile
+				unit = .miles
 				return key
 			}
 		}
@@ -712,17 +712,17 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForOdometer(_ record: CSVRecord, unit: inout KSDistance) -> String? {
+	private func keyForOdometer(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
 		for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] {
 			if record[key] != nil {
-				unit = .kilometer
+				unit = .kilometers
 				return key
 			}
         }
 
 		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] {
 			if record[key] != nil {
-				unit = .statuteMile
+				unit = .miles
 				return key
 			}
         }
@@ -730,24 +730,24 @@ final class CSVImporter {
 		return nil
 	}
 
-	private func keyForVolume(_ record: CSVRecord, unit: inout KSVolume) -> String? {
+	private func keyForVolume(_ record: CSVRecord, unit: inout UnitVolume?) -> String? {
 		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] {
 			if record[key] != nil {
-				unit = .liter
+				unit = UnitVolume.liters
 				return key
 			}
         }
 
 		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
 			if record[key] != nil {
-				unit = .galUS
+				unit = UnitVolume.gallons
 				return key
 			}
 		}
 
 		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] {
 			if record[key] != nil {
-				unit = .galUK
+				unit = UnitVolume.imperialGallons
 				return key
 			}
         }

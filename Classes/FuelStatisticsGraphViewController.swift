@@ -830,13 +830,13 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = car.ksFuelUnit.description
+		let unit = Formatters.sharedShortMeasurementFormatter.string(from: car.ksFuelUnit)
 
 		return "\(prefix)%@/\(unit)"
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		return "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/\(car.ksFuelUnit.description)"
+		return "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/\(Formatters.sharedShortMeasurementFormatter.string(from: car.ksFuelUnit))"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
@@ -863,7 +863,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
-		if distanceUnit.isMetric {
+		if distanceUnit == UnitLength.kilometers {
 			return Formatters.sharedCurrencyFormatter
 		} else {
 			return Formatters.sharedDistanceFormatter
@@ -872,7 +872,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		if car.ksOdometerUnit.isMetric {
+		if car.ksOdometerUnit == UnitLength.kilometers {
 			return "\(prefix)%@/100km"
 		} else {
 			let currencySymbol = Formatters.sharedCurrencyFormatter.currencySymbol!
@@ -883,13 +883,13 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	func noAverageStringForCar(_ car: Car) -> String {
 		let distanceUnit = car.ksOdometerUnit
 
-		return distanceUnit.isMetric ? "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.sharedCurrencyFormatter.currencySymbol!)"
+		return distanceUnit == UnitLength.kilometers ? "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.sharedCurrencyFormatter.currencySymbol!)"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
-		if distanceUnit.isMetric {
+		if distanceUnit == UnitLength.kilometers {
 			return Formatters.sharedAxisCurrencyFormatter
 		} else {
 			return Formatters.sharedDistanceFormatter
@@ -914,7 +914,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 			return CGFloat.nan
 		}
 
-		if distanceUnit.isMetric {
+		if distanceUnit == UnitLength.kilometers {
 			return CGFloat((cost << 2).dividing(by: distance, withBehavior: handler).floatValue)
 		} else {
 			return CGFloat(distance.dividing(by: Units.kilometersPerStatuteMile).dividing(by: cost, withBehavior: handler).floatValue)

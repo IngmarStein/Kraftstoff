@@ -23,12 +23,12 @@ final class Car: NSManagedObject {
     @NSManaged var numberPlate: String
     @NSManaged var fuelEvents: NSSet
 
-	var ksFuelUnit: KSVolume {
+	var ksFuelUnit: UnitVolume {
 		get {
-			return KSVolume(rawValue: fuelUnit)!
+			return UnitVolume.fromPersistentId(fuelUnit)
 		}
 		set {
-			fuelUnit = newValue.rawValue
+			fuelUnit = newValue.persistentId
 		}
 	}
 
@@ -41,12 +41,12 @@ final class Car: NSManagedObject {
 		}
 	}
 
-	var ksOdometerUnit: KSDistance {
+	var ksOdometerUnit: UnitLength {
 		get {
-			return KSDistance(rawValue: odometerUnit)!
+			return UnitLength.fromPersistentId(odometerUnit)
 		}
 		set {
-			odometerUnit = newValue.rawValue
+			odometerUnit = newValue.persistentId
 		}
 	}
 }

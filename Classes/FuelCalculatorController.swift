@@ -222,8 +222,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Conversion units
-		let odometerUnit: KSDistance
-		let fuelUnit: KSVolume
+		let odometerUnit: UnitLength
+		let fuelUnit: UnitVolume
 		let consumptionUnit: KSFuelConsumption
 
 		if let car = self.car {
@@ -260,8 +260,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	}
 
 	private func createDataRows(_ rowMask: FuelCalculatorDataRow, withAnimation animation: UITableViewRowAnimation) {
-		let odometerUnit: KSDistance
-		let fuelUnit: KSVolume
+		let odometerUnit: UnitLength
+		let fuelUnit: UnitVolume
 
 		if let car = self.car {
 			odometerUnit = car.ksOdometerUnit
@@ -282,7 +282,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
 				   cellData:["label": NSLocalizedString("Distance", comment: ""),
-                             "suffix": " ".appending(odometerUnit.description),
+                             "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
                              "formatter": Formatters.sharedDistanceFormatter,
                              "valueIdentifier": "distance"],
               withAnimation:animation)
@@ -312,8 +312,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
                    cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
-                             "suffix": " ".appending(fuelUnit.description),
-                             "formatter": fuelUnit.isMetric
+                             "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
+                             "formatter": fuelUnit == UnitVolume.liters
                                                 ? Formatters.sharedFuelVolumeFormatter
                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
                              "valueIdentifier": "fuelVolume"],
@@ -436,7 +436,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// Update the tableview
 		let odoChanged = oldCar == nil || oldCar!.odometerUnit != self.car!.odometerUnit
 
-		let fuelChanged = oldCar == nil || oldCar!.ksFuelUnit.isMetric != self.car!.ksFuelUnit.isMetric
+		let fuelChanged = oldCar == nil || (oldCar!.ksFuelUnit == UnitVolume.liters) != (self.car!.ksFuelUnit == UnitVolume.liters)
 
 		var count = 0
 
@@ -695,9 +695,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let distanceFormatter = Formatters.sharedDistanceFormatter
 
-		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!) \(odometerUnit.description)"
+		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit))!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
 
-		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!) \(odometerUnit.description)"
+		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
 
 		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,

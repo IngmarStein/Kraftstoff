@@ -9,6 +9,13 @@
 import UIKit
 
 final class Formatters {
+
+	static let sharedShortMeasurementFormatter: MeasurementFormatter = {
+		let measurementFormatter = MeasurementFormatter()
+		measurementFormatter.unitStyle = .short
+		return measurementFormatter
+	}()
+
 	static let sharedLongDateFormatter: DateFormatter = {
 		let dateFormatter = DateFormatter()
 		dateFormatter.timeStyle = .shortStyle

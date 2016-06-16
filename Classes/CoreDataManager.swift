@@ -337,7 +337,7 @@ final class CoreDataManager {
 	}
 
 	static func containsEventWithCar(_ car: Car, andDate date: Date, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
-		let fetchRequest = NSFetchRequest<FuelEvent>()
+		let fetchRequest = FuelEvent.fetchRequest()
 
 		// Entity name
 		let entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)

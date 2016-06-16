@@ -46,9 +46,9 @@ class KraftstoffTests: XCTestCase {
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .kilometer
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.ksFuelUnit = .liter
+		car.ksFuelUnit = .liters
 		car.ksFuelConsumptionUnit = .litersPer100km
 
 		DemoData.addDemoEvents(car, inContext: managedObjectContext)
@@ -90,9 +90,9 @@ class KraftstoffTests: XCTestCase {
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .kilometer
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.ksFuelUnit = .liter
+		car.ksFuelUnit = .liters
 		car.ksFuelConsumptionUnit = .litersPer100km
 
 		DemoData.addDemoEvents(car, inContext: managedObjectContext)

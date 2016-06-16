@@ -341,7 +341,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection:0,
               cellClass:NumberEditTableCell.self,
 			   cellData:["label": NSLocalizedString("Distance", comment: ""),
-                         "suffix": " ".appending(odometerUnit.description),
+			             "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
                          "formatter": Formatters.sharedDistanceFormatter,
                          "valueIdentifier": "distance"],
           withAnimation:animation)
@@ -361,8 +361,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection:0,
               cellClass:NumberEditTableCell.self,
                cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
-                         "suffix": " ".appending(fuelUnit.description),
-                         "formatter": fuelUnit.isMetric ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
+                         "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
+                         "formatter": fuelUnit == UnitVolume.liters ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],
           withAnimation:animation)
 

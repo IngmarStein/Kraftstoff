@@ -486,13 +486,13 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// Distance
 		let convertedDistance: NSDecimalNumber
 
-		if odometerUnit == .kilometer {
+		if odometerUnit == UnitLength.kilometers {
 			convertedDistance = distance
 		} else {
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = "\(Formatters.sharedDistanceFormatter.string(from: convertedDistance)!) \(odometerUnit.description)"
+		tableCell.botLeftLabel.text = "\(Formatters.sharedDistanceFormatter.string(from: convertedDistance)!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price

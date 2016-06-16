@@ -135,20 +135,21 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
-		let suffix = " ".appending(KSDistance(rawValue: self.odometerUnit!.int32Value)!.description)
+		let unit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+		let suffix = " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
 			self.odometer = NSDecimalNumber.zero()
 		}
 
 		addRowAtIndex(rowIndex: 3,
-              inSection:0,
-              cellClass:NumberEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Reading", comment: ""),
-                         "suffix":          suffix,
-                         "formatter":       Formatters.sharedDistanceFormatter,
-                         "valueIdentifier": "odometer"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: NumberEditTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Odometer Reading", comment: ""),
+                          "suffix":          suffix,
+                          "formatter":       Formatters.sharedDistanceFormatter,
+                          "valueIdentifier": "odometer"],
+          withAnimation: animation)
 	}
 
 	private func createTableContents() {
@@ -178,11 +179,14 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
           withAnimation: .none)
 
 		if self.odometerUnit == nil {
-			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.rawValue)
+			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.persistentId)
 		}
 
-		let odometerUnitPickerLabels = [Units.odometerUnitDescription(.kilometer,   pluralization:true),
-										Units.odometerUnitDescription(.statuteMile, pluralization:true)]
+		let measurementFormatter = MeasurementFormatter()
+		measurementFormatter.unitStyle = .long
+
+		let odometerUnitPickerLabels = [measurementFormatter.string(from: UnitLength.kilometers).capitalized,
+										measurementFormatter.string(from: UnitLength.miles).capitalized]
 
 		addRowAtIndex(rowIndex: 2,
               inSection:0,
@@ -195,12 +199,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		createOdometerRowWithAnimation(.none)
 
 		if self.fuelUnit == nil {
-			self.fuelUnit = NSNumber(value: Units.volumeUnitFromLocale.rawValue)
+			self.fuelUnit = NSNumber(value: Units.volumeUnitFromLocale.persistentId)
 		}
 
-		let fuelUnitPickerLabels = [Units.fuelUnitDescription(.liter, discernGallons:true, pluralization:true),
-									Units.fuelUnitDescription(.galUS, discernGallons:true, pluralization:true),
-									Units.fuelUnitDescription(.galUK, discernGallons:true, pluralization:true)]
+		let fuelUnitPickerLabels = [measurementFormatter.string(from: UnitVolume.liters),
+		                            measurementFormatter.string(from: UnitVolume.gallons),
+		                            measurementFormatter.string(from: UnitVolume.imperialGallons)]
 
 		addRowAtIndex(rowIndex: 4,
               inSection:0,
@@ -401,14 +405,14 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = KSDistance(rawValue: self.odometerUnit!.int32Value)!
-				let newUnit = KSDistance(rawValue: numberValue.int32Value)!
+				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+				let newUnit = UnitLength.fromPersistentId(numberValue.int32Value)
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue
-					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit:oldUnit), withUnit:newUnit)
+					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit: oldUnit), withUnit:newUnit)
 
-					recreateOdometerRowWithAnimation(newUnit == .kilometer ? .left : .right)
+					recreateOdometerRowWithAnimation(newUnit == UnitLength.kilometers ? .left : .right)
 				}
 			} else if valueIdentifier == "fuelUnit" {
 				self.fuelUnit = numberValue
