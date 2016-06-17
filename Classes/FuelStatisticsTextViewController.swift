@@ -127,7 +127,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 
 		// Compute average consumption
-		if state.totalDistance != NSDecimalNumber.zero() && state.totalFuelVolume != NSDecimalNumber.zero() {
+		if state.totalDistance != .zero() && state.totalFuelVolume != .zero() {
 			state.avgConsumption = Units.consumptionForKilometers(state.totalDistance,
                                                                liters: state.totalFuelVolume,
                                                                inUnit: consumptionUnit)

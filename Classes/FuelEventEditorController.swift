@@ -528,7 +528,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber <= NSDecimalNumber.zero() {
+				if decimalNumber <= .zero() {
 					return false
 				}
 			}

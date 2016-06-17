@@ -194,7 +194,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			state.hMarkCount = 0
 			state.vMarkCount = 0
 
-			return valCount == 0 ? CGFloat.nan : valAverage
+			return valCount == 0 ? .nan : valAverage
 		}
 
 		valAverage /= CGFloat(valCount)
@@ -806,7 +806,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		if !fuelEvent.filledUp {
-			return CGFloat.nan
+			return .nan
 		}
 
 		let consumptionUnit = car.ksFuelConsumptionUnit
@@ -846,8 +846,8 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		let price = fuelEvent.price
 
-		if price == NSDecimalNumber.zero() {
-			return CGFloat.nan
+		if price == .zero() {
+			return .nan
 		}
 
 		return CGFloat(Units.pricePerUnit(price, withUnit: car.ksFuelUnit).floatValue)
@@ -898,7 +898,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		if !fuelEvent.filledUp {
-			return CGFloat.nan
+			return .nan
 		}
 
 		let handler = Formatters.sharedConsumptionRoundingHandler
@@ -910,8 +910,8 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		distance = distance + fuelEvent.inheritedDistance
 		cost     = cost + fuelEvent.inheritedCost
 
-		if cost == NSDecimalNumber.zero() {
-			return CGFloat.nan
+		if cost == .zero() {
+			return .nan
 		}
 
 		if distanceUnit == UnitLength.kilometers {

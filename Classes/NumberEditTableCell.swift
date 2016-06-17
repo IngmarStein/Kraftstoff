@@ -75,7 +75,7 @@ final class NumberEditTableCell: EditablePageCell {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string: string)
 
-				if digit == NSDecimalNumber.notANumber() {
+				if digit == .notANumber() {
 					return false
 				}
 
@@ -94,7 +94,7 @@ final class NumberEditTableCell: EditablePageCell {
 				return false
 			}
 
-			if value < NSDecimalNumber.zero() {
+			if value < .zero() {
 				return false
 			}
 		} else if range.location >= text.characters.count - 1 {
@@ -149,7 +149,7 @@ final class NumberEditTableCell: EditablePageCell {
 		}
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
-			let value = alternateNumberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()
+			let value = alternateNumberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero()
 			textField.text = numberFormatter.string(from: value)
 			self.delegate.valueChanged(value, identifier: self.valueIdentifier)
 			updateTextFieldColorForValue(value)
@@ -160,7 +160,7 @@ final class NumberEditTableCell: EditablePageCell {
 	override func textFieldDidEndEditing(_ textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
-		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? NSDecimalNumber.zero()
+		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero()
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
 			textField.text = alternateNumberFormatter.string(from: value)

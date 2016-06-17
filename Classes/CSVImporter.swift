@@ -196,21 +196,21 @@ final class CSVImporter {
 	private func guessDistanceForParsedDistance(_ distance: NSDecimalNumber, andFuelVolume liters: NSDecimalNumber) -> NSDecimalNumber {
 		let convDistance = distance << 3
 
-		if liters <= NSDecimalNumber.zero() {
+		if liters <= .zero() {
 			return distance
 		}
 
 		// consumption with parsed distance
 		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100km)
 
-		if rawConsumption == NSDecimalNumber.notANumber() {
+		if rawConsumption == .notANumber() {
 			return distance
 		}
 
 		// consumption with increased distance
 		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100km)
 
-		if convConsumption == NSDecimalNumber.notANumber() {
+		if convConsumption == .notANumber() {
 			return distance
 		}
 
@@ -352,7 +352,7 @@ final class CSVImporter {
 
 				if isTankProImport {
 					// TankPro stores total costs not the price per unit...
-					if volume == nil || volume == NSDecimalNumber.zero() {
+					if volume == nil || volume == .zero() {
 						price = NSDecimalNumber.zero()
 					} else {
 						price = price!.dividing(by: volume!, withBehavior:Formatters.sharedPriceRoundingHandler)

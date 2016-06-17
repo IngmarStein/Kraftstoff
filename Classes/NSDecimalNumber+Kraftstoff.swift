@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let minusOne = NSDecimalNumber(mantissa: 1, exponent: 0, isNegative: true)
+
 // MARK: - Comparable
 
 extension NSDecimalNumber: Comparable {}
@@ -23,7 +25,7 @@ public func < (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
 // MARK: - Arithmetic Operators
 
 public prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
-	return NSDecimalNumber.zero().subtracting(value)
+	return minusOne.multiplying(by: value)
 }
 
 public func + (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {

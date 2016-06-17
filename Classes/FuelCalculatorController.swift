@@ -598,7 +598,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
+		} else if (distance == nil || distance! == .zero()) || (fuelVolume == nil || fuelVolume! == .zero()) {
 			saveValid = false
 		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate:self.date!) {
 			saveValid = false
@@ -615,7 +615,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		guard let car = self.car else { return false }
 		guard let distance = self.distance else { return false }
 
-		guard car.odometer != NSDecimalNumber.notANumber() else { return false }
+		guard car.odometer != .notANumber() else { return false }
 
 		// 1.) entered "distance" must be larger than car odometer
 		let odometerUnit = car.ksOdometerUnit
@@ -623,14 +623,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
 		let convDistance = rawDistance - car.odometer
     
-		if convDistance <= NSDecimalNumber.zero() {
+		if convDistance <= .zero() {
 			return false
 		}
     
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
     
-		if liters <= NSDecimalNumber.zero() {
+		if liters <= .zero() {
 			return false
 		}
 
@@ -638,7 +638,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100km)
 
-		if rawConsumption == NSDecimalNumber.notANumber() {
+		if rawConsumption == .notANumber() {
 			return false
 		}
 
@@ -646,7 +646,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100km)
     
-		if convConsumption == NSDecimalNumber.notANumber() {
+		if convConsumption == .notANumber() {
 			return false
 		}
 
@@ -657,12 +657,12 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
-		if avgConsumption == NSDecimalNumber.notANumber() {
-			loBound = NSDecimalNumber(mantissa: 2, exponent:0, isNegative:false)
-			hiBound = NSDecimalNumber(mantissa:20, exponent:0, isNegative:false)
+		if avgConsumption == .notANumber() {
+			loBound = NSDecimalNumber(mantissa:  2, exponent: 0, isNegative: false)
+			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
 		} else {
-			loBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent: -1, isNegative:false)
-			hiBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent:  0, isNegative:false)
+			loBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: -1, isNegative: false)
+			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent:  0, isNegative: false)
 		}
     
 		// conversion only when rawConsumption <= lowerBound
@@ -677,8 +677,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
     
 		// 3.) the event must be the youngest one
 		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
-																								afterDate:self.date!,
-																							  dateMatches:false))
+																								afterDate: self.date!,
+																							  dateMatches: false))
     
 		if youngerEvents.count > 0 {
 			return false
@@ -840,7 +840,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber <= NSDecimalNumber.zero() {
+				if decimalNumber <= .zero() {
 					return false
 				}
 			}

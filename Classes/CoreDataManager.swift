@@ -496,10 +496,10 @@ final class CoreDataManager {
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-                                                                                  afterDate:event.timestamp,
-                                                                                dateMatches:false,
-                                                                     inManagedObjectContext:moc),
-                                   inManagedObjectContext:moc)
+                                                                                  afterDate: event.timestamp,
+                                                                                dateMatches: false,
+                                                                     inManagedObjectContext: moc),
+                                   inManagedObjectContext: moc)
 
 		var row = youngerEvents.count
 		if row > 0 {

@@ -178,7 +178,7 @@ final class Units {
         case UnitVolume.gallons: return volume * litersPerUSGallon
         case UnitVolume.imperialGallons: return volume * litersPerImperialGallon
         case UnitVolume.liters: return volume
-		default: return NSDecimalNumber.zero()
+		default: return .zero()
 		}
 	}
 
@@ -187,7 +187,7 @@ final class Units {
         case UnitVolume.gallons: return liters / litersPerUSGallon
         case UnitVolume.imperialGallons: return liters / litersPerImperialGallon
         case UnitVolume.liters: return liters
-		default: return NSDecimalNumber.zero()
+		default: return .zero()
 		}
 	}
 
@@ -212,7 +212,7 @@ final class Units {
         case UnitVolume.gallons: return price / litersPerUSGallon
         case UnitVolume.imperialGallons: return price / litersPerImperialGallon
         case UnitVolume.liters: return price
-		default: return NSDecimalNumber.zero()
+		default: return .zero()
 		}
 	}
 
@@ -221,7 +221,7 @@ final class Units {
         case UnitVolume.gallons: return literPrice * litersPerUSGallon
         case UnitVolume.imperialGallons: return literPrice * litersPerImperialGallon
         case UnitVolume.liters: return literPrice
-		default: return NSDecimalNumber.zero()
+		default: return .zero()
 		}
 	}
 
@@ -230,12 +230,12 @@ final class Units {
 	static func consumptionForKilometers(_ kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: KSFuelConsumption) -> NSDecimalNumber {
 		let handler = Formatters.sharedConsumptionRoundingHandler
 
-		if kilometers <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notANumber()
+		if kilometers <= .zero() {
+			return .notANumber()
 		}
 
-		if liters <= NSDecimalNumber.zero() {
-			return NSDecimalNumber.notANumber()
+		if liters <= .zero() {
+			return .notANumber()
 		}
 
 		if unit.isEfficiency {

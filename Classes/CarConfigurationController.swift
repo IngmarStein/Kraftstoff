@@ -139,7 +139,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let suffix = " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
-			self.odometer = NSDecimalNumber.zero()
+			self.odometer = .zero()
 		}
 
 		addRowAtIndex(rowIndex: 3,
@@ -327,7 +327,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer! == NSDecimalNumber.zero() {
+			&& self.odometer! == .zero() {
 			showCancelSheet = false
 		}
 
