@@ -25,7 +25,7 @@ final class Car: NSManagedObject {
 
 	var ksFuelUnit: UnitVolume {
 		get {
-			return UnitVolume.fromPersistentId(fuelUnit)
+			return .fromPersistentId(fuelUnit)
 		}
 		set {
 			fuelUnit = newValue.persistentId
@@ -43,7 +43,7 @@ final class Car: NSManagedObject {
 
 	var ksOdometerUnit: UnitLength {
 		get {
-			return UnitLength.fromPersistentId(odometerUnit)
+			return .fromPersistentId(odometerUnit)
 		}
 		set {
 			odometerUnit = newValue.persistentId

@@ -633,7 +633,7 @@ final class CSVImporter {
 	}
 
 	private func scanVolumeUnitWithString(_ string: String?) -> UnitVolume {
-		guard let string = string else { return UnitVolume.liters }
+		guard let string = string else { return .liters }
 
 		let header = CSVParser.simplifyCSVHeaderName(string)
 
@@ -733,21 +733,21 @@ final class CSVImporter {
 	private func keyForVolume(_ record: CSVRecord, unit: inout UnitVolume?) -> String? {
 		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] {
 			if record[key] != nil {
-				unit = UnitVolume.liters
+				unit = .liters
 				return key
 			}
         }
 
 		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
 			if record[key] != nil {
-				unit = UnitVolume.gallons
+				unit = .gallons
 				return key
 			}
 		}
 
 		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] {
 			if record[key] != nil {
-				unit = UnitVolume.imperialGallons
+				unit = .imperialGallons
 				return key
 			}
         }
