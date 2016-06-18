@@ -24,7 +24,7 @@ final class CSVImporter {
 
 	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
-		let newCar = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
+		let newCar = Car(context: managedObjectContext)
 
 		newCar.order = Int32(order)
 		newCar.timestamp = Date()
@@ -39,7 +39,7 @@ final class CSVImporter {
 	}
 
 	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
-		let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: managedObjectContext) as! FuelEvent
+		let newEvent = FuelEvent(context: managedObjectContext)
 
 		newEvent.car = car
 		newEvent.timestamp = date

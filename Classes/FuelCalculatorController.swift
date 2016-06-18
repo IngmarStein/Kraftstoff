@@ -420,8 +420,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if animation == .none {
 			self.tableView?.reloadData()
 		} else {
-			self.tableView?.reloadSections(NSIndexSet(indexesIn: NSRange(location: 0, length: self.tableView.numberOfSections)) as IndexSet,
-                      with:animation)
+			self.tableView?.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections),
+                      with: animation)
 		}
 	}
 
@@ -522,7 +522,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
-		let cell = self.tableView.cellForRow(at: indexPath as IndexPath)!
+		let cell = self.tableView.cellForRow(at: indexPath)!
 		let field : UITextField?
 
 		if let carCell = cell as? CarTableCell {
@@ -552,7 +552,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	private func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let path = indexPath {
-			self.tableView.selectRow(at: path as IndexPath, animated:false, scrollPosition: .none)
+			self.tableView.selectRow(at: path, animated:false, scrollPosition: .none)
 			self.tableView(self.tableView, didSelectRowAt:path)
 		}
 	}
@@ -867,7 +867,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		let cell = tableView.cellForRow(at: indexPath as IndexPath)
+		let cell = tableView.cellForRow(at: indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
 			return nil
@@ -879,7 +879,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRow(at: indexPath as IndexPath, at: .middle, animated: true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
 	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

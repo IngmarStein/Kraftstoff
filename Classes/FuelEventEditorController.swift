@@ -186,7 +186,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - Mode Switching for Table Rows
 
 	private func reconfigureRowAtIndexPath(_ indexPath: IndexPath) {
-		if let cell = self.tableView.cellForRow(at: indexPath as IndexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
+		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
 			cell.configureForData(cellData,
                 viewController:self,
                      tableView:self.tableView,
@@ -402,7 +402,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
-		let cell = self.tableView.cellForRow(at: indexPath as IndexPath)!
+		let cell = self.tableView.cellForRow(at: indexPath)!
 		let field : UITextField?
 
 		if let carCell = cell as? CarTableCell {
@@ -432,7 +432,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	private func selectRowAtIndexPath(_ path: IndexPath?) {
 		if let path = path {
-			self.tableView.selectRow(at: path as IndexPath, animated:false, scrollPosition:.none)
+			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
 			self.tableView(self.tableView, didSelectRowAt:path)
 		}
 	}
@@ -546,7 +546,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		let cell = tableView.cellForRow(at: indexPath as IndexPath)
+		let cell = tableView.cellForRow(at: indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
 			return nil
@@ -557,7 +557,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRow(at: indexPath as IndexPath, at:.middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
 	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

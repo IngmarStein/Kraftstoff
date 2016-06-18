@@ -273,7 +273,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Programmatically Selecting Table Rows
 
 	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
-		let cell = tableView.cellForRow(at: indexPath as IndexPath)!
+		let cell = tableView.cellForRow(at: indexPath)!
 		let field: UITextField?
 
 		if let textCell = cell as? TextEditTableCell {
@@ -302,7 +302,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let indexPath = indexPath {
-			tableView.selectRow(at: indexPath as IndexPath, animated:true, scrollPosition: .middle)
+			tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
 			activateTextFieldAtIndexPath(indexPath)
 		}
 	}
@@ -428,7 +428,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRow(at: indexPath as IndexPath, at: .middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated:true)
 	}
 
 	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

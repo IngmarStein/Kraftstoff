@@ -198,7 +198,7 @@ class PageViewController: UITableViewController {
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let description = cellDescriptionForRow((indexPath as IndexPath).row, inSection: (indexPath as IndexPath).section)!
+		let description = cellDescriptionForRow(indexPath.row, inSection: indexPath.section)!
 
 		let cellClass = description.cellClass
 		let cell = tableView.dequeueReusableCell(withIdentifier: description.cellClass.reuseIdentifier) as? PageCell ?? cellClass.init()

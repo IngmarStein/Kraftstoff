@@ -12,15 +12,32 @@ import CoreData
 final class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext = {
-		let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
-		managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-		return managedObjectContext
+		let context = persistentContainer.viewContext
+		context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+		return context
 	}()
 
 	private static let managedObjectModel: NSManagedObjectModel = {
 		let modelPath = Bundle.main().pathForResource("Kraftstoffrechner", ofType:"momd")!
 		return NSManagedObjectModel(contentsOf:URL(fileURLWithPath: modelPath))!
+	}()
+
+	private static let persistentContainer: NSPersistentContainer = {
+		let container = NSPersistentContainer(name: "Fuel")
+		container.persistentStoreDescriptions = [ iCloudStoreDescription ]
+		container.loadPersistentStores { (storeDescription, error) in
+			if let error = error {
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
+				                                        message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
+				                                        preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
+					fatalError(error.localizedDescription)
+				}
+				alertController.addAction(defaultAction)
+				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
+			}
+		}
+		return container
 	}()
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
@@ -60,25 +77,6 @@ final class CoreDataManager {
 
 	static let sharedInstance = CoreDataManager()
 
-	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-
-		persistentStoreCoordinator.addPersistentStore(with: iCloudStoreDescription) { (description, error) in
-			if let error = error {
-				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
-														message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
-														preferredStyle: .alert)
-				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
-					fatalError(error.localizedDescription)
-				}
-				alertController.addAction(defaultAction)
-				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
-			}
-		}
-
-		return persistentStoreCoordinator
-	}()
-
 	// MARK: - Core Data Support
 
 	@discardableResult static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
@@ -117,7 +115,7 @@ final class CoreDataManager {
 		let objectURL = URL(string: identifier)!
 
 		if objectURL.scheme == "x-coredata" {
-			if let objectID = persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
+			if let objectID = persistentContainer.persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
 				return try? managedObjectContext.existingObject(with: objectID)
 			}
 		}
@@ -184,22 +182,22 @@ final class CoreDataManager {
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.storesWillChange(_:)),
 			name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange,
-			object: CoreDataManager.persistentStoreCoordinator)
+			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.storesDidChange(_:)),
 			name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange,
-			object: CoreDataManager.persistentStoreCoordinator)
+			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.persistentStoreDidImportUbiquitousContentChanges(_:)),
 			name: NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges,
-			object: CoreDataManager.persistentStoreCoordinator)
+			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 	}
 
 	private static func cleanupDetachedFuelEvents(_ moc : NSManagedObjectContext) {
 		let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
-		fetchRequest.entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)
+		fetchRequest.entity = FuelEvent.entity()
 		fetchRequest.predicate = Predicate(format: "car == nil")
 
 		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -247,7 +245,7 @@ final class CoreDataManager {
 		let fetchRequest = NSFetchRequest<Car>()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forEntityName: "car", in: moc)
+		let entity = Car.entity()
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = 32
 
@@ -266,7 +264,7 @@ final class CoreDataManager {
 		let fetchRequest = NSFetchRequest<FuelEvent>()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)
+		let entity = FuelEvent.entity()
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = fetchSize
 
@@ -343,7 +341,7 @@ final class CoreDataManager {
 		let fetchRequest = FuelEvent.fetchRequest()
 
 		// Entity name
-		let entity = NSEntityDescription.entity(forEntityName: "fuelEvent", in: moc)
+		let entity = FuelEvent.entity()
 		fetchRequest.entity = entity
 		fetchRequest.fetchBatchSize = 2
 
@@ -438,7 +436,7 @@ final class CoreDataManager {
 		}
 
 		// Create new managed object for this event
-		let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: moc) as! FuelEvent
+		let newEvent = FuelEvent(context: moc)
 
 		newEvent.car = car
 		newEvent.timestamp = date
@@ -575,7 +573,7 @@ final class CoreDataManager {
 			let deleteRequest = NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: entity))
 
 			do {
-				try persistentStoreCoordinator.execute(deleteRequest, with: managedObjectContext)
+				try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: managedObjectContext)
 			} catch let error as NSError {
 				print(error)
 			}

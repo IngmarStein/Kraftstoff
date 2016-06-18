@@ -582,25 +582,25 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
         case .insert:
-            self.tableView.insertSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
         case .delete:
-            self.tableView.deleteSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+            self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
 		case .move, .update:
-			self.tableView.reloadSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
 		}
 	}
 
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: AnyObject, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		switch type {
         case .insert:
-			tableView.insertRows(at: [newIndexPath! as IndexPath], with: .fade)
+			tableView.insertRows(at: [newIndexPath!], with: .fade)
         case .delete:
-			tableView.deleteRows(at: [indexPath! as IndexPath], with: .fade)
+			tableView.deleteRows(at: [indexPath!], with: .fade)
         case .move:
-            tableView.deleteRows(at: [indexPath! as IndexPath], with: .fade)
-            tableView.insertRows(at: [newIndexPath! as IndexPath], with: .fade)
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
         case .update:
-            tableView.reloadRows(at: [indexPath! as IndexPath], with: .automatic)
+            tableView.reloadRows(at: [indexPath!], with: .automatic)
 		}
 	}
 

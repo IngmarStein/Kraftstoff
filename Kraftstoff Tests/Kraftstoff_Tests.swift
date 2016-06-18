@@ -40,7 +40,7 @@ class KraftstoffTests: XCTestCase {
     }
 
 	private func testRoundtrip(_ language: String) {
-		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
+		let car = Car(context: managedObjectContext)
 
 		car.order = 0
 		car.timestamp = Date()
@@ -84,7 +84,7 @@ class KraftstoffTests: XCTestCase {
 	}
 
     func testCSVExport() {
-		let car = NSEntityDescription.insertNewObject(forEntityName: "car", into: managedObjectContext) as! Car
+		let car = Car(context: managedObjectContext)
 
 		car.order = 0
 		car.timestamp = Date()

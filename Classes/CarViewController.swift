@@ -261,7 +261,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			changeIsUserDriven = false
 
 			// Create a new instance of the entity managed by the fetched results controller.
-			let newManagedObject = NSEntityDescription.insertNewObject(forEntityName: "car", into: CoreDataManager.managedObjectContext) as! Car
+			let newManagedObject = Car(context: CoreDataManager.managedObjectContext)
 
 			newManagedObject.order = 0
 			newManagedObject.timestamp = Date()
@@ -619,11 +619,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
         case .insert:
-            self.tableView.insertSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
         case .delete:
-			self.tableView.deleteSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+			self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
 		case .move, .update:
-			self.tableView.reloadSections(NSIndexSet(index:sectionIndex) as IndexSet, with: .fade)
+			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
 		}
 	}
 
@@ -636,20 +636,20 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		switch type {
         case .insert:
 			if let newIndexPath = newIndexPath {
-				tableView.insertRows(at: [newIndexPath as IndexPath], with: .fade)
+				tableView.insertRows(at: [newIndexPath], with: .fade)
 			}
         case .delete:
 			if let indexPath = indexPath {
-				tableView.deleteRows(at: [indexPath as IndexPath], with: .fade)
+				tableView.deleteRows(at: [indexPath], with: .fade)
 			}
         case .move:
 			if let indexPath = indexPath, newIndexPath = newIndexPath where indexPath != newIndexPath {
-				tableView.deleteRows(at: [indexPath as IndexPath], with: .fade)
-				tableView.insertRows(at: [newIndexPath as IndexPath], with: .fade)
+				tableView.deleteRows(at: [indexPath], with: .fade)
+				tableView.insertRows(at: [newIndexPath], with: .fade)
 			}
         case .update:
 			if let indexPath = indexPath {
-				tableView.reloadRows(at: [indexPath as IndexPath], with: .automatic)
+				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}
 		}
 	}

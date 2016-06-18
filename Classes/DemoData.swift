@@ -135,7 +135,7 @@ final class DemoData {
 
 		autoreleasepool {
 			for item in demoData {
-				let newEvent = NSEntityDescription.insertNewObject(forEntityName: "fuelEvent", into: context) as NSManagedObject
+				let newEvent = FuelEvent(context: context)
 
 				let distance = NSDecimalNumber(mantissa: item.distance, exponent: -1, isNegative: false)
 				let fuelVolume = NSDecimalNumber(mantissa: item.fuelVolume, exponent: -2, isNegative: false)
