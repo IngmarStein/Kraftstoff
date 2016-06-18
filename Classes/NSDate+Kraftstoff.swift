@@ -37,7 +37,6 @@ extension Date {
 		return gregorianCalendar.date(from: noSecComponents)!
 	}
 
-
 	static func timeIntervalSinceBeginningOfDay(_ date: Date) -> TimeInterval {
 		let gregorianCalendar = Calendar(calendarIdentifier: Calendar.Identifier.gregorian)!
 		let timeOfDayComponents = gregorianCalendar.components(timeOfDayComponentMask, from: date)
@@ -56,4 +55,3 @@ extension Date {
 	}
 
 }
-

@@ -124,7 +124,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		super.decodeRestorableState(with: coder)
 
 		if let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRCarViewEditedObject) as? String {
-			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
+			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 
 		// -> openradar #13438788
@@ -424,7 +424,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject)
 
 		if deletedCarID == preferredCarID {
-			UserDefaults.standard().set("", forKey:"preferredCarID")
+			UserDefaults.standard().set("", forKey: "preferredCarID")
 		}
 
 		// Delete the managed object for the given index path

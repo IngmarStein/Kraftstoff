@@ -329,9 +329,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
 			if let selectedCar = selectedCarId {
-				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar) as? Car
+				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar)
 			} else if let preferredCar = UserDefaults.standard().string(forKey: "preferredCarID") {
-				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar) as? Car
+				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar)
 			}
 
 			if self.car == nil {

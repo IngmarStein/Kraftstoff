@@ -84,10 +84,10 @@ final class CoreDataManager {
 			do {
 				try context.save()
 			} catch let error as NSError {
-				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment: ""),
-					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
+					message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
 					preferredStyle: .alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .default) { _ in
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
@@ -111,12 +111,12 @@ final class CoreDataManager {
 		return object.objectID.uriRepresentation().absoluteString
 	}
 
-	static func managedObjectForModelIdentifier(_ identifier: String) -> NSManagedObject? {
+	static func managedObjectForModelIdentifier<ResultType: NSManagedObject>(_ identifier: String) -> ResultType? {
 		let objectURL = URL(string: identifier)!
 
 		if objectURL.scheme == "x-coredata" {
 			if let objectID = persistentContainer.persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
-				return try? managedObjectContext.existingObject(with: objectID)
+				return try? managedObjectContext.existingObject(with: objectID) as! ResultType
 			}
 		}
 

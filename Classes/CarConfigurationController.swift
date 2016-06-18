@@ -115,11 +115,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex) as? IndexPath
-		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
-		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit)
-		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit)
+		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRConfiguratorPreviousSelectionIndex) as? IndexPath
+		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey: kSRConfiguratorName) as? String
+		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey: kSRConfiguratorPlate) as? String
+		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey: kSRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey: kSRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 
