@@ -53,25 +53,25 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.title = NSLocalizedString("Cars", comment: "")
 		self.navigationItem.leftBarButtonItem = nil
 
-		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target:self, action:#selector(CarViewController.insertNewObject(_:)))
+		let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(CarViewController.insertNewObject(_:)))
 		rightBarButtonItem.accessibilityIdentifier = "add"
 		self.navigationItem.rightBarButtonItem = rightBarButtonItem
 
 		// Gesture recognizer for touch and hold
-		self.longPressRecognizer = UILongPressGestureRecognizer(target:self, action:#selector(CarViewController.handleLongPress(_:)))
+		self.longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(CarViewController.handleLongPress(_:)))
 		self.longPressRecognizer!.delegate = self
 
 		// Reset tint color
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Background image
-		let backgroundView = UIView(frame:CGRect.zero)
-		backgroundView.backgroundColor = UIColor(red:CGFloat(0.935), green:CGFloat(0.935), blue:CGFloat(0.956), alpha:CGFloat(1.0))
-		let backgroundImage = UIImageView(image:UIImage(named:"Pumps")!)
+		let backgroundView = UIView(frame: .zero)
+		backgroundView.backgroundColor = UIColor(red: CGFloat(0.935), green: CGFloat(0.935), blue: CGFloat(0.956), alpha: CGFloat(1.0))
+		let backgroundImage = UIImageView(image:UIImage(named: "Pumps")!)
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
@@ -171,12 +171,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			} else {
 				helpImageName = nil
 				helpViewContentMode = .left
-				helpViewFrame = CGRect.zero
+				helpViewFrame = .zero
 			}
 		} else {
 			helpImageName = nil
 			helpViewContentMode = .left
-			helpViewFrame = CGRect.zero
+			helpViewFrame = .zero
 		}
 
 		// Remove outdated help images
@@ -627,11 +627,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	// see https://forums.developer.apple.com/thread/4999 why this currently crashes on iOS 9
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: AnyObject, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-		if changeIsUserDriven {
-			return
-		}
+		guard !changeIsUserDriven else { return }
 
 		switch type {
         case .insert:

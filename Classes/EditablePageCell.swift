@@ -33,8 +33,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	required init() {
 		// Create textfield
-		textField = EditablePageCellTextField(frame:CGRect.zero)
-		keyLabel = UILabel(frame: CGRect.zero)
+		textField = EditablePageCellTextField(frame: .zero)
+		keyLabel = UILabel(frame: .zero)
 
 		super.init()
 

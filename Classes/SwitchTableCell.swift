@@ -19,9 +19,9 @@ final class SwitchTableCell: PageCell {
 	weak var delegate: EditablePageCellDelegate?
 
 	required init () {
-		self.keyLabel = UILabel(frame: CGRect.zero)
-		self.valueSwitch = UISwitch(frame:CGRect.zero)
-		self.valueLabel = UILabel(frame:CGRect.zero)
+		self.keyLabel = UILabel(frame: .zero)
+		self.valueSwitch = UISwitch(frame: .zero)
+		self.valueLabel = UILabel(frame: .zero)
 
 		super.init()
 

@@ -489,8 +489,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 								let imageView: UIImageView! = self.scrollView.viewWithTag(1) as? UIImageView
 								if imageView != nil {
                                      imageView.image = nil
-                                     imageView.frame = CGRect.zero
-                                     self.scrollView.contentSize = CGSize.zero
+                                     imageView.frame = .zero
+                                     self.scrollView.contentSize = .zero
                                  }
                              }
                          })

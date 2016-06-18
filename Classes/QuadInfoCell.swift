@@ -26,10 +26,10 @@ final class QuadInfoCell: UITableViewCell {
 	init(style: UITableViewCellStyle, reuseIdentifier: String?, enlargeTopRightLabel: Bool) {
 		cellState     = []
 		large         = enlargeTopRightLabel
-		botLeftLabel  = UILabel(frame:CGRect.zero)
-		topLeftLabel  = UILabel(frame:CGRect.zero)
-		topRightLabel = UILabel(frame:CGRect.zero)
-		botRightLabel = UILabel(frame:CGRect.zero)
+		botLeftLabel  = UILabel(frame: .zero)
+		topLeftLabel  = UILabel(frame: .zero)
+		topRightLabel = UILabel(frame: .zero)
+		botRightLabel = UILabel(frame: .zero)
 
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 

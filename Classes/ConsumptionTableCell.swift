@@ -13,7 +13,7 @@ final class ConsumptionTableCell: PageCell {
 	private(set) var coloredLabel: ConsumptionLabel
 
 	required init() {
-		self.coloredLabel = ConsumptionLabel(frame:CGRect.zero)
+		self.coloredLabel = ConsumptionLabel(frame: .zero)
 
 		super.init()
 

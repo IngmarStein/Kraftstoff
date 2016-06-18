@@ -129,7 +129,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		var label: UILabel! = view as? UILabel
 		if label == nil {
-			label = UILabel(frame: CGRect.zero)
+			label = UILabel(frame: .zero)
 			label.lineBreakMode = .byTruncatingTail
 		}
 
