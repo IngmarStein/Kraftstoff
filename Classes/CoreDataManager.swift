@@ -47,30 +47,33 @@ final class CoreDataManager {
 		NSInferMappingModelAutomaticallyOption: true,
 	]
 
-	private static let iCloudStoreOptions = [
-		NSMigratePersistentStoresAutomaticallyOption: true,
-		NSInferMappingModelAutomaticallyOption: true,
-		NSPersistentStoreUbiquitousContentNameKey: "Kraftstoff2"
-	]
+	private static let iCloudStoreDescription: NSPersistentStoreDescription = {
+		let storeDescription = NSPersistentStoreDescription()
+		storeDescription.type = NSSQLiteStoreType
+		storeDescription.url = iCloudStoreURL
+		storeDescription.shouldMigrateStoreAutomatically = true
+		storeDescription.shouldInferMappingModelAutomatically = true
+		storeDescription.shouldAddStoreAsynchronously = false
+		storeDescription.setOption("Kraftstoff2", forKey: NSPersistentStoreUbiquitousContentNameKey)
+		return storeDescription
+	}()
 
 	static let sharedInstance = CoreDataManager()
 
 	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
+		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 
-		do {
-			try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName:nil, at:iCloudStoreURL, options:iCloudStoreOptions)
-		} catch let error as NSError {
-			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment: ""),
-				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
-				preferredStyle: .alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .default) { _ in
-				fatalError(error.localizedDescription)
+		persistentStoreCoordinator.addPersistentStore(with: iCloudStoreDescription) { (description, error) in
+			if let error = error {
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
+														message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
+														preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
+					fatalError(error.localizedDescription)
+				}
+				alertController.addAction(defaultAction)
+				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
 			}
-			alertController.addAction(defaultAction)
-			UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated:true, completion:nil)
-		} catch {
-			fatalError()
 		}
 
 		return persistentStoreCoordinator
@@ -140,9 +143,9 @@ final class CoreDataManager {
 
 		// Open the existing local store
 		do {
-			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName:nil, at:sourceStoreURL, options:migrationOptions)
+			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: sourceStoreURL, options: migrationOptions)
 			do {
-				try migrationPSC.migratePersistentStore(sourceStore, to: iCloudStoreURL, options: iCloudStoreOptions, withType:NSSQLiteStoreType)
+				try migrationPSC.migratePersistentStore(sourceStore, to: iCloudStoreURL, options: iCloudStoreDescription.options, withType: NSSQLiteStoreType)
 				DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault).async {
 					let fileCoordinator = NSFileCoordinator()
 					var error: NSError?
