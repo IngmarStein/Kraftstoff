@@ -19,10 +19,10 @@ class EditableProxyPageCell: EditablePageCell {
 
 		super.init()
 
-		textFieldProxy.textAlignment          = .right
-		textFieldProxy.backgroundColor        = UIColor.clear()
+		textFieldProxy.textAlignment            = .right
+		textFieldProxy.backgroundColor          = .clear()
 		textFieldProxy.isUserInteractionEnabled = false
-		textFieldProxy.isAccessibilityElement = false
+		textFieldProxy.isAccessibilityElement   = false
 		textFieldProxy.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.textFieldProxy)

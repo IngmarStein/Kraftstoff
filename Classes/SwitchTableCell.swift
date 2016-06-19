@@ -36,9 +36,9 @@ final class SwitchTableCell: PageCell {
 
 		// Configure the alternate textlabel
 
-		valueLabel.textAlignment          = .right
-		valueLabel.backgroundColor        = UIColor.clear()
-		valueLabel.textColor              = UIColor.black()
+		valueLabel.textAlignment            = .right
+		valueLabel.backgroundColor          = .clear()
+		valueLabel.textColor                = .black()
 		valueLabel.isHidden                 = true
 		valueLabel.isUserInteractionEnabled = false
 		valueLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -47,8 +47,8 @@ final class SwitchTableCell: PageCell {
 
 		// Configure the default textlabel
 		keyLabel.textAlignment        = .left
-		keyLabel.highlightedTextColor = UIColor.black()
-		keyLabel.textColor            = UIColor.black()
+		keyLabel.highlightedTextColor = .black()
+		keyLabel.textColor            = .black()
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(keyLabel)

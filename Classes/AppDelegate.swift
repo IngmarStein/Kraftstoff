@@ -213,7 +213,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 			progress.isUserInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .whiteLarge
-			progress.color = UIColor.black()
+			progress.color = .black()
 			let center = self.importAlert!.view.center
 			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
 			progress.startAnimating()

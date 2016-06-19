@@ -33,26 +33,26 @@ final class QuadInfoCell: UITableViewCell {
 
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        topLeftLabel.backgroundColor            = UIColor.clear()
-        topLeftLabel.textColor                  = UIColor.black()
+        topLeftLabel.backgroundColor            = .clear()
+        topLeftLabel.textColor                  = .black()
         topLeftLabel.adjustsFontSizeToFitWidth  = true
 		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.contentView.addSubview(topLeftLabel)
 
-        botLeftLabel.backgroundColor            = UIColor.clear()
+        botLeftLabel.backgroundColor            = .clear()
         botLeftLabel.textColor                  = UIColor(white:0.5, alpha:1.0)
         botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.addSubview(botLeftLabel)
 
-        topRightLabel.backgroundColor           = UIColor.clear()
-        topRightLabel.textColor                 = UIColor.black()
+        topRightLabel.backgroundColor           = .clear()
+        topRightLabel.textColor                 = .black()
         topRightLabel.adjustsFontSizeToFitWidth = true
         topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.contentView.addSubview(topRightLabel)
 
-        botRightLabel.backgroundColor           = UIColor.clear()
+        botRightLabel.backgroundColor           = .clear()
         botRightLabel.textColor                 = UIColor(white:0.5, alpha:1.0)
         botRightLabel.adjustsFontSizeToFitWidth = true
         botRightLabel.textAlignment             = .right

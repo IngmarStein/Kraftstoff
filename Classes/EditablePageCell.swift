@@ -41,17 +41,17 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.textAlignment            = .right
 		textField.autocapitalizationType   = .none
 		textField.autocorrectionType       = .no
-		textField.backgroundColor          = UIColor.clear()
+		textField.backgroundColor          = .clear()
 		textField.clearButtonMode          = .whileEditing
 		textField.contentVerticalAlignment = .center
-		textField.isUserInteractionEnabled   = false
+		textField.isUserInteractionEnabled = false
 		textField.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(textField)
 
 		keyLabel.textAlignment        = .left
-		keyLabel.highlightedTextColor = UIColor.black()
-		keyLabel.textColor            = UIColor.black()
+		keyLabel.highlightedTextColor = .black()
+		keyLabel.textColor            = .black()
 		keyLabel.setContentHuggingPriority(750, for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false

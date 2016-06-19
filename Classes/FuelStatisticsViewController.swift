@@ -90,8 +90,8 @@ class FuelStatisticsViewController: UIViewController {
 		self.centerLabel.font = titleFont
 		self.rightLabel.font = titleFont
 
-		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white:0.78, alpha:1.0)]
-		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName:UIColor.white()]
+		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white: 0.78, alpha: 1.0)]
+		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName: UIColor.white()]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!

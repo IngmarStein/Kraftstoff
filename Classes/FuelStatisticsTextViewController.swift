@@ -447,7 +447,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				imageView = UIImageView(frame: imageFrame)
 				imageView.tag = 1
 				imageView.isOpaque = false
-				imageView.backgroundColor = UIColor.clear()
+				imageView.backgroundColor = .clear()
 
 				self.scrollView.isHidden = false
 				self.scrollView.addSubview(imageView)
