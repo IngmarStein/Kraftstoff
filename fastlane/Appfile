@@ -1,10 +1,8 @@
 app_identifier "com.github.m-schmidt.kraftstoff" # The bundle identifier of your app
 apple_id "IngmarStein@gmx.net" # Your Apple email address
 
-# You can uncomment any of the lines below and add your own
-# team selection in case you're in multiple teams
-# team_name "Felix Krause"
-# team_id "Q2CBPJ58CA"
+team_name "Ingmar Stein"
+team_id "ADVP2P7SJK"
 
 # To select a team for iTunes Connect use
 # itc_team_name "Company Name"
