@@ -45,6 +45,8 @@
 		95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071841AF6737D00DF261C /* ConsumptionTableCell.swift */; };
 		95C071871AF6751200DF261C /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071861AF6751200DF261C /* PageCell.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
+		95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CBD4241D1702A8009637A4 /* CloudKit.framework */; };
+		95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CBD4281D171C90009637A4 /* StoreKit.framework */; };
 		95CE70CE1B0DF23000370781 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CE70CD1B0DF23000370781 /* CoreDataManager.swift */; };
 		95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7B1AF69B00003FF205 /* PageViewController.swift */; };
 		95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */; };
@@ -121,6 +123,8 @@
 		95C071841AF6737D00DF261C /* ConsumptionTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionTableCell.swift; sourceTree = "<group>"; };
 		95C071861AF6751200DF261C /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
+		95CBD4241D1702A8009637A4 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		95CBD4281D171C90009637A4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		95CE70CD1B0DF23000370781 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = Classes/CoreDataManager.swift; sourceTree = "<group>"; };
 		95D2AE7B1AF69B00003FF205 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelCalculatorController.swift; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */,
+				95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +212,7 @@
 				95DA86271AFB426D001E1375 /* Kraftstoff Tests */,
 				95E685431C4C1BC800C6D5F8 /* Kraftstoff UI Tests */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				95CBD4231D1702A8009637A4 /* Frameworks */,
 			);
 			comments = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040000 in Other C Flags wegen Bug in SDK. Alternativ: System Default statt LLVM Compiler";
 			name = CustomTemplate;
@@ -419,6 +426,15 @@
 			name = "Managed Objects";
 			sourceTree = "<group>";
 		};
+		95CBD4231D1702A8009637A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				95CBD4281D171C90009637A4 /* StoreKit.framework */,
+				95CBD4241D1702A8009637A4 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		95DA86271AFB426D001E1375 /* Kraftstoff Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,7 +540,13 @@
 						LastSwiftMigration = 0800;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 							com.apple.iCloud = {

@@ -11,6 +11,7 @@ import CoreData
 import CoreSpotlight
 import MobileCoreServices
 import StoreKit
+import CloudKit
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -187,6 +188,21 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		CoreDataManager.saveContext()
+	}
+
+	// MARK: - Notifications
+
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+		if let stringObjectUserInfo = userInfo as? [String: NSObject] {
+			let notification = CKNotification(fromRemoteNotificationDictionary: stringObjectUserInfo)
+
+			if notification.subscriptionID == "private-changes" {
+				print(notification)
+				completionHandler(.newData)
+			}
+		} else {
+			completionHandler(.noData)
+		}
 	}
 
 	// MARK: - State Restoration
