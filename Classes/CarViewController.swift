@@ -13,7 +13,7 @@ import CoreSpotlight
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
 
-final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIViewControllerPreviewingDelegate {
+final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate {
 
 	var editedObject: Car!
 
@@ -76,10 +76,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
-
-		if traitCollection.forceTouchCapability == .available {
-			registerForPreviewing(with: self, sourceView: view)
-		}
 
 		NotificationCenter.default().addObserver(self,
            selector: #selector(CarViewController.localeChanged(_:)),
@@ -465,6 +461,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let tableCell = cell as! QuadInfoCell
 		let managedObject = self.fetchedResultsController.object(at: indexPath)
 
+		tableCell.large = true
+
 		// Car and Numberplate
 		tableCell.topLeftLabel.text = managedObject.name
 		tableCell.topLeftAccessibilityLabel = nil
@@ -504,17 +502,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let CellIdentifier = "ShadedTableViewCell"
+		let cell = tableView.dequeueReusableCell(withIdentifier: "QuadInfoCell", for: indexPath)
 
-		var cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as? QuadInfoCell
+		configureCell(cell, atIndexPath: indexPath)
 
-		if cell == nil {
-			cell = QuadInfoCell(style: .default, reuseIdentifier: CellIdentifier, enlargeTopRightLabel: true)
-		}
-
-		configureCell(cell!, atIndexPath:indexPath)
-
-		return cell!
+		return cell
 	}
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -589,17 +581,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return self.isEditing ? nil : indexPath
 	}
 
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let selectedCar = self.fetchedResultsController.object(at: indexPath)
-
-		if fuelEventController == nil || fuelEventController.selectedCar != selectedCar {
-			fuelEventController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
-			fuelEventController.selectedCar = selectedCar
-		}
-
-		self.navigationController?.pushViewController(fuelEventController, animated: true)
-	}
-
 	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
 		editButtonItem().isEnabled = false
 		hideHelp(true)
@@ -660,23 +641,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = false
 	}
 
-	// MARK: - UIViewControllerPreviewingDelegate
-
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		guard let indexPath = tableView.indexPathForRow(at: location),
-			cell = tableView.cellForRow(at: indexPath) else { return nil }
-		let selectedCar = self.fetchedResultsController.object(at: indexPath)
-
-		guard let fuelEventController = storyboard?.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController else { return nil }
-		fuelEventController.selectedCar = selectedCar
-
-		previewingContext.sourceRect = cell.frame
-
-		return fuelEventController
-	}
-
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		show(viewControllerToCommit, sender: self)
+	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
+		if let fuelEventController = segue.destinationViewController as? FuelEventController, selection = tableView.indexPathForSelectedRow {
+			let selectedCar = self.fetchedResultsController.object(at: selection)
+			fuelEventController.selectedCar = selectedCar
+		}
 	}
 
 	// MARK: - Memory Management

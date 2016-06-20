@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11129.15" systemVersion="15G12a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11103.10"/>
+        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,10 +17,26 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="0.80000001192092896" green="0.80000001192092896" blue="0.80000001192092896" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="JZM-eB-b8k" userLabel="Dummy footer view to hide separators">
-                            <frame key="frameInset" minY="64" width="375"/>
+                            <frame key="frameInset" minY="177" width="375"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="QuadInfoCell" id="aHw-nG-RRP" customClass="QuadInfoCell" customModule="kraftstoff" customModuleProvider="target">
+                                <frame key="frameInset" minY="86" width="375" height="91"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aHw-nG-RRP" id="4Xb-tm-IrS">
+                                    <frame key="frameInset" width="342" height="90"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="MNb-cq-XuY" kind="show" identifier="FuelEventSegue" id="fup-JW-VQO">
+                                        <segue key="commit" inheritsFrom="parent" id="Gtb-zh-KM2"/>
+                                        <segue key="preview" inheritsFrom="commit" id="F4S-M7-X24"/>
+                                    </segue>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="6xE-Uc-v14" id="kH2-dc-Joi"/>
                             <outlet property="delegate" destination="6xE-Uc-v14" id="ggT-ja-kNH"/>
@@ -40,15 +58,26 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="separatorColor" red="0.80000001192092896" green="0.80000001192092896" blue="0.80000001192092896" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="jYw-R2-YTQ" userLabel="Dummy footer view to hide separators">
-                            <frame key="frameInset" width="375"/>
+                            <frame key="frameInset" minY="177" width="375"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FuelCell" id="t4g-nN-sO0" customClass="QuadInfoCell" customModule="kraftstoff" customModuleProvider="target">
+                                <frame key="frameInset" minY="86" width="375" height="91"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t4g-nN-sO0" id="6B9-Qk-KV9">
+                                    <frame key="frameInset" width="375" height="90"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="MNb-cq-XuY" id="YYA-Ky-mTG"/>
                             <outlet property="delegate" destination="MNb-cq-XuY" id="0PG-5G-5dS"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" id="uBg-cQ-fwG"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iqe-Xa-aCT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -695,4 +724,7 @@
         <image name="Cars" width="27" height="26"/>
         <image name="Zapfhahn" width="27" height="26"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="fup-JW-VQO"/>
+    </inferredMetricsTieBreakers>
 </document>

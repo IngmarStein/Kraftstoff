@@ -529,16 +529,11 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let CellIdentifier = "FuelCell"
+		let cell = tableView.dequeueReusableCell(withIdentifier: "FuelCell", for: indexPath)
 
-		var cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as? QuadInfoCell
+		configureCell(cell as! QuadInfoCell, atIndexPath: indexPath)
 
-		if cell == nil {
-			cell = QuadInfoCell(style: .default, reuseIdentifier:CellIdentifier, enlargeTopRightLabel: false)
-		}
-
-		configureCell(cell!, atIndexPath:indexPath)
-		return cell!
+		return cell
 	}
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {

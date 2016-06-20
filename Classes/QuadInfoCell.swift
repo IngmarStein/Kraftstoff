@@ -21,46 +21,41 @@ final class QuadInfoCell: UITableViewCell {
 	var botRightAccessibilityLabel: String?
 
 	private var cellState: UITableViewCellStateMask
-	private var large: Bool
+	var large = false {
+		didSet {
+			setupFonts()
+		}
+	}
 
-	init(style: UITableViewCellStyle, reuseIdentifier: String?, enlargeTopRightLabel: Bool) {
-		cellState     = []
-		large         = enlargeTopRightLabel
-		botLeftLabel  = UILabel(frame: .zero)
-		topLeftLabel  = UILabel(frame: .zero)
-		topRightLabel = UILabel(frame: .zero)
-		botRightLabel = UILabel(frame: .zero)
-
-		super.init(style: style, reuseIdentifier: reuseIdentifier)
-
-        topLeftLabel.backgroundColor            = .clear()
-        topLeftLabel.textColor                  = .black()
-        topLeftLabel.adjustsFontSizeToFitWidth  = true
+	private func setupSubviews() {
+		topLeftLabel.backgroundColor            = .clear()
+		topLeftLabel.textColor                  = .black()
+		topLeftLabel.adjustsFontSizeToFitWidth  = true
 		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
-		self.contentView.addSubview(topLeftLabel)
+		contentView.addSubview(topLeftLabel)
 
-        botLeftLabel.backgroundColor            = .clear()
-        botLeftLabel.textColor                  = UIColor(white:0.5, alpha:1.0)
-        botLeftLabel.adjustsFontSizeToFitWidth  = true
+		botLeftLabel.backgroundColor            = .clear()
+		botLeftLabel.textColor                  = UIColor(white:0.5, alpha:1.0)
+		botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.contentView.addSubview(botLeftLabel)
+		contentView.addSubview(botLeftLabel)
 
-        topRightLabel.backgroundColor           = .clear()
-        topRightLabel.textColor                 = .black()
-        topRightLabel.adjustsFontSizeToFitWidth = true
-        topRightLabel.textAlignment             = .right
+		topRightLabel.backgroundColor           = .clear()
+		topRightLabel.textColor                 = .black()
+		topRightLabel.adjustsFontSizeToFitWidth = true
+		topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
-		self.contentView.addSubview(topRightLabel)
+		contentView.addSubview(topRightLabel)
 
-        botRightLabel.backgroundColor           = .clear()
-        botRightLabel.textColor                 = UIColor(white:0.5, alpha:1.0)
-        botRightLabel.adjustsFontSizeToFitWidth = true
-        botRightLabel.textAlignment             = .right
+		botRightLabel.backgroundColor           = .clear()
+		botRightLabel.textColor                 = UIColor(white:0.5, alpha:1.0)
+		botRightLabel.adjustsFontSizeToFitWidth = true
+		botRightLabel.textAlignment             = .right
 		botRightLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.contentView.addSubview(botRightLabel)
+		contentView.addSubview(botRightLabel)
 
 		// setup constraints
-		let views = ["topLeftLabel" : topLeftLabel, "botLeftLabel" : botLeftLabel, "topRightLabel" : topRightLabel, "botRightLabel" : botRightLabel]
+		let views = ["topLeftLabel": topLeftLabel, "botLeftLabel": botLeftLabel, "topRightLabel": topRightLabel, "botRightLabel": botRightLabel]
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views))
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views))
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: topRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
@@ -73,14 +68,6 @@ final class QuadInfoCell: UITableViewCell {
 		NotificationCenter.default().addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
 
 		self.accessoryType = .disclosureIndicator
-    }
-
-	deinit {
-		NotificationCenter.default().removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
-		setupFonts()
 	}
 
 	private func setupFonts() {
@@ -94,8 +81,36 @@ final class QuadInfoCell: UITableViewCell {
 		botRightLabel.minimumScaleFactor = 12.0/botRightLabel.font.pointSize
 	}
 
-	required init(coder aDecoder: NSCoder) {
-	    fatalError("init(coder:) has not been implemented")
+	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+		cellState     = []
+		botLeftLabel  = UILabel(frame: .zero)
+		topLeftLabel  = UILabel(frame: .zero)
+		topRightLabel = UILabel(frame: .zero)
+		botRightLabel = UILabel(frame: .zero)
+
+		super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+		setupSubviews()
+    }
+
+	required init?(coder aDecoder: NSCoder) {
+		cellState     = []
+		botLeftLabel  = UILabel(frame: .zero)
+		topLeftLabel  = UILabel(frame: .zero)
+		topRightLabel = UILabel(frame: .zero)
+		botRightLabel = UILabel(frame: .zero)
+
+		super.init(coder: aDecoder)
+
+		setupSubviews()
+	}
+	
+	deinit {
+		NotificationCenter.default().removeObserver(self)
+	}
+
+	func contentSizeCategoryDidChange(notification: NSNotification!) {
+		setupFonts()
 	}
 
 	override var accessibilityLabel: String? {
