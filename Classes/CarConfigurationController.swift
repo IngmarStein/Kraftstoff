@@ -160,10 +160,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 
 		addRowAtIndex(rowIndex: 0,
-              inSection:0,
-              cellClass:TextEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Name", comment: ""),
-                         "valueIdentifier": "name"],
+              inSection: 0,
+              cellClass: TextEditTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Name", comment: ""),
+                          "valueIdentifier": "name"],
           withAnimation: .none)
 
 		if self.plate == nil {
@@ -171,11 +171,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 
 		addRowAtIndex(rowIndex: 1,
-              inSection:0,
-              cellClass:TextEditTableCell.self,
-			   cellData:["label":             NSLocalizedString("License Plate", comment: ""),
-                         "valueIdentifier":   "plate",
-                         "autocapitalizeAll": true],
+              inSection: 0,
+              cellClass: TextEditTableCell.self,
+			   cellData: ["label":             NSLocalizedString("License Plate", comment: ""),
+                          "valueIdentifier":   "plate",
+                          "autocapitalizeAll": true],
           withAnimation: .none)
 
 		if self.odometerUnit == nil {
@@ -189,11 +189,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 										measurementFormatter.string(from: UnitLength.miles).capitalized]
 
 		addRowAtIndex(rowIndex: 2,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Type", comment: ""),
-                         "valueIdentifier": "odometerUnit",
-                         "labels":          odometerUnitPickerLabels],
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Odometer Type", comment: ""),
+                          "valueIdentifier": "odometerUnit",
+                          "labels":          odometerUnitPickerLabels],
           withAnimation: .none)
 
 		createOdometerRowWithAnimation(.none)
@@ -207,11 +207,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		                            measurementFormatter.string(from: UnitVolume.imperialGallons)]
 
 		addRowAtIndex(rowIndex: 4,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Fuel Unit", comment: ""),
-						 "valueIdentifier": "fuelUnit",
-                         "labels":          fuelUnitPickerLabels],
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Fuel Unit", comment: ""),
+						  "valueIdentifier": "fuelUnit",
+                          "labels":          fuelUnitPickerLabels],
           withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
@@ -233,12 +233,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
                          KSFuelConsumption.gp10KUK.shortDescription]
 
 		addRowAtIndex(rowIndex: 5,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Mileage", comment: ""),
-                         "valueIdentifier": "fuelConsumptionUnit",
-                         "labels":          fuelConsumptionUnitPickerLabels,
-                         "shortLabels":     fuelConsumptionUnitPickerShortLabels],
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Mileage", comment: ""),
+                          "valueIdentifier": "fuelConsumptionUnit",
+                          "labels":          fuelConsumptionUnitPickerLabels,
+                          "shortLabels":     fuelConsumptionUnitPickerShortLabels],
 			withAnimation: .none)
 	}
 
@@ -249,7 +249,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	}
 
 	func recreateOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
-		removeRow(at: 3, inSection:0, withAnimation: .none)
+		removeRow(at: 3, inSection: 0, withAnimation: .none)
 		createOdometerRowWithAnimation(.none)
 
 		if animation == .none {

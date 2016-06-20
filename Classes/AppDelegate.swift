@@ -317,7 +317,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
 						: NSLocalizedString("No valid CSV-data could be found.", comment: "")
 
-					let alertController = UIAlertController(title:title, message:message, preferredStyle: .alert)
+					let alertController = UIAlertController(title: title, message:message, preferredStyle: .alert)
 					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
@@ -427,7 +427,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					}
 
 					// 0 if the receipt is valid
-					if let receipt = json?["receipt"] as? [String:AnyObject], bundleId = receipt["bundle_id"] as? String where statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+					if let receipt = json?["receipt"] as? [String: AnyObject], bundleId = receipt["bundle_id"] as? String where statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 						self.appReceipt = receipt
 						onCompletion(true)
 					} else {
@@ -436,7 +436,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 
 				// 0 if the receipt is valid
-			} else if let receipt = json?["receipt"] as? [String:AnyObject], bundleId = receipt["bundle_id"] as? String where status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+			} else if let receipt = json?["receipt"] as? [String: AnyObject], bundleId = receipt["bundle_id"] as? String where status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 				self.appReceipt = receipt
 				onCompletion(true)
 			} else {
@@ -446,7 +446,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	func validReceiptForInAppPurchase(_ productId: String) -> Bool {
-		guard let receipt = appReceipt, inApps = receipt["in_app"] as? [[String:AnyObject]] where appReceiptValid else { return false }
+		guard let receipt = appReceipt, inApps = receipt["in_app"] as? [[String: AnyObject]] where appReceiptValid else { return false }
 		for inApp in inApps {
 			if let id = inApp["product_id"] as? String {
 				if id == productId {

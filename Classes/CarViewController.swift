@@ -180,7 +180,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		if helpImageName == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
-				UIView.animate(withDuration: 0.33, delay:0.0, options: .curveEaseOut,
+				UIView.animate(withDuration: 0.33, delay: 0.0, options: .curveEaseOut,
                              animations: { helpView?.alpha = 0.0 },
                              completion: { finished in helpView?.removeFromSuperview() })
 			} else {
@@ -206,7 +206,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 				if animated {
 					UIView.animate(withDuration: 0.33,
-										delay:0.8,
+										delay: 0.8,
                                     options: .curveEaseOut,
                                  animations: { helpView!.alpha = 1.0 },
                                  completion: nil)
@@ -307,7 +307,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - Adding a new Object
 
 	override func setEditing(_ editing: Bool, animated: Bool) {
-		super.setEditing(editing, animated:animated)
+		super.setEditing(editing, animated: animated)
 
 		checkEnableEditButton()
 		updateHelp(animated)

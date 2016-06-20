@@ -200,13 +200,13 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if self.isEditing != enabled {
 			let animation: UITableViewRowAnimation = animated ? .fade : .none
 
-			super.setEditing(enabled, animated:animated)
+			super.setEditing(enabled, animated: animated)
         
 			if enabled {
 				self.navigationItem.leftBarButtonItem  = self.doneButton
 				self.navigationItem.rightBarButtonItem = self.cancelButton
 
-				removeSectionAtIndex(1, withAnimation:animation)
+				removeSectionAtIndex(1, withAnimation: animation)
 			} else {
 				self.navigationItem.leftBarButtonItem  = nil
 				self.navigationItem.rightBarButtonItem = self.editButton
@@ -314,71 +314,71 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
                                   consumptionUnit.localizedString]
 
-		addSectionAtIndex(1, withAnimation:animation)
+		addSectionAtIndex(1, withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 0,
-              inSection:1,
-              cellClass:ConsumptionTableCell.self,
-               cellData:["label":            consumptionString,
-                         "highlightStrings": highlightStrings],
-          withAnimation:animation)
+              inSection: 1,
+              cellClass: ConsumptionTableCell.self,
+               cellData: ["label":            consumptionString,
+                          "highlightStrings": highlightStrings],
+          withAnimation: animation)
 	}
 
 	private func createTableContentsWithAnimation(_ animation: UITableViewRowAnimation) {
-		addSectionAtIndex(0, withAnimation:animation)
+		addSectionAtIndex(0, withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 0,
-              inSection:0,
-              cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment: ""),
-                         "formatter": Formatters.sharedDateTimeFormatter,
-                         "valueIdentifier": "date"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: DateEditTableCell.self,
+			   cellData: ["label": NSLocalizedString("Date", comment: ""),
+                          "formatter": Formatters.sharedDateTimeFormatter,
+                          "valueIdentifier": "date"],
+          withAnimation: animation)
 
 		let odometerUnit = car.ksOdometerUnit
 
 		addRowAtIndex(rowIndex: 1,
-              inSection:0,
-              cellClass:NumberEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Distance", comment: ""),
-			             "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
-                         "formatter": Formatters.sharedDistanceFormatter,
-                         "valueIdentifier": "distance"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: NumberEditTableCell.self,
+			   cellData: ["label": NSLocalizedString("Distance", comment: ""),
+			              "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
+                          "formatter": Formatters.sharedDistanceFormatter,
+                          "valueIdentifier": "distance"],
+          withAnimation: animation)
 
 		let fuelUnit = car.ksFuelUnit
 
 		addRowAtIndex(rowIndex: 2,
-              inSection:0,
-              cellClass:NumberEditTableCell.self,
-			   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
-                         "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
-                         "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
-                         "valueIdentifier": "price"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: NumberEditTableCell.self,
+			   cellData: ["label": Units.fuelPriceUnitDescription(fuelUnit),
+                          "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
+                          "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
+                          "valueIdentifier": "price"],
+          withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 3,
-              inSection:0,
-              cellClass:NumberEditTableCell.self,
-               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
-                         "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
-                         "formatter": fuelUnit == UnitVolume.liters ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
-                         "valueIdentifier": "fuelVolume"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: NumberEditTableCell.self,
+               cellData: ["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
+						  "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
+                          "formatter": fuelUnit == UnitVolume.liters ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
+                          "valueIdentifier": "fuelVolume"],
+          withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 4,
-              inSection:0,
-              cellClass:SwitchTableCell.self,
-			   cellData:["label": NSLocalizedString("Full Fill-Up", comment: ""),
-                         "valueIdentifier": "filledUp"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: SwitchTableCell.self,
+			   cellData: ["label": NSLocalizedString("Full Fill-Up", comment: ""),
+                          "valueIdentifier": "filledUp"],
+          withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 5,
-			inSection:0,
-			cellClass:TextEditTableCell.self,
-			cellData:["label": NSLocalizedString("Comment", comment: ""),
-				"valueIdentifier": "comment"],
-			withAnimation:animation)
+			inSection: 0,
+			cellClass: TextEditTableCell.self,
+			cellData: ["label": NSLocalizedString("Comment", comment: ""),
+				 "valueIdentifier": "comment"],
+			withAnimation: animation)
 
 		if !self.isEditing {
 			createConsumptionRowWithAnimation(animation)

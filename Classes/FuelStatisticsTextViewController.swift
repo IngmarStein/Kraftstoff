@@ -321,7 +321,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // number of days
 			drawEntry(
 				label: NSLocalizedString("days", comment: ""),
-				value: "\(Date.numberOfCalendarDaysFrom(state.firstDate, to:state.lastDate))")
+				value: "\(Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate))")
 
             // avg consumption
             drawEntry(

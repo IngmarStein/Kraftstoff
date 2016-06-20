@@ -46,7 +46,7 @@ final class CoreDataManager {
 	private static let iCloudStoreURL = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
 
 	private static var iCloudLocalStoreURL : URL? {
-		let ubiquityContainer = try! URL(fileURLWithPath:applicationDocumentsDirectory).appendingPathComponent("CoreDataUbiquitySupport")
+		let ubiquityContainer = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("CoreDataUbiquitySupport")
 		if let peers = try? FileManager.default().contentsOfDirectory(at: ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
 			let fileManager = FileManager.default()
 			for peer in peers {
@@ -290,10 +290,10 @@ final class CoreDataManager {
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
-                                     andDate:date,
-                              dateComparator:dateMatches ? ">=" : ">",
-                                   fetchSize:128,
-                      inManagedObjectContext:moc)
+                                     andDate: date,
+                              dateComparator: dateMatches ? ">=" : ">",
+                                   fetchSize: 128,
+                      inManagedObjectContext: moc)
 	}
 
 	static func fetchRequestForEvents(car: Car,
@@ -301,10 +301,10 @@ final class CoreDataManager {
                                    dateMatches: Bool,
                         inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
-                                     andDate:date,
-                              dateComparator:dateMatches ? "<=" : "<",
-                                   fetchSize:8,
-                      inManagedObjectContext:moc)
+                                     andDate: date,
+                              dateComparator: dateMatches ? "<=" : "<",
+                                   fetchSize: 8,
+                      inManagedObjectContext: moc)
 	}
 
 	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {

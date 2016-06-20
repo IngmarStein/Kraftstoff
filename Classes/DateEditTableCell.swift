@@ -61,7 +61,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 	}
 
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
 		self.dateFormatter     = dictionary["formatter"] as! DateFormatter
@@ -78,7 +78,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 	func significantTimeChange(_ object: AnyObject) {
 		if let timestamp = self.valueTimestamp {
-			self.delegate.valueChanged(Date.distantPast, identifier:timestamp)
+			self.delegate.valueChanged(Date.distantPast, identifier: timestamp)
 		}
 
 		refreshDatePickerWithDate(nil)
@@ -91,7 +91,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier: self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {
-				self.delegate.valueChanged(Date(), identifier:timestamp)
+				self.delegate.valueChanged(Date(), identifier: timestamp)
 			}
 			updateTextFieldColorForValue(selectedDate)
 		}

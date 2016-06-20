@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-typealias CSVRecord = [String:String]
+typealias CSVRecord = [String: String]
 
 final class CSVImporter {
 
@@ -425,7 +425,7 @@ final class CSVImporter {
 	func `import`(_ csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: URL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
 		let parser = CSVParser(inputCSVString: csv)
 
-		// Check for TankPro import:search for tables containing car definitions
+		// Check for TankPro import: search for tables containing car definitions
 		var importFromTankPro = true
 
 		while true {
@@ -512,7 +512,7 @@ final class CSVImporter {
 		}
 
 		// Scan via NSScanner (fast, strict)
-		let scanner = Scanner(string:string)
+		let scanner = Scanner(string: string)
 
 		scanner.locale = Locale.current()
 		scanner.scanLocation = 0

@@ -98,8 +98,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let backgroundImage = UIImageView(image: UIImage(named: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier:1.0, constant:90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier:1.0, constant:0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
@@ -266,7 +266,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func exportTextData() -> Data {
 		let fetchedObjects = self.fetchedResultsController.fetchedObjects!
-		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar:selectedCar)
+		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar: selectedCar)
 		return csvString.data(using: String.Encoding.utf8, allowLossyConversion: true)!
 	}
 
@@ -505,7 +505,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			let totalDistance = distance + managedObject.inheritedDistance
 			let totalFuelVolume = fuelVolume + managedObject.inheritedFuelVolume
 
-			let avg = Units.consumptionForKilometers(totalDistance, liters:totalFuelVolume, inUnit:consumptionUnit)
+			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 
 			consumptionDescription = Formatters.sharedFuelVolumeFormatter.string(from: avg)!
 

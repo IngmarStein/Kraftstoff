@@ -90,13 +90,13 @@ class FuelStatisticsViewController: UIViewController {
 		self.centerLabel.font = titleFont
 		self.rightLabel.font = titleFont
 
-		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0)]
-		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName: UIColor.white()]
+		let labelAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0)]
+		let labelSelectedAttributes = [NSFontAttributeName: fontSelected, NSForegroundColorAttributeName: UIColor.white()]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
-				let label = AttributedString(string:text, attributes:labelAttributes)
-				let labelSelected = AttributedString(string:text, attributes: labelSelectedAttributes)
+				let label = AttributedString(string: text, attributes: labelAttributes)
+				let labelSelected = AttributedString(string: text, attributes: labelSelectedAttributes)
 				button.setAttributedTitle(label, for: [])
 				button.setAttributedTitle(label, for: .highlighted)
 				button.setAttributedTitle(labelSelected, for: .selected)
@@ -169,7 +169,7 @@ class FuelStatisticsViewController: UIViewController {
 																									  beforeDate: Date(),
 																									 dateMatches: true,
 																						  inManagedObjectContext: sampleContext),
-												 inManagedObjectContext:sampleContext)
+												 inManagedObjectContext: sampleContext)
 
 				var recentFillupDate = Date()
 
@@ -185,13 +185,13 @@ class FuelStatisticsViewController: UIViewController {
 																										  afterDate: samplingStart,
 																										dateMatches: true,
 																							 inManagedObjectContext: sampleContext),
-													inManagedObjectContext:sampleContext)
+													inManagedObjectContext: sampleContext)
 
 				// Compute statistics
 				let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-															forCar:sampleCar,
-													   withObjects:samplingObjects,
-											inManagedObjectContext:sampleContext)
+															forCar: sampleCar,
+													   withObjects: samplingObjects,
+											inManagedObjectContext: sampleContext)
 
 				// Schedule update of cache and display in main thread
 				DispatchQueue.main.async {
