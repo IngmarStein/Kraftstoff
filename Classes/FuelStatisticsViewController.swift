@@ -69,7 +69,7 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		setupFonts()
-		NotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
+		NotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	deinit {
@@ -90,7 +90,7 @@ class FuelStatisticsViewController: UIViewController {
 		self.centerLabel.font = titleFont
 		self.rightLabel.font = titleFont
 
-		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor(white: 0.78, alpha: 1.0)]
+		let labelAttributes = [NSFontAttributeName:font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0)]
 		let labelSelectedAttributes = [NSFontAttributeName:fontSelected, NSForegroundColorAttributeName: UIColor.white()]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
@@ -222,7 +222,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NotificationCenter.default().post(name: "numberOfMonthsSelected" as NSNotification.Name, object: self, userInfo: ["span": sender.tag as NSNumber])
+		NotificationCenter.default().post(name: "numberOfMonthsSelected" as Notification.Name, object: self, userInfo: ["span": sender.tag as NSNumber])
 	}
 
 	// MARK: - Memory Management

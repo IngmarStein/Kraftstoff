@@ -61,16 +61,16 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		recreateTableContents()
 
 		// Configure the navigation bar
-		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:.done, target:self, action:#selector(CarConfigurationController.handleSave(_:)))
+		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CarConfigurationController.handleSave(_:)))
 		leftBarButtonItem.accessibilityIdentifier = "done"
 		self.navigationItem.leftBarButtonItem = leftBarButtonItem
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.cancel, target:self, action:#selector(CarConfigurationController.handleCancel(_:)))
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CarConfigurationController.handleCancel(_:)))
 		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment: "") : NSLocalizedString("New Car", comment: "")
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -341,15 +341,15 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	func showCancelSheet() {
 		isShowingCancelSheet = true
 
-		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment: "") : NSLocalizedString("Delete the newly created car?", comment: ""),
+		let alertController = UIAlertController(title: self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment: "") : NSLocalizedString("Delete the newly created car?", comment: ""),
 																			 message: nil,
 																	  preferredStyle: .actionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.previousSelectionIndex)
 			self.previousSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment: "") : NSLocalizedString("Delete", comment: ""), style: .destructive) { _ in
+		let destructiveAction = UIAlertAction(title: self.editingExistingObject ? NSLocalizedString("Revert", comment: "") : NSLocalizedString("Delete", comment: ""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
 			self.delegate?.carConfigurationController(self, didFinishWithResult: .canceled)
 			self.previousSelectionIndex = nil
@@ -357,14 +357,14 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-		present(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
 	// MARK: - Save Button
 
 	@IBAction func handleSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
-			self.delegate?.carConfigurationController(self, didFinishWithResult:self.editingExistingObject ? .editSucceeded : .createSucceeded)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: self.editingExistingObject ? .editSucceeded : .createSucceeded)
 		}
 	}
 
@@ -428,7 +428,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRow(at: indexPath, at: .middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
 	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

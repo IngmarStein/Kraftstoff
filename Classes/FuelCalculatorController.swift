@@ -56,9 +56,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		userActivity?.isEligibleForSearch = true
 
 		// Title bar
-		self.doneButton = UIBarButtonItem(barButtonSystemItem: .done, target:self, action:#selector(FuelCalculatorController.endEditingMode(_:)))
+		self.doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(FuelCalculatorController.endEditingMode(_:)))
 		self.doneButton.accessibilityIdentifier = "done"
-		self.saveButton = UIBarButtonItem(barButtonSystemItem: .save, target:self, action:#selector(FuelCalculatorController.saveAction(_:)))
+		self.saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(FuelCalculatorController.saveAction(_:)))
 		self.saveButton.accessibilityIdentifier = "save"
 		self.title = NSLocalizedString("Fill-Up", comment: "")
 	}
@@ -76,9 +76,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name:NSNotification.Name.UIApplicationWillEnterForeground, object:nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
 	// MARK: - State Restoration
@@ -103,7 +103,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.isShowingConvertSheet = coder.decodeBool(forKey: kSRCalculatorConvertSheet)
     
 		if coder.decodeBool(forKey: kSRCalculatorEditing) {
-			self.setEditing(true, animated:false)
+			self.setEditing(true, animated: false)
 
 			if isShowingConvertSheet {
 				showOdometerConversionAlert()
@@ -190,13 +190,13 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
                          let now = Date()
 
-                         self.valueChanged(Date.dateWithoutSeconds(now), identifier:"date")
-                         self.valueChanged(now,  identifier:"lastChangeDate")
-                         self.valueChanged(zero, identifier:"distance")
-                         self.valueChanged(zero, identifier:"price")
-                         self.valueChanged(zero, identifier:"fuelVolume")
-                         self.valueChanged(true, identifier:"filledUp")
-						 self.valueChanged("", identifier:"comment")
+                         self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
+                         self.valueChanged(now,  identifier: "lastChangeDate")
+                         self.valueChanged(zero, identifier: "distance")
+                         self.valueChanged(zero, identifier: "price")
+                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(true, identifier: "filledUp")
+						 self.valueChanged("", identifier: "comment")
 
                          self.recreateTableContentsWithAnimation(.left)
                          self.updateSaveButtonState()
@@ -311,7 +311,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			addRowAtIndex(rowIndex: 2 + rowOffset,
                   inSection:0,
                   cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
+                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
                              "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
                              "formatter": fuelUnit == UnitVolume.liters
                                                 ? Formatters.sharedFuelVolumeFormatter
@@ -552,7 +552,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	private func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let path = indexPath {
-			self.tableView.selectRow(at: path, animated:false, scrollPosition: .none)
+			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
 			self.tableView(self.tableView, didSelectRowAt:path)
 		}
 	}
@@ -583,11 +583,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                          // Reset calculator table
                          let zero = NSDecimalNumber.zero()
 
-                         self.valueChanged(zero, identifier:"distance")
-                         self.valueChanged(zero, identifier:"price")
-                         self.valueChanged(zero, identifier:"fuelVolume")
-                         self.valueChanged(true, identifier:"filledUp")
-						 self.valueChanged("", identifier:"comment")
+                         self.valueChanged(zero, identifier: "distance")
+                         self.valueChanged(zero, identifier: "price")
+                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(true, identifier: "filledUp")
+						 self.valueChanged("", identifier: "comment")
 
 						 CoreDataManager.saveContext()
                      })
@@ -600,7 +600,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			saveValid = false
 		} else if (distance == nil || distance! == .zero()) || (fuelVolume == nil || fuelVolume! == .zero()) {
 			saveValid = false
-		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate:self.date!) {
+		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate: self.date!) {
 			saveValid = false
 		}
 
@@ -699,12 +699,12 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
 
-		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
+		let alertController = UIAlertController(title: NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,
 																	  preferredStyle: .actionSheet)
 		let cancelAction = UIAlertAction(title:rawButton, style: .default) { _ in
 			self.isShowingConvertSheet = false
-			self.setEditing(false, animated:true)
+			self.setEditing(false, animated: true)
 		}
 
 		let destructiveAction = UIAlertAction(title:convButton, style: .destructive) { _ in
@@ -716,18 +716,18 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			let convDistance = rawDistance - self.car!.odometer
 
 			self.distance = Units.distanceForKilometers(convDistance, withUnit:odometerUnit)
-			self.valueChanged(self.distance, identifier:"distance")
+			self.valueChanged(self.distance, identifier: "distance")
 
 			self.recreateDistanceRowWithAnimation(.right)
 
-			self.setEditing(false, animated:true)
+			self.setEditing(false, animated: true)
 		}
 
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
 		isShowingConvertSheet = true
-		present(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
 	// MARK: - Leaving Editing Mode
@@ -737,7 +737,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			if self.needsOdometerConversionSheet() {
 				self.showOdometerConversionAlert()
 			} else {
-				self.setEditing(false, animated:true)
+				self.setEditing(false, animated: true)
 			}
 		}
     }
@@ -795,7 +795,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 			let defaults = UserDefaults.standard()
 
-			defaults.set(newValue, forKey:"recentFilledUp")
+			defaults.set(newValue, forKey: "recentFilledUp")
 			defaults.synchronize()
 
 		} else if valueIdentifier == "comment" {
@@ -803,7 +803,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 			let defaults = UserDefaults.standard()
 
-			defaults.set(newValue, forKey:"recentComment")
+			defaults.set(newValue, forKey: "recentComment")
 			defaults.synchronize()
 
 		} else if valueIdentifier == "car" {
@@ -816,7 +816,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			if !self.car!.objectID.isTemporaryID {
 				let defaults = UserDefaults.standard()
 
-				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!) as NSString?, forKey:"preferredCarID")
+				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!) as NSString?, forKey: "preferredCarID")
 				defaults.synchronize()
 			}
 		}
@@ -873,7 +873,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return nil
 		}
 
-		setEditing(true, animated:true)
+		setEditing(true, animated: true)
 		return indexPath
 	}
 

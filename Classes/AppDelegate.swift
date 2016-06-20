@@ -213,7 +213,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = Bundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
-		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey:UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
+		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
 		return stateVersion >= 1572 && stateVersion <= bundleVersion
@@ -223,9 +223,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private func showImportAlert() {
 		if self.importAlert == nil {
-			self.importAlert = UIAlertController(title:NSLocalizedString("Importing", comment: "") + "\n\n", message:"", preferredStyle:.alert)
+			self.importAlert = UIAlertController(title: NSLocalizedString("Importing", comment: "") + "\n\n", message: "", preferredStyle: .alert)
 
-			let progress = UIActivityIndicatorView(frame:self.importAlert!.view.bounds)
+			let progress = UIActivityIndicatorView(frame: self.importAlert!.view.bounds)
 			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 			progress.isUserInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .whiteLarge
@@ -236,12 +236,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			self.importAlert!.view.addSubview(progress)
 
-			self.window?.rootViewController?.present(self.importAlert!, animated:true, completion:nil)
+			self.window?.rootViewController?.present(self.importAlert!, animated: true, completion: nil)
 		}
 	}
 
 	private func hideImportAlert() {
-		self.window?.rootViewController?.dismiss(animated: true, completion:nil)
+		self.window?.rootViewController?.dismiss(animated: true, completion: nil)
 		self.importAlert = nil
 	}
 
@@ -318,7 +318,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						: NSLocalizedString("No valid CSV-data could be found.", comment: "")
 
 					let alertController = UIAlertController(title:title, message:message, preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style:.default) { _ in () }
+					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
@@ -326,18 +326,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				DispatchQueue.main.async {
 					self.hideImportAlert()
 
-					let alertController = UIAlertController(title:NSLocalizedString("Import Failed", comment: ""),
-						message:NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment: ""),
+					let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
+						message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV-file to UTF8 encoding.", comment: ""),
 						preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
 					alertController.addAction(defaultAction)
-					self.window?.rootViewController?.present(alertController, animated:true, completion:nil)
+					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
 			}
 		}
 
 		// Treat imports as successful first startups
-		UserDefaults.standard().set(false, forKey:"firstStartup")
+		UserDefaults.standard().set(false, forKey: "firstStartup")
 		return true
 	}
 

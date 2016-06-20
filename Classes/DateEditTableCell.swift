@@ -35,9 +35,9 @@ final class DateEditTableCell: EditableProxyPageCell {
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 
 		NotificationCenter.default().addObserver(self,
-												selector:#selector(DateEditTableCell.significantTimeChange(_:)),
-													name:NSNotification.Name.UIApplicationSignificantTimeChange,
-												object:nil)
+												selector: #selector(DateEditTableCell.significantTimeChange(_:)),
+													name: Notification.Name.UIApplicationSignificantTimeChange,
+												object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -89,7 +89,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date where dateValue != selectedDate {
 			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
-			self.delegate.valueChanged(selectedDate, identifier:self.valueIdentifier)
+			self.delegate.valueChanged(selectedDate, identifier: self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {
 				self.delegate.valueChanged(Date(), identifier:timestamp)
 			}
@@ -104,7 +104,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		let effectiveDate = (date ?? self.delegate.valueForIdentifier(self.valueIdentifier) as? Date) ?? now
 
 		datePicker.maximumDate = Date.dateWithoutSeconds(now)
-		datePicker.setDate(Date.dateWithoutSeconds(effectiveDate), animated:false)
+		datePicker.setDate(Date.dateWithoutSeconds(effectiveDate), animated: false)
 
 		// Immediate update when we are the first responder and notify delegate about new value too
 		datePickerValueChanged(datePicker)

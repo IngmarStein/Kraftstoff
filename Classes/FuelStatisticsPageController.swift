@@ -58,24 +58,24 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
     
 		NotificationCenter.default().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.localeChanged(_:)),
-               name:Locale.currentLocaleDidChangeNotification,
-             object:nil)
+           selector: #selector(FuelStatisticsPageController.localeChanged(_:)),
+               name: Locale.currentLocaleDidChangeNotification,
+             object: nil)
 
 		NotificationCenter.default().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.didEnterBackground(_:)),
-               name:NSNotification.Name.UIApplicationDidEnterBackground,
-             object:nil)
+           selector: #selector(FuelStatisticsPageController.didEnterBackground(_:)),
+               name: Notification.Name.UIApplicationDidEnterBackground,
+             object: nil)
 
 		NotificationCenter.default().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.didBecomeActive(_:)),
-               name:NSNotification.Name.UIApplicationDidBecomeActive,
-             object:nil)
+           selector: #selector(FuelStatisticsPageController.didBecomeActive(_:)),
+               name: Notification.Name.UIApplicationDidBecomeActive,
+             object: nil)
 
 		NotificationCenter.default().addObserver(self,
-           selector:#selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
-               name:"numberOfMonthsSelected",
-             object:nil)
+           selector: #selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
+               name: "numberOfMonthsSelected",
+             object: nil)
 	}
 
 	var currentPage: Int {
@@ -90,7 +90,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		UserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
+		UserDefaults.standard().set(currentPage, forKey: "preferredStatisticsPage")
 		UserDefaults.standard().synchronize()
 	}
 
@@ -115,7 +115,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	}
 
 	func didEnterBackground(_ object: AnyObject) {
-		UserDefaults.standard().set(currentPage, forKey:"preferredStatisticsPage")
+		UserDefaults.standard().set(currentPage, forKey: "preferredStatisticsPage")
 		UserDefaults.standard().synchronize()
 
 		for controller in statisticsViewControllers {
@@ -140,7 +140,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	func numberOfMonthsSelected(_ notification: Notification) {
 		// Remember selection in preferences
 		if let numberOfMonths = (notification as NSNotification).userInfo?["span"] as? Int {
-			UserDefaults.standard().set(numberOfMonths, forKey:"statisticTimeSpan")
+			UserDefaults.standard().set(numberOfMonths, forKey: "statisticTimeSpan")
 
 			// Update all statistics controllers
 			for controller in self.childViewControllers as! [FuelStatisticsViewController] {

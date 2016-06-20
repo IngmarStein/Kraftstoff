@@ -57,9 +57,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		super.viewDidLoad()
 
 		// Title bar
-		self.editButton   = UIBarButtonItem(barButtonSystemItem:.edit, target:self, action:#selector(FuelEventEditorController.enterEditingMode(_:)))
-		self.doneButton   = UIBarButtonItem(barButtonSystemItem:.done, target:self, action:#selector(FuelEventEditorController.endEditingModeAndSave(_:)))
-		self.cancelButton = UIBarButtonItem(barButtonSystemItem:.stop, target:self, action:#selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
+		self.editButton   = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(FuelEventEditorController.enterEditingMode(_:)))
+		self.doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(FuelEventEditorController.endEditingModeAndSave(_:)))
+		self.cancelButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
 
 		self.editButton.accessibilityIdentifier = "edit"
 		self.doneButton.accessibilityIdentifier = "done"
@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
     
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object:nil)
+		NotificationCenter.default().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -130,7 +130,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		comment                = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventComment) as? String
 
 		if coder.decodeBool(forKey: kSRFuelEventEditing) {
-			setEditing(true, animated:false)
+			setEditing(true, animated: false)
             
 			if isShowingCancelSheet {
 				showRevertActionSheet()
@@ -150,17 +150,17 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			dataChanged = false
 
 			// Remove event from database
-			CoreDataManager.removeEventFromArchive(event, forceOdometerUpdate:true)
+			CoreDataManager.removeEventFromArchive(event, forceOdometerUpdate: true)
 
 			// Reinsert new version of event
 			event = CoreDataManager.addToArchive(car: car,
-                                             date:date,
-                                         distance:distance,
-                                            price:price,
-                                       fuelVolume:fuelVolume,
-                                         filledUp:filledUp,
-										  comment:comment,
-                              forceOdometerUpdate:true)
+                                                date: date,
+                                            distance: distance,
+                                               price: price,
+                                          fuelVolume: fuelVolume,
+                                            filledUp: filledUp,
+									   	     comment: comment,
+							     forceOdometerUpdate: true)
 
 			CoreDataManager.saveContext()
 		}
@@ -188,9 +188,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private func reconfigureRowAtIndexPath(_ indexPath: IndexPath) {
 		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
 			cell.configureForData(cellData,
-                viewController:self,
-                     tableView:self.tableView,
-                     indexPath:indexPath)
+                viewController: self,
+                     tableView: self.tableView,
+                     indexPath: indexPath)
         
 			cell.setNeedsDisplay()
 		}
@@ -229,7 +229,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - Entering Editing Mode
 
 	@IBAction func enterEditingMode(_ sender: AnyObject) {
-		setEditing(true, animated:true)
+		setEditing(true, animated: true)
 		selectRowAtIndexPath(IndexPath(row: 0, section: 0))
 	}
 
@@ -238,7 +238,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	@IBAction func endEditingModeAndSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
 			self.saveStateToEvent()
-			self.setEditing(false, animated:true)
+			self.setEditing(false, animated: true)
 		}
 	}
 
@@ -257,15 +257,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	}
 
 	private func showRevertActionSheet() {
-		let alertController = UIAlertController(title:NSLocalizedString("Revert Changes for Event?", comment: ""),
-																			 message:nil,
-																	  preferredStyle:.actionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment: ""), style:.cancel) { _ in
+		let alertController = UIAlertController(title: NSLocalizedString("Revert Changes for Event?", comment: ""),
+																			 message: nil,
+																	  preferredStyle: .actionSheet)
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.restoredSelectionIndex)
 			self.restoredSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:NSLocalizedString("Revert", comment: ""), style:.destructive) { _ in
+		let destructiveAction = UIAlertAction(title: NSLocalizedString("Revert", comment: ""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
 			self.endEditingModeAndRevertCompletion()
 			self.restoredSelectionIndex = nil
@@ -276,12 +276,12 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
 
 		isShowingCancelSheet = true
-		present(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
 	func endEditingModeAndRevertCompletion() {
 		restoreStateFromEvent()
-		setEditing(false, animated:true)
+		setEditing(false, animated: true)
 
 		restoredSelectionIndex = nil
 	}
@@ -305,8 +305,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let cost = fuelVolume * price
 
 		let liters      = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
-		let kilometers  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
-		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
+		let kilometers  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
+		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
 
 		let consumptionString = "\(Formatters.sharedCurrencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.sharedFuelVolumeFormatter.string(from: consumption)!) \(consumptionUnit.localizedString)"
 
@@ -360,7 +360,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 3,
               inSection:0,
               cellClass:NumberEditTableCell.self,
-               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization: true),
+               cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
                          "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
                          "formatter": fuelUnit == UnitVolume.liters ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
                          "valueIdentifier": "fuelVolume"],

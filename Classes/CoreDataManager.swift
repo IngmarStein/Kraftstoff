@@ -18,7 +18,7 @@ final class CoreDataManager {
 	}()
 
 	private static let managedObjectModel: NSManagedObjectModel = {
-		let modelPath = Bundle.main().pathForResource("Kraftstoffrechner", ofType:"momd")!
+		let modelPath = Bundle.main().pathForResource("Kraftstoffrechner", ofType: "momd")!
 		return NSManagedObjectModel(contentsOf:URL(fileURLWithPath: modelPath))!
 	}()
 
@@ -34,7 +34,7 @@ final class CoreDataManager {
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
-				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion:nil)
+				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
 		}
 		return container
@@ -91,7 +91,7 @@ final class CoreDataManager {
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
-				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.present(alertController, animated:true, completion:nil)
+				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
 
 			return true
@@ -181,17 +181,17 @@ final class CoreDataManager {
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.storesWillChange(_:)),
-			name: NSNotification.Name.NSPersistentStoreCoordinatorStoresWillChange,
+			name: Notification.Name.NSPersistentStoreCoordinatorStoresWillChange,
 			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.storesDidChange(_:)),
-			name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange,
+			name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange,
 			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 
 		notificationCenter.addObserver(self,
 			selector: #selector(CoreDataManager.persistentStoreDidImportUbiquitousContentChanges(_:)),
-			name: NSNotification.Name.NSPersistentStoreDidImportUbiquitousContentChanges,
+			name: Notification.Name.NSPersistentStoreDidImportUbiquitousContentChanges,
 			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
 	}
 
@@ -250,7 +250,7 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = 32
 
 		// Sorting keys
-		let sortDescriptor = SortDescriptor(key:"order", ascending:true)
+		let sortDescriptor = SortDescriptor(key: "order", ascending: true)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
@@ -279,7 +279,7 @@ final class CoreDataManager {
 		}
 
 		// Sorting keys
-		let sortDescriptor = SortDescriptor(key:"timestamp", ascending:false)
+		let sortDescriptor = SortDescriptor(key: "timestamp", ascending: false)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
@@ -311,10 +311,10 @@ final class CoreDataManager {
 		let fetchRequest = fetchRequestForCarsInManagedObjectContext(moc)
 
 		// No section names; perform fetch without cache
-		let fetchedResultsController = NSFetchedResultsController(fetchRequest:fetchRequest,
-			managedObjectContext:moc,
-			sectionNameKeyPath:nil,
-            cacheName:nil)
+		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+			managedObjectContext: moc,
+			sectionNameKeyPath: nil,
+            cacheName: nil)
 
 		// Perform the Core Data fetch
 		do {

@@ -67,7 +67,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Background image
 		let backgroundView = UIView(frame: .zero)
 		backgroundView.backgroundColor = UIColor(red: CGFloat(0.935), green: CGFloat(0.935), blue: CGFloat(0.956), alpha: CGFloat(1.0))
-		let backgroundImage = UIImageView(image:UIImage(named: "Pumps")!)
+		let backgroundImage = UIImageView(image: UIImage(named: "Pumps")!)
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
 		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))
@@ -82,12 +82,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		NotificationCenter.default().addObserver(self,
-           selector:#selector(CarViewController.localeChanged(_:)),
-               name:Locale.currentLocaleDidChangeNotification,
-             object:nil)
+           selector: #selector(CarViewController.localeChanged(_:)),
+               name: Locale.currentLocaleDidChangeNotification,
+             object: nil)
 		NotificationCenter.default().addObserver(self,
 			selector: #selector(CarViewController.storesDidChange(_:)),
-			name: NSNotification.Name.NSPersistentStoreCoordinatorStoresDidChange,
+			name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange,
 			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
@@ -159,7 +159,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			helpViewFrame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 70)
 			helpViewContentMode = .right
 
-			defaults.set(0, forKey:"editHelpCounter")
+			defaults.set(0, forKey: "editHelpCounter")
 		} else if self.isEditing && 1 <= carCount && carCount <= 3 {
 			let editCounter = defaults.integer(forKey: "editHelpCounter")
 
@@ -195,12 +195,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Add or update existing help image
 		if let helpImageName = helpImageName {
 			if let helpView = helpView {
-				helpView.image = UIImage(named:helpImageName)
+				helpView.image = UIImage(named: helpImageName)
 				helpView.frame = helpViewFrame
 			} else {
-				let helpImage   = UIImage(named:NSLocalizedString(helpImageName, comment: ""))!.withRenderingMode(.alwaysTemplate)
+				let helpImage   = UIImage(named: NSLocalizedString(helpImageName, comment: ""))!.withRenderingMode(.alwaysTemplate)
 
-				helpView        = UIImageView(image:helpImage)
+				helpView        = UIImageView(image: helpImage)
 				helpView!.tag   = 100
 				helpView!.frame = helpViewFrame
 				helpView!.alpha = animated ? 0.0 : 1.0
@@ -305,7 +305,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.editedObject = nil
 		checkEnableEditButton()
 
-		dismiss(animated: result != .aborted, completion:nil)
+		dismiss(animated: result != .aborted, completion: nil)
 	}
 
 	// MARK: - Adding a new Object
@@ -332,7 +332,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			return
 		}
 
-		setEditing(false, animated:true)
+		setEditing(false, animated: true)
 
 		let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as! CarConfigurationController
 		configurator.delegate = self
@@ -342,7 +342,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		navController.restorationIdentifier = "CarConfigurationNavigationController"
 		navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
 
-		present(navController, animated:true, completion:nil)
+		present(navController, animated: true, completion: nil)
 	}
 
 	// MARK: - UIGestureRecognizerDelegate
@@ -402,13 +402,13 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				navController.restorationIdentifier = "CarConfigurationNavigationController"
 				navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
 
-				present(navController, animated:true, completion:nil)
+				present(navController, animated: true, completion: nil)
 
 				// Edit started => prevent edit help from now on
-				UserDefaults.standard().set(maxEditHelpCounter, forKey:"editHelpCounter")
+				UserDefaults.standard().set(maxEditHelpCounter, forKey: "editHelpCounter")
 
 				// Quit editing mode
-				setEditing(false, animated:true)
+				setEditing(false, animated: true)
 			}
 		}
 	}
@@ -453,7 +453,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Exit editing mode after last object is deleted
 		if self.isEditing {
 			if self.fetchedResultsController.fetchedObjects!.count == 0 {
-				setEditing(false, animated:true)
+				setEditing(false, animated: true)
 			}
 		}
 	}
@@ -597,7 +597,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			fuelEventController.selectedCar = selectedCar
 		}
 
-		self.navigationController?.pushViewController(fuelEventController, animated:true)
+		self.navigationController?.pushViewController(fuelEventController, animated: true)
 	}
 
 	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
