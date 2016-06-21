@@ -353,10 +353,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private func drawFlatStatisticsForState(_ state: FuelStatisticsSamplingData!, context: CGContext) {
 		// Background colors
-		UIColor(white: 0.082, alpha: 1.0).setFill()
+		#colorLiteral(red: 0.08235294118, green: 0.08235294118, blue: 0.08235294118, alpha: 1).setFill()
 		context.fill(self.view.bounds)
 
-		UIColor.black().setFill()
+		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).setFill()
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28.0))
 
 		// Contents if there is a valid state
@@ -371,7 +371,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state.dataCount == 0	{
 
-			let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.white() ]
+			let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(attributes: attributes)
@@ -384,7 +384,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		} else {
 
 			// Color for coordinate-axes
-			UIColor(white: 0.224, alpha: 1.0).setStroke()
+			#colorLiteral(red: 0.2235294118, green: 0.2235294118, blue: 0.2235294118, alpha: 1).setStroke()
 
 			// Horizontal marker lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
@@ -417,7 +417,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for horizontal marker lines markers
 		context.saveGState()
 
-		let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.white() ]
+		let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) ]
 
 		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
@@ -457,7 +457,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for vertical marker lines
 		context.saveGState()
 
-		let vMarkAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0) ]
+		let vMarkAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
 
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
@@ -518,7 +518,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		context.restoreGState()
 
 		// Top and bottom lines
-		UIColor(white: 0.78, alpha: 1.0).setStroke()
+		#colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1).setStroke()
 		path.lineWidth = 0.5
 
 		path.removeAllPoints()
@@ -534,7 +534,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// The curve
 		path.lineWidth    = 1
 		path.lineCapStyle = .round
-		UIColor.white().setStroke()
+		#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1).setStroke()
 
 		path.removeAllPoints()
 		path.move(to: CGPoint(x: rint (self.graphLeftBorder + self.graphWidth * state.data [0].x),
@@ -725,7 +725,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Marker knob
 		path = UIBezierPath(arcCenter: location, radius: 5.5, startAngle: 0.0, endAngle: CGFloat(M_PI)*2.0, clockwise: false)
-		UIColor.black().set()
+		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).set()
 		path.fill()
 
 		path = UIBezierPath(arcCenter: location, radius: 5.0, startAngle: 0.0, endAngle: CGFloat(M_PI)*2.0, clockwise: false)
@@ -734,7 +734,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Layout for info box
 		let attributes = [ NSFontAttributeName: UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2),
-                                 NSForegroundColorAttributeName: UIColor.white() ]
+                                 NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var infoRect = CGRect()
 		infoRect.size = info.size(attributes: attributes)

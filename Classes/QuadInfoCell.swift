@@ -35,7 +35,7 @@ final class QuadInfoCell: UITableViewCell {
 		contentView.addSubview(topLeftLabel)
 
 		botLeftLabel.backgroundColor            = .clear()
-		botLeftLabel.textColor                  = UIColor(white: 0.5, alpha: 1.0)
+		botLeftLabel.textColor                  = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		contentView.addSubview(botLeftLabel)
@@ -48,7 +48,7 @@ final class QuadInfoCell: UITableViewCell {
 		contentView.addSubview(topRightLabel)
 
 		botRightLabel.backgroundColor           = .clear()
-		botRightLabel.textColor                 = UIColor(white: 0.5, alpha: 1.0)
+		botRightLabel.textColor                 = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		botRightLabel.adjustsFontSizeToFitWidth = true
 		botRightLabel.textAlignment             = .right
 		botRightLabel.translatesAutoresizingMaskIntoConstraints = false

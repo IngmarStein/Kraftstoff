@@ -93,9 +93,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Background image
-		let backgroundView = UIView(frame:CGRect.zero)
-		backgroundView.backgroundColor = UIColor(red:CGFloat(0.935), green:CGFloat(0.935), blue:CGFloat(0.956), alpha:CGFloat(1.0))
-		let backgroundImage = UIImageView(image: UIImage(named: "Pumps"))
+		let backgroundView = UIView(frame: .zero)
+		backgroundView.backgroundColor = #colorLiteral(red: 0.937254902, green: 0.937254902, blue: 0.937254902, alpha: 1)
+		let backgroundImage = UIImageView(image: #imageLiteral(resourceName: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
 		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))

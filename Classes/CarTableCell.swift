@@ -54,9 +54,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		super.setupFonts()
 
 		prefixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
-			NSForegroundColorAttributeName: UIColor.black()]
+			NSForegroundColorAttributeName: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
 		suffixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
-			NSForegroundColorAttributeName: UIColor.darkGray()]
+			NSForegroundColorAttributeName: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
 
 		self.carPicker.reloadAllComponents()
 	}
