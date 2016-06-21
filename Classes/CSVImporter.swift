@@ -76,10 +76,8 @@ final class CSVImporter {
 
 	private func guessModelFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
-			let nameComponents = (((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension as NSString).components(separatedBy: "__")
-
 			// CSV file exported in new format: model is first part of filename
-			if nameComponents.count == 2 {
+			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__") where nameComponents.count == 2 {
 				let part = nameComponents[0]
 
 				if !part.isEmpty {
@@ -97,11 +95,9 @@ final class CSVImporter {
 
 	private func guessPlateFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
-			let nameComponents = ((sourceURL.path! as NSString).lastPathComponent as NSString).deletingPathExtension.components(separatedBy: "__")
-
-			// CSV file in new format: plate is second part of filename
-			//     for unknown format: use the whole filename if it is a single component
-			if nameComponents.count <= 2 {
+			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__") where nameComponents.count <= 2 {
+				// CSV file in new format: plate is second part of filename
+				//     for unknown format: use the whole filename if it is a single component
 				let part = nameComponents.last!
 
 				if !part.isEmpty {
