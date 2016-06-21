@@ -338,12 +338,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Create image data from resampled data
 		if state.contentImage == nil {
-			UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
-
-			drawFlatStatisticsForState(state)
-            state.contentImage = UIGraphicsGetImageFromCurrentImageContext()
-
-			UIGraphicsEndImageContext()
+			let format = UIGraphicsImageRendererFormat.default()
+			format.opaque = true
+			let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
+			state.contentImage = renderer.image { context in
+				drawFlatStatisticsForState(state, context: context.cgContext)
+			}
 		}
 
 		return state
@@ -351,15 +351,13 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	// MARK: - Graph Display
 
-	private func drawFlatStatisticsForState(_ state: FuelStatisticsSamplingData!) {
-		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
-
+	private func drawFlatStatisticsForState(_ state: FuelStatisticsSamplingData!, context: CGContext) {
 		// Background colors
 		UIColor(white: 0.082, alpha: 1.0).setFill()
-		cgContext.fill(self.view.bounds)
+		context.fill(self.view.bounds)
 
 		UIColor.black().setFill()
-		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28.0))
+		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28.0))
 
 		// Contents if there is a valid state
 		if state == nil {
@@ -369,7 +367,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleFootnote)
 		let path = UIBezierPath()
 
-		cgContext.saveGState()
+		context.saveGState()
 
 		if state.dataCount == 0	{
 
@@ -400,24 +398,24 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			path.move(to: CGPoint(x: self.graphLeftBorder, y: 0.25))
 			path.addLine(to: CGPoint(x: self.view.bounds.size.width - self.graphLeftBorder, y: 0.25))
 
-			cgContext.saveGState()
+			context.saveGState()
 
 			var y = CGFloat(0.0)
 			for i in 0..<state.hMarkCount {
 				let lastY = y
 				y = rint (self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
 
-				cgContext.translate(x: 0.0, y: y - lastY)
+				context.translate(x: 0.0, y: y - lastY)
 				path.stroke()
 			}
 
-			cgContext.restoreGState()
+			context.restoreGState()
         }
 
-		cgContext.restoreGState()
+		context.restoreGState()
 
         // Axis description for horizontal marker lines markers
-		cgContext.saveGState()
+		context.saveGState()
 
 		let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.white() ]
 
@@ -433,7 +431,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			}
 		}
 
-		cgContext.restoreGState()
+		context.restoreGState()
 
         // Vertical marker lines
         path.lineWidth = 0.5
@@ -443,21 +441,21 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.move(to: CGPoint(x: 0.25, y: self.graphTopBorder))
 		path.addLine(to: CGPoint(x: 0.25, y: self.graphBottomBorder + 6))
 
-		cgContext.saveGState()
+		context.saveGState()
 
 		var x = CGFloat(0.0)
 		for i in 0..<state.vMarkCount {
 			let lastX = x
 			x = rint (self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
 
-			cgContext.translate(x: x - lastX, y: 0.0)
+			context.translate(x: x - lastX, y: 0.0)
 			path.stroke()
         }
 
-		cgContext.restoreGState()
+		context.restoreGState()
 
         // Axis description for vertical marker lines
-		cgContext.saveGState()
+		context.saveGState()
 
 		let vMarkAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0) ]
 
@@ -482,10 +480,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			}
 		}
 
-		cgContext.restoreGState()
+		context.restoreGState()
 
         // Pattern fill below curve
-		cgContext.saveGState()
+		context.saveGState()
 
 		path.removeAllPoints()
 		path.move(to: CGPoint(x: self.graphLeftBorder + 1, y: self.graphBottomBorder))
@@ -512,12 +510,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Color gradient
 		path.addClip()
-		cgContext.drawLinearGradient(self.dataSource!.curveGradient,
+		context.drawLinearGradient(self.dataSource!.curveGradient,
 		                             start: CGPoint(x: 0, y: self.graphBottomBorder - 6),
 		                             end: CGPoint(x: 0, y: minY),
 		                             options: [CGGradientDrawingOptions.drawsBeforeStartLocation, CGGradientDrawingOptions.drawsAfterEndLocation])
 
-		cgContext.restoreGState()
+		context.restoreGState()
 
 		// Top and bottom lines
 		UIColor(white: 0.78, alpha: 1.0).setStroke()
@@ -585,12 +583,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		} else {
 			// Cache Miss => draw prelimary contents
 
-			UIGraphicsBeginImageContextWithOptions (self.view.bounds.size, true, 0.0)
-
-			drawFlatStatisticsForState(nil)
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-
-			UIGraphicsEndImageContext()
+			let format = UIGraphicsImageRendererFormat.default()
+			format.opaque = true
+			let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
+			let image = renderer.image { context in
+				drawFlatStatisticsForState(nil, context: context.cgContext)
+			}
 
 			UIView.transition(with: imageView,
                           duration: StatisticTransitionDuration,
@@ -687,18 +685,18 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     lensLocation.y = rint (self.graphTopBorder + self.graphHeight * cell.data[minIndex].y)
 
                     // Image with value information
-                    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
-
-					let valueString = String(format: self.dataSource!.averageFormatString(false, forCar: self.selectedCar),
-													 self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
-
-					drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString)
-
 					if let imageView = self.view as? UIImageView {
-						imageView.image = UIGraphicsGetImageFromCurrentImageContext()
-					}
+						let format = UIGraphicsImageRendererFormat.default()
+						format.opaque = true
+						let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
 
-					UIGraphicsEndImageContext()
+						let valueString = String(format: self.dataSource!.averageFormatString(false, forCar: self.selectedCar),
+						                         self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
+
+						imageView.image = renderer.image { context in
+							drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString, context: context.cgContext)
+						}
+					}
                 }
             }
 
@@ -709,7 +707,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		}
 	}
 
-	private func drawFlatLensWithBGImage(_ background: UIImage, lensLocation location: CGPoint, info: String) {
+	private func drawFlatLensWithBGImage(_ background: UIImage, lensLocation location: CGPoint, info: String, context: CGContext) {
 		var path = UIBezierPath()
 
 		// Graph as background

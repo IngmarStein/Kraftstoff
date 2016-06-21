@@ -148,12 +148,10 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		if state.contentImage == nil {
 			let height = (state.numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*CGFloat(GridLines) + 10.0
 
-			UIGraphicsBeginImageContextWithOptions(CGSize(width: self.view.bounds.size.width, height: height), false, 0.0)
-
-			drawStatisticsForState(state, withHeight: height)
-            state.contentImage = UIGraphicsGetImageFromCurrentImageContext()
-
-			UIGraphicsEndImageContext()
+			let renderer = UIGraphicsImageRenderer(size: CGSize(width: self.view.bounds.size.width, height: height))
+			state.contentImage = renderer.image { context in
+				drawStatisticsForState(state, withHeight: height, context: context.cgContext)
+			}
 		}
 
 		return state
@@ -169,33 +167,28 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		self.gridDesColumnWidth = (self.view.bounds.size.width - GridMargin - GridMargin) / 2.0
 
 		// Initialize contents of background view
-		UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, true, 0.0)
-
-		drawBackground()
-
 		if let imageView = self.view as? UIImageView {
-			imageView.image = UIGraphicsGetImageFromCurrentImageContext()
+			let format = UIGraphicsImageRendererFormat.default()
+			format.opaque = true
+			let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
+			imageView.image = renderer.image { context in
+				drawBackground(context.cgContext)
+			}
 		}
-
-		UIGraphicsEndImageContext()
 	}
 
-	private func drawBackground() {
-		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
-
+	private func drawBackground(_ context: CGContext) {
 		// Background colors
 		UIColor(white: 0.082, alpha: 1.0).setFill()
-		cgContext.fill(self.view.bounds)
+		context.fill(self.view.bounds)
 
 		UIColor.black().setFill()
-		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28))
+		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28))
 	}
 
-	private func drawStatisticsForState(_ state: FuelStatisticsData, withHeight height: CGFloat) {
-		guard let cgContext = UIGraphicsGetCurrentContext() else { return }
-
+	private func drawStatisticsForState(_ state: FuelStatisticsData, withHeight height: CGFloat, context: CGContext) {
 		UIColor.clear().setFill()
-		cgContext.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
+		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
 		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
 		let labelAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor(white: 0.78, alpha: 1.0) ]
@@ -206,7 +199,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		if state.numberOfFillups == 0 {
 
-			cgContext.saveGState()
+			context.saveGState()
 
 			UIColor.white().setFill()
 
@@ -218,7 +211,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			text.draw(at: CGPoint(x: x, y: y), withAttributes: valueAttributes)
 
-			cgContext.restoreGState()
+			context.restoreGState()
 
 		} else {
 
@@ -228,7 +221,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.lineWidth = GridTextHeight - 1
 			UIColor(white: 0.224, alpha: 0.1).setStroke()
 
-			cgContext.saveGState()
+			context.saveGState()
 
 			path.removeAllPoints()
 			path.move(to: CGPoint(x: self.gridLeftBorder, y: 1.0))
@@ -239,11 +232,11 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                 let lastY = y
                 y = rint (GridTextHeight*0.5 + GridTextHeight*CGFloat(i))
 
-				cgContext.translate(x: 0.0, y: y - lastY)
+				context.translate(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
-			cgContext.restoreGState()
+			context.restoreGState()
 
 			UIColor(white: 0.45, alpha: 0.5).setStroke()
 
@@ -254,7 +247,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			path.setLineDash(dashDotPattern, count: dashDotPatternLength, phase: 0.0)
 
-			cgContext.saveGState()
+			context.saveGState()
 
 			path.removeAllPoints()
 			path.move(to: CGPoint(x: self.gridLeftBorder, y: 0.25))
@@ -263,31 +256,31 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			y = CGFloat(0.0)
             for i in 1...GridLines {
                 let lastY = y
-                y = rint (GridTextHeight*CGFloat(i))
+                y = rint(GridTextHeight * CGFloat(i))
 
-				cgContext.translate(x: 0.0, y: y - lastY)
+				context.translate(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
-			cgContext.restoreGState()
+			context.restoreGState()
 
 			// Vertical grid line
 			path.lineWidth = 0.5
 			path.setLineDash(nil, count: 0, phase: 0.0)
 
-			cgContext.saveGState()
+			context.saveGState()
 
 			path.removeAllPoints()
 			path.move(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: 0.0))
 			path.addLine(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: GridTextHeight*CGFloat(GridLines)))
             path.stroke()
 
-			cgContext.restoreGState()
+			context.restoreGState()
 
 			// Textual information
-			cgContext.saveGState()
+			context.saveGState()
 
-			cgContext.setShadow(offset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: UIColor.black().cgColor)
+			context.setShadow(offset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: UIColor.black().cgColor)
 
             let nf = Formatters.sharedFuelVolumeFormatter
             let cf = Formatters.sharedCurrencyFormatter
@@ -428,7 +421,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				drawEntry(label: distancePerMoneyLabel, value: NSLocalizedString("-", comment: ""))
 			}
 
-			cgContext.restoreGState()
+			context.restoreGState()
 		}
 	}
 
