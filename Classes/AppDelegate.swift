@@ -68,8 +68,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 
-			CoreDataManager.sharedInstance.registerForiCloudNotifications()
-			CoreDataManager.migrateToiCloud()
+			CoreDataManager.migrateFromiCloud()
+			CoreDataManager.load()
 
 			if ProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
@@ -91,7 +91,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			self.updateShortcutItems()
 
 			// Switch once to the car view for new users
-			if launchOptions?[UIApplicationLaunchOptionsURLKey as NSString] == nil {
+			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
 				let defaults = UserDefaults.standard()
 
 				if defaults.bool(forKey: "firstStartup") {
@@ -156,7 +156,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier as NSString] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
 						let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
 						fuelEventController.selectedCarId = carIdentifier
 						if let navigationController = tabBarController.selectedViewController as? UINavigationController {

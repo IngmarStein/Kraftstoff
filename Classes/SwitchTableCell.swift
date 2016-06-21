@@ -82,7 +82,7 @@ final class SwitchTableCell: PageCell {
 	}
 
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView: tableView, indexPath: indexPath)
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.keyLabel.text   = dictionary["label"] as? String
 		self.delegate        = viewController as? EditablePageCellDelegate

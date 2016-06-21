@@ -125,6 +125,7 @@
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		95CBD4241D1702A8009637A4 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		95CBD4281D171C90009637A4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		95CBD42A1D19C6C4009637A4 /* Kraftstoffrechner 1.4.0.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Kraftstoffrechner 1.4.0.xcdatamodel"; sourceTree = "<group>"; };
 		95CE70CD1B0DF23000370781 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = Classes/CoreDataManager.swift; sourceTree = "<group>"; };
 		95D2AE7B1AF69B00003FF205 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelCalculatorController.swift; sourceTree = "<group>"; };
@@ -1069,11 +1070,12 @@
 		4D2CF10C15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				95CBD42A1D19C6C4009637A4 /* Kraftstoffrechner 1.4.0.xcdatamodel */,
 				954F12251BB6C3D40022E7C8 /* Kraftstoffrechner 1.3.0.xcdatamodel */,
 				4D5B94E216484CC2008BDDD7 /* Kraftstoffrechner 1.0.10.xcdatamodel */,
 				4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */,
 			);
-			currentVersion = 954F12251BB6C3D40022E7C8 /* Kraftstoffrechner 1.3.0.xcdatamodel */;
+			currentVersion = 95CBD42A1D19C6C4009637A4 /* Kraftstoffrechner 1.4.0.xcdatamodel */;
 			path = Kraftstoffrechner.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

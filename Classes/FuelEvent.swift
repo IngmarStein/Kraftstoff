@@ -11,6 +11,7 @@ import CoreData
 
 final class FuelEvent: NSManagedObject {
 
+	@NSManaged var cloudKitRecordName: String?
     @NSManaged var inheritedCost: NSDecimalNumber
     @NSManaged var distance: NSDecimalNumber
     @NSManaged var price: NSDecimalNumber
@@ -21,6 +22,10 @@ final class FuelEvent: NSManagedObject {
 	@NSManaged var comment: String?
     @NSManaged var fuelVolume: NSDecimalNumber
     @NSManaged var car: Car
+
+	@nonobjc class func fetchRequest() -> NSFetchRequest<FuelEvent> {
+		return NSFetchRequest<FuelEvent>(entityName: "fuelEvent")
+	}
 
 	var cost: NSDecimalNumber {
 		return fuelVolume * price

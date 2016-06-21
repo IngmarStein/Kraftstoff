@@ -11,6 +11,7 @@ import CoreData
 
 final class Car: NSManagedObject {
 
+	@NSManaged var cloudKitRecordName: String?
     @NSManaged var timestamp: Date
     @NSManaged var distanceTotalSum: NSDecimalNumber
     @NSManaged var fuelUnit: Int32
@@ -22,6 +23,10 @@ final class Car: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var numberPlate: String
     @NSManaged var fuelEvents: NSSet
+
+	@nonobjc class func fetchRequest() -> NSFetchRequest<Car> {
+		return NSFetchRequest<Car>(entityName: "car")
+	}
 
 	var ksFuelUnit: UnitVolume {
 		get {

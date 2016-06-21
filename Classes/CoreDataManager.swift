@@ -17,52 +17,13 @@ final class CoreDataManager {
 		return context
 	}()
 
-	private static let managedObjectModel: NSManagedObjectModel = {
-		let modelPath = Bundle.main().pathForResource("Kraftstoffrechner", ofType: "momd")!
-		return NSManagedObjectModel(contentsOf:URL(fileURLWithPath: modelPath))!
-	}()
-
 	private static let persistentContainer: NSPersistentContainer = {
-		let container = NSPersistentContainer(name: "Fuel")
-		container.persistentStoreDescriptions = [ iCloudStoreDescription ]
-		container.loadPersistentStores { (storeDescription, error) in
-			if let error = error {
-				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
-				                                        message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
-				                                        preferredStyle: .alert)
-				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
-					fatalError(error.localizedDescription)
-				}
-				alertController.addAction(defaultAction)
-				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
-			}
-		}
-		return container
+		return NSPersistentContainer(name: "Kraftstoffrechner")
 	}()
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
 
-	private static let localStoreURL = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Kraftstoffrechner.sqlite")
 	private static let iCloudStoreURL = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
-
-	private static var iCloudLocalStoreURL : URL? {
-		let ubiquityContainer = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("CoreDataUbiquitySupport")
-		if let peers = try? FileManager.default().contentsOfDirectory(at: ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
-			let fileManager = FileManager.default()
-			for peer in peers {
-				let localStoreURL = try! peer.appendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
-				if fileManager.fileExists(atPath: localStoreURL.path!) {
-					return localStoreURL
-				}
-			}
-		}
-		return nil
-	}
-
-	private static let localStoreOptions = [
-		NSMigratePersistentStoresAutomaticallyOption: true,
-		NSInferMappingModelAutomaticallyOption: true,
-	]
 
 	private static let iCloudStoreDescription: NSPersistentStoreDescription = {
 		let storeDescription = NSPersistentStoreDescription()
@@ -133,120 +94,48 @@ final class CoreDataManager {
 
 	// MARK: - iCloud support
 
-	private static func migrateStore(_ sourceStoreURL: URL, options: [NSObject : AnyObject]) {
-		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+	static func migrateFromiCloud() {
+		// migrate iCloud store to local
+		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: persistentContainer.managedObjectModel)
 
-		var migrationOptions = options
-		migrationOptions[NSReadOnlyPersistentStoreOption as NSString] = true
+		var migrationOptions = iCloudStoreDescription.options
+		migrationOptions[NSReadOnlyPersistentStoreOption] = true
+		migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = true
 
-		// Open the existing local store
+		// Open the existing store
 		do {
-			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: sourceStoreURL, options: migrationOptions)
+			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: iCloudStoreURL, options: migrationOptions)
+			let targetStoreDescription = persistentContainer.persistentStoreDescriptions[0]
 			do {
-				try migrationPSC.migratePersistentStore(sourceStore, to: iCloudStoreURL, options: iCloudStoreDescription.options, withType: NSSQLiteStoreType)
-				DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault).async {
-					let fileCoordinator = NSFileCoordinator()
-					var error: NSError?
-					fileCoordinator.coordinate(writingItemAt: sourceStoreURL, options: .forMoving, error: &error) { writingURL in
-						do {
-							let targetURL = try sourceStoreURL.appendingPathExtension("migrated")
-							try FileManager.default().moveItem(at: sourceStoreURL, to: targetURL)
-						} catch let error as NSError {
-							print("error renaming store after migration: \(error.localizedDescription)")
-						}
-					}
-				}
-			} catch let error as NSError {
-				print("error while migrating to iCloud: \(error.localizedDescription)")
+				try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: targetStoreDescription.options, withType: targetStoreDescription.type)
+				//NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
+			} catch let error {
+				print("error while migrating from iCloud: \(error)")
 			}
-		} catch let error as NSError {
-			print("failed to open local store for migration: \(error.localizedDescription)")
+		} catch let error {
+			print("failed to open iCloud store for migration: \(error)")
 		}
 	}
 
-	static func migrateToiCloud() {
-		// migrate old non-iCloud store
-		if FileManager.default().fileExists(atPath: localStoreURL.path!) {
-			migrateStore(localStoreURL, options: localStoreOptions)
-		}
-
-		// migrate old iCloud store without iCloud Documents entitlement
-		if let url = iCloudLocalStoreURL where FileManager.default().fileExists(atPath: url.path!) {
-			migrateStore(url, options: localStoreOptions)
-		}
-	}
-
-	func registerForiCloudNotifications() {
-		let notificationCenter = NotificationCenter.default()
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.storesWillChange(_:)),
-			name: Notification.Name.NSPersistentStoreCoordinatorStoresWillChange,
-			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.storesDidChange(_:)),
-			name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange,
-			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.persistentStoreDidImportUbiquitousContentChanges(_:)),
-			name: Notification.Name.NSPersistentStoreDidImportUbiquitousContentChanges,
-			object: CoreDataManager.persistentContainer.persistentStoreCoordinator)
-	}
-
-	private static func cleanupDetachedFuelEvents(_ moc : NSManagedObjectContext) {
-		let fetchRequest = NSFetchRequest<NSFetchRequestResult>()
-		fetchRequest.entity = FuelEvent.entity()
-		fetchRequest.predicate = Predicate(format: "car == nil")
-
-		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-		do {
-			try moc.execute(deleteRequest)
-		} catch {
-			// ignore
-		}
-	}
-
-	@objc func persistentStoreDidImportUbiquitousContentChanges(_ changeNotification: NSNotification) {
-		let context = CoreDataManager.managedObjectContext
-
-		context.perform {
-			context.mergeChanges(fromContextDidSave: changeNotification as Notification)
-			CoreDataManager.cleanupDetachedFuelEvents(context)
-		}
-	}
-
-	@objc func storesWillChange(_ notification: NSNotification) {
-		let context = CoreDataManager.managedObjectContext
-
-		context.performAndWait {
-			if context.hasChanges {
-				do {
-					try context.save()
-				} catch let error as NSError {
-					print(error.localizedDescription)
-				} catch {
-					fatalError()
+	static func load() {
+		persistentContainer.loadPersistentStores { (storeDescription, error) in
+			if let error = error {
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
+				                                        message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
+				                                        preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
+					fatalError(error.localizedDescription)
 				}
+				alertController.addAction(defaultAction)
+				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
-
-			context.reset()
 		}
-	}
-
-	@objc func storesDidChange(_ notification: NSNotification) {
-		print("storesDidChange: \(notification)")
 	}
 
 	// MARK: - Preconfigured Core Data Fetches
 
 	static func fetchRequestForCarsInManagedObjectContext(_ moc: NSManagedObjectContext) -> NSFetchRequest<Car> {
-		let fetchRequest = NSFetchRequest<Car>()
-
-		// Entity name
-		let entity = Car.entity()
-		fetchRequest.entity = entity
+		let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
 		fetchRequest.fetchBatchSize = 32
 
 		// Sorting keys
@@ -261,11 +150,7 @@ final class CoreDataManager {
                                 dateComparator dateCompare: String,
                                      fetchSize: Int,
                         inManagedObjectContext moc: NSManagedObjectContext) -> NSFetchRequest<FuelEvent> {
-		let fetchRequest = NSFetchRequest<FuelEvent>()
-
-		// Entity name
-		let entity = FuelEvent.entity()
-		fetchRequest.entity = entity
+		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = fetchSize
 
 		// Predicates
@@ -338,11 +223,7 @@ final class CoreDataManager {
 	}
 
 	static func containsEventWithCar(_ car: Car, andDate date: Date, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
-		let fetchRequest = FuelEvent.fetchRequest()
-
-		// Entity name
-		let entity = FuelEvent.entity()
-		fetchRequest.entity = entity
+		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = 2
 
 		// Predicates
@@ -569,7 +450,7 @@ final class CoreDataManager {
 	}
 
 	static func deleteAllObjects() {
-		for entity in managedObjectModel.entitiesByName.keys {
+		for entity in persistentContainer.managedObjectModel.entitiesByName.keys {
 			let deleteRequest = NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: entity))
 
 			do {
