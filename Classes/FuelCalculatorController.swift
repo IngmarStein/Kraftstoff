@@ -22,17 +22,13 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
-	var selectedCarId : String?
+	var selectedCarId: String?
 
-	private var _fetchedResultsController: NSFetchedResultsController<Car>?
-	private var fetchedResultsController: NSFetchedResultsController<Car> {
-		if _fetchedResultsController == nil {
-			let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-			fetchedResultsController.delegate = self
-			_fetchedResultsController = fetchedResultsController
-		}
-		return _fetchedResultsController!
-	}
+	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
+		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
+	}()
 
 	var restoredSelectionIndex: IndexPath?
 	var car: Car?
@@ -78,7 +74,6 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
 		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
 	}
 
 	// MARK: - State Restoration
@@ -116,7 +111,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		super.decodeRestorableState(with: coder)
 	}
 
-	// MARK: - Modeswitching for Table Rows
+	// MARK: - Mode switching for Table Rows
 
 	override func setEditing(_ enabled: Bool, animated: Bool) {
 		if self.isEditing != enabled {
@@ -510,13 +505,6 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 			self.tableView.reloadRows(at: [IndexPath(row: rowOffset, section: 0)], with: .none)
 		}
-	}
-
-	func storesDidChange(_ notification: NSNotification) {
-		_fetchedResultsController = nil
-		NSFetchedResultsController<Car>.deleteCache(withName: nil)
-		recreateTableContentsWithAnimation(.none)
-		updateSaveButtonState()
 	}
 
 	// MARK: - Programmatically Selecting Table Rows

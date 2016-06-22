@@ -17,15 +17,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	var editedObject: Car!
 
-	private var _fetchedResultsController: NSFetchedResultsController<Car>?
-	private var fetchedResultsController: NSFetchedResultsController<Car> {
-		if _fetchedResultsController == nil {
-			let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-			fetchedResultsController.delegate = self
-			_fetchedResultsController = fetchedResultsController
-		}
-		return _fetchedResultsController!
-	}
+	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
+		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
+	}()
 
 	private var longPressRecognizer: UILongPressGestureRecognizer? {
 		didSet {
@@ -81,17 +77,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
            selector: #selector(CarViewController.localeChanged(_:)),
                name: Locale.currentLocaleDidChangeNotification,
              object: nil)
-		NotificationCenter.default().addObserver(self,
-			selector: #selector(CarViewController.storesDidChange(_:)),
-			name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange,
-			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
-	}
-
-	@objc func storesDidChange(_ notification: NSNotification) {
-		_fetchedResultsController = nil
-		NSFetchedResultsController<Car>.deleteCache(withName: nil)
-		updateHelp(true)
-		self.tableView.reloadData()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {

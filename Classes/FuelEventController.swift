@@ -26,29 +26,25 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			dateMatches: true)
 	}()
 
-	private var _fetchedResultsController: NSFetchedResultsController<FuelEvent>?
-	private var fetchedResultsController: NSFetchedResultsController<FuelEvent> {
-		if _fetchedResultsController == nil {
-			let fetchController = NSFetchedResultsController(fetchRequest: self.fetchRequest,
-				managedObjectContext: CoreDataManager.managedObjectContext,
-				sectionNameKeyPath: nil,
-				cacheName: nil)
+	private lazy var fetchedResultsController: NSFetchedResultsController<FuelEvent> = {
+		let fetchController = NSFetchedResultsController(fetchRequest: self.fetchRequest,
+			managedObjectContext: CoreDataManager.managedObjectContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil)
 
-			fetchController.delegate = self
+		fetchController.delegate = self
 
-			// Perform the data fetch
-			do {
-				try fetchController.performFetch()
-			} catch let error as NSError {
-				fatalError(error.localizedDescription)
-			} catch {
-				fatalError()
-			}
-			_fetchedResultsController = fetchController
+		// Perform the data fetch
+		do {
+			try fetchController.performFetch()
+		} catch let error as NSError {
+			fatalError(error.localizedDescription)
+		} catch {
+			fatalError()
 		}
 
-		return _fetchedResultsController!
-	}
+		return fetchController
+	}()
 
 	private var statisticsController: FuelStatisticsPageController!
 
@@ -110,20 +106,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
                name: Locale.currentLocaleDidChangeNotification,
              object: nil)
 
-		NotificationCenter.default().addObserver(self,
-			selector: #selector(FuelEventController.storesDidChange(_:)),
-			name: Notification.Name.NSPersistentStoreCoordinatorStoresDidChange,
-			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
-
 		// Dismiss any presented view controllers
 		if presentedViewController != nil {
 			dismiss(animated: false, completion: nil)
 		}
-	}
-
-	@objc func storesDidChange(_ notification: NSNotification) {
-		_fetchedResultsController = nil
-		self.tableView.reloadData()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
