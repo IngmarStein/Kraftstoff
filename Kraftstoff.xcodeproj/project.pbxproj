@@ -57,6 +57,7 @@
 		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
+		9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,6 +143,7 @@
 		9E228BA91C6CB193000EDD88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D941AF8A4B5006A56D6 /* AppDelegate.swift */,
+				9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */,
 				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
@@ -659,6 +662,7 @@
 				95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */,
 				953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */,
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
+				9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,

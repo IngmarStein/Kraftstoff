@@ -71,6 +71,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			CoreDataManager.migrateFromiCloud()
 			CoreDataManager.load()
 
+			CloudKitManager.subscribeToChanges()
+
+			UIApplication.shared().registerForRemoteNotifications()
+
 			if ProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
 				let userDefaults = UserDefaults.standard()
@@ -192,17 +196,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - Notifications
 
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-		if let stringObjectUserInfo = userInfo as? [String: NSObject] {
-			let notification = CKNotification(fromRemoteNotificationDictionary: stringObjectUserInfo)
-
-			if notification.subscriptionID == "private-changes" {
-				print(notification)
-				completionHandler(.newData)
-			}
-		} else {
-			completionHandler(.noData)
-		}
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+		CloudKitManager.handlePush(userInfo, completionHandler: completionHandler)
 	}
 
 	// MARK: - State Restoration
