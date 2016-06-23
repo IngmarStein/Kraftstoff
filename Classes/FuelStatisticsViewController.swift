@@ -31,9 +31,7 @@ class FuelStatisticsViewController: UIViewController {
 	@IBOutlet weak var centerLabel: UILabel!
 	@IBOutlet weak var scrollView: UIScrollView!
 
-	// Swift 2016-06-06: this should be [Int: DiscardableDataObject] instead of [Int: Any]
-	// but that currently causes a compiler crash, see https://bugs.swift.org/browse/SR-1696
-	var contentCache = [Int: Any]()
+	var contentCache = [Int: DiscardableDataObject]()
 	var displayedNumberOfMonths = 0 {
 		didSet {
 			// Update selection status of all buttons
@@ -133,9 +131,7 @@ class FuelStatisticsViewController: UIViewController {
 	func purgeDiscardableCacheContent() {
 		for (key, value) in contentCache {
 			if key != displayedNumberOfMonths {
-				// https://bugs.swift.org/browse/SR-1696
-                // value.discardContent()
-				(value as! DiscardableDataObject).discardContent()
+                value.discardContent()
 			}
         }
 	}
