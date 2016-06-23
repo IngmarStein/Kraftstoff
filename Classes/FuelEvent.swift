@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import CloudKit
 
 final class FuelEvent: NSManagedObject {
 
@@ -30,4 +31,34 @@ final class FuelEvent: NSManagedObject {
 	var cost: NSDecimalNumber {
 		return fuelVolume * price
 	}
+
+	func asCloudKitRecord() -> CKRecord {
+		let record = CKRecord(recordType: "fuelEvent")
+
+		record["inheritedCost"] = inheritedCost
+		record["distance"] = distance
+		record["price"] = price
+		record["inheritedDistance"] = inheritedDistance
+		record["inheritedFuelVolume"] = inheritedFuelVolume
+		record["timestamp"] = timestamp
+		record["filledUp"] = filledUp
+		record["comment"] = comment
+		record["fuelVolume"] = fuelVolume
+
+		return record
+	}
+
+	func updateFromRecord(record: CKRecord) {
+		cloudKitRecordName = record.recordID.recordName
+		inheritedCost = record["inheritedCost"] as! NSDecimalNumber
+		distance = record["distance"] as! NSDecimalNumber
+		price = record["price"] as! NSDecimalNumber
+		inheritedDistance = record["inheritedDistance"] as! NSDecimalNumber
+		inheritedFuelVolume = record["inheritedFuelVolume"] as! NSDecimalNumber
+		timestamp = record["timestamp"] as! Date
+		filledUp = record["filledUp"] as! Bool
+		comment = record["comment"] as? String
+		fuelVolume = record["fuelVolume"] as! NSDecimalNumber
+	}
+	
 }
