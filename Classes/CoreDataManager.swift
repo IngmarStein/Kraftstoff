@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CloudKit
 
 final class CoreDataManager {
 	// CoreData support
@@ -44,11 +45,18 @@ final class CoreDataManager {
 		if context.hasChanges {
 			do {
 				let modifiedManagedObjects = context.insertedObjects.union(context.updatedObjects)
+				let modifiedRecords = modifiedManagedObjects.flatMap { (managedObject) -> CKRecord? in
+					if let ckManagedObject = managedObject as? CloudKitManagedObject {
+						return ckManagedObject.asCloudKitRecord()
+					}
+					return nil
+				}
+
 				let deletedRecordIDs = context.deletedObjects.flatMap { ($0 as? CloudKitManagedObject)?.cloudKitRecordID }
 
 				try context.save()
 
-				CloudKitManager.save(modifiedObjects: modifiedManagedObjects, deletedRecordIDs: deletedRecordIDs)
+				CloudKitManager.save(modifiedRecords: modifiedRecords, deletedRecordIDs: deletedRecordIDs)
 			} catch let error as NSError {
 				let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
 					message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),

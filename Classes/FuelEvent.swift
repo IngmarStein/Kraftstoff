@@ -41,7 +41,10 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 	}
 
 	func asCloudKitRecord() -> CKRecord {
-		let record = CKRecord(recordType: "fuelEvent")
+		if cloudKitRecordName == nil {
+			cloudKitRecordName = NSUUID().uuidString
+		}
+		let record = CKRecord(recordType: "fuelEvent", recordID: cloudKitRecordID!)
 
 		record["inheritedCost"] = inheritedCost
 		record["distance"] = distance

@@ -65,7 +65,10 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 	}
 
 	func asCloudKitRecord() -> CKRecord {
-		let record = CKRecord(recordType: "car")
+		if cloudKitRecordName == nil {
+			cloudKitRecordName = NSUUID().uuidString
+		}
+		let record = CKRecord(recordType: "car", recordID: cloudKitRecordID!)
 
 		record["timestamp"] = timestamp
 		record["distanceTotalSum"] = distanceTotalSum
