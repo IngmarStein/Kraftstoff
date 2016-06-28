@@ -23,7 +23,7 @@ final class Car: NSManagedObject, CloudKitManagedObject {
     @NSManaged var odometerUnit: Int32
     @NSManaged var name: String
     @NSManaged var numberPlate: String
-    @NSManaged var fuelEvents: NSSet
+    @NSManaged var fuelEvents: Set<FuelEvent>
 
 	@nonobjc class func fetchRequest() -> NSFetchRequest<Car> {
 		return NSFetchRequest<Car>(entityName: "car")
@@ -56,19 +56,15 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 		}
 	}
 
-	var cloudKitRecordID: CKRecordID? {
-		if let recordName = cloudKitRecordName {
-			return CKRecordID(recordName: recordName)
-		} else {
-			return nil
-		}
-	}
-
-	func asCloudKitRecord() -> CKRecord {
+	var cloudKitRecordID: CKRecordID {
 		if cloudKitRecordName == nil {
 			cloudKitRecordName = NSUUID().uuidString
 		}
-		let record = CKRecord(recordType: "car", recordID: cloudKitRecordID!)
+		return CKRecordID(recordName: cloudKitRecordName!)
+	}
+
+	func asCloudKitRecord() -> CKRecord {
+		let record = CKRecord(recordType: "car", recordID: cloudKitRecordID)
 
 		record["timestamp"] = timestamp
 		record["distanceTotalSum"] = distanceTotalSum

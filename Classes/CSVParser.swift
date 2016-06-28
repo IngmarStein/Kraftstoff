@@ -13,10 +13,8 @@ final class CSVParser {
 
 	private var separator: String! {
 		didSet {
-			var endTextMutableCharacterSet = CharacterSet.newlines
-			endTextMutableCharacterSet.insert(charactersIn: "\"")
-			endTextMutableCharacterSet.insert(charactersIn: separator.substring(to: separator.index(after: separator.startIndex)))
-			endTextCharacterSet = endTextMutableCharacterSet
+			assert(separator.characters.count == 1)
+			endTextCharacterSet = CharacterSet.newlines.union(CharacterSet(charactersIn: "\"" + separator))
 		}
 	}
 	private var scanner: Scanner

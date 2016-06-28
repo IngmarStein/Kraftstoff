@@ -71,7 +71,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			CoreDataManager.migrateFromiCloud()
 			CoreDataManager.load()
 
-			CloudKitManager.subscribeToChanges()
+			CloudKitManager.initialize()
 
 			UIApplication.shared().registerForRemoteNotifications()
 

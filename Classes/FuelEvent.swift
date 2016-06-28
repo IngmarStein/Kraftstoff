@@ -32,19 +32,15 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		return fuelVolume * price
 	}
 
-	var cloudKitRecordID: CKRecordID? {
-		if let recordName = cloudKitRecordName {
-			return CKRecordID(recordName: recordName)
-		} else {
-			return nil
-		}
-	}
-
-	func asCloudKitRecord() -> CKRecord {
+	var cloudKitRecordID: CKRecordID {
 		if cloudKitRecordName == nil {
 			cloudKitRecordName = NSUUID().uuidString
 		}
-		let record = CKRecord(recordType: "fuelEvent", recordID: cloudKitRecordID!)
+		return CKRecordID(recordName: cloudKitRecordName!)
+	}
+
+	func asCloudKitRecord() -> CKRecord {
+		let record = CKRecord(recordType: "fuelEvent", recordID: cloudKitRecordID)
 
 		record["inheritedCost"] = inheritedCost
 		record["distance"] = distance
@@ -55,6 +51,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		record["filledUp"] = filledUp
 		record["comment"] = comment
 		record["fuelVolume"] = fuelVolume
+		record.parent = CKReference(recordID: car.cloudKitRecordID, action: .none)
 
 		return record
 	}
@@ -70,6 +67,18 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		filledUp = record["filledUp"] as! Bool
 		comment = record["comment"] as? String
 		fuelVolume = record["fuelVolume"] as! NSDecimalNumber
+
+		if let parent = record.parent {
+			let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
+			fetchRequest.predicate = Predicate(format: "cloudKitRecordName LIKE[c] %@", parent.recordID.recordName)
+
+			let fetchResults = CoreDataManager.objectsForFetchRequest(fetchRequest)
+			if fetchResults.count == 1 {
+				car = fetchResults[0]
+			} else {
+				print("Unexpected number of cars: \(fetchResults)")
+			}
+		}
 	}
 	
 }

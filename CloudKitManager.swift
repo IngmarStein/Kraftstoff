@@ -27,6 +27,66 @@ final class CloudKitManager {
 		}
 	}
 
+	static func initialize() {
+		container.accountStatus {
+			(accountStatus, error) in
+
+			switch accountStatus {
+			case .available:
+				initializeCloudKit()
+			default:
+				handleCloudKitUnavailable(accountStatus: accountStatus, error: error)
+			}
+		}
+	}
+
+	private static func initializeCloudKit() {
+		print("CloudKit IS available")
+
+		subscribeToChanges()
+		// TODO: full sync
+	}
+
+	private static func handleCloudKitUnavailable(accountStatus: CKAccountStatus, error: NSError?) {
+		var errorText = "Synchronization is disabled\n"
+		if let error = error {
+			print("handleCloudKitUnavailable ERROR: \(error)")
+			print("An error occured: \(error.localizedDescription)")
+			errorText += error.localizedDescription
+		}
+
+		switch accountStatus {
+		case .restricted:
+			errorText += "iCloud is not available due to restrictions"
+		case .noAccount:
+			errorText += "There is no CloudKit account setup.\nYou can setup iCloud in the Settings app."
+		default:
+			break
+		}
+
+		displayCloudKitNotAvailableError(errorText)
+	}
+
+	private static func displayCloudKitNotAvailableError(_ errorText: String) {
+		guard !UserDefaults.standard().bool(forKey: "SuppressCloudKitError") else { return }
+
+		DispatchQueue.main.async {
+			let alertController = UIAlertController(title: "iCloud Synchronization Error", message: errorText, preferredStyle: .alert)
+
+			let firstButtonAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+			alertController.addAction(firstButtonAction)
+
+			let secondButtonAction = UIAlertAction(title: "Don't show again", style: .destructive) {
+				action in
+
+				UserDefaults.standard().set(true, forKey: "SuppressCloudKitError")
+			}
+			alertController.addAction(secondButtonAction)
+
+			UIApplication.kraftstoffAppDelegate.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+		}
+	}
+
 	static func subscribeToChanges() {
 		guard !subscriptionIsLocallyCached else { return }
 

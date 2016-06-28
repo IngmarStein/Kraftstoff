@@ -11,7 +11,7 @@ import CloudKit
 
 protocol CloudKitManagedObject {
 
-	var cloudKitRecordID: CKRecordID? { get }
+	var cloudKitRecordID: CKRecordID { get }
 
 	func asCloudKitRecord() -> CKRecord
 	func updateFromRecord(_ record: CKRecord)
