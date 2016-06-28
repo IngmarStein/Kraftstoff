@@ -258,7 +258,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 			// Add demo contents
 			if addDemoContents {
-				DemoData.addDemoEvents(newManagedObject, inContext:CoreDataManager.managedObjectContext)
+				DemoData.addDemoEvents(newManagedObject, inContext: CoreDataManager.managedObjectContext)
 			}
 
 			// Saving here is important here to get a stable objectID for the fuelEvent fetches

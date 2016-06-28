@@ -8,6 +8,7 @@
 
 import UIKit
 import CloudKit
+import CoreData
 
 final class CloudKitManager {
 	private static let container = CKContainer.default()
@@ -97,6 +98,37 @@ final class CloudKitManager {
 		} else {
 			completionHandler(.noData)
 		}
+	}
+
+	static func save(modifiedObjects: Set<NSManagedObject>, deletedRecordIDs: [CKRecordID]) {
+		if !modifiedObjects.isEmpty {
+			let modifiedRecords = modifiedObjects.flatMap { (managedObject) -> CKRecord? in
+				if let ckManagedObject = managedObject as? CloudKitManagedObject {
+					return ckManagedObject.asCloudKitRecord()
+				}
+				return nil
+			}
+
+			let modifyRecordsOperation = CKModifyRecordsOperation(recordsToSave: modifiedRecords, recordIDsToDelete: deletedRecordIDs)
+			modifyRecordsOperation.perRecordCompletionBlock = { (record, error) in
+ 				if let error = error {
+					print("CKModifyRecordsOperation error: \(error)")
+				} else {
+					print("Record modification successful for recordID: \(record?.recordID)")
+				}
+			}
+			modifyRecordsOperation.modifyRecordsCompletionBlock = { (savedRecords, deletedRecords, error) in
+				if let error = error {
+					print("CKModifyRecordsOperation error: \(error)")
+				} else if let deletedRecords = deletedRecords {
+					for recordID in deletedRecords {
+						print("DELETED: \(recordID)")
+					}
+				}
+			}
+			container.privateCloudDatabase.add(modifyRecordsOperation)
+		}
+
 	}
 
 }

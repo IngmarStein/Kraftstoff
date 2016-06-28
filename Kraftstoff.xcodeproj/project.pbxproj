@@ -58,6 +58,7 @@
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
 		9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */; };
+		9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +145,7 @@
 		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
+		9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManagedObject.swift; sourceTree = "<group>"; };
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -424,8 +426,9 @@
 		95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */ = {
 			isa = PBXGroup;
 			children = (
-				95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */,
 				95AE6D8E1AF7BDCC006A56D6 /* Car.swift */,
+				9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */,
+				95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */,
 			);
 			name = "Managed Objects";
 			sourceTree = "<group>";
@@ -646,6 +649,7 @@
 				95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */,
 				95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
+				9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
 				95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,

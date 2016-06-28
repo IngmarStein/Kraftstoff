@@ -2,4 +2,4 @@
 
 source 'https://rubygems.org'
 
-gem 'fastlane', '~> 1.95.0'
+gem 'fastlane', '~> 1.96.0'

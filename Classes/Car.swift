@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import CloudKit
 
-final class Car: NSManagedObject {
+final class Car: NSManagedObject, CloudKitManagedObject {
 
 	@NSManaged var cloudKitRecordName: String?
     @NSManaged var timestamp: Date
@@ -56,6 +56,14 @@ final class Car: NSManagedObject {
 		}
 	}
 
+	var cloudKitRecordID: CKRecordID? {
+		if let recordName = cloudKitRecordName {
+			return CKRecordID(recordName: recordName)
+		} else {
+			return nil
+		}
+	}
+
 	func asCloudKitRecord() -> CKRecord {
 		let record = CKRecord(recordType: "car")
 
@@ -73,7 +81,7 @@ final class Car: NSManagedObject {
 		return record
 	}
 
-	func updateFromRecord(record: CKRecord) {
+	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
 		timestamp = record["timestamp"] as! Date
 		distanceTotalSum = record["distanceTotalSum"] as! NSDecimalNumber

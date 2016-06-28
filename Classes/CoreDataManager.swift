@@ -17,7 +17,7 @@ final class CoreDataManager {
 		return context
 	}()
 
-	private static let persistentContainer: NSPersistentContainer = {
+	static let persistentContainer: NSPersistentContainer = {
 		return NSPersistentContainer(name: "Kraftstoffrechner")
 	}()
 
@@ -43,7 +43,12 @@ final class CoreDataManager {
 	@discardableResult static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
 			do {
+				let modifiedManagedObjects = context.insertedObjects.union(context.updatedObjects)
+				let deletedRecordIDs = context.deletedObjects.flatMap { ($0 as? CloudKitManagedObject)?.cloudKitRecordID }
+
 				try context.save()
+
+				CloudKitManager.save(modifiedObjects: modifiedManagedObjects, deletedRecordIDs: deletedRecordIDs)
 			} catch let error as NSError {
 				let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
 					message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),

@@ -59,7 +59,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			self.window?.makeKeyAndVisible()
 
-			self.validateReceipt(Bundle.main().appStoreReceiptURL) { (success) -> Void in
+			self.validateReceipt(Bundle.main().appStoreReceiptURL) { success in
 				self.appReceiptValid = success
 				if !success {
 					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
@@ -88,11 +88,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				            "recentComment",
 				            "editHelpCounter",
 				            "firstStartup"] {
-								userDefaults.removeObject(forKey: key)
+					userDefaults.removeObject(forKey: key)
 				}
 			}
 
-			self.updateShortcutItems()
+			updateShortcutItems()
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
@@ -345,7 +345,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - SKRequestDelegate
 
 	func requestDidFinish(_ request: SKRequest) {
-		validateReceipt(Bundle.main().appStoreReceiptURL) { (success) -> Void in
+		validateReceipt(Bundle.main().appStoreReceiptURL) { success in
 			self.appReceiptValid = success
 		}
 	}
