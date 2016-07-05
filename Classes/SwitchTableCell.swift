@@ -61,11 +61,11 @@ final class SwitchTableCell: PageCell {
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
 
 		setupFonts()
-		NotificationCenter.default().addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {

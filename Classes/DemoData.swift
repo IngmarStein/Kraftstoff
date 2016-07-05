@@ -130,7 +130,7 @@ final class DemoData {
 	static func addDemoEvents(_ car: Car, inContext context: NSManagedObjectContext) {
 		let df = DateFormatter()
 
-		df.locale = Locale.system()
+		df.locale = Locale.system
 		df.dateFormat = "yyyy'-'MM'-'dd' 'HH':'mm':'Z"
 
 		autoreleasepool {

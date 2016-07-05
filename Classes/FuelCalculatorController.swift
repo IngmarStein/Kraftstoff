@@ -72,8 +72,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -172,7 +172,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return
 		}
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if (distance == nil || distance! == zero) && (fuelVolume == nil || fuelVolume! == zero) && (price == nil || price! == zero) {
 			return
@@ -206,7 +206,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return false
 		}
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if (distance == nil || distance! <= zero) || (fuelVolume == nil || fuelVolume! <= zero) {
 			return false
@@ -270,7 +270,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Distance) {
 			if self.distance == nil {
-				self.distance = NSDecimalNumber(decimal: (UserDefaults.standard().object(forKey: "recentDistance")! as! NSNumber).decimalValue)
+				self.distance = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentDistance")! as! NSNumber).decimalValue)
 			}
 
 			addRowAtIndex(rowIndex: 0 + rowOffset,
@@ -285,7 +285,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Price) {
 			if self.price == nil {
-				self.price = NSDecimalNumber(decimal: (UserDefaults.standard().object(forKey: "recentPrice")! as! NSNumber).decimalValue)
+				self.price = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentPrice")! as! NSNumber).decimalValue)
 			}
 
 			addRowAtIndex(rowIndex: 1 + rowOffset,
@@ -300,7 +300,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Amount) {
 			if self.fuelVolume == nil {
-				self.fuelVolume = NSDecimalNumber(decimal: (UserDefaults.standard().object(forKey: "recentFuelVolume")! as! NSNumber).decimalValue)
+				self.fuelVolume = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentFuelVolume")! as! NSNumber).decimalValue)
 			}
 
 			addRowAtIndex(rowIndex: 2 + rowOffset,
@@ -325,7 +325,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
 			if let selectedCar = selectedCarId {
 				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar)
-			} else if let preferredCar = UserDefaults.standard().string(forKey: "preferredCarID") {
+			} else if let preferredCar = UserDefaults.standard.string(forKey: "preferredCarID") {
 				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar)
 			}
 
@@ -368,7 +368,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		createDataRows(.All, withAnimation: animation)
 
 		// Full-fillup selector
-		self.filledUp = UserDefaults.standard().bool(forKey: "recentFilledUp")
+		self.filledUp = UserDefaults.standard.bool(forKey: "recentFilledUp")
 
 		if self.car != nil {
 			addRowAtIndex(rowIndex: 5,
@@ -379,7 +379,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
               withAnimation: animation)
 
 			if self.comment == nil {
-				self.comment = UserDefaults.standard().string(forKey: "recentComment")!
+				self.comment = UserDefaults.standard.string(forKey: "recentComment")!
 			}
 
 			addRowAtIndex(rowIndex: 6,
@@ -569,7 +569,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                       forceOdometerUpdate: false)
 
                          // Reset calculator table
-                         let zero = NSDecimalNumber.zero()
+                         let zero = NSDecimalNumber.zero
 
                          self.valueChanged(zero, identifier: "distance")
                          self.valueChanged(zero, identifier: "price")
@@ -586,7 +586,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance! == .zero()) || (fuelVolume == nil || fuelVolume! == .zero()) {
+		} else if (distance == nil || distance! == .zero) || (fuelVolume == nil || fuelVolume! == .zero) {
 			saveValid = false
 		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate: self.date!) {
 			saveValid = false
@@ -603,7 +603,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		guard let car = self.car else { return false }
 		guard let distance = self.distance else { return false }
 
-		guard car.odometer != .notANumber() else { return false }
+		guard car.odometer != .notA else { return false }
 
 		// 1.) entered "distance" must be larger than car odometer
 		let odometerUnit = car.ksOdometerUnit
@@ -611,14 +611,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
 		let convDistance = rawDistance - car.odometer
     
-		if convDistance <= .zero() {
+		if convDistance <= .zero {
 			return false
 		}
     
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
     
-		if liters <= .zero() {
+		if liters <= .zero {
 			return false
 		}
 
@@ -626,7 +626,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100km)
 
-		if rawConsumption == .notANumber() {
+		if rawConsumption == .notA {
 			return false
 		}
 
@@ -634,7 +634,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100km)
     
-		if convConsumption == .notANumber() {
+		if convConsumption == .notA {
 			return false
 		}
 
@@ -645,7 +645,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
-		if avgConsumption == .notANumber() {
+		if avgConsumption == .notA {
 			loBound = NSDecimalNumber(mantissa:  2, exponent: 0, isNegative: false)
 			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
 		} else {
@@ -772,7 +772,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 
 			if let recentKey = recentKey {
-				let defaults = UserDefaults.standard()
+				let defaults = UserDefaults.standard
 
 				defaults.set(newValue, forKey:recentKey)
 				defaults.synchronize()
@@ -781,7 +781,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		} else if valueIdentifier == "filledUp" {
 			self.filledUp = newValue!.boolValue
 
-			let defaults = UserDefaults.standard()
+			let defaults = UserDefaults.standard
 
 			defaults.set(newValue, forKey: "recentFilledUp")
 			defaults.synchronize()
@@ -789,7 +789,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		} else if valueIdentifier == "comment" {
 			comment = newValue as? String
 
-			let defaults = UserDefaults.standard()
+			let defaults = UserDefaults.standard
 
 			defaults.set(newValue, forKey: "recentComment")
 			defaults.synchronize()
@@ -802,7 +802,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 
 			if !self.car!.objectID.isTemporaryID {
-				let defaults = UserDefaults.standard()
+				let defaults = UserDefaults.standard
 
 				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!) as NSString?, forKey: "preferredCarID")
 				defaults.synchronize()
@@ -828,7 +828,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber <= .zero() {
+				if decimalNumber <= .zero {
 					return false
 				}
 			}
@@ -883,7 +883,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	// MARK: -
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 }

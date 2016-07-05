@@ -75,7 +75,7 @@ final class NumberEditTableCell: EditablePageCell {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string: string)
 
-				if digit == .notANumber() {
+				if digit == .notA {
 					return false
 				}
 
@@ -94,11 +94,11 @@ final class NumberEditTableCell: EditablePageCell {
 				return false
 			}
 
-			if value < .zero() {
+			if value < .zero {
 				return false
 			}
 		} else if range.location >= text.characters.count - 1 {
-			let handler = NSDecimalNumberHandler(roundingMode: .roundDown,
+			let handler = NSDecimalNumberHandler(roundingMode: .down,
 												 scale: Int16(self.numberFormatter.maximumFractionDigits),
                                                  raiseOnExactness: false,
                                                  raiseOnOverflow: false,
@@ -121,7 +121,7 @@ final class NumberEditTableCell: EditablePageCell {
 
 	// Reset to zero value on clear
 	func textFieldShouldClear(_ textField: UITextField) -> Bool {
-		let clearedValue = NSDecimalNumber.zero()
+		let clearedValue = NSDecimalNumber.zero
 
 		if textField.isEditing {
 			textField.text = numberFormatter.string(from: clearedValue)
@@ -149,7 +149,7 @@ final class NumberEditTableCell: EditablePageCell {
 		}
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
-			let value = alternateNumberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero()
+			let value = alternateNumberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero
 			textField.text = numberFormatter.string(from: value)
 			self.delegate.valueChanged(value, identifier: self.valueIdentifier)
 			updateTextFieldColorForValue(value)
@@ -160,7 +160,7 @@ final class NumberEditTableCell: EditablePageCell {
 	override func textFieldDidEndEditing(_ textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
-		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero()
+		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero
 
 		if let alternateNumberFormatter = self.alternateNumberFormatter {
 			textField.text = alternateNumberFormatter.string(from: value)

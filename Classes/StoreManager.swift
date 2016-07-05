@@ -80,7 +80,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 
 	// migrate purchases from NSUserDefaults to Keychain
 	private func migratePurchases() {
-		let userDefaults = UserDefaults.standard()
+		let userDefaults = UserDefaults.standard
 		if let purchasedProducts = userDefaults.array(forKey: purchasedProductsKey) as? [String] {
 			for product in purchasedProducts {
 				setProductPurchased(product, purchased: true)

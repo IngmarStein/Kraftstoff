@@ -20,10 +20,10 @@ final class CloudKitManager {
 
 	private static var subscriptionIsLocallyCached: Bool {
 		get {
-			return UserDefaults.standard().bool(forKey: "ckPrivateSubscription")
+			return UserDefaults.standard.bool(forKey: "ckPrivateSubscription")
 		}
 		set {
-			UserDefaults.standard().set(newValue, forKey: "ckPrivateSubscription")
+			UserDefaults.standard.set(newValue, forKey: "ckPrivateSubscription")
 		}
 	}
 
@@ -68,7 +68,7 @@ final class CloudKitManager {
 	}
 
 	private static func displayCloudKitNotAvailableError(_ errorText: String) {
-		guard !UserDefaults.standard().bool(forKey: "SuppressCloudKitError") else { return }
+		guard !UserDefaults.standard.bool(forKey: "SuppressCloudKitError") else { return }
 
 		DispatchQueue.main.async {
 			let alertController = UIAlertController(title: "iCloud Synchronization Error", message: errorText, preferredStyle: .alert)
@@ -79,7 +79,7 @@ final class CloudKitManager {
 			let secondButtonAction = UIAlertAction(title: "Don't show again", style: .destructive) {
 				action in
 
-				UserDefaults.standard().set(true, forKey: "SuppressCloudKitError")
+				UserDefaults.standard.set(true, forKey: "SuppressCloudKitError")
 			}
 			alertController.addAction(secondButtonAction)
 

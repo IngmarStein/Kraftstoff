@@ -34,7 +34,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
 		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
 
-		NotificationCenter.default().addObserver(self,
+		NotificationCenter.default.addObserver(self,
 												selector: #selector(DateEditTableCell.significantTimeChange(_:)),
 													name: Notification.Name.UIApplicationSignificantTimeChange,
 												object: nil)
@@ -73,7 +73,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 	}
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 	func significantTimeChange(_ object: AnyObject) {

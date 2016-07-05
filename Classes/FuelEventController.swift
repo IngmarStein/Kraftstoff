@@ -101,7 +101,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
-		NotificationCenter.default().addObserver(self,
+		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelEventController.localeChanged(_:)),
                name: Locale.currentLocaleDidChangeNotification,
              object: nil)
@@ -188,13 +188,13 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if observeRotation && !isObservingRotationEvents {
 			UIDevice.current().beginGeneratingDeviceOrientationNotifications()
 
-			NotificationCenter.default().addObserver(self,
+			NotificationCenter.default.addObserver(self,
                selector: #selector(FuelEventController.orientationChanged(_:)),
                    name: Notification.Name.UIDeviceOrientationDidChange,
                  object: UIDevice.current())
 
 		} else if !observeRotation && isObservingRotationEvents {
-			NotificationCenter.default().removeObserver(self,
+			NotificationCenter.default.removeObserver(self,
                       name: Notification.Name.UIDeviceOrientationDidChange,
                     object: UIDevice.current())
 
@@ -259,8 +259,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	private func exportTextDescription() -> String {
 		let outputFormatter = DateFormatter()
 
-		outputFormatter.dateStyle = .mediumStyle
-		outputFormatter.timeStyle = .noStyle
+		outputFormatter.dateStyle = .medium
+		outputFormatter.timeStyle = .none
 
         let fetchedObjects = self.fetchedResultsController.fetchedObjects!
         let fetchCount = fetchedObjects.count
@@ -292,7 +292,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
 			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
 				message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
@@ -334,7 +334,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.write(to: exportURL, options: .dataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
 			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
 			                                        message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
@@ -356,7 +356,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
 		do {
-			try FileManager.default().removeItem(at: exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -365,7 +365,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
 		do {
-			try FileManager.default().removeItem(at: exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -374,7 +374,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func documentInteractionControllerDidDismissOpenInMenu(_ controller: UIDocumentInteractionController) {
 		do {
-			try FileManager.default().removeItem(at: exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
@@ -595,6 +595,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - Memory Management
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

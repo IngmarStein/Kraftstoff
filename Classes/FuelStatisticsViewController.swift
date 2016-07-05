@@ -67,11 +67,11 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		setupFonts()
-		NotificationCenter.default().addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
@@ -109,7 +109,7 @@ class FuelStatisticsViewController: UIViewController {
 		leftLabel.text  = selectedCar.name
 		rightLabel.text = ""
 
-		displayedNumberOfMonths = UserDefaults.standard().integer(forKey: "statisticTimeSpan")
+		displayedNumberOfMonths = UserDefaults.standard.integer(forKey: "statisticTimeSpan")
 	}
 
 	// MARK: - View Rotation
@@ -218,7 +218,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NotificationCenter.default().post(name: "numberOfMonthsSelected" as Notification.Name, object: self, userInfo: ["span": sender.tag as NSNumber])
+		NotificationCenter.default.post(name: "numberOfMonthsSelected" as Notification.Name, object: self, userInfo: ["span": sender.tag as NSNumber])
 	}
 
 	// MARK: - Memory Management

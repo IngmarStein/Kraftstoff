@@ -256,7 +256,7 @@ final class CoreDataManager {
 	// MARK: - Core Data Updates
 
 	@discardableResult static func addToArchive(car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		// Convert distance and fuelvolume to SI units
 		let fuelUnit     = car.ksFuelUnit
@@ -387,7 +387,7 @@ final class CoreDataManager {
 		let car = event.car
 		let distance = event.distance
 		let fuelVolume = event.fuelVolume
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,

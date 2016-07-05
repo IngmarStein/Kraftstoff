@@ -73,7 +73,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
-		NotificationCenter.default().addObserver(self,
+		NotificationCenter.default.addObserver(self,
            selector: #selector(CarViewController.localeChanged(_:)),
                name: Locale.currentLocaleDidChangeNotification,
              object: nil)
@@ -126,7 +126,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - Help Badge
 
 	private func updateHelp(_ animated: Bool) {
-		let defaults = UserDefaults.standard()
+		let defaults = UserDefaults.standard
 
 		// Number of cars determines the help badge
 		let helpImageName: String?
@@ -386,7 +386,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				present(navController, animated: true, completion: nil)
 
 				// Edit started => prevent edit help from now on
-				UserDefaults.standard().set(maxEditHelpCounter, forKey: "editHelpCounter")
+				UserDefaults.standard.set(maxEditHelpCounter, forKey: "editHelpCounter")
 
 				// Quit editing mode
 				setEditing(false, animated: true)
@@ -401,11 +401,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let deletedObjectOrder = deletedObject.order
 
 		// Invalidate preference for deleted car
-		let preferredCarID = UserDefaults.standard().string(forKey: "preferredCarID")
+		let preferredCarID = UserDefaults.standard.string(forKey: "preferredCarID")
 		let deletedCarID = CoreDataManager.modelIdentifierForManagedObject(deletedObject)
 
 		if deletedCarID == preferredCarID {
-			UserDefaults.standard().set("", forKey: "preferredCarID")
+			UserDefaults.standard.set("", forKey: "preferredCarID")
 		}
 
 		// Delete the managed object for the given index path
@@ -462,7 +462,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let distance   = managedObject.distanceTotalSum
 		let fuelVolume = managedObject.fuelVolumeTotalSum
 
-		if distance > .zero() && fuelVolume > .zero() {
+		if distance > .zero && fuelVolume > .zero {
 			avgConsumption = Formatters.sharedFuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = consumptionUnit.accessibilityDescription
@@ -644,6 +644,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

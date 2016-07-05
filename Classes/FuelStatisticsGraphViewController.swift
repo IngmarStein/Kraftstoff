@@ -701,7 +701,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
             }
 
         case .ended, .cancelled, .failed:
-			if ProcessInfo.processInfo().arguments.index(of: "-KEEPLENS") == nil {
+			if ProcessInfo.processInfo.arguments.index(of: "-KEEPLENS") == nil {
 				self.zooming = false
 			}
 		}
@@ -844,7 +844,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		let price = fuelEvent.price
 
-		if price == .zero() {
+		if price == .zero {
 			return .nan
 		}
 
@@ -908,7 +908,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		distance = distance + fuelEvent.inheritedDistance
 		cost     = cost + fuelEvent.inheritedCost
 
-		if cost == .zero() {
+		if cost == .zero {
 			return .nan
 		}
 

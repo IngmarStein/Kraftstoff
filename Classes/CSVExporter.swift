@@ -16,10 +16,10 @@ final class CSVExporter {
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		let bundle: Bundle
-		if let language = language, path = Bundle.main().pathForResource(language, ofType: "lproj"), localeBundle = Bundle(path: path) {
+		if let language = language, path = Bundle.main.pathForResource(language, ofType: "lproj"), localeBundle = Bundle(path: path) {
 			bundle = localeBundle
 		} else {
-			bundle = Bundle.main()
+			bundle = Bundle.main
 		}
 
 		var dataString = String()
@@ -51,12 +51,12 @@ final class CSVExporter {
 
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
-		dateFormatter.locale = Locale.system()
+		dateFormatter.locale = Locale.system
 		dateFormatter.timeZone = TimeZone(forSecondsFromGMT: 0)
 
 		let numberFormatter = NumberFormatter()
 		numberFormatter.numberStyle = .decimal
-		numberFormatter.locale = Locale.current()
+		numberFormatter.locale = Locale.current
 		numberFormatter.usesGroupingSeparator = false
 		numberFormatter.alwaysShowsDecimalSeparator = true
 		numberFormatter.minimumFractionDigits = 2

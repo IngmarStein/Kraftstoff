@@ -18,22 +18,22 @@ final class Formatters {
 
 	static let sharedLongDateFormatter: DateFormatter = {
 		let dateFormatter = DateFormatter()
-		dateFormatter.timeStyle = .shortStyle
-		dateFormatter.dateStyle = .longStyle
+		dateFormatter.timeStyle = .short
+		dateFormatter.dateStyle = .long
 		return dateFormatter
 	}()
 
 	static let sharedDateFormatter: DateFormatter = {
 		let dateFormatter = DateFormatter()
-		dateFormatter.timeStyle = .noStyle
-		dateFormatter.dateStyle = .mediumStyle
+		dateFormatter.timeStyle = .none
+		dateFormatter.dateStyle = .medium
 		return dateFormatter
 	}()
 
 	static let sharedDateTimeFormatter: DateFormatter = {
         let dateTimeFormatter = DateFormatter()
-		dateTimeFormatter.timeStyle = .shortStyle
-		dateTimeFormatter.dateStyle = .mediumStyle
+		dateTimeFormatter.timeStyle = .short
+		dateTimeFormatter.dateStyle = .medium
 		return dateTimeFormatter
     }()
 
@@ -134,7 +134,7 @@ final class Formatters {
 	static let sharedConsumptionRoundingHandler: NSDecimalNumberHandler = {
         let fractionDigits = sharedFuelVolumeFormatter.maximumFractionDigits
         return NSDecimalNumberHandler(
-			roundingMode: .roundPlain,
+			roundingMode: .plain,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,
@@ -146,7 +146,7 @@ final class Formatters {
 	static let sharedPriceRoundingHandler: NSDecimalNumberHandler = {
         let fractionDigits = sharedEditPreciseCurrencyFormatter.maximumFractionDigits
 		return NSDecimalNumberHandler(
-			roundingMode: .roundUp,
+			roundingMode: .up,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,

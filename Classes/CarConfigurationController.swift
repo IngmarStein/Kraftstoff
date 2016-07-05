@@ -70,7 +70,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NotificationCenter.default().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -139,7 +139,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let suffix = " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
-			self.odometer = .zero()
+			self.odometer = .zero
 		}
 
 		addRowAtIndex(rowIndex: 3,
@@ -327,7 +327,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer! == .zero() {
+			&& self.odometer! == .zero {
 			showCancelSheet = false
 		}
 
@@ -444,6 +444,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Memory Management
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

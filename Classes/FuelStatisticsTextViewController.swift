@@ -22,11 +22,11 @@ private final class FuelStatisticsData: DiscardableDataObject {
 	var firstDate: Date!
 	var lastDate: Date!
 
-	var totalCost = NSDecimalNumber.zero()
-	var totalFuelVolume = NSDecimalNumber.zero()
-	var totalDistance = NSDecimalNumber.zero()
+	var totalCost = NSDecimalNumber.zero
+	var totalFuelVolume = NSDecimalNumber.zero
+	var totalDistance = NSDecimalNumber.zero
 
-	var avgConsumption = NSDecimalNumber.zero()
+	var avgConsumption = NSDecimalNumber.zero
 	var bestConsumption: NSDecimalNumber!
 	var worstConsumption: NSDecimalNumber!
 
@@ -58,7 +58,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		state.firstDate = nil
 		state.lastDate = nil
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		state.totalCost = zero
 		state.totalFuelVolume = zero
@@ -127,7 +127,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 
 		// Compute average consumption
-		if state.totalDistance != .zero() && state.totalFuelVolume != .zero() {
+		if state.totalDistance != .zero && state.totalFuelVolume != .zero {
 			state.avgConsumption = Units.consumptionForKilometers(state.totalDistance,
                                                                liters: state.totalFuelVolume,
                                                                inUnit: consumptionUnit)
@@ -285,7 +285,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let nf = Formatters.sharedFuelVolumeFormatter
             let cf = Formatters.sharedCurrencyFormatter
             let pcf = Formatters.sharedPreciseCurrencyFormatter
-            let zero = NSDecimalNumber.zero()
+            let zero = NSDecimalNumber.zero
 
             let consumptionUnit = state.car.ksFuelConsumptionUnit
             let consumptionUnitString = consumptionUnit.localizedString

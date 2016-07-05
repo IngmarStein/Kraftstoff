@@ -15,7 +15,7 @@ class KraftstoffTests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!
 
 	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
-		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main()])!
+		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main])!
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		do {

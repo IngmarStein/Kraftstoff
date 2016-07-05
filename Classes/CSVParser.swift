@@ -25,12 +25,12 @@ final class CSVParser {
 	static func simplifyCSVHeaderName(_ header: String) -> String {
 		return header.replacingOccurrences(of: "[? :_\\-]+",
 												with: "",
-                                                 options: .regularExpressionSearch).uppercased()
+                                                 options: .regularExpression).uppercased()
 	}
 
 	init(inputCSVString: String) {
         // Convert DOS and legacy Mac line endings to Unix
-		csvString = inputCSVString.replacingOccurrences(of: "\r\n?", with: "\n", options: .regularExpressionSearch)
+		csvString = inputCSVString.replacingOccurrences(of: "\r\n?", with: "\n", options: .regularExpression)
 
         scanner = Scanner(string: csvString)
         scanner.charactersToBeSkipped = nil

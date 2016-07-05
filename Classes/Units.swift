@@ -138,7 +138,7 @@ final class Units {
 	// MARK: - Unit Guessing from Current Locale
 
 	static var volumeUnitFromLocale: UnitVolume {
-		if let country = Locale.autoupdatingCurrent().object(forKey: Locale.Key.countryCode) as? String where country == "US" {
+		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String where country == "US" {
 			return .gallons
 		} else {
 			return .liters
@@ -146,7 +146,7 @@ final class Units {
 	}
 
 	static var fuelConsumptionUnitFromLocale: KSFuelConsumption {
-		if let country = Locale.autoupdatingCurrent().object(forKey: Locale.Key.countryCode) as? String where country == "US" {
+		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String where country == "US" {
 			return .milesPerGallonUS
 		} else {
 			return .litersPer100km
@@ -154,7 +154,7 @@ final class Units {
 	}
 
 	static var distanceUnitFromLocale: UnitLength {
-		if let country = Locale.autoupdatingCurrent().object(forKey: Locale.Key.countryCode) as? String where country == "US" {
+		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String where country == "US" {
 			return .miles
 		} else {
 			return .kilometers
@@ -178,7 +178,7 @@ final class Units {
         case UnitVolume.gallons: return volume * litersPerUSGallon
         case UnitVolume.imperialGallons: return volume * litersPerImperialGallon
         case UnitVolume.liters: return volume
-		default: return .zero()
+		default: return .zero
 		}
 	}
 
@@ -187,7 +187,7 @@ final class Units {
         case UnitVolume.gallons: return liters / litersPerUSGallon
         case UnitVolume.imperialGallons: return liters / litersPerImperialGallon
         case UnitVolume.liters: return liters
-		default: return .zero()
+		default: return .zero
 		}
 	}
 
@@ -212,7 +212,7 @@ final class Units {
         case UnitVolume.gallons: return price / litersPerUSGallon
         case UnitVolume.imperialGallons: return price / litersPerImperialGallon
         case UnitVolume.liters: return price
-		default: return .zero()
+		default: return .zero
 		}
 	}
 
@@ -221,7 +221,7 @@ final class Units {
         case UnitVolume.gallons: return literPrice * litersPerUSGallon
         case UnitVolume.imperialGallons: return literPrice * litersPerImperialGallon
         case UnitVolume.liters: return literPrice
-		default: return .zero()
+		default: return .zero
 		}
 	}
 
@@ -230,12 +230,12 @@ final class Units {
 	static func consumptionForKilometers(_ kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: KSFuelConsumption) -> NSDecimalNumber {
 		let handler = Formatters.sharedConsumptionRoundingHandler
 
-		if kilometers <= .zero() {
-			return .notANumber()
+		if kilometers <= .zero {
+			return .notA
 		}
 
-		if liters <= .zero() {
-			return .notANumber()
+		if liters <= .zero {
+			return .notA
 		}
 
 		if unit.isEfficiency {
@@ -274,7 +274,7 @@ final class Units {
 
 	// MARK: - Unit Strings/Descriptions
 
-	static func fuelUnitDescription(_ unit: UnitVolume, discernGallons: Bool, pluralization plural: Bool, bundle: Bundle = Bundle.main()) -> String {
+	static func fuelUnitDescription(_ unit: UnitVolume, discernGallons: Bool, pluralization plural: Bool, bundle: Bundle = Bundle.main) -> String {
 		if plural {
 			switch unit {
 			case UnitVolume.liters: return NSLocalizedString("Liters", bundle: bundle, comment: "")
@@ -292,7 +292,7 @@ final class Units {
 		}
 	}
 
-	static func fuelPriceUnitDescription(_ unit: UnitVolume, bundle: Bundle = Bundle.main()) -> String {
+	static func fuelPriceUnitDescription(_ unit: UnitVolume, bundle: Bundle = Bundle.main) -> String {
 		if unit == UnitVolume.liters {
 			return NSLocalizedString("Price per Liter", bundle: bundle, comment: "")
 		} else {
@@ -300,7 +300,7 @@ final class Units {
 		}
 	}
 
-	static func odometerUnitDescription(_ unit: UnitLength, pluralization plural: Bool, bundle: Bundle = Bundle.main()) -> String {
+	static func odometerUnitDescription(_ unit: UnitLength, pluralization plural: Bool, bundle: Bundle = Bundle.main) -> String {
 		if plural {
 			return unit == UnitLength.kilometers ? NSLocalizedString("Kilometers", bundle: bundle, comment: "") : NSLocalizedString("Miles", comment: "")
 		} else {

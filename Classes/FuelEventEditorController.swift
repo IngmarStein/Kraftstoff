@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
     
-		NotificationCenter.default().addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -290,7 +290,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Don't add the section when no value can be computed
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if distance <= zero || fuelVolume <= zero {
 			return
@@ -498,7 +498,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Validation of Done button
 		var canBeSaved = true
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if !(distance > zero && fuelVolume > zero) {
 			canBeSaved = false
@@ -528,7 +528,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber <= .zero() {
+				if decimalNumber <= .zero {
 					return false
 				}
 			}
@@ -573,6 +573,6 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - Memory Management
 
 	deinit {
-		NotificationCenter.default().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

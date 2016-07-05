@@ -31,7 +31,7 @@ final class CSVImporter {
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
-		newCar.odometer = NSDecimalNumber.zero()
+		newCar.odometer = NSDecimalNumber.zero
 		newCar.ksFuelUnit = volumeUnit
 		newCar.ksFuelConsumptionUnit = fuelConsumptionUnit
 
@@ -52,7 +52,7 @@ final class CSVImporter {
 			newEvent.filledUp = filledUp
 		}
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if inheritedCost != zero {
 			newEvent.inheritedCost = inheritedCost
@@ -192,21 +192,21 @@ final class CSVImporter {
 	private func guessDistanceForParsedDistance(_ distance: NSDecimalNumber, andFuelVolume liters: NSDecimalNumber) -> NSDecimalNumber {
 		let convDistance = distance << 3
 
-		if liters <= .zero() {
+		if liters <= .zero {
 			return distance
 		}
 
 		// consumption with parsed distance
 		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100km)
 
-		if rawConsumption == .notANumber() {
+		if rawConsumption == .notA {
 			return distance
 		}
 
 		// consumption with increased distance
 		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100km)
 
-		if convConsumption == .notANumber() {
+		if convConsumption == .notA {
 			return distance
 		}
 
@@ -289,7 +289,7 @@ final class CSVImporter {
 			var detectedEvents    = false
 			var initialFillUpSeen = false
 
-			let zero                = NSDecimalNumber.zero()
+			let zero                = NSDecimalNumber.zero
 			var odometer            = zero
 			var inheritedCost       = zero
 			var inheritedDistance   = zero
@@ -348,8 +348,8 @@ final class CSVImporter {
 
 				if isTankProImport {
 					// TankPro stores total costs not the price per unit...
-					if volume == nil || volume == .zero() {
-						price = NSDecimalNumber.zero()
+					if volume == nil || volume == .zero {
+						price = NSDecimalNumber.zero
 					} else {
 						price = price!.dividing(by: volume!, withBehavior:Formatters.sharedPriceRoundingHandler)
 					}
@@ -485,7 +485,7 @@ final class CSVImporter {
 		nfCurrent.usesGroupingSeparator = true
 		nfCurrent.numberStyle = .decimal
 		nfCurrent.isLenient = true
-		nfCurrent.locale = Locale.current()
+		nfCurrent.locale = Locale.current
 
 		return nfCurrent
 	}()
@@ -497,7 +497,7 @@ final class CSVImporter {
 		nfSystem.usesGroupingSeparator = true
 		nfSystem.numberStyle = .decimal
 		nfSystem.isLenient = true
-		nfSystem.locale = Locale.system()
+		nfSystem.locale = Locale.system
 
 		return nfSystem
 	}()
@@ -510,7 +510,7 @@ final class CSVImporter {
 		// Scan via NSScanner (fast, strict)
 		let scanner = Scanner(string: string)
 
-		scanner.locale = Locale.current()
+		scanner.locale = Locale.current
 		scanner.scanLocation = 0
 
 		var d = Decimal()
@@ -518,7 +518,7 @@ final class CSVImporter {
 			return NSDecimalNumber(decimal:d)
 		}
 
-		scanner.locale = Locale.system()
+		scanner.locale = Locale.system
 		scanner.scanLocation = 0
 
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
@@ -550,7 +550,7 @@ final class CSVImporter {
 
 	private let systemDateFormatter: DateFormatter = {
 		let df = DateFormatter()
-		df.locale = Locale.system()
+		df.locale = Locale.system
 		df.dateFormat = "yyyy-MM-dd"
 		df.isLenient = false
 		return df
@@ -558,9 +558,9 @@ final class CSVImporter {
 
 	private let currentDateFormatter: DateFormatter = {
 		let df = DateFormatter()
-		df.locale = Locale.current()
-		df.dateStyle = .shortStyle
-		df.timeStyle = .noStyle
+		df.locale = Locale.current
+		df.dateStyle = .short
+		df.timeStyle = .none
 		df.isLenient = true
 		return df
 	}()
@@ -568,7 +568,7 @@ final class CSVImporter {
 	private let systemTimeFormatter: DateFormatter = {
 		let df = DateFormatter()
 		df.timeZone = TimeZone(forSecondsFromGMT: 0)
-		df.locale = Locale.system()
+		df.locale = Locale.system
 		df.dateFormat = "HH:mm"
 		df.isLenient = false
 		return df
@@ -577,9 +577,9 @@ final class CSVImporter {
 	private let currentTimeFormatter: DateFormatter = {
 		let df = DateFormatter()
 		df.timeZone = TimeZone(forSecondsFromGMT: 0)
-		df.locale = Locale.current()
-		df.timeStyle = .shortStyle
-		df.dateStyle = .noStyle
+		df.locale = Locale.current
+		df.timeStyle = .short
+		df.dateStyle = .none
 		df.isLenient = true
 		return df
 	}()

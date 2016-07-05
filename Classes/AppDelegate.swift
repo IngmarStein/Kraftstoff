@@ -38,13 +38,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Application Lifecycle
 
 	override init() {
-		UserDefaults.standard().register(
+		UserDefaults.standard.register(
 		   ["statisticTimeSpan": 6,
 			"preferredStatisticsPage": 1,
 			"preferredCarID": "",
-			"recentDistance": NSDecimalNumber.zero(),
-			"recentPrice": NSDecimalNumber.zero(),
-			"recentFuelVolume": NSDecimalNumber.zero(),
+			"recentDistance": NSDecimalNumber.zero,
+			"recentPrice": NSDecimalNumber.zero,
+			"recentFuelVolume": NSDecimalNumber.zero,
 			"recentFilledUp": true,
 			"recentComment": "",
 			"editHelpCounter": 0,
@@ -59,7 +59,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			self.window?.makeKeyAndVisible()
 
-			self.validateReceipt(Bundle.main().appStoreReceiptURL) { success in
+			self.validateReceipt(Bundle.main.appStoreReceiptURL) { success in
 				self.appReceiptValid = success
 				if !success {
 					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
@@ -75,9 +75,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			UIApplication.shared().registerForRemoteNotifications()
 
-			if ProcessInfo.processInfo().arguments.index(of: "-STARTFRESH") != nil {
+			if ProcessInfo.processInfo.arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
-				let userDefaults = UserDefaults.standard()
+				let userDefaults = UserDefaults.standard
 				for key in ["statisticTimeSpan",
 				            "preferredStatisticsPage",
 				            "preferredCarID",
@@ -96,7 +96,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
-				let defaults = UserDefaults.standard()
+				let defaults = UserDefaults.standard
 
 				if defaults.bool(forKey: "firstStartup") {
 					if defaults.string(forKey: "preferredCarID") == "" {
@@ -207,7 +207,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-		let bundleVersion = Bundle.main().infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
+		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
@@ -252,7 +252,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func removeFileItem(at url: URL) {
 		if url.isFileURL {
 			do {
-				try FileManager.default().removeItem(at: url as URL)
+				try FileManager.default.removeItem(at: url as URL)
 			} catch let error as NSError {
 				print(error.localizedDescription)
 			}
@@ -332,7 +332,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 
 		// Treat imports as successful first startups
-		UserDefaults.standard().set(false, forKey: "firstStartup")
+		UserDefaults.standard.set(false, forKey: "firstStartup")
 		return true
 	}
 
@@ -345,7 +345,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - SKRequestDelegate
 
 	func requestDidFinish(_ request: SKRequest) {
-		validateReceipt(Bundle.main().appStoreReceiptURL) { success in
+		validateReceipt(Bundle.main.appStoreReceiptURL) { success in
 			self.appReceiptValid = success
 		}
 	}
@@ -360,7 +360,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		guard let receiptURL = appStoreReceiptURL, receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
 
 		do {
-			let receiptData = receipt.base64EncodedString(Data.Base64EncodingOptions(rawValue: 0))
+			let receiptData = receipt.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
 			let requestContents = ["receipt-data": receiptData]
 			let requestData = try JSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
 			return requestData
@@ -383,7 +383,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		request.httpMethod = "POST"
 		request.httpBody = receiptData
 
-		let task = URLSession.shared().dataTask(with: request, completionHandler: {data, response, error -> Void in
+		let task = URLSession.shared.dataTask(with: request, completionHandler: {data, response, error -> Void in
 
 			guard let data = data where error == nil else {
 				onCompletion(nil, nil)
