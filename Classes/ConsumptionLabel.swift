@@ -28,6 +28,7 @@ final class ConsumptionLabel: UILabel {
 
 			let attributedString = NSMutableAttributedString(string: text)
 			attributedString.beginEditing()
+			attributedString.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: text.characters.count))
 			for subString in highlightStrings {
 				let range = (text as NSString).range(of: subString)
 
