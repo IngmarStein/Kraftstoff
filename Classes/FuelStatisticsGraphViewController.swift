@@ -302,10 +302,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let dateFormatter: DateFormatter
 
 		if state.dataCount < 3 || firstDate!.timeIntervalSince(lastDate!) < 604800 {
-			dateFormatter = Formatters.sharedDateTimeFormatter
+			dateFormatter = Formatters.dateTimeFormatter
 			midDate = nil
 		} else {
-			dateFormatter = Formatters.sharedDateFormatter
+			dateFormatter = Formatters.dateFormatter
 			midDate = Date(timeInterval: firstDate!.timeIntervalSince(lastDate!)/2.0, since: lastDate!)
 		}
 
@@ -672,7 +672,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     zoomIndex = minIndex
 
                     // Date information
-                    let df = Formatters.sharedLongDateFormatter
+                    let df = Formatters.longDateFormatter
 
 					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
                         self.centerLabel.text = df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0]))
@@ -784,22 +784,22 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 	}
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
-		return Formatters.sharedFuelVolumeFormatter
+		return Formatters.fuelVolumeFormatter
 	}
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = car.ksFuelConsumptionUnit.localizedString
+		let unit = Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit)
 
 		return "\(prefix)%@ \(unit)"
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		return car.ksFuelConsumptionUnit.localizedString
+		return Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit)
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
-		return Formatters.sharedFuelVolumeFormatter
+		return Formatters.fuelVolumeFormatter
 	}
 
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
@@ -823,22 +823,22 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	}
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
-		return precise ? Formatters.sharedPreciseCurrencyFormatter : Formatters.sharedCurrencyFormatter
+		return precise ? Formatters.preciseCurrencyFormatter : Formatters.currencyFormatter
 	}
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = Formatters.sharedShortMeasurementFormatter.string(from: car.ksFuelUnit)
+		let unit = Formatters.shortMeasurementFormatter.string(from: car.ksFuelUnit)
 
 		return "\(prefix)%@/\(unit)"
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		return "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/\(Formatters.sharedShortMeasurementFormatter.string(from: car.ksFuelUnit))"
+		return "\(Formatters.currencyFormatter.currencySymbol!)/\(Formatters.shortMeasurementFormatter.string(from: car.ksFuelUnit))"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
-		return Formatters.sharedAxisCurrencyFormatter
+		return Formatters.axisCurrencyFormatter
 	}
 
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
@@ -862,9 +862,9 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		let distanceUnit = car.ksOdometerUnit
 
 		if distanceUnit == UnitLength.kilometers {
-			return Formatters.sharedCurrencyFormatter
+			return Formatters.currencyFormatter
 		} else {
-			return Formatters.sharedDistanceFormatter
+			return Formatters.distanceFormatter
 		}
 	}
 
@@ -873,7 +873,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		if car.ksOdometerUnit == UnitLength.kilometers {
 			return "\(prefix)%@/100km"
 		} else {
-			let currencySymbol = Formatters.sharedCurrencyFormatter.currencySymbol!
+			let currencySymbol = Formatters.currencyFormatter.currencySymbol!
 			return "\(prefix)%@ mi/\(currencySymbol)"
 		}
 	}
@@ -881,16 +881,16 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	func noAverageStringForCar(_ car: Car) -> String {
 		let distanceUnit = car.ksOdometerUnit
 
-		return distanceUnit == UnitLength.kilometers ? "\(Formatters.sharedCurrencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.sharedCurrencyFormatter.currencySymbol!)"
+		return distanceUnit == UnitLength.kilometers ? "\(Formatters.currencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.currencyFormatter.currencySymbol!)"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
 
 		if distanceUnit == UnitLength.kilometers {
-			return Formatters.sharedAxisCurrencyFormatter
+			return Formatters.axisCurrencyFormatter
 		} else {
-			return Formatters.sharedDistanceFormatter
+			return Formatters.distanceFormatter
 		}
 	}
 
@@ -899,7 +899,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 			return .nan
 		}
 
-		let handler = Formatters.sharedConsumptionRoundingHandler
+		let handler = Formatters.consumptionRoundingHandler
 		let distanceUnit = car.ksOdometerUnit
 
 		var distance = fuelEvent.distance

@@ -49,14 +49,13 @@ class KraftstoffTests: XCTestCase {
 		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
 		car.ksFuelUnit = .liters
-		car.ksFuelConsumptionUnit = .litersPer100km
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
 		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
 		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
-			dateMatches: true,
-			inManagedObjectContext: managedObjectContext),
+			dateMatches: true),
 			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car, language: language)
@@ -93,14 +92,13 @@ class KraftstoffTests: XCTestCase {
 		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
 		car.ksFuelUnit = .liters
-		car.ksFuelConsumptionUnit = .litersPer100km
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
 		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
 		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
-			dateMatches: true,
-			inManagedObjectContext: managedObjectContext),
+			dateMatches: true),
 			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car)

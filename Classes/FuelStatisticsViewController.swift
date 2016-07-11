@@ -163,8 +163,7 @@ class FuelStatisticsViewController: UIViewController {
 				// Fetch some young events to get the most recent fillup date
 				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
 																									  beforeDate: Date(),
-																									 dateMatches: true,
-																						  inManagedObjectContext: sampleContext),
+																									 dateMatches: true),
 												 inManagedObjectContext: sampleContext)
 
 				var recentFillupDate = Date()
@@ -179,8 +178,7 @@ class FuelStatisticsViewController: UIViewController {
 				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
 				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
 																										  afterDate: samplingStart,
-																										dateMatches: true,
-																							 inManagedObjectContext: sampleContext),
+																										dateMatches: true),
 													inManagedObjectContext: sampleContext)
 
 				// Compute statistics

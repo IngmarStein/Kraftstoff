@@ -466,7 +466,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Timestamp
-		tableCell.topLeftLabel.text = Formatters.sharedDateFormatter.string(for: managedObject.timestamp)
+		tableCell.topLeftLabel.text = Formatters.dateFormatter.string(for: managedObject.timestamp)
 		tableCell.topLeftAccessibilityLabel = nil
 
 		// Distance
@@ -478,11 +478,11 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = "\(Formatters.sharedDistanceFormatter.string(from: convertedDistance)!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
+		tableCell.botLeftLabel.text = "\(Formatters.distanceFormatter.string(from: convertedDistance)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
-		tableCell.topRightLabel.text = Formatters.sharedCurrencyFormatter.string(from: managedObject.cost)
+		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: managedObject.cost)
 		tableCell.topRightAccessibilityLabel = tableCell.topRightLabel.text
 
 		// Consumption combined with inherited data from earlier events
@@ -493,16 +493,16 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 
-			consumptionDescription = Formatters.sharedFuelVolumeFormatter.string(from: avg)!
+			consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg)!
 
-			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(consumptionUnit.accessibilityDescription)"
+			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 
 		} else {
 			consumptionDescription = NSLocalizedString("-", comment: "")
 			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
 		}
 
-		tableCell.botRightLabel.text = "\(consumptionDescription) \(consumptionUnit.localizedString)"
+		tableCell.botRightLabel.text = "\(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {

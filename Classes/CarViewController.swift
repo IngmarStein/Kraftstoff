@@ -289,7 +289,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		dismiss(animated: result != .aborted, completion: nil)
 	}
 
-	// MARK: - Adding a new Object
+	// MARK: - Adding a new object
 
 	override func setEditing(_ editing: Bool, animated: Bool) {
 		super.setEditing(editing, animated: animated)
@@ -298,9 +298,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		updateHelp(animated)
 
 		// Force Core Data save after editing mode is finished
+		/*
 		if !editing {
 			CoreDataManager.saveContext()
 		}
+		*/
 	}
 
 	private func checkEnableEditButton() {
@@ -463,9 +465,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let fuelVolume = managedObject.fuelVolumeTotalSum
 
 		if distance > .zero && fuelVolume > .zero {
-			avgConsumption = Formatters.sharedFuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
+			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
-			tableCell.botRightAccessibilityLabel = consumptionUnit.accessibilityDescription
+			tableCell.botRightAccessibilityLabel = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 		} else {
 			avgConsumption = NSLocalizedString("-", comment: "")
 			tableCell.topRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
@@ -473,7 +475,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		tableCell.topRightLabel.text = avgConsumption
-		tableCell.botRightLabel.text = consumptionUnit.localizedString
+		tableCell.botRightLabel.text = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -571,10 +573,16 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		hideHelp(true)
 	}
 
+	/*
+	TODO: this currently crashes with Swift 3
+	#0	0x0000000100c658ac in static IndexPath._unconditionallyBridgeFromObjectiveC(NSIndexPath?) -> IndexPath ()
+	#1	0x00000001000b41a4 in @objc CarViewController.tableView(UITableView, didEndEditingRowAt : IndexPath) -> () ()
+
 	override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath) {
 		checkEnableEditButton()
 		updateHelp(true)
 	}
+	*/
 
 	// MARK: - NSFetchedResultsControllerDelegate
 

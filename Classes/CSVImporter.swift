@@ -22,7 +22,7 @@ final class CSVImporter {
 
 	// MARK: - Core Data Support
 
-	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: KSFuelConsumption, inContext managedObjectContext: NSManagedObjectContext) -> Car {
+	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: UnitFuelEfficiency, inContext managedObjectContext: NSManagedObjectContext) -> Car {
 		// Create and configure new car object
 		let newCar = Car(context: managedObjectContext)
 
@@ -31,7 +31,7 @@ final class CSVImporter {
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
-		newCar.odometer = NSDecimalNumber.zero
+		newCar.odometer = .zero
 		newCar.ksFuelUnit = volumeUnit
 		newCar.ksFuelConsumptionUnit = fuelConsumptionUnit
 
@@ -160,8 +160,8 @@ final class CSVImporter {
 
 	private func createCarObjectsInContext(_ managedObjectContext: NSManagedObjectContext) -> Int {
 		// Fetch already existing cars for later update of order attribute
-		let carRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(managedObjectContext)
-		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext:managedObjectContext)
+		let carRequest = CoreDataManager.fetchRequestForCars()
+		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext: managedObjectContext)
 
 		// Create car objects
 		carForID.removeAll()
@@ -197,14 +197,14 @@ final class CSVImporter {
 		}
 
 		// consumption with parsed distance
-		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100km)
+		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100Kilometers)
 
 		if rawConsumption == .notA {
 			return distance
 		}
 
 		// consumption with increased distance
-		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100km)
+		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100Kilometers)
 
 		if convConsumption == .notA {
 			return distance
@@ -351,7 +351,7 @@ final class CSVImporter {
 					if volume == nil || volume == .zero {
 						price = NSDecimalNumber.zero
 					} else {
-						price = price!.dividing(by: volume!, withBehavior:Formatters.sharedPriceRoundingHandler)
+						price = price!.dividing(by: volume!, withBehavior: Formatters.priceRoundingHandler)
 					}
 				} else if price != nil {
 					if volumeUnit != nil {

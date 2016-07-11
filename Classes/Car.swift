@@ -38,12 +38,12 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 		}
 	}
 
-	var ksFuelConsumptionUnit: KSFuelConsumption {
+	var ksFuelConsumptionUnit: UnitFuelEfficiency {
 		get {
-			return KSFuelConsumption(rawValue: fuelConsumptionUnit)!
+			return .fromPersistentId(fuelConsumptionUnit)
 		}
 		set {
-			fuelConsumptionUnit = newValue.rawValue
+			fuelConsumptionUnit = newValue.persistentId
 		}
 	}
 

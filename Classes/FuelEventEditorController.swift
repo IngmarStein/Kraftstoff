@@ -65,7 +65,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.doneButton.accessibilityIdentifier = "done"
 		self.cancelButton.accessibilityIdentifier = "cancel"
 
-		self.title = Formatters.sharedDateFormatter.string(from: self.event.timestamp)
+		self.title = Formatters.dateFormatter.string(from: self.event.timestamp)
 		self.navigationItem.rightBarButtonItem = self.editButton
 
 		// Remove tint from navigation bar
@@ -172,7 +172,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit     = car.ksFuelUnit
     
-		self.title = Formatters.sharedDateFormatter.string(from: event.timestamp)
+		self.title = Formatters.dateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
 		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
 		price      = Units.pricePerUnit(event.price, withUnit: fuelUnit)
@@ -308,11 +308,11 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let kilometers  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
 
-		let consumptionString = "\(Formatters.sharedCurrencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.sharedFuelVolumeFormatter.string(from: consumption)!) \(consumptionUnit.localizedString)"
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 
 		// Substrings for highlighting
-		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-                                  consumptionUnit.localizedString]
+		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
+                                  consumptionUnit.symbol]
 
 		addSectionAtIndex(1, withAnimation: animation)
 
@@ -331,7 +331,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection: 0,
               cellClass: DateEditTableCell.self,
 			   cellData: ["label": NSLocalizedString("Date", comment: ""),
-                          "formatter": Formatters.sharedDateTimeFormatter,
+                          "formatter": Formatters.dateTimeFormatter,
                           "valueIdentifier": "date"],
           withAnimation: animation)
 
@@ -341,8 +341,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection: 0,
               cellClass: NumberEditTableCell.self,
 			   cellData: ["label": NSLocalizedString("Distance", comment: ""),
-			              "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
-                          "formatter": Formatters.sharedDistanceFormatter,
+			              "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: odometerUnit)),
+                          "formatter": Formatters.distanceFormatter,
                           "valueIdentifier": "distance"],
           withAnimation: animation)
 
@@ -352,8 +352,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection: 0,
               cellClass: NumberEditTableCell.self,
 			   cellData: ["label": Units.fuelPriceUnitDescription(fuelUnit),
-                          "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
-                          "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
+                          "formatter": Formatters.editPreciseCurrencyFormatter,
+                          "alternateFormatter": Formatters.preciseCurrencyFormatter,
                           "valueIdentifier": "price"],
           withAnimation: animation)
 
@@ -361,8 +361,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
               inSection: 0,
               cellClass: NumberEditTableCell.self,
                cellData: ["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
-						  "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
-                          "formatter": fuelUnit == UnitVolume.liters ? Formatters.sharedFuelVolumeFormatter : Formatters.sharedPreciseFuelVolumeFormatter,
+						  "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: fuelUnit)),
+                          "formatter": fuelUnit == UnitVolume.liters ? Formatters.fuelVolumeFormatter : Formatters.preciseFuelVolumeFormatter,
                           "valueIdentifier": "fuelVolume"],
           withAnimation: animation)
 

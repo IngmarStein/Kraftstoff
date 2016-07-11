@@ -219,7 +219,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// Conversion units
 		let odometerUnit: UnitLength
 		let fuelUnit: UnitVolume
-		let consumptionUnit: KSFuelConsumption
+		let consumptionUnit: UnitFuelEfficiency
 
 		if let car = self.car {
 			odometerUnit    = car.ksOdometerUnit
@@ -238,11 +238,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
 
-		let consumptionString = "\(Formatters.sharedCurrencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.sharedFuelVolumeFormatter.string(from: consumption)!) \(consumptionUnit.localizedString)"
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 
 		// Substrings for highlighting
-		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-								consumptionUnit.localizedString]
+		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
+								consumptionUnit.symbol]
 
 		addSectionAtIndex(1, withAnimation: animation)
 
@@ -277,8 +277,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                   inSection: 0,
                   cellClass: NumberEditTableCell.self,
 				   cellData: ["label": NSLocalizedString("Distance", comment: ""),
-                              "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)),
-                              "formatter": Formatters.sharedDistanceFormatter,
+                              "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: odometerUnit)),
+                              "formatter": Formatters.distanceFormatter,
                               "valueIdentifier": "distance"],
               withAnimation: animation)
 		}
@@ -292,8 +292,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                   inSection: 0,
                   cellClass: NumberEditTableCell.self,
                    cellData: ["label": Units.fuelPriceUnitDescription(fuelUnit),
-							  "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
-                              "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
+							  "formatter": Formatters.editPreciseCurrencyFormatter,
+                              "alternateFormatter": Formatters.preciseCurrencyFormatter,
                               "valueIdentifier": "price"],
               withAnimation: animation)
 		}
@@ -307,10 +307,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                   inSection: 0,
                   cellClass: NumberEditTableCell.self,
                    cellData: ["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
-                              "suffix": " ".appending(Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)),
+                              "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: fuelUnit)),
                               "formatter": fuelUnit == UnitVolume.liters
-                                                 ? Formatters.sharedFuelVolumeFormatter
-                                                 : Formatters.sharedPreciseFuelVolumeFormatter,
+                                                 ? Formatters.fuelVolumeFormatter
+                                                 : Formatters.preciseFuelVolumeFormatter,
                               "valueIdentifier": "fuelVolume"],
               withAnimation: animation)
 		}
@@ -358,7 +358,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
               inSection: 0,
               cellClass: DateEditTableCell.self,
 			   cellData: ["label": NSLocalizedString("Date", comment: ""),
-                          "formatter": Formatters.sharedDateTimeFormatter,
+                          "formatter": Formatters.dateTimeFormatter,
                           "valueIdentifier": "date",
                           "valueTimestamp": "lastChangeDate",
                           "autorefresh": true],
@@ -624,7 +624,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let rawConsumption = Units.consumptionForKilometers(rawDistance,
                                                                       liters: liters,
-                                                                      inUnit: .litersPer100km)
+                                                                      inUnit: .litersPer100Kilometers)
 
 		if rawConsumption == .notA {
 			return false
@@ -632,7 +632,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let convConsumption = Units.consumptionForKilometers(convDistance,
                                                                       liters: liters,
-                                                                      inUnit: .litersPer100km)
+                                                                      inUnit: .litersPer100Kilometers)
     
 		if convConsumption == .notA {
 			return false
@@ -640,7 +640,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let avgConsumption = Units.consumptionForKilometers(car.distanceTotalSum,
                                                                      liters: car.fuelVolumeTotalSum,
-                                                                     inUnit: .litersPer100km)
+                                                                     inUnit: .litersPer100Kilometers)
     
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
@@ -681,11 +681,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
 		let convDistance = rawDistance - self.car!.odometer
 
-		let distanceFormatter = Formatters.sharedDistanceFormatter
+		let distanceFormatter = Formatters.distanceFormatter
 
-		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit))!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
+		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
-		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit))"
+		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
 		let alertController = UIAlertController(title: NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,

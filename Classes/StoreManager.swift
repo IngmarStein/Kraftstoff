@@ -31,10 +31,9 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func checkCarCount() -> Bool {
-		let moc = CoreDataManager.managedObjectContext
-		let carsFetchRequest = CoreDataManager.fetchRequestForCarsInManagedObjectContext(moc)
+		let carsFetchRequest = CoreDataManager.fetchRequestForCars()
 		do {
-			let count = try moc.count(for: carsFetchRequest)
+			let count = try CoreDataManager.managedObjectContext.count(for: carsFetchRequest)
 			return count == NSNotFound || unlimitedCars || count < maxCarCount
 		} catch {
 			return true

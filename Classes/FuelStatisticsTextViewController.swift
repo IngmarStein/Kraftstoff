@@ -282,19 +282,19 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			context.setShadow(offset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor)
 
-            let nf = Formatters.sharedFuelVolumeFormatter
-            let cf = Formatters.sharedCurrencyFormatter
-            let pcf = Formatters.sharedPreciseCurrencyFormatter
+            let nf = Formatters.fuelVolumeFormatter
+            let cf = Formatters.currencyFormatter
+            let pcf = Formatters.preciseCurrencyFormatter
             let zero = NSDecimalNumber.zero
 
             let consumptionUnit = state.car.ksFuelConsumptionUnit
-            let consumptionUnitString = consumptionUnit.localizedString
+            let consumptionUnitString = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 
             let odometerUnit = state.car.ksOdometerUnit
-            let odometerUnitString = Formatters.sharedShortMeasurementFormatter.string(from: odometerUnit)
+            let odometerUnitString = Formatters.shortMeasurementFormatter.string(from: odometerUnit)
 
 			let fuelUnit = state.car.ksFuelUnit
-            let fuelUnitString = Formatters.sharedShortMeasurementFormatter.string(from: fuelUnit)
+            let fuelUnitString = Formatters.shortMeasurementFormatter.string(from: fuelUnit)
 
             let numberOfDays = Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate)
 
@@ -338,7 +338,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let totalDistance = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit)
 			drawEntry(
 				label: NSLocalizedString("ttl_distance", comment: ""),
-                value: "\(Formatters.sharedDistanceFormatter.string(from: totalDistance)!) \(odometerUnitString)")
+                value: "\(Formatters.distanceFormatter.string(from: totalDistance)!) \(odometerUnitString)")
 
             // total volume
 			let totalVolume = Units.volumeForLiters(state.totalFuelVolume, withUnit: fuelUnit)

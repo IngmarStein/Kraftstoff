@@ -147,7 +147,7 @@ final class CoreDataManager {
 
 	// MARK: - Preconfigured Core Data Fetches
 
-	static func fetchRequestForCarsInManagedObjectContext(_ moc: NSManagedObjectContext) -> NSFetchRequest<Car> {
+	static func fetchRequestForCars() -> NSFetchRequest<Car> {
 		let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
 		fetchRequest.fetchBatchSize = 32
 
@@ -161,8 +161,7 @@ final class CoreDataManager {
 	static func fetchRequestForEvents(car: Car,
                                        andDate date: Date?,
                                 dateComparator dateCompare: String,
-                                     fetchSize: Int,
-                        inManagedObjectContext moc: NSManagedObjectContext) -> NSFetchRequest<FuelEvent> {
+                                     fetchSize: Int) -> NSFetchRequest<FuelEvent> {
 		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = fetchSize
 
@@ -185,28 +184,24 @@ final class CoreDataManager {
 
 	static func fetchRequestForEvents(car: Car,
                                      afterDate date: Date?,
-                                   dateMatches: Bool,
-                        inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest<FuelEvent> {
+                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
                                      andDate: date,
                               dateComparator: dateMatches ? ">=" : ">",
-                                   fetchSize: 128,
-                      inManagedObjectContext: moc)
+                                   fetchSize: 128)
 	}
 
 	static func fetchRequestForEvents(car: Car,
                                     beforeDate date: Date?,
-                                   dateMatches: Bool,
-                        inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest<FuelEvent> {
+                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
                                      andDate: date,
                               dateComparator: dateMatches ? "<=" : "<",
-                                   fetchSize: 8,
-                      inManagedObjectContext: moc)
+                                   fetchSize: 8)
 	}
 
 	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
-		let fetchRequest = fetchRequestForCarsInManagedObjectContext(moc)
+		let fetchRequest = fetchRequestForCars()
 
 		// No section names; perform fetch without cache
 		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -277,8 +272,7 @@ final class CoreDataManager {
 		// Fetch older events
         let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                     beforeDate: date,
-                                                                                   dateMatches: false,
-                                                                        inManagedObjectContext: moc),
+                                                                                   dateMatches: false),
                                      inManagedObjectContext: moc)
 
         if olderEvents.count > 0 {
@@ -297,8 +291,7 @@ final class CoreDataManager {
         // Fetch younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                        afterDate: date,
-                                                                                     dateMatches: false,
-                                                                          inManagedObjectContext: moc),
+                                                                                     dateMatches: false),
                                        inManagedObjectContext: moc)
 
         if youngerEvents.count > 0 {
@@ -392,8 +385,7 @@ final class CoreDataManager {
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
                                                                                   afterDate: event.timestamp,
-                                                                                dateMatches: false,
-                                                                     inManagedObjectContext: moc),
+                                                                                dateMatches: false),
                                    inManagedObjectContext: moc)
 
 		var row = youngerEvents.count
