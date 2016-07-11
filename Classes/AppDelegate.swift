@@ -24,7 +24,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
-	private var appReceipt : [String : AnyObject]?
+	private var appReceipt: [String: AnyObject]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
 
 	private var importAlert: UIAlertController?
@@ -53,7 +53,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		super.init()
 	}
 
-	private func commonLaunchInitialization(_ launchOptions: [NSObject : AnyObject]?) {
+	private func commonLaunchInitialization(_ launchOptions: [NSObject: AnyObject]?) {
 		if !initialized {
 			initialized = true
 
@@ -114,7 +114,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func updateShortcutItems() {
 		if let cars = self.carsFetchedResultsController.fetchedObjects {
 			UIApplication.shared().shortcutItems = cars.map { car in
-				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId" : $0] }
+				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId": $0] }
 				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
 			}
 
@@ -176,12 +176,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
@@ -356,7 +356,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - Receipt validation
 
-	private func receiptData(_ appStoreReceiptURL : URL?) -> Data? {
+	private func receiptData(_ appStoreReceiptURL: URL?) -> Data? {
 		guard let receiptURL = appStoreReceiptURL, receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
 
 		do {
@@ -371,7 +371,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return nil
 	}
 
-	private func validateReceiptInternal(_ appStoreReceiptURL : URL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
+	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
 		guard let receiptData = receiptData(appStoreReceiptURL), url = URL(string: serverURL) else {
@@ -406,7 +406,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		task.resume()
 	}
 
-	private func validateReceipt(_ appStoreReceiptURL : URL?, onCompletion: (Bool) -> Void) {
+	private func validateReceipt(_ appStoreReceiptURL: URL?, onCompletion: (Bool) -> Void) {
 		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: AnyObject?) -> Void in
 			guard let status = statusCode else {
 				onCompletion(false)

@@ -156,7 +156,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	}
 }
 
-extension FuelStatisticsPageController : UIPageViewControllerDelegate {
+extension FuelStatisticsPageController: UIPageViewControllerDelegate {
 	func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
 		return .landscape
 	}
@@ -168,7 +168,7 @@ extension FuelStatisticsPageController : UIPageViewControllerDelegate {
 	}
 }
 
-extension FuelStatisticsPageController : UIPageViewControllerDataSource {
+extension FuelStatisticsPageController: UIPageViewControllerDataSource {
 
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		guard let statisticsViewController = viewController as? FuelStatisticsViewController else { return nil }

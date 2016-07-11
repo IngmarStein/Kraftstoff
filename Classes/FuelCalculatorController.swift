@@ -511,7 +511,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
 		let cell = self.tableView.cellForRow(at: indexPath)!
-		let field : UITextField?
+		let field: UITextField?
 
 		if let carCell = cell as? CarTableCell {
 			field = carCell.textField

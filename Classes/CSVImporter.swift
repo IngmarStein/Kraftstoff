@@ -14,9 +14,9 @@ typealias CSVRecord = [String: String]
 final class CSVImporter {
 
 	private var carIDs = Set<Int>()
-	private var carForID = [Int : Car]()
-	private var modelForID = [Int : String]()
-	private var plateForID = [Int : String]()
+	private var carForID = [Int: Car]()
+	private var modelForID = [Int: String]()
+	private var plateForID = [Int: String]()
 
 	init() {}
 

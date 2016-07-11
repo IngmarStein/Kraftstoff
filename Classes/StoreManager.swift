@@ -10,7 +10,7 @@ import Foundation
 import StoreKit
 import Security
 
-final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
 
 	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.2cars"
@@ -26,7 +26,7 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		SKPaymentQueue.default().add(self)
 	}
 
-	private var maxCarCount : Int {
+	private var maxCarCount: Int {
 		return fiveCars ? 5 : (twoCars ? 2 : 1)
 	}
 
@@ -112,15 +112,15 @@ final class StoreManager : NSObject, SKProductsRequestDelegate, SKPaymentTransac
 		}
 	}
 
-	var twoCars : Bool {
+	var twoCars: Bool {
 		return isProductPurchased(twoCarsProductId)
 	}
 
-	var fiveCars : Bool {
+	var fiveCars: Bool {
 		return isProductPurchased(fiveCarsProductId)
 	}
 
-	var unlimitedCars : Bool {
+	var unlimitedCars: Bool {
 		return isProductPurchased(unlimitedCarsProductId)
 	}
 

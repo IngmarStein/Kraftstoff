@@ -823,7 +823,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	}
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
-		return (precise) ? Formatters.sharedPreciseCurrencyFormatter : Formatters.sharedCurrencyFormatter
+		return precise ? Formatters.sharedPreciseCurrencyFormatter : Formatters.sharedCurrencyFormatter
 	}
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
