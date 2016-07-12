@@ -80,5 +80,5 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 			}
 		}
 	}
-	
+
 }

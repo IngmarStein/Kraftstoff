@@ -76,7 +76,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
-    
+
 		NotificationCenter.default.addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
@@ -131,7 +131,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		if coder.decodeBool(forKey: kSRFuelEventEditing) {
 			setEditing(true, animated: false)
-            
+
 			if isShowingCancelSheet {
 				showRevertActionSheet()
 			} else {
@@ -171,7 +171,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit     = car.ksFuelUnit
-    
+
 		self.title = Formatters.dateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
 		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
@@ -191,7 +191,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
                 viewController: self,
                      tableView: self.tableView,
                      indexPath: indexPath)
-        
+
 			cell.setNeedsDisplay()
 		}
     }
@@ -201,7 +201,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			let animation: UITableViewRowAnimation = animated ? .fade : .none
 
 			super.setEditing(enabled, animated: animated)
-        
+
 			if enabled {
 				self.navigationItem.leftBarButtonItem  = self.doneButton
 				self.navigationItem.rightBarButtonItem = self.cancelButton
@@ -246,7 +246,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	@IBAction func endEditingModeAndRevert(_ sender: AnyObject) {
 		restoredSelectionIndex = self.tableView.indexPathForSelectedRow
-    
+
 		dismissKeyboardWithCompletion {
 			if self.dataChanged {
 				self.showRevertActionSheet()
@@ -389,7 +389,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
-    
+
 		dismissKeyboardWithCompletion {
 			self.removeAllSectionsWithAnimation(.none)
 			self.createTableContentsWithAnimation(.none)

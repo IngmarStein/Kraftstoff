@@ -213,7 +213,7 @@ final class CSVImporter {
 		// consistency checks
 		let loBound = NSDecimalNumber(value: 2)
 		let hiBound = NSDecimalNumber(value: 20)
-    
+
 		// conversion only when unconverted >= lowerBound
 		if rawConsumption < hiBound {
 			return distance

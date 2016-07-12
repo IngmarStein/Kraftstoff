@@ -66,8 +66,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let backgroundImage = UIImageView(image: #imageLiteral(resourceName: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom,  relatedBy: .equal, toItem:backgroundImage, attribute: .bottom,  multiplier: 1.0, constant: 90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom, relatedBy: .equal, toItem: backgroundImage, attribute: .bottom, multiplier: 1.0, constant: 90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem: backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
@@ -210,8 +210,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				UIView.animate(withDuration: 0.33,
                                   delay: 0.0,
                                 options: .curveEaseOut,
-                             animations:{ helpView.alpha = 0.0 },
-                             completion:{ finished in helpView.removeFromSuperview() })
+                             animations: { helpView.alpha = 0.0 },
+                             completion: { finished in helpView.removeFromSuperview() })
 			} else {
 				helpView.removeFromSuperview()
 			}

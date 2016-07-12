@@ -96,7 +96,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	override func decodeRestorableState(with coder: NSCoder) {
 		self.restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? IndexPath
 		self.isShowingConvertSheet = coder.decodeBool(forKey: kSRCalculatorConvertSheet)
-    
+
 		if coder.decodeBool(forKey: kSRCalculatorEditing) {
 			self.setEditing(true, animated: false)
 
@@ -117,9 +117,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if self.isEditing != enabled {
 
 			let animation: UITableViewRowAnimation = animated ? .fade : .none
-        
+
 			super.setEditing(enabled, animated: animated)
-        
+
 			if enabled {
 				self.navigationItem.leftBarButtonItem = self.doneButton
 				self.navigationItem.rightBarButtonItem = nil
@@ -127,14 +127,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				removeSectionAtIndex(1, withAnimation: animation)
 			} else {
 				self.navigationItem.leftBarButtonItem = nil
-            
+
 				if consumptionRowNeeded() {
 					createConsumptionRowWithAnimation(animation)
 				}
 
 				updateSaveButtonState()
 			}
-        
+
 			if !animated {
 				self.tableView.reloadData()
 			}
@@ -147,7 +147,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		return true
 	}
 
-	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?)	{
+	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
 			handleShake()
 		} else {
@@ -186,7 +186,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                          let now = Date()
 
                          self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
-                         self.valueChanged(now,  identifier: "lastChangeDate")
+                         self.valueChanged(now, identifier: "lastChangeDate")
                          self.valueChanged(zero, identifier: "distance")
                          self.valueChanged(zero, identifier: "price")
                          self.valueChanged(zero, identifier: "fuelVolume")
@@ -470,7 +470,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
-    
+
 		dismissKeyboardWithCompletion {
 			self.recreateTableContentsWithAnimation(.none)
 			self.selectRowAtIndexPath(previousSelection)
@@ -549,7 +549,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	func saveAction(_ sender: AnyObject) {
 		self.navigationItem.rightBarButtonItem = nil
-        
+
 		UIView.animate(withDuration: 0.3,
                      animations: {
                          // Remove consumption row
@@ -610,14 +610,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
 		let convDistance = rawDistance - car.odometer
-    
+
 		if convDistance <= .zero {
 			return false
 		}
-    
+
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
-    
+
 		if liters <= .zero {
 			return false
 		}
@@ -633,7 +633,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let convConsumption = Units.consumptionForKilometers(convDistance,
                                                                       liters: liters,
                                                                       inUnit: .litersPer100Kilometers)
-    
+
 		if convConsumption == .notA {
 			return false
 		}
@@ -641,7 +641,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let avgConsumption = Units.consumptionForKilometers(car.distanceTotalSum,
                                                                      liters: car.fuelVolumeTotalSum,
                                                                      inUnit: .litersPer100Kilometers)
-    
+
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
@@ -652,7 +652,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			loBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: -1, isNegative: false)
 			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent:  0, isNegative: false)
 		}
-    
+
 		// conversion only when rawConsumption <= lowerBound
 		if rawConsumption > loBound {
 			return false
@@ -662,16 +662,16 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if convConsumption < loBound || convConsumption > hiBound {
 			return false
 		}
-    
+
 		// 3.) the event must be the youngest one
 		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
 																								afterDate: self.date!,
 																							  dateMatches: false))
-    
+
 		if youngerEvents.count > 0 {
 			return false
 		}
-    
+
 		// => ask for a conversion
 		return true
 	}

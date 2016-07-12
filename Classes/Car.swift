@@ -93,5 +93,5 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 		name = record["name"] as! String
 		numberPlate = record["numberPlate"] as! String
 	}
-	
+
 }

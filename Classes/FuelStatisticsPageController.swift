@@ -56,7 +56,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 			}
 			self.setViewControllers([self.statisticsViewControllers[page]], direction: .forward, animated: false, completion: nil)
 		}
-    
+
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelStatisticsPageController.localeChanged(_:)),
                name: Locale.currentLocaleDidChangeNotification,

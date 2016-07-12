@@ -104,7 +104,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 							tabBarController.selectedIndex = 1
 						}
 					}
-					
+
 					defaults.set(false, forKey: "firstStartup")
 				}
 			}
@@ -371,7 +371,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return nil
 	}
 
-	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool , onCompletion: (Int?, AnyObject?) -> Void) {
+	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool, onCompletion: (Int?, AnyObject?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
 		guard let receiptData = receiptData(appStoreReceiptURL), url = URL(string: serverURL) else {
@@ -455,7 +455,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Shared Color Gradients
 
 	static let blueGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0,  0.466, 0.721, 0.870, 0.9 ]
+		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0, 0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let blueGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
@@ -464,7 +464,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}()
 
 	static let greenGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0,  0.662, 0.815, 0.502, 0.9 ]
+		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0, 0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
 		let greenGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
@@ -473,7 +473,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
     }()
 
 	static let orangeGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0,  0.988, 0.662, 0.333, 0.9 ]
+		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0, 0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
 		let orangeGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!

@@ -9,10 +9,10 @@
 import UIKit
 import CoreData
 
-private let GridLines = 16
-private let GridMargin: CGFloat = 16.0
-private let GridTextXMargin: CGFloat = 10.0
-private let GridTextHeight: CGFloat = 23.0
+private let gridLines = 16
+private let gridMargin: CGFloat = 16.0
+private let gridTextXMargin: CGFloat = 10.0
+private let gridTextHeight: CGFloat = 23.0
 
 // MARK: - Disposable Sampling Data Objects for ContentCache
 
@@ -146,7 +146,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 		// Create image data from resampled data
 		if state.contentImage == nil {
-			let height = (state.numberOfFillups == 0) ? StatisticsHeight : GridTextHeight*CGFloat(GridLines) + 10.0
+			let height = (state.numberOfFillups == 0) ? statisticsHeight : gridTextHeight*CGFloat(gridLines) + 10.0
 
 			let renderer = UIGraphicsImageRenderer(size: CGSize(width: self.view.bounds.size.width, height: height))
 			state.contentImage = renderer.image { context in
@@ -162,9 +162,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 
-		self.gridLeftBorder = GridMargin
-		self.gridRightBorder = self.view.bounds.size.width - GridMargin
-		self.gridDesColumnWidth = (self.view.bounds.size.width - GridMargin - GridMargin) / 2.0
+		self.gridLeftBorder = gridMargin
+		self.gridRightBorder = self.view.bounds.size.width - gridMargin
+		self.gridDesColumnWidth = (self.view.bounds.size.width - gridMargin - gridMargin) / 2.0
 
 		// Initialize contents of background view
 		if let imageView = self.view as? UIImageView {
@@ -218,7 +218,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Horizontal grid backgrounds
 			let path = UIBezierPath()
 
-			path.lineWidth = GridTextHeight - 1
+			path.lineWidth = gridTextHeight - 1
 			#colorLiteral(red: 0.2235294118, green: 0.2235294118, blue: 0.2235294118, alpha: 1).setStroke()
 
 			context.saveGState()
@@ -228,9 +228,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.addLine(to: CGPoint(x: self.gridRightBorder, y: 1.0))
 
 			var y = CGFloat(0.0)
-			for i in stride(from: 1, to: GridLines, by: 2) {
+			for i in stride(from: 1, to: gridLines, by: 2) {
                 let lastY = y
-                y = rint (GridTextHeight*0.5 + GridTextHeight*CGFloat(i))
+                y = rint (gridTextHeight*0.5 + gridTextHeight*CGFloat(i))
 
 				context.translate(x: 0.0, y: y - lastY)
                 path.stroke()
@@ -254,9 +254,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			path.addLine(to: CGPoint(x: self.gridRightBorder, y: 0.25))
 
 			y = CGFloat(0.0)
-            for i in 1...GridLines {
+            for i in 1...gridLines {
                 let lastY = y
-                y = rint(GridTextHeight * CGFloat(i))
+                y = rint(gridTextHeight * CGFloat(i))
 
 				context.translate(x: 0.0, y: y - lastY)
                 path.stroke()
@@ -272,7 +272,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			path.removeAllPoints()
 			path.move(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: 0.0))
-			path.addLine(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: GridTextHeight*CGFloat(GridLines)))
+			path.addLine(to: CGPoint(x: self.gridLeftBorder + self.gridDesColumnWidth + 0.25, y: gridTextHeight*CGFloat(gridLines)))
             path.stroke()
 
 			context.restoreGState()
@@ -298,17 +298,17 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
             let numberOfDays = Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate)
 
-			y = (GridTextHeight - font.lineHeight) / 2.0
+			y = (gridTextHeight - font.lineHeight) / 2.0
 
 			func drawEntry(label: String, value: String) {
 				let size = label.size(attributes: labelAttributes)
-				let x1 = self.gridLeftBorder + self.gridDesColumnWidth - size.width - GridTextXMargin
+				let x1 = self.gridLeftBorder + self.gridDesColumnWidth - size.width - gridTextXMargin
 				label.draw(at: CGPoint(x: x1, y: y), withAttributes: labelAttributes)
 
-				let x2 = self.gridLeftBorder + self.gridDesColumnWidth + GridTextXMargin
+				let x2 = self.gridLeftBorder + self.gridDesColumnWidth + gridTextXMargin
 				value.draw(at: CGPoint(x: x2, y: y), withAttributes: valueAttributes)
 
-				y += GridTextHeight
+				y += gridTextHeight
 			}
 
             // number of days
@@ -451,7 +451,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				imageView.frame = imageFrame
 			} else {
 				UIView.transition(with: imageView,
-                              duration: StatisticTransitionDuration,
+                              duration: statisticTransitionDuration,
                                options: .transitionCrossDissolve,
                             animations: {
                                 imageView.image = contentImage
@@ -462,7 +462,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			self.scrollView.contentSize = imageView.image!.size
 
-			UIView.animate(withDuration: StatisticTransitionDuration,
+			UIView.animate(withDuration: statisticTransitionDuration,
                          animations: { self.scrollView.alpha = 1.0 },
                          completion: { finished in
 							if finished {
@@ -474,7 +474,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		} else {
 			// Cache Miss => draw preliminary contents
 
-			UIView.animate(withDuration: StatisticTransitionDuration,
+			UIView.animate(withDuration: statisticTransitionDuration,
                          animations: { self.scrollView.alpha = 0.0 },
                          completion: { finished in
                              if finished {

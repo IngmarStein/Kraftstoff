@@ -14,8 +14,8 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	var pickerLabels: [String]!
 	var pickerShortLabels: [String]?
 
-	private let PickerViewCellWidth: CGFloat  = 290.0
-	private let PickerViewCellHeight: CGFloat =  44.0
+	private let pickerViewCellWidth: CGFloat  = 290.0
+	private let pickerViewCellHeight: CGFloat =  44.0
 
 	required init() {
 		pickerView = UIPickerView()
@@ -92,11 +92,11 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	// MARK: - UIPickerViewDelegate
 
 	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-		return PickerViewCellHeight
+		return pickerViewCellHeight
 	}
 
 	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-		return PickerViewCellWidth
+		return pickerViewCellWidth
 	}
 
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -107,7 +107,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		let label = (view as? UILabel) ?? UILabel()
 
 		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
-		label.frame = CGRect(x: 0.0, y: 0.0, width: PickerViewCellWidth-20.0, height: PickerViewCellHeight)
+		label.frame = CGRect(x: 0.0, y: 0.0, width: pickerViewCellWidth-20.0, height: pickerViewCellHeight)
 		label.backgroundColor = .clear()
 
 		label.text = self.pickerView(pickerView, titleForRow: row, forComponent: component)

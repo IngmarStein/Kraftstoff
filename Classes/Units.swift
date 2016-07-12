@@ -64,7 +64,6 @@ extension UnitVolume {
 
 }
 
-public
 final class UnitConverterReciprocal: UnitConverter, NSSecureCoding {
 
 	var coefficient: Double
@@ -75,23 +74,23 @@ final class UnitConverterReciprocal: UnitConverter, NSSecureCoding {
 		super.init()
 	}
 
-	public init?(coder aDecoder: NSCoder) {
+	init?(coder aDecoder: NSCoder) {
 		coefficient = aDecoder.decodeDouble(forKey: "coefficient")
 
 		super.init()
 	}
-	
-	public static var supportsSecureCoding: Bool { return true }
 
-	public func encode(with aCoder: NSCoder) {
+	static var supportsSecureCoding: Bool { return true }
+
+	func encode(with aCoder: NSCoder) {
 		aCoder.encode(coefficient, forKey: "coefficient")
 	}
 
-	override public func baseUnitValue(fromValue value: Double) -> Double {
+	override func baseUnitValue(fromValue value: Double) -> Double {
 		return coefficient / value
 	}
 
-	override public func value(fromBaseUnitValue baseUnitValue: Double) -> Double {
+	override func value(fromBaseUnitValue baseUnitValue: Double) -> Double {
 		return coefficient / baseUnitValue
 	}
 

@@ -97,6 +97,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	override func encodeRestorableState(with coder: NSCoder) {
 		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
+		// swiftlint:disable comma
 		coder.encode(self.delegate,              forKey: kSRConfiguratorDelegate)
 		coder.encode(self.editingExistingObject, forKey: kSRConfiguratorEditMode)
 		coder.encode(isShowingCancelSheet,       forKey: kSRConfiguratorCancelSheet)
@@ -106,6 +107,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		coder.encode(self.plate as NSString?,    forKey: kSRConfiguratorPlate)
 		coder.encode(self.fuelUnit,              forKey: kSRConfiguratorFuelUnit)
 		coder.encode(self.fuelConsumptionUnit,   forKey: kSRConfiguratorFuelConsumptionUnit)
+		// swiftlint:enable comma
 
 		super.encodeRestorableState(with: coder)
 	}

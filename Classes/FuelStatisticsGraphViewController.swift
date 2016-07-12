@@ -26,30 +26,30 @@ protocol FuelStatisticsViewControllerDelegate {
 }
 
 // Coordinates for statistics graph
-private let StatisticGraphMargin: CGFloat = 10.0
-private let StatisticGraphYAxisLabelWidth: CGFloat = 50.0
-private let StatisticGraphXAxisLabelHeight: CGFloat = 32.0
-private let StatisticGraphTopBorder: CGFloat = 58.0
+private let statisticGraphMargin: CGFloat = 10.0
+private let statisticGraphYAxisLabelWidth: CGFloat = 50.0
+private let statisticGraphXAxisLabelHeight: CGFloat = 32.0
+private let statisticGraphTopBorder: CGFloat = 58.0
 
 // Coordinates for the zoom-track
-private let StatisticTrackYPosition: CGFloat = 40.0
-private let StatisticTrackThickness: CGFloat = 4.0
-private let StatisticTrackInfoXMarginFlat: CGFloat = 4.0
-private let StatisticTrackInfoYMarginFlat: CGFloat = 3.0
+private let statisticTrackYPosition: CGFloat = 40.0
+private let statisticTrackThickness: CGFloat = 4.0
+private let statisticTrackInfoXMarginFlat: CGFloat = 4.0
+private let statisticTrackInfoYMarginFlat: CGFloat = 3.0
 
-private let MaxSamples = 256
+private let maxSamples = 256
 
 // MARK: - Disposable Sampling Data Objects for ContentCache
 
 private final class FuelStatisticsSamplingData: DiscardableDataObject {
 
 	// Curve data
-	var data = [CGPoint](repeating: CGPoint.zero, count: MaxSamples)
+	var data = [CGPoint](repeating: CGPoint.zero, count: maxSamples)
 	var dataCount = 0
 
     // Lens data
-	var lensDate = [[TimeInterval]](repeating: [TimeInterval](repeating: 0.0, count: 2), count: MaxSamples)
-	var lensValue = [CGFloat](repeating: 0.0, count: MaxSamples)
+	var lensDate = [[TimeInterval]](repeating: [TimeInterval](repeating: 0.0, count: 2), count: maxSamples)
+	var lensValue = [CGFloat](repeating: 0.0, count: maxSamples)
 
     // Data for marker positions
 	var hMarkPositions = [CGFloat](repeating: 0.0, count: 5)
@@ -96,11 +96,11 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	// MARK: -  Default Position/Dimension Data for Graphs
 
 	var graphLeftBorder: CGFloat {
-		return StatisticGraphMargin
+		return statisticGraphMargin
 	}
 
 	var graphRightBorder: CGFloat {
-		let rightBorder = self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth
+		let rightBorder = self.view.bounds.size.width - statisticGraphMargin - statisticGraphYAxisLabelWidth
 		if let graphDelegate = self.dataSource as? FuelStatisticsViewControllerDelegate {
 			return graphDelegate.graphRightBorder(rightBorder, forCar: self.selectedCar)
 		} else {
@@ -109,7 +109,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	}
 
 	var graphTopBorder: CGFloat {
-		return StatisticGraphTopBorder
+		return statisticGraphTopBorder
 	}
 
 	var graphBottomBorder: CGFloat {
@@ -117,7 +117,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	}
 
 	var graphWidth: CGFloat {
-		let width = self.view.bounds.size.width - StatisticGraphMargin - StatisticGraphYAxisLabelWidth - StatisticGraphMargin
+		let width = self.view.bounds.size.width - statisticGraphMargin - statisticGraphYAxisLabelWidth - statisticGraphMargin
 		if let graphDelegate = self.dataSource as? FuelStatisticsViewControllerDelegate {
 			return graphDelegate.graphWidth(width, forCar: self.selectedCar)
 		} else {
@@ -126,7 +126,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	}
 
 	var graphHeight: CGFloat {
-		return self.view.bounds.size.height - self.graphTopBorder - StatisticGraphXAxisLabelHeight
+		return self.view.bounds.size.height - self.graphTopBorder - statisticGraphXAxisLabelHeight
 	}
 
 	// MARK: - View Lifecycle
@@ -221,16 +221,16 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Shrink the computed graph to keep the top h-marker below the top-border
 		if valRange > 0.0001 {
-			valStretchFactorForDisplay = StatisticsHeight / (StatisticsHeight + 18.0)
+			valStretchFactorForDisplay = statisticsHeight / (statisticsHeight + 18.0)
 		} else {
 			valStretchFactorForDisplay = 1.0
 		}
 
 		// Resampling of fetched data
-		var samples = [CGFloat](repeating: 0.0, count: MaxSamples)
-		var samplesCount = [Int](repeating: 0, count: MaxSamples)
+		var samples = [CGFloat](repeating: 0.0, count: maxSamples)
+		var samplesCount = [Int](repeating: 0, count: maxSamples)
 
-		for i in 0..<MaxSamples {
+		for i in 0..<maxSamples {
 			state.lensDate  [i][0] = 0.0
 			state.lensDate  [i][1] = 0.0
 			state.lensValue [i]    = 0.0
@@ -245,7 +245,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				if !value.isNaN {
 					// Collect sample data
 					let sampleInterval = firstDate!.timeIntervalSince(managedObject.timestamp)
-					let sampleIndex = Int(rint (CGFloat((MaxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
+					let sampleIndex = Int(rint (CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
 
 					if valRange < 0.0001 {
 						samples[sampleIndex] += 0.5
@@ -266,10 +266,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// Build curve data from resampled values
 		state.dataCount = 0
 
-		for i in 0..<MaxSamples {
+		for i in 0..<maxSamples {
 			if samplesCount[i] > 0 {
 
-				state.data[state.dataCount] = CGPoint(x: CGFloat(i) / CGFloat(MaxSamples-1), y: 1.0 - samples [i] / CGFloat(samplesCount[i]))
+				state.data[state.dataCount] = CGPoint(x: CGFloat(i) / CGFloat(maxSamples-1), y: 1.0 - samples [i] / CGFloat(samplesCount[i]))
 
 				state.lensDate[state.dataCount][0] = state.lensDate[i][0]
 				state.lensDate[state.dataCount][1] = state.lensDate[i][(samplesCount[i] > 1) ? 1 : 0]
@@ -369,7 +369,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		context.saveGState()
 
-		if state.dataCount == 0	{
+		if state.dataCount == 0 {
 
 			let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
@@ -571,7 +571,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			self.activityView.stopAnimating()
 
 			UIView.transition(with: imageView,
-                          duration: StatisticTransitionDuration,
+                          duration: statisticTransitionDuration,
                            options: .transitionCrossDissolve,
                         animations: { imageView.image = image },
                         completion: nil)
@@ -591,7 +591,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			}
 
 			UIView.transition(with: imageView,
-                          duration: StatisticTransitionDuration,
+                          duration: statisticTransitionDuration,
                            options: .transitionCrossDissolve,
                         animations: { imageView.image = image },
                         completion: { finished in
@@ -738,10 +738,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		var infoRect = CGRect()
 		infoRect.size = info.size(attributes: attributes)
-		infoRect.size.width += StatisticTrackInfoXMarginFlat * 2.0
-		infoRect.size.height += StatisticTrackInfoYMarginFlat * 2.0
+		infoRect.size.width += statisticTrackInfoXMarginFlat * 2.0
+		infoRect.size.height += statisticTrackInfoYMarginFlat * 2.0
 		infoRect.origin.x = rint (location.x - infoRect.size.width/2)
-		infoRect.origin.y = StatisticTrackYPosition + rint ((StatisticTrackThickness - infoRect.size.height) / 2)
+		infoRect.origin.y = statisticTrackYPosition + rint ((statisticTrackThickness - infoRect.size.height) / 2)
 
 		if infoRect.origin.x < self.graphLeftBorder {
 			infoRect.origin.x = self.graphLeftBorder
@@ -760,7 +760,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Info text
-		info.draw(at: CGPoint(x: infoRect.origin.x + StatisticTrackInfoXMarginFlat, y: infoRect.origin.y + StatisticTrackInfoYMarginFlat), withAttributes: attributes)
+		info.draw(at: CGPoint(x: infoRect.origin.x + statisticTrackInfoXMarginFlat, y: infoRect.origin.y + statisticTrackInfoYMarginFlat), withAttributes: attributes)
 	}
 
 }
