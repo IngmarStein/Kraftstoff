@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ev
-SWIFT_SNAPSHOT="swift-DEVELOPMENT-SNAPSHOT-2016-06-06-a"
+SWIFT_SNAPSHOT="swift-DEVELOPMENT-SNAPSHOT-2016-06-20-a"
 
 echo "Installing ${SWIFT_SNAPSHOT}..."
 if [ ! -f "${SWIFT_SNAPSHOT}-osx.pkg" ]; then

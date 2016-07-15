@@ -15,6 +15,7 @@ import CloudKit
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
+		// swiftlint:disable:next force_cast
 		return shared().delegate as! AppDelegate
 	}
 }
@@ -161,11 +162,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
 					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
-						let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
-						fuelEventController.selectedCarId = carIdentifier
-						if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-							navigationController.popToRootViewController(animated: false)
-							navigationController.pushViewController(fuelEventController, animated: false)
+						if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
+							fuelEventController.selectedCarId = carIdentifier
+							if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+								navigationController.popToRootViewController(animated: false)
+								navigationController.pushViewController(fuelEventController, animated: false)
+							}
 						}
 					}
 				}

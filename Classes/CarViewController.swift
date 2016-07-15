@@ -317,15 +317,16 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		setEditing(false, animated: true)
 
-		let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as! CarConfigurationController
-		configurator.delegate = self
-		configurator.editingExistingObject = false
+		if let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
+			configurator.delegate = self
+			configurator.editingExistingObject = false
 
-		let navController = UINavigationController(rootViewController:configurator)
-		navController.restorationIdentifier = "CarConfigurationNavigationController"
-		navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
+			let navController = UINavigationController(rootViewController: configurator)
+			navController.restorationIdentifier = "CarConfigurationNavigationController"
+			navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
 
-		present(navController, animated: true, completion: nil)
+			present(navController, animated: true, completion: nil)
+		}
 	}
 
 	// MARK: - UIGestureRecognizerDelegate
@@ -358,7 +359,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				self.editedObject = self.fetchedResultsController.object(at: indexPath)
 
 				// Present modal car configurator
-				let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as! CarConfigurationController
+				guard let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController else { return }
 				configurator.delegate = self
 				configurator.editingExistingObject = true
 
@@ -445,7 +446,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
 
-		let tableCell = cell as! QuadInfoCell
+		guard let tableCell = cell as? QuadInfoCell else { return }
 		let managedObject = self.fetchedResultsController.object(at: indexPath)
 
 		tableCell.large = true
@@ -547,7 +548,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as! Car
+		guard let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as? Car else { return nil }
 
 		return self.fetchedResultsController.indexPath(forObject: object)
 	}

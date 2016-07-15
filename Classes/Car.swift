@@ -82,6 +82,7 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
+		// swiftlint:disable force_cast
 		timestamp = record["timestamp"] as! Date
 		distanceTotalSum = record["distanceTotalSum"] as! NSDecimalNumber
 		fuelUnit = record["fuelUnit"] as! Int32
@@ -92,6 +93,7 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 		odometerUnit = record["odometerUnit"] as! Int32
 		name = record["name"] as! String
 		numberPlate = record["numberPlate"] as! String
+		// swiftlint:enable force_cast
 	}
 
 }

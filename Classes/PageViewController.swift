@@ -77,9 +77,9 @@ class PageViewController: UITableViewController {
 		cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData = object
 
 		let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
-		let cell = self.tableView.cellForRow(at: indexPath) as! PageCell
-
-		cell.configureForData(object, viewController: self, tableView: self.tableView, indexPath: indexPath)
+		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell {
+			cell.configureForData(object, viewController: self, tableView: self.tableView, indexPath: indexPath)
+		}
 	}
 
 	// MARK: - Access to Table Sections

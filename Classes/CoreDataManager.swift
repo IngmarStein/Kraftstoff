@@ -90,7 +90,9 @@ final class CoreDataManager {
 
 		if objectURL.scheme == "x-coredata" {
 			if let objectID = persistentContainer.persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
-				return try? managedObjectContext.existingObject(with: objectID) as! ResultType
+				if let existingObject = try? managedObjectContext.existingObject(with: objectID) {
+					return existingObject as? ResultType
+				}
 			}
 		}
 

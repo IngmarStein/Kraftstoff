@@ -64,7 +64,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.valueTimestamp    = dictionary["valueTimestamp"] as? String
-		self.dateFormatter     = dictionary["formatter"] as! DateFormatter
+		self.dateFormatter     = dictionary["formatter"] as? DateFormatter
 		self.autoRefreshedDate = dictionary["autorefresh"] as? Bool ?? false
 
 		let value = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date

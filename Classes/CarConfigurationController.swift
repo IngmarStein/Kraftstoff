@@ -85,10 +85,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as! CarConfigurationController
-			controller.editingExistingObject = coder.decodeBool(forKey: kSRConfiguratorEditMode)
+			if let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
+				controller.editingExistingObject = coder.decodeBool(forKey: kSRConfiguratorEditMode)
 
-			return controller
+				return controller
+			}
 		}
 
 		return nil

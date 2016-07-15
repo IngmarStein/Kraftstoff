@@ -58,6 +58,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
+		// swiftlint:disable force_cast
 		inheritedCost = record["inheritedCost"] as! NSDecimalNumber
 		distance = record["distance"] as! NSDecimalNumber
 		price = record["price"] as! NSDecimalNumber
@@ -67,6 +68,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		filledUp = record["filledUp"] as! Bool
 		comment = record["comment"] as? String
 		fuelVolume = record["fuelVolume"] as! NSDecimalNumber
+		// swiftlint:enable force_cast
 
 		if let parent = record.parent {
 			let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()

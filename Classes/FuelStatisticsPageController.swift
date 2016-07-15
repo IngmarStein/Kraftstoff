@@ -103,8 +103,10 @@ final class FuelStatisticsPageController: UIPageViewController {
 	// MARK: - Cache Handling
 
 	func invalidateCaches() {
-		for controller in self.childViewControllers as! [FuelStatisticsViewController] {
-			controller.invalidateCaches()
+		for controller in self.childViewControllers {
+			if let fuelStatisticsViewController = controller as? FuelStatisticsViewController {
+				fuelStatisticsViewController.invalidateCaches()
+			}
 		}
 	}
 
@@ -143,8 +145,10 @@ final class FuelStatisticsPageController: UIPageViewController {
 			UserDefaults.standard.set(numberOfMonths, forKey: "statisticTimeSpan")
 
 			// Update all statistics controllers
-			for controller in self.childViewControllers as! [FuelStatisticsViewController] {
-				controller.displayedNumberOfMonths = numberOfMonths
+			for controller in self.childViewControllers {
+				if let fuelStatisticsViewController = controller as? FuelStatisticsViewController {
+					fuelStatisticsViewController.displayedNumberOfMonths = numberOfMonths
+				}
 			}
 		}
 	}
