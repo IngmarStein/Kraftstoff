@@ -75,6 +75,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
 		}
 
+		// swiftlint:disable:next force_cast
 		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as! FuelStatisticsPageController
 
 		// Configure root view
@@ -143,9 +144,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - State Restoration
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as! FuelEventController
-			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventSelectedCarID) as! String
+		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
+				controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
+				modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
 			if controller.selectedCar == nil {
@@ -247,6 +248,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	private var exportURL: URL {
+		// swiftlint:disable:next force_try
 		return try! URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFilename)
 	}
 
@@ -517,7 +519,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "FuelCell", for: indexPath)
 
-		configureCell(cell as! QuadInfoCell, atIndexPath: indexPath)
+		if let quadInfoCell = cell as? QuadInfoCell {
+			configureCell(quadInfoCell, atIndexPath: indexPath)
+		}
 
 		return cell
 	}
@@ -533,9 +537,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as! FuelEvent
-
-		return self.fetchedResultsController.indexPath(forObject: object)
+		if let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as? FuelEvent {
+			return self.fetchedResultsController.indexPath(forObject: object)
+		}
+		return nil
 	}
 
 	func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
@@ -547,11 +552,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as! FuelEventEditorController
-
-		editController.event = self.fetchedResultsController.object(at: indexPath)
-
-		self.navigationController?.pushViewController(editController, animated: true)
+		if let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController {
+			editController.event = self.fetchedResultsController.object(at: indexPath)
+			self.navigationController?.pushViewController(editController, animated: true)
+		}
 	}
 
 	// MARK: - NSFetchedResultsControllerDelegate

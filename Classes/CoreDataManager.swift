@@ -24,6 +24,7 @@ final class CoreDataManager {
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
 
+	// swiftlint:disable:next force_try
 	private static let iCloudStoreURL = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
 
 	private static let iCloudStoreDescription: NSPersistentStoreDescription = {

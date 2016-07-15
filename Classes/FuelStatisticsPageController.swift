@@ -28,21 +28,25 @@ final class FuelStatisticsPageController: UIPageViewController {
 		super.viewDidLoad()
 
 		// Load content pages
+		// swiftlint:disable:next force_cast
 		let priceDistanceViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		priceDistanceViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
 		priceDistanceViewController.selectedCar = self.selectedCar
 		priceDistanceViewController.pageIndex = 0
 
+		// swiftlint:disable:next force_cast
 		let avgConsumptionViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		avgConsumptionViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
 		avgConsumptionViewController.selectedCar = self.selectedCar
 		avgConsumptionViewController.pageIndex = 1
 
+		// swiftlint:disable:next force_cast
 		let priceAmountViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
 		priceAmountViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
 		priceAmountViewController.selectedCar = self.selectedCar
 		priceAmountViewController.pageIndex = 2
 
+		// swiftlint:disable:next force_cast
 		let statisticsViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsTextViewController") as! FuelStatisticsTextViewController
 		statisticsViewController.selectedCar = self.selectedCar
 		statisticsViewController.pageIndex = 3

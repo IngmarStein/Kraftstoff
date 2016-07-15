@@ -270,7 +270,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Distance) {
 			if self.distance == nil {
-				self.distance = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentDistance")! as! NSNumber).decimalValue)
+				if let recentDistance = UserDefaults.standard.object(forKey: "recentDistance") as? NSNumber {
+					self.distance = NSDecimalNumber(decimal: recentDistance.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 0 + rowOffset,
@@ -285,7 +287,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Price) {
 			if self.price == nil {
-				self.price = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentPrice")! as! NSNumber).decimalValue)
+				if let recentPrice = UserDefaults.standard.object(forKey: "recentPrice") as? NSNumber {
+					self.price = NSDecimalNumber(decimal: recentPrice.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 1 + rowOffset,
@@ -300,7 +304,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if rowMask.contains(.Amount) {
 			if self.fuelVolume == nil {
-				self.fuelVolume = NSDecimalNumber(decimal: (UserDefaults.standard.object(forKey: "recentFuelVolume")! as! NSNumber).decimalValue)
+				if let recentFuelVolume = UserDefaults.standard.object(forKey: "recentFuelVolume") as? NSNumber {
+					self.fuelVolume = NSDecimalNumber(decimal: recentFuelVolume.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 2 + rowOffset,
