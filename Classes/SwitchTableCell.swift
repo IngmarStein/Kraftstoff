@@ -9,7 +9,7 @@
 import UIKit
 
 final class SwitchTableCell: PageCell {
-	private let margin : CGFloat = 8.0
+	private let margin: CGFloat = 8.0
 
 	var keyLabel: UILabel
 	var valueSwitch: UISwitch
@@ -42,6 +42,8 @@ final class SwitchTableCell: PageCell {
 		valueLabel.isHidden                 = true
 		valueLabel.isUserInteractionEnabled = false
 		valueLabel.translatesAutoresizingMaskIntoConstraints = false
+		valueLabel.adjustsFontForContentSizeCategory = true
+		valueLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 
 		self.contentView.addSubview(self.valueLabel)
 
@@ -50,31 +52,17 @@ final class SwitchTableCell: PageCell {
 		keyLabel.highlightedTextColor = .black()
 		keyLabel.textColor            = .black()
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
+		keyLabel.adjustsFontForContentSizeCategory = true
+		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 
 		self.contentView.addSubview(keyLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueSwitch]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueSwitch" : valueSwitch]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "valueLabel" : valueLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[keyLabel]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=4)-[valueSwitch]-(>=4)-|", options: [], metrics: nil, views: ["valueSwitch" : valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueSwitch]-|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "valueSwitch": valueSwitch]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[valueLabel]-|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "valueLabel": valueLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[keyLabel]-|", options: [], metrics: nil, views: ["keyLabel": keyLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(>=4)-[valueSwitch]-(>=4)-|", options: [], metrics: nil, views: ["valueSwitch": valueSwitch]))
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueSwitch, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
 		self.contentView.addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-
-		setupFonts()
-		NotificationCenter.default.addObserver(self, selector: #selector(SwitchTableCell.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
-	}
-
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
-		setupFonts()
-	}
-
-	private func setupFonts() {
-		self.valueLabel.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	required init(coder aDecoder: NSCoder) {

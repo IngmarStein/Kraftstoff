@@ -22,8 +22,8 @@ class FuelStatisticsViewController: UIViewController {
 	var pageIndex = 0
 
 	// Coordinates for the content area
-	let StatisticsHeight = CGFloat(214.0)
-	let StatisticTransitionDuration = TimeInterval(0.3)
+	let statisticsHeight = CGFloat(214.0)
+	let statisticTransitionDuration = TimeInterval(0.3)
 
 	@IBOutlet weak var activityView: UIActivityIndicatorView!
 	@IBOutlet weak var leftLabel: UILabel!
@@ -75,17 +75,21 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	func contentSizeCategoryDidChange(_ notification: NSNotification!) {
-		setupFonts()
 		invalidateCaches()
 	}
 
 	private func setupFonts() {
-		let titleFont = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
-		let fontSelected = UIFont.boldApplicationFontForStyle(UIFontTextStyleBody)
+		let titleFont = UIFont.preferredFont(forTextStyle: UIFontTextStyleCaption2)
+		let font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 
+		let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyleBody).withSymbolicTraits(.traitBold)!
+		let fontSelected = UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
+
+		self.leftLabel.adjustsFontForContentSizeCategory = true
 		self.leftLabel.font = titleFont
+		self.centerLabel.adjustsFontForContentSizeCategory = true
 		self.centerLabel.font = titleFont
+		self.rightLabel.adjustsFontForContentSizeCategory = true
 		self.rightLabel.font = titleFont
 
 		let labelAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1)]

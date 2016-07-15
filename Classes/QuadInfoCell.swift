@@ -23,7 +23,7 @@ final class QuadInfoCell: UITableViewCell {
 	private var cellState: UITableViewCellStateMask
 	var large = false {
 		didSet {
-			setupFonts()
+			topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? UIFontTextStyleTitle1 : UIFontTextStyleTitle2)
 		}
 	}
 
@@ -32,12 +32,16 @@ final class QuadInfoCell: UITableViewCell {
 		topLeftLabel.textColor                  = .black()
 		topLeftLabel.adjustsFontSizeToFitWidth  = true
 		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
+		topLeftLabel.adjustsFontForContentSizeCategory = true
+		topLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleTitle1)
 		contentView.addSubview(topLeftLabel)
 
 		botLeftLabel.backgroundColor            = .clear()
 		botLeftLabel.textColor                  = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
+		botLeftLabel.adjustsFontForContentSizeCategory = true
+		botLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 		contentView.addSubview(botLeftLabel)
 
 		topRightLabel.backgroundColor           = .clear()
@@ -45,6 +49,8 @@ final class QuadInfoCell: UITableViewCell {
 		topRightLabel.adjustsFontSizeToFitWidth = true
 		topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
+		topRightLabel.adjustsFontForContentSizeCategory = true
+		topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? UIFontTextStyleTitle1 : UIFontTextStyleTitle2)
 		contentView.addSubview(topRightLabel)
 
 		botRightLabel.backgroundColor           = .clear()
@@ -52,6 +58,8 @@ final class QuadInfoCell: UITableViewCell {
 		botRightLabel.adjustsFontSizeToFitWidth = true
 		botRightLabel.textAlignment             = .right
 		botRightLabel.translatesAutoresizingMaskIntoConstraints = false
+		botRightLabel.adjustsFontForContentSizeCategory = true
+		botRightLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 		contentView.addSubview(botRightLabel)
 
 		// setup constraints
@@ -63,22 +71,7 @@ final class QuadInfoCell: UITableViewCell {
 		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .left, relatedBy: .equal, toItem: botLeftLabel, attribute: .left, multiplier: 1.0, constant: 0.0))
 		contentView.addConstraint(NSLayoutConstraint(item: topRightLabel, attribute: .right, relatedBy: .equal, toItem: botRightLabel, attribute: .right, multiplier: 1.0, constant: 0.0))
 
-		setupFonts()
-
-		NotificationCenter.default.addObserver(self, selector: #selector(QuadInfoCell.contentSizeCategoryDidChange(notification:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
-
 		self.accessoryType = .disclosureIndicator
-	}
-
-	private func setupFonts() {
-		topLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleSubheadline)
-		topLeftLabel.minimumScaleFactor  = 12.0/topLeftLabel.font.pointSize
-		botLeftLabel.font                = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
-		botLeftLabel.minimumScaleFactor  = 12.0/botLeftLabel.font.pointSize
-		topRightLabel.font               = UIFont.lightApplicationFontForStyle(large ? UIFontTextStyleHeadline : UIFontTextStyleSubheadline)
-		topRightLabel.minimumScaleFactor = 12.0/topRightLabel.font.pointSize
-		botRightLabel.font               = UIFont.lightApplicationFontForStyle(UIFontTextStyleBody)
-		botRightLabel.minimumScaleFactor = 12.0/botRightLabel.font.pointSize
 	}
 
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -103,14 +96,6 @@ final class QuadInfoCell: UITableViewCell {
 		super.init(coder: aDecoder)
 
 		setupSubviews()
-	}
-	
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
-		setupFonts()
 	}
 
 	override var accessibilityLabel: String? {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol EditablePageCellDelegate : class {
+protocol EditablePageCellDelegate: class {
 	func valueForIdentifier(_ valueIdentifier: String) -> Any?
 	func valueChanged(_ newValue: AnyObject?, identifier: String)
 }
@@ -46,6 +46,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.contentVerticalAlignment = .center
 		textField.isUserInteractionEnabled = false
 		textField.translatesAutoresizingMaskIntoConstraints = false
+		textField.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+		textField.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(textField)
 
@@ -55,35 +57,21 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.setContentHuggingPriority(750, for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
+		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+		keyLabel.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(keyLabel)
 
 		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottomMargin, multiplier: 1.0, constant: 0.0)
 		keyLabelBottomConstraint.priority = 500
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "textField" : textField]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "textField": textField]))
 		self.contentView.addConstraint(NSLayoutConstraint(item: keyLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .topMargin, multiplier: 1.0, constant: 0.0))
 		self.contentView.addConstraint(keyLabelBottomConstraint)
 		self.contentView.addConstraint(NSLayoutConstraint(item: textField, attribute: .lastBaseline, relatedBy: .equal, toItem: keyLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
-
-		setupFonts()
-		NotificationCenter.default.addObserver(self, selector: #selector(EditablePageCell.contentSizeCategoryDidChange(notification:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
-	}
-
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
-		setupFonts()
-	}
-
-	func setupFonts() {
-		self.textField.font = UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2)
-		self.keyLabel.font = UIFont.applicationFontForStyle(UIFontTextStyleCaption2)
 	}
 
 	override var accessibilityLabel: String? {
@@ -100,7 +88,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 		self.keyLabel.text   = dictionary["label"] as? String
 		self.delegate        = viewController as? EditablePageCellDelegate
-		self.valueIdentifier = dictionary["valueIdentifier"] as! String
+		self.valueIdentifier = dictionary["valueIdentifier"] as? String
 
 		self.textField.placeholder = dictionary["placeholder"] as? String
 		self.textField.delegate    = self

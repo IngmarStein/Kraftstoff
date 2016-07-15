@@ -235,14 +235,15 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let cost = fuelVolume! * price!
 
 		let liters      = Units.litersForVolume(fuelVolume!, withUnit: fuelUnit)
-		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
-		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
+		let kilometers  = Units.kilometersForDistance(distance!, withUnit: odometerUnit)
+		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
+		let consumptionUnitSymbol = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 
-		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(consumptionUnitSymbol)"
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
-								consumptionUnit.symbol]
+								consumptionUnitSymbol]
 
 		addSectionAtIndex(1, withAnimation: animation)
 

@@ -25,32 +25,17 @@ final class ConsumptionTableCell: PageCell {
 		self.coloredLabel.highlightedTextColor      = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		self.coloredLabel.textColor                 = .black()
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
-
-		setupFonts()
+		self.coloredLabel.adjustsFontForContentSizeCategory = true
+		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleTitle3)
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
-
-		NotificationCenter.default.addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(notification:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
-	}
-
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
-		setupFonts()
-	}
-
-	private func setupFonts() {
-		self.coloredLabel.font               = UIFont.applicationFontForStyle(UIFontTextStyleCaption1)
-		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
 	}
 
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {

@@ -14,12 +14,14 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	var cars: [Car]
 
 	// Standard cell geometry
-	private let PickerViewCellWidth: CGFloat        = 290.0
-	private let PickerViewCellHeight: CGFloat       =  44.0
+	private let pickerViewCellWidth: CGFloat  = 290.0
+	private let pickerViewCellHeight: CGFloat =  44.0
 
 	// Attributes for custom PickerViews
-	private var prefixAttributes = [String: AnyObject]()
-	private var suffixAttributes = [String: AnyObject]()
+	private var prefixAttributes = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleHeadline),
+	                                NSForegroundColorAttributeName: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
+	private var suffixAttributes = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleSubheadline),
+									NSForegroundColorAttributeName: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
 
 	required init() {
 		carPicker = UIPickerView()
@@ -50,17 +52,6 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func setupFonts() {
-		super.setupFonts()
-
-		prefixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleSubheadline),
-			NSForegroundColorAttributeName: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
-		suffixAttributes = [NSFontAttributeName: UIFont.applicationFontForStyle(UIFontTextStyleCaption2),
-			NSForegroundColorAttributeName: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
-
-		self.carPicker.reloadAllComponents()
-	}
-
 	override func prepareForReuse() {
 		super.prepareForReuse()
 
@@ -75,7 +66,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		self.cars = dictionary["fetchedObjects"] as? [Car] ?? []
 
 		// Look for index of selected car
-		let car = self.delegate.valueForIdentifier(self.valueIdentifier) as! Car
+		guard let car = self.delegate.valueForIdentifier(self.valueIdentifier) as? Car else { return }
 		let initialIndex = self.cars.index(of: car) ?? 0
 
 		// (Re-)configure car picker and select the initial item
@@ -114,11 +105,11 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	// MARK: - UIPickerViewDelegate
 
 	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-		return PickerViewCellHeight
+		return pickerViewCellHeight
 	}
 
 	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-		return PickerViewCellWidth
+		return pickerViewCellWidth
 	}
 
 	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {

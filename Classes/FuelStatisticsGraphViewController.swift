@@ -364,7 +364,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			return
 		}
 
-		let font = UIFont.lightApplicationFontForStyle(UIFontTextStyleFootnote)
+		let font = UIFont.preferredFont(forTextStyle: UIFontTextStyleFootnote)
 		let path = UIBezierPath()
 
 		context.saveGState()
@@ -733,7 +733,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes = [ NSFontAttributeName: UIFont.lightApplicationFontForStyle(UIFontTextStyleCaption2),
+		let attributes = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleCaption2),
                                  NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var infoRect = CGRect()

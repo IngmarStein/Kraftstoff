@@ -24,6 +24,8 @@ class EditableProxyPageCell: EditablePageCell {
 		textFieldProxy.isUserInteractionEnabled = false
 		textFieldProxy.isAccessibilityElement   = false
 		textFieldProxy.translatesAutoresizingMaskIntoConstraints = false
+		textFieldProxy.adjustsFontForContentSizeCategory = true
+		textFieldProxy.font = self.textField.font
 
 		self.contentView.addSubview(self.textFieldProxy)
 
@@ -39,12 +41,6 @@ class EditableProxyPageCell: EditablePageCell {
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
-	}
-
-	override func setupFonts() {
-		super.setupFonts()
-
-		self.textFieldProxy.font = self.textField.font
 	}
 
 	override var accessibilityLabel: String? {
