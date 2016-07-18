@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ "$1" == "-showBuildSettings" ]; then
+if [ "$1 $2" == "xcodebuild -showBuildSettings" ]; then
 	echo <<EOF
 	Build settings for action build and target Kraftstoff:
 	    ACTION = build
@@ -804,5 +804,5 @@ if [ "$1" == "-showBuildSettings" ]; then
 	    variant = normal
 EOF
 else
-	/usr/bin/xcodebuild "$@"
+	/usr/bin/xcrun "$@"
 fi

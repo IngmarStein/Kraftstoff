@@ -10,8 +10,6 @@ cache:
 script:
 # temporary workaround for Xcode 8 (see https://github.com/fastlane/fastlane/issues/5163)
 - export PATH="`pwd`/fastlane:$PATH"
-- echo $PATH
-- which xcodebuild
 - fastlane test
 #env:
 #  global:
