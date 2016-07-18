@@ -8,6 +8,8 @@ cache:
 #before_script:
 #- "./scripts/install-swift.sh"
 script:
+# temporary workaround for Xcode 8 (see https://github.com/fastlane/fastlane/issues/5163)
+- export PATH="$TRAVIS_BUILD_DIR/fastlane:$PATH"
 - fastlane test
 #env:
 #  global:

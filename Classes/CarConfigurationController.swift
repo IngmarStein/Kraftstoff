@@ -114,7 +114,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		//TODO: use decodeObjectOfClass:forKey:
 		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)

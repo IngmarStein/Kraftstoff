@@ -578,12 +578,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	TODO: this currently crashes with Swift 3
 	#0	0x0000000100c658ac in static IndexPath._unconditionallyBridgeFromObjectiveC(NSIndexPath?) -> IndexPath ()
 	#1	0x00000001000b41a4 in @objc CarViewController.tableView(UITableView, didEndEditingRowAt : IndexPath) -> () ()
-
+	*/
 	override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath) {
 		checkEnableEditButton()
 		updateHelp(true)
 	}
-	*/
 
 	// MARK: - NSFetchedResultsControllerDelegate
 
