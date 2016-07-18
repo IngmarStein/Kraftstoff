@@ -16,7 +16,7 @@ class KraftstoffUITests: XCTestCase {
 		continueAfterFailure = false
 
 		let app = XCUIApplication()
-		setupSnapshot(app: app)
+		setupSnapshot(app)
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
 		app.launch()
 
@@ -49,11 +49,11 @@ class KraftstoffUITests: XCTestCase {
 
 		app.navigationBars.buttons["done"].tap()
 
-		snapshot(name: "02_cars")
+		snapshot("02_cars")
 
 		tablesQuery.cells.element(boundBy: 0).tap()
 
-		snapshot(name: "03_fuelevents")
+		snapshot("03_fuelevents")
 
 		XCUIDevice.shared().orientation = .landscapeLeft
 
@@ -62,12 +62,12 @@ class KraftstoffUITests: XCTestCase {
 		button.tap()
 
 		imagesQuery["graphImage"].coordinate(withNormalizedOffset: CGVector(dx: 0.536, dy: 0.5)).press(forDuration: 0.6)
-		snapshot(name: "04_chart_cost")
+		snapshot("04_chart_cost")
 
 		// app.pageIndicators.element(boundBy: 0).tap()
 		app.scrollViews.element(boundBy: 0).swipeLeft()
 
-		snapshot(name: "05_chart_fuel")
+		snapshot("05_chart_fuel")
 
 		XCUIDevice.shared().orientation = .portrait
 
@@ -99,7 +99,7 @@ class KraftstoffUITests: XCTestCase {
 
 		app.navigationBars.buttons["done"].tap()
 
-		snapshot(name: "01_entry")
+		snapshot("01_entry")
     }
 
 }
