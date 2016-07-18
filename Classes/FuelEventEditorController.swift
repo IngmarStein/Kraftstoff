@@ -84,8 +84,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
-				controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as? String {
+				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
+			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as? String {
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
@@ -189,7 +189,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	// MARK: - Mode Switching for Table Rows
 
 	private func reconfigureRowAtIndexPath(_ indexPath: IndexPath) {
-		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, cellData = dataForRow(indexPath.row, inSection: 0) {
+		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell, let cellData = dataForRow(indexPath.row, inSection: 0) {
 			cell.configureForData(cellData,
                 viewController: self,
                      tableView: self.tableView,

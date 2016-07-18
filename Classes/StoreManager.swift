@@ -132,7 +132,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-		if let product = response.products.first where response.products.count == 1 {
+		if let product = response.products.first, response.products.count == 1 {
 			let payment = SKPayment(product: product)
 			SKPaymentQueue.default().add(payment)
 		}

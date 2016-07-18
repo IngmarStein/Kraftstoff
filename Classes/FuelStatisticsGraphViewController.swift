@@ -559,7 +559,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let image = cell?.contentImage
 
 		// Update summary in top right of view
-		if let average = average where !average.floatValue.isNaN {
+		if let average = average, !average.floatValue.isNaN {
 			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average)! as NSString)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)

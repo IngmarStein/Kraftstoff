@@ -87,7 +87,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 	func datePickerValueChanged(_ sender: UIDatePicker) {
 		let selectedDate = Date.dateWithoutSeconds(sender.date)
 
-		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date where dateValue != selectedDate {
+		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date, dateValue != selectedDate {
 			self.textFieldProxy.text = self.dateFormatter.string(from: selectedDate)
 			self.delegate.valueChanged(selectedDate, identifier: self.valueIdentifier)
 			if let timestamp = self.valueTimestamp {
@@ -122,7 +122,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 		if self.autoRefreshedDate {
 			let now = Date()
-			if let timestamp = self.valueTimestamp, lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? Date {
+			if let timestamp = self.valueTimestamp, let lastChangeDate = self.delegate.valueForIdentifier(timestamp) as? Date {
 				let noChangeInterval = now.timeIntervalSince(lastChangeDate)
 				if noChangeInterval >= 300 || noChangeInterval < 0 {
 					selectedDate = now

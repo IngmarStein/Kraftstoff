@@ -71,7 +71,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		if let selectedCarId = selectedCarId where selectedCar == nil {
+		if let selectedCarId = selectedCarId, selectedCar == nil {
 			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
 		}
 
@@ -145,8 +145,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
-				controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
-				modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
+				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
+				let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
 			if controller.selectedCar == nil {

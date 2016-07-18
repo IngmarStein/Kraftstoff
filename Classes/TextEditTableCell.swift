@@ -29,7 +29,7 @@ final class TextEditTableCell: EditablePageCell {
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
 		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
-		if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool where autocapitalizeAll {
+		if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool, autocapitalizeAll {
 			self.textField.autocapitalizationType = .allCharacters
 		} else {
 			self.textField.autocapitalizationType = .words

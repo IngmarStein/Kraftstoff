@@ -161,7 +161,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String where CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
 						if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
 							fuelEventController.selectedCarId = carIdentifier
 							if let navigationController = tabBarController.selectedViewController as? UINavigationController {
@@ -359,7 +359,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Receipt validation
 
 	private func receiptData(_ appStoreReceiptURL: URL?) -> Data? {
-		guard let receiptURL = appStoreReceiptURL, receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
+		guard let receiptURL = appStoreReceiptURL, let receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
 
 		do {
 			let receiptData = receipt.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
@@ -376,7 +376,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool, onCompletion: (Int?, AnyObject?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
-		guard let receiptData = receiptData(appStoreReceiptURL), url = URL(string: serverURL) else {
+		guard let receiptData = receiptData(appStoreReceiptURL), let url = URL(string: serverURL) else {
 			onCompletion(nil, nil)
 			return
 		}
@@ -387,7 +387,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {data, response, error -> Void in
 
-			guard let data = data where error == nil else {
+			guard let data = data, error == nil else {
 				onCompletion(nil, nil)
 				return
 			}
@@ -424,7 +424,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					}
 
 					// 0 if the receipt is valid
-					if let receipt = json?["receipt"] as? [String: AnyObject], bundleId = receipt["bundle_id"] as? String where statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+					if let receipt = json?["receipt"] as? [String: AnyObject], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 						self.appReceipt = receipt
 						onCompletion(true)
 					} else {
@@ -433,7 +433,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 
 				// 0 if the receipt is valid
-			} else if let receipt = json?["receipt"] as? [String: AnyObject], bundleId = receipt["bundle_id"] as? String where status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+			} else if let receipt = json?["receipt"] as? [String: AnyObject], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 				self.appReceipt = receipt
 				onCompletion(true)
 			} else {
@@ -443,7 +443,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	func validReceiptForInAppPurchase(_ productId: String) -> Bool {
-		guard let receipt = appReceipt, inApps = receipt["in_app"] as? [[String: AnyObject]] where appReceiptValid else { return false }
+		guard let receipt = appReceipt, let inApps = receipt["in_app"] as? [[String: AnyObject]], appReceiptValid else { return false }
 		for inApp in inApps {
 			if let id = inApp["product_id"] as? String {
 				if id == productId {

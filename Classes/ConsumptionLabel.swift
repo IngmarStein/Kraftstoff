@@ -23,7 +23,7 @@ final class ConsumptionLabel: UILabel {
 	}
 
 	private func computeHighlights() {
-		if let text = text, highlightStrings = highlightStrings, highlightedTextColor = highlightedTextColor {
+		if let text = text, let highlightStrings = highlightStrings, let highlightedTextColor = highlightedTextColor {
 			let highlightAttributes = [ NSForegroundColorAttributeName: highlightedTextColor ]
 
 			let attributedString = NSMutableAttributedString(string: text)

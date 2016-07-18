@@ -574,12 +574,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		hideHelp(true)
 	}
 
-	/*
-	TODO: this currently crashes with Swift 3
-	#0	0x0000000100c658ac in static IndexPath._unconditionallyBridgeFromObjectiveC(NSIndexPath?) -> IndexPath ()
-	#1	0x00000001000b41a4 in @objc CarViewController.tableView(UITableView, didEndEditingRowAt : IndexPath) -> () ()
-	*/
-	override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
 		checkEnableEditButton()
 		updateHelp(true)
 	}
@@ -614,7 +609,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			}
         case .move:
-			if let indexPath = indexPath, newIndexPath = newIndexPath where indexPath != newIndexPath {
+			if let indexPath = indexPath, let newIndexPath = newIndexPath, indexPath != newIndexPath {
 				tableView.deleteRows(at: [indexPath], with: .fade)
 				tableView.insertRows(at: [newIndexPath], with: .fade)
 			}
@@ -635,7 +630,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-		if let fuelEventController = segue.destinationViewController as? FuelEventController, selection = tableView.indexPathForSelectedRow {
+		if let fuelEventController = segue.destinationViewController as? FuelEventController, let selection = tableView.indexPathForSelectedRow {
 			let selectedCar = self.fetchedResultsController.object(at: selection)
 			fuelEventController.selectedCar = selectedCar
 		}

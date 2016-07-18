@@ -16,7 +16,7 @@ final class CSVExporter {
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		let bundle: Bundle
-		if let language = language, path = Bundle.main.pathForResource(language, ofType: "lproj"), localeBundle = Bundle(path: path) {
+		if let language = language, let path = Bundle.main.pathForResource(language, ofType: "lproj"), let localeBundle = Bundle(path: path) {
 			bundle = localeBundle
 		} else {
 			bundle = Bundle.main

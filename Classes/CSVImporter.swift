@@ -77,7 +77,7 @@ final class CSVImporter {
 	private func guessModelFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
 			// CSV file exported in new format: model is first part of filename
-			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__") where nameComponents.count == 2 {
+			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__"), nameComponents.count == 2 {
 				let part = nameComponents[0]
 
 				if !part.isEmpty {
@@ -95,7 +95,7 @@ final class CSVImporter {
 
 	private func guessPlateFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
-			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__") where nameComponents.count <= 2 {
+			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__"), nameComponents.count <= 2 {
 				// CSV file in new format: plate is second part of filename
 				//     for unknown format: use the whole filename if it is a single component
 				let part = nameComponents.last!
@@ -137,8 +137,8 @@ final class CSVImporter {
 		let previousCarIDCount = carIDs.count
 
 		for record in records {
-			if let ID = scanNumberWithString(record["ID"])?.int32Value where !carIDs.contains(Int(ID)) {
-				if let model = record[modelKey!], plate = record["NAME"] {
+			if let ID = scanNumberWithString(record["ID"])?.int32Value, !carIDs.contains(Int(ID)) {
+				if let model = record[modelKey!], let plate = record["NAME"] {
 					let intID = Int(ID)
 					carIDs.insert(intID)
 					modelForID[intID] = model
@@ -265,13 +265,13 @@ final class CSVImporter {
 
 		// Sort records according time and odometer
 		let sortedRecords = records.sorted { (record1, record2) -> Bool in
-			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
+			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), let date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
 				if date1 < date2 {
 					return true
 				}
 			}
 
-			if let odometerKey = odometerKey, odometer1 = self.scanNumberWithString(record1[odometerKey]), odometer2 = self.scanNumberWithString(record2[odometerKey]) {
+			if let odometerKey = odometerKey, let odometer1 = self.scanNumberWithString(record1[odometerKey]), let odometer2 = self.scanNumberWithString(record2[odometerKey]) {
 				if odometer1 < odometer2 {
 					return true
 				}
@@ -375,7 +375,7 @@ final class CSVImporter {
 				}
 
 				// Consistency check and import
-				if let distance = distance, volume = volume where distance > zero && volume > zero {
+				if let distance = distance, let volume = volume, distance > zero && volume > zero {
 					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume:volume)
 
 					// Add event for car
