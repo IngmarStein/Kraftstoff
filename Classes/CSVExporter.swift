@@ -14,6 +14,8 @@ final class CSVExporter {
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit = car.ksFuelUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
+		let measurementFormatter = MeasurementFormatter()
+		measurementFormatter.unitStyle = .long
 
 		let bundle: Bundle
 		if let language = language, let path = Bundle.main.pathForResource(language, ofType: "lproj"), let localeBundle = Bundle(path: path) {
@@ -43,7 +45,7 @@ final class CSVExporter {
 		dataString += Units.fuelPriceUnitDescription(fuelUnit, bundle: bundle)
 		dataString += ";"
 
-		dataString += consumptionUnit.description
+		dataString += measurementFormatter.string(from: consumptionUnit).capitalized
 		dataString += ";"
 
 		dataString += NSLocalizedString("Comment", bundle: bundle, comment: "")

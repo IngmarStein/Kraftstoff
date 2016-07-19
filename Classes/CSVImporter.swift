@@ -349,7 +349,7 @@ final class CSVImporter {
 				if isTankProImport {
 					// TankPro stores total costs not the price per unit...
 					if volume == nil || volume == .zero {
-						price = NSDecimalNumber.zero
+						price = .zero
 					} else {
 						price = price!.dividing(by: volume!, withBehavior: Formatters.priceRoundingHandler)
 					}

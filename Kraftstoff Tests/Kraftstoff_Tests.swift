@@ -102,8 +102,9 @@ class KraftstoffTests: XCTestCase {
 			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car)
+		print(csvString)
 
-		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers;Comment\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
+		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters Per 100 Kilometers;Comment\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
 		XCTAssert(csvString.characters.count == 5473, "CSV data should have the expected size")
     }
 
