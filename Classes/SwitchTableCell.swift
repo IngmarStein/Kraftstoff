@@ -29,7 +29,7 @@ final class SwitchTableCell: PageCell {
 		self.selectionStyle = .none
 
 		// Create switch
-		valueSwitch.addTarget(self, action:#selector(SwitchTableCell.switchToggledAction(_:)), for: .valueChanged)
+		valueSwitch.addTarget(self, action: #selector(SwitchTableCell.switchToggledAction(_:)), for: .valueChanged)
 		valueSwitch.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueSwitch)

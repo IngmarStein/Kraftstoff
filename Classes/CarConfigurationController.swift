@@ -70,7 +70,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NotificationCenter.default.addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CarConfigurationController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -412,7 +412,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue
-					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit: oldUnit), withUnit:newUnit)
+					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit: oldUnit), withUnit: newUnit)
 
 					recreateOdometerRowWithAnimation(newUnit == UnitLength.kilometers ? .left : .right)
 				}

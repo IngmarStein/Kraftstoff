@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
 
-		NotificationCenter.default.addObserver(self, selector:#selector(FuelEventEditorController.localeChanged(_:)), name:Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelEventEditorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -85,7 +85,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventEventID) as? String {
+			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventEventID) as? String {
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
@@ -177,7 +177,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		self.title = Formatters.dateFormatter.string(from: event.timestamp)
 		date       = event.timestamp
-		distance   = Units.distanceForKilometers(event.distance, withUnit:odometerUnit)
+		distance   = Units.distanceForKilometers(event.distance, withUnit: odometerUnit)
 		price      = Units.pricePerUnit(event.price, withUnit: fuelUnit)
 		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit: fuelUnit)
 		filledUp   = event.filledUp
@@ -436,7 +436,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private func selectRowAtIndexPath(_ path: IndexPath?) {
 		if let path = path {
 			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
-			self.tableView(self.tableView, didSelectRowAt:path)
+			self.tableView(self.tableView, didSelectRowAt: path)
 		}
 	}
 
@@ -506,7 +506,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if !(distance > zero && fuelVolume > zero) {
 			canBeSaved = false
 		} else if date != event.timestamp {
-			if CoreDataManager.containsEventWithCar(car, andDate:date) {
+			if CoreDataManager.containsEventWithCar(car, andDate: date) {
 				canBeSaved = false
 			}
 		}
@@ -521,7 +521,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if let date = newValue as? Date {
 			if valueIdentifier == "date" {
 				if date != event.timestamp {
-					if CoreDataManager.containsEventWithCar(car, andDate:date) {
+					if CoreDataManager.containsEventWithCar(car, andDate: date) {
 						return false
 					}
 				}

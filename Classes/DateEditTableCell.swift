@@ -21,7 +21,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		super.init()
 
 		datePicker.datePickerMode = .dateAndTime
-		datePicker.addTarget(self, action:#selector(DateEditTableCell.datePickerValueChanged(_:)), for: .valueChanged)
+		datePicker.addTarget(self, action: #selector(DateEditTableCell.datePickerValueChanged(_:)), for: .valueChanged)
 		datePicker.translatesAutoresizingMaskIntoConstraints = false
 		datePicker.isHidden = true
 

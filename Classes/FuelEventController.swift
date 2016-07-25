@@ -95,8 +95,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let backgroundImage = UIImageView(image: #imageLiteral(resourceName: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom, relatedBy: .equal, toItem:backgroundImage, attribute: .bottom, multiplier: 1.0, constant: 90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem:backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom, relatedBy: .equal, toItem: backgroundImage, attribute: .bottom, multiplier: 1.0, constant: 90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem: backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
@@ -159,10 +159,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func encodeRestorableState(with coder: NSCoder) {
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey:kSRFuelEventSelectedCarID)
-		coder.encode(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
-		coder.encode(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
-		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: kSRFuelEventSelectedCarID)
+		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: kSRFuelEventExportSheet)
+		coder.encode(restoreOpenIn || (openInController != nil), forKey: kSRFuelEventShowOpenIn)
+		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: kSRFuelEventShowComposer)
 
 		// don't use a snapshot image for next launch when graph is currently visible
 		if presentedViewController != nil {

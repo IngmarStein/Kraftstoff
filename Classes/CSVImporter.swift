@@ -197,14 +197,14 @@ final class CSVImporter {
 		}
 
 		// consumption with parsed distance
-		let rawConsumption = Units.consumptionForKilometers(distance, liters:liters, inUnit: .litersPer100Kilometers)
+		let rawConsumption = Units.consumptionForKilometers(distance, liters: liters, inUnit: .litersPer100Kilometers)
 
 		if rawConsumption == .notA {
 			return distance
 		}
 
 		// consumption with increased distance
-		let convConsumption = Units.consumptionForKilometers(convDistance, liters:liters, inUnit: .litersPer100Kilometers)
+		let convConsumption = Units.consumptionForKilometers(convDistance, liters: liters, inUnit: .litersPer100Kilometers)
 
 		if convConsumption == .notA {
 			return distance
@@ -265,7 +265,7 @@ final class CSVImporter {
 
 		// Sort records according time and odometer
 		let sortedRecords = records.sorted { (record1, record2) -> Bool in
-			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime:record1[timeKey!]), let date2 = self.scanDate(record2[dateKey!]!, withOptionalTime:record2[timeKey!]) {
+			if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime: record1[timeKey!]), let date2 = self.scanDate(record2[dateKey!]!, withOptionalTime: record2[timeKey!]) {
 				if date1 < date2 {
 					return true
 				}
@@ -304,7 +304,7 @@ final class CSVImporter {
 					}
 				}
 
-				var date  = scanDate(record[dateKey!]!, withOptionalTime:record[timeKey!])!
+				var date  = scanDate(record[dateKey!]!, withOptionalTime: record[timeKey!])!
 				let delta = date.timeIntervalSince(lastDate)
 
 				if delta <= 0.0 || lastDelta > 0.0 {
@@ -376,7 +376,7 @@ final class CSVImporter {
 
 				// Consistency check and import
 				if let distance = distance, let volume = volume, distance > zero && volume > zero {
-					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume:volume)
+					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume: volume)
 
 					// Add event for car
 					addEvent(car,
@@ -438,7 +438,7 @@ final class CSVImporter {
 			importCarIDs(CSVTable!)
 		}
 
-		// Not a TankPro import:create a dummy car definition
+		// Not a TankPro import: create a dummy car definition
 		if carIDs.isEmpty {
 			let dummyID = 0
 
@@ -467,7 +467,7 @@ final class CSVImporter {
 					continue
 				}
 
-				importRecords(CSVTable, formatIsTankPro:importFromTankPro, detectedEvents:&numEvents, inContext:managedObjectContext)
+				importRecords(CSVTable, formatIsTankPro: importFromTankPro, detectedEvents: &numEvents, inContext: managedObjectContext)
 			} else {
 				break
 			}
@@ -515,14 +515,14 @@ final class CSVImporter {
 
 		var d = Decimal()
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
-			return NSDecimalNumber(decimal:d)
+			return NSDecimalNumber(decimal: d)
 		}
 
 		scanner.locale = Locale.system
 		scanner.scanLocation = 0
 
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
-			return NSDecimalNumber(decimal:d)
+			return NSDecimalNumber(decimal: d)
 		}
 
 		// Scan with localized number formatter (sloppy, catches grouping separators)

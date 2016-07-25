@@ -72,8 +72,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NotificationCenter.default.addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -87,8 +87,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			coder.encode(indexPath, forKey: kSRCalculatorSelectedIndex)
 		}
 
-		coder.encode(isShowingConvertSheet, forKey:kSRCalculatorConvertSheet)
-		coder.encode(self.isEditing, forKey:kSRCalculatorEditing)
+		coder.encode(isShowingConvertSheet, forKey: kSRCalculatorConvertSheet)
+		coder.encode(self.isEditing, forKey: kSRCalculatorEditing)
 
 		super.encodeRestorableState(with: coder)
 	}
@@ -548,7 +548,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	private func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let path = indexPath {
 			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
-			self.tableView(self.tableView, didSelectRowAt:path)
+			self.tableView(self.tableView, didSelectRowAt: path)
 		}
 	}
 
@@ -615,7 +615,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// 1.) entered "distance" must be larger than car odometer
 		let odometerUnit = car.ksOdometerUnit
 
-		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
+		let rawDistance  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let convDistance = rawDistance - car.odometer
 
 		if convDistance <= .zero {
@@ -623,7 +623,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 
 		// 2.) consumption with converted distances is more 'logical'
-		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
+		let liters = Units.litersForVolume(fuelVolume!, withUnit: car.ksFuelUnit)
 
 		if liters <= .zero {
 			return false
@@ -685,7 +685,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	func showOdometerConversionAlert() {
 		let odometerUnit = self.car!.ksOdometerUnit
-		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
+		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
 		let convDistance = rawDistance - self.car!.odometer
 
 		let distanceFormatter = Formatters.distanceFormatter
@@ -697,20 +697,20 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let alertController = UIAlertController(title: NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,
 																	  preferredStyle: .actionSheet)
-		let cancelAction = UIAlertAction(title:rawButton, style: .default) { _ in
+		let cancelAction = UIAlertAction(title: rawButton, style: .default) { _ in
 			self.isShowingConvertSheet = false
 			self.setEditing(false, animated: true)
 		}
 
-		let destructiveAction = UIAlertAction(title:convButton, style: .destructive) { _ in
+		let destructiveAction = UIAlertAction(title: convButton, style: .destructive) { _ in
 			self.isShowingConvertSheet = false
 
 			// Replace distance in table with difference to car odometer
 			let odometerUnit = self.car!.ksOdometerUnit
-			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
+			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
 			let convDistance = rawDistance - self.car!.odometer
 
-			self.distance = Units.distanceForKilometers(convDistance, withUnit:odometerUnit)
+			self.distance = Units.distanceForKilometers(convDistance, withUnit: odometerUnit)
 			self.valueChanged(self.distance, identifier: "distance")
 
 			self.recreateDistanceRowWithAnimation(.right)
@@ -781,7 +781,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			if let recentKey = recentKey {
 				let defaults = UserDefaults.standard
 
-				defaults.set(newValue, forKey:recentKey)
+				defaults.set(newValue, forKey: recentKey)
 				defaults.synchronize()
 			}
 
@@ -826,7 +826,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// Date must be collision free
 		if let date = newValue as? Date {
 			if valueIdentifier == "date" {
-				if CoreDataManager.containsEventWithCar(car, andDate:date) {
+				if CoreDataManager.containsEventWithCar(car, andDate: date) {
 					return false
 				}
 			}

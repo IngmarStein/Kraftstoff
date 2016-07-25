@@ -96,7 +96,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey:kSRCarViewEditedObject)
+			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: kSRCarViewEditedObject)
 		}
 		super.encodeRestorableState(with: coder)
 	}
@@ -104,7 +104,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	override func decodeRestorableState(with coder: NSCoder) {
 		super.decodeRestorableState(with: coder)
 
-		if let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRCarViewEditedObject) as? String {
+		if let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRCarViewEditedObject) as? String {
 			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 
@@ -377,12 +377,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 				configurator.odometerUnit = NSNumber(value: editedObject.odometerUnit)
 				configurator.odometer     = Units.distanceForKilometers(editedObject.odometer,
-                                                                  withUnit:editedObject.ksOdometerUnit)
+                                                                  withUnit: editedObject.ksOdometerUnit)
 
 				configurator.fuelUnit            = NSNumber(value: editedObject.fuelUnit)
 				configurator.fuelConsumptionUnit = NSNumber(value: editedObject.fuelConsumptionUnit)
 
-				let navController = UINavigationController(rootViewController:configurator)
+				let navController = UINavigationController(rootViewController: configurator)
 				navController.restorationIdentifier = "CarConfigurationNavigationController"
 				navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
 
@@ -466,7 +466,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let fuelVolume = managedObject.fuelVolumeTotalSum
 
 		if distance > .zero && fuelVolume > .zero {
-			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters:fuelVolume, inUnit:consumptionUnit))!
+			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 		} else {

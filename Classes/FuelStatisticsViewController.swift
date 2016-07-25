@@ -179,7 +179,7 @@ class FuelStatisticsViewController: UIViewController {
 				}
 
 				// Fetch events for the selected time period
-				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate:recentFillupDate)
+				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
 				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
 																										  afterDate: samplingStart,
 																										dateMatches: true),

@@ -314,7 +314,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
 						: NSLocalizedString("No valid CSV-data could be found.", comment: "")
 
-					let alertController = UIAlertController(title: title, message:message, preferredStyle: .alert)
+					let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
@@ -393,7 +393,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			}
 
 			do {
-				let json = try JSONSerialization.jsonObject(with: data, options:[])
+				let json = try JSONSerialization.jsonObject(with: data, options: [])
 				//print(json)
 				guard let statusCode = json["status"] as? Int else {
 					onCompletion(nil, json)
