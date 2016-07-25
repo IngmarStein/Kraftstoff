@@ -93,7 +93,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 		return [
 			String(kSecClass): kSecClassGenericPassword,
 			String(kSecAttrService): "com.github.ingmarstein.kraftstoff",
-			String(kSecAttrAccount): product as NSString,
+			String(kSecAttrAccount): product,
 			String(kSecAttrAccessible): kSecAttrAccessibleWhenUnlocked
 		]
 	}

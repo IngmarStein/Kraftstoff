@@ -68,7 +68,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	private func selectRow(_ row: Int) {
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[row]
 
-		self.delegate.valueChanged(row as NSNumber, identifier: self.valueIdentifier)
+		self.delegate.valueChanged(row, identifier: self.valueIdentifier)
 	}
 
 	private func showPicker(_ show: Bool) {

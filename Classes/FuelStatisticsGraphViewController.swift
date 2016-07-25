@@ -283,19 +283,19 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let numberFormatter = self.dataSource!.axisFormatterForCar(car)
 
 		state.hMarkPositions[0] = 1.0 - (1.0  * valStretchFactorForDisplay)
-		state.hMarkNames[0] = numberFormatter.string(from: (valMin + valRange) as NSNumber)!
+		state.hMarkNames[0] = numberFormatter.string(from: (valMin + valRange))!
 
 		state.hMarkPositions[1] = 1.0 - (0.75 * valStretchFactorForDisplay)
-		state.hMarkNames[1] = numberFormatter.string(from: (valMin + valRange*0.75) as NSNumber)!
+		state.hMarkNames[1] = numberFormatter.string(from: (valMin + valRange*0.75))!
 
 		state.hMarkPositions[2] = 1.0 - (0.5  * valStretchFactorForDisplay)
-		state.hMarkNames[2] = numberFormatter.string(from: (valMin + valRange*0.5) as NSNumber)!
+		state.hMarkNames[2] = numberFormatter.string(from: (valMin + valRange*0.5))!
 
 		state.hMarkPositions[3] = 1.0 - (0.25 * valStretchFactorForDisplay)
-		state.hMarkNames[3] = numberFormatter.string(from: (valMin + valRange*0.25) as NSNumber)!
+		state.hMarkNames[3] = numberFormatter.string(from: (valMin + valRange*0.25))!
 
 		state.hMarkPositions[4] = 1.0
-		state.hMarkNames[4] = numberFormatter.string(from: valMin as NSNumber)!
+		state.hMarkNames[4] = numberFormatter.string(from: valMin)!
 		state.hMarkCount = 5
 
 		// Markers for horizontal axis
@@ -333,7 +333,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state == nil {
 			state = FuelStatisticsSamplingData()
-			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc) as NSNumber
+			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc)
 		}
 
 		// Create image data from resampled data
@@ -560,7 +560,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		// Update summary in top right of view
 		if let average = average, !average.floatValue.isNaN {
-			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average)! as NSString)
+			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average)!)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)
 		}
@@ -691,7 +691,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 						let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
 
 						let valueString = String(format: self.dataSource!.averageFormatString(false, forCar: self.selectedCar),
-						                         self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex] as NSNumber)! as NSString)
+						                         self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex])!)
 
 						imageView.image = renderer.image { context in
 							drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString, context: context.cgContext)

@@ -273,17 +273,17 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let period: String
         switch fetchCount {
 		case 0:  period = NSLocalizedString("", comment: "")
-		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp) as NSString)
-		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp) as NSString, outputFormatter.string(from: first!.timestamp) as NSString)
+		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
         }
 
 		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
 		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
-            selectedCar.name as NSString,
-            selectedCar.numberPlate as NSString,
-            period as NSString,
-            count as NSString)
+            selectedCar.name,
+            selectedCar.numberPlate,
+            period,
+            count)
 	}
 
 	// MARK: - Export data
@@ -393,7 +393,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate as NSString))
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML: false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType: "text/csv", fileName: exportFilename)
 
