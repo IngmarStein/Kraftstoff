@@ -18,7 +18,7 @@ final class CSVExporter {
 		measurementFormatter.unitStyle = .long
 
 		let bundle: Bundle
-		if let language = language, let path = Bundle.main.pathForResource(language, ofType: "lproj"), let localeBundle = Bundle(path: path) {
+		if let language = language, let path = Bundle.main.path(forResource: language, ofType: "lproj"), let localeBundle = Bundle(path: path) {
 			bundle = localeBundle
 		} else {
 			bundle = Bundle.main
@@ -53,8 +53,8 @@ final class CSVExporter {
 
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd';'HH:mm"
-		dateFormatter.locale = Locale.system
-		dateFormatter.timeZone = TimeZone(forSecondsFromGMT: 0)
+		dateFormatter.locale = nil
+		dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
 		let numberFormatter = NumberFormatter()
 		numberFormatter.numberStyle = .decimal

@@ -16,7 +16,7 @@ import CloudKit
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
 		// swiftlint:disable:next force_cast
-		return shared().delegate as! AppDelegate
+		return shared.delegate as! AppDelegate
 	}
 }
 
@@ -39,7 +39,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Application Lifecycle
 
 	override init() {
-		UserDefaults.standard.register(
+		UserDefaults.standard.register(defaults:
 		   ["statisticTimeSpan": 6,
 			"preferredStatisticsPage": 1,
 			"preferredCarID": "",
@@ -74,7 +74,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			CloudKitManager.initialize()
 
-			UIApplication.shared().registerForRemoteNotifications()
+			UIApplication.shared.registerForRemoteNotifications()
 
 			if ProcessInfo.processInfo.arguments.index(of: "-STARTFRESH") != nil {
 				CoreDataManager.deleteAllObjects()
@@ -114,7 +114,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	private func updateShortcutItems() {
 		if let cars = self.carsFetchedResultsController.fetchedObjects {
-			UIApplication.shared().shortcutItems = cars.map { car in
+			UIApplication.shared.shortcutItems = cars.map { car in
 				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId": $0] }
 				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
 			}
@@ -210,7 +210,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
-		let stateVersion = Int(coder.decodeObjectOfClass(NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
+		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
 		return stateVersion >= 1572 && stateVersion <= bundleVersion
@@ -226,7 +226,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 			progress.isUserInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .whiteLarge
-			progress.color = .black()
+			progress.color = .black
 			let center = self.importAlert!.view.center
 			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
 			progress.startAnimating()
@@ -352,7 +352,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func request(_ request: SKRequest, didFailWithError error: NSError) {
+	func request(_ request: SKRequest, didFailWithError error: Error) {
 		print("receipt request failed: \(error)")
 	}
 

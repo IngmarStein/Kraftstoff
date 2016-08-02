@@ -232,7 +232,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                 let lastY = y
                 y = rint (gridTextHeight*0.5 + gridTextHeight*CGFloat(i))
 
-				context.translate(x: 0.0, y: y - lastY)
+				context.translateBy(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
@@ -243,7 +243,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Horizontal grid lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
 			let dashDotPatternLength = 1
-			path.lineWidth = 1.0 / UIScreen.main().scale
+			path.lineWidth = 1.0 / UIScreen.main.scale
 
 			path.setLineDash(dashDotPattern, count: dashDotPatternLength, phase: 0.0)
 
@@ -258,7 +258,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                 let lastY = y
                 y = rint(gridTextHeight * CGFloat(i))
 
-				context.translate(x: 0.0, y: y - lastY)
+				context.translateBy(x: 0.0, y: y - lastY)
                 path.stroke()
             }
 
@@ -440,7 +440,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				imageView = UIImageView(frame: imageFrame)
 				imageView.tag = 1
 				imageView.isOpaque = false
-				imageView.backgroundColor = .clear()
+				imageView.backgroundColor = .clear
 
 				self.scrollView.isHidden = false
 				self.scrollView.addSubview(imageView)

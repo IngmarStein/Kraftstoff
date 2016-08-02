@@ -104,7 +104,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelEventController.localeChanged(_:)),
-               name: Locale.currentLocaleDidChangeNotification,
+               name: NSLocale.currentLocaleDidChangeNotification,
              object: nil)
 
 		// Dismiss any presented view controllers
@@ -146,7 +146,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
-				let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
 			if controller.selectedCar == nil {
@@ -166,7 +166,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		// don't use a snapshot image for next launch when graph is currently visible
 		if presentedViewController != nil {
-			UIApplication.shared().ignoreSnapshotOnNextApplicationLaunch()
+			UIApplication.shared.ignoreSnapshotOnNextApplicationLaunch()
 		}
 
 		super.encodeRestorableState(with: coder)
@@ -187,19 +187,19 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func setObserveDeviceRotation(_ observeRotation: Bool) {
 		if observeRotation && !isObservingRotationEvents {
-			UIDevice.current().beginGeneratingDeviceOrientationNotifications()
+			UIDevice.current.beginGeneratingDeviceOrientationNotifications()
 
 			NotificationCenter.default.addObserver(self,
                selector: #selector(FuelEventController.orientationChanged(_:)),
                    name: Notification.Name.UIDeviceOrientationDidChange,
-                 object: UIDevice.current())
+                 object: UIDevice.current)
 
 		} else if !observeRotation && isObservingRotationEvents {
 			NotificationCenter.default.removeObserver(self,
                       name: Notification.Name.UIDeviceOrientationDidChange,
-                    object: UIDevice.current())
+                    object: UIDevice.current)
 
-			UIDevice.current().endGeneratingDeviceOrientationNotifications()
+			UIDevice.current.endGeneratingDeviceOrientationNotifications()
 		}
 
 		isObservingRotationEvents = observeRotation
@@ -216,7 +216,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 
 		// Switch view controllers according rotation state
-		let deviceOrientation = UIDevice.current().orientation
+		let deviceOrientation = UIDevice.current.orientation
 
 		if UIDeviceOrientationIsLandscape(deviceOrientation) && presentedViewController == nil {
 			isPerformingRotation = true
@@ -248,8 +248,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	private var exportURL: URL {
-		// swiftlint:disable:next force_try
-		return try! URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFilename)
+		return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFilename)
 	}
 
 	func exportTextData() -> Data {
@@ -401,7 +400,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: NSError?) {
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
 		dismiss(animated: true) {
 
 			self.mailComposeController = nil

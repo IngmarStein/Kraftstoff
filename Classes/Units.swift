@@ -152,7 +152,7 @@ final class Units {
 	// MARK: - Unit guessing from current locale
 
 	static var volumeUnitFromLocale: UnitVolume {
-		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String, country == "US" {
+		if Locale.autoupdatingCurrent.regionCode == "US" {
 			return .gallons
 		} else {
 			return .liters
@@ -160,7 +160,7 @@ final class Units {
 	}
 
 	static var fuelConsumptionUnitFromLocale: UnitFuelEfficiency {
-		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String, country == "US" {
+		if Locale.autoupdatingCurrent.regionCode == "US" {
 			return .milesPerGallon
 		} else {
 			return .litersPer100Kilometers
@@ -168,7 +168,7 @@ final class Units {
 	}
 
 	static var distanceUnitFromLocale: UnitLength {
-		if let country = Locale.autoupdatingCurrent.object(forKey: Locale.Key.countryCode) as? String, country == "US" {
+		if Locale.autoupdatingCurrent.regionCode == "US" {
 			return .miles
 		} else {
 			return .kilometers
@@ -245,11 +245,11 @@ final class Units {
 		let handler = Formatters.consumptionRoundingHandler
 
 		if kilometers <= .zero {
-			return .notA
+			return .notANumber
 		}
 
 		if liters <= .zero {
-			return .notA
+			return .notANumber
 		}
 
 		if unit.isEfficiency {

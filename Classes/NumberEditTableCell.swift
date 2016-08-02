@@ -31,7 +31,7 @@ final class NumberEditTableCell: EditablePageCell {
 		} else {
 			valid = true
 		}
-		self.textField.textColor = valid ? .black() : invalidTextColor
+		self.textField.textColor = valid ? .black : invalidTextColor
 	}
 
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
@@ -75,7 +75,7 @@ final class NumberEditTableCell: EditablePageCell {
 				// New character must be a digit
 				let digit = NSDecimalNumber(string: string)
 
-				if digit == .notA {
+				if digit == .notANumber {
 					return false
 				}
 

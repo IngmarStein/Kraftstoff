@@ -28,15 +28,15 @@ final class QuadInfoCell: UITableViewCell {
 	}
 
 	private func setupSubviews() {
-		topLeftLabel.backgroundColor            = .clear()
-		topLeftLabel.textColor                  = .black()
+		topLeftLabel.backgroundColor            = .clear
+		topLeftLabel.textColor                  = .black
 		topLeftLabel.adjustsFontSizeToFitWidth  = true
 		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		topLeftLabel.adjustsFontForContentSizeCategory = true
 		topLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleTitle1)
 		contentView.addSubview(topLeftLabel)
 
-		botLeftLabel.backgroundColor            = .clear()
+		botLeftLabel.backgroundColor            = .clear
 		botLeftLabel.textColor                  = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -44,8 +44,8 @@ final class QuadInfoCell: UITableViewCell {
 		botLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
 		contentView.addSubview(botLeftLabel)
 
-		topRightLabel.backgroundColor           = .clear()
-		topRightLabel.textColor                 = .black()
+		topRightLabel.backgroundColor           = .clear
+		topRightLabel.textColor                 = .black
 		topRightLabel.adjustsFontSizeToFitWidth = true
 		topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +53,7 @@ final class QuadInfoCell: UITableViewCell {
 		topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? UIFontTextStyleTitle1 : UIFontTextStyleTitle2)
 		contentView.addSubview(topRightLabel)
 
-		botRightLabel.backgroundColor           = .clear()
+		botRightLabel.backgroundColor           = .clear
 		botRightLabel.textColor                 = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
 		botRightLabel.adjustsFontSizeToFitWidth = true
 		botRightLabel.textAlignment             = .right

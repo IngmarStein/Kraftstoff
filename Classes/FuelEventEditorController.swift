@@ -77,7 +77,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
 
-		NotificationCenter.default.addObserver(self, selector: #selector(FuelEventEditorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelEventEditorController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -85,7 +85,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventEventID) as? String {
+			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventEventID) as? String {
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
@@ -120,15 +120,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	override func decodeRestorableState(with coder: NSCoder) {
 		isShowingCancelSheet   = coder.decodeBool(forKey: kSRFuelEventCancelSheet)
 		dataChanged            = coder.decodeBool(forKey: kSRFuelEventDataChanged)
-		restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRFuelEventSelectionIndex) as? IndexPath
-		date                   = coder.decodeObjectOfClass(NSDate.self, forKey: kSRFuelEventDate) as? Date
-		distance               = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventDistance)
-		price                  = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventPrice)
-		fuelVolume             = coder.decodeObjectOfClass(NSDecimalNumber.self, forKey: kSRFuelEventVolume)
+		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRFuelEventSelectionIndex) as? IndexPath
+		date                   = coder.decodeObject(of: NSDate.self, forKey: kSRFuelEventDate) as? Date
+		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventDistance)
+		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventPrice)
+		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventVolume)
 		filledUp               = coder.decodeBool(forKey: kSRFuelEventFilledUp)
-		comment                = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventComment) as? String
+		comment                = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventComment) as? String
 
-		if let carId = coder.decodeObjectOfClass(NSString.self, forKey: kSRFuelEventCarID) as? String {
+		if let carId = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventCarID) as? String {
 			car = CoreDataManager.managedObjectForModelIdentifier(carId) as? Car
 		}
 

@@ -63,7 +63,7 @@ class Snapshot: NSObject {
             print("Couldn't detect/set locale...")
         }
         if locale.isEmpty {
-            locale = Locale(localeIdentifier: deviceLanguage).localeIdentifier
+            locale = Locale(identifier: deviceLanguage).identifier
         }
         app.launchArguments += ["-AppleLocale", "\"\(locale)\""]
     }
@@ -78,7 +78,7 @@ class Snapshot: NSObject {
 
         do {
             let launchArguments = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String
-            let regex = try RegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
+            let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
 			let matches = regex.matches(in: launchArguments, options: [], range: NSRange(location: 0, length: launchArguments.characters.count))
             let results = matches.map { result -> String in
                 (launchArguments as NSString).substring(with: result.range)
@@ -103,7 +103,7 @@ class Snapshot: NSObject {
     class func waitForLoadingIndicatorToDisappear() {
 		let query = XCUIApplication().statusBars.children(matching: .other).element(boundBy: 1).children(matching: .other)
 
-		while (0..<query.count).map({ query.element(boundBy: $0) }).contains({ $0.isLoadingIndicator }) {
+		while (0..<query.count).map({ query.element(boundBy: $0) }).contains(where: { $0.isLoadingIndicator }) {
             sleep(1)
             print("Waiting for loading indicator to disappear...")
         }

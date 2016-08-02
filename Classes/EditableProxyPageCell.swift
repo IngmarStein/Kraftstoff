@@ -20,7 +20,7 @@ class EditableProxyPageCell: EditablePageCell {
 		super.init()
 
 		textFieldProxy.textAlignment            = .right
-		textFieldProxy.backgroundColor          = .clear()
+		textFieldProxy.backgroundColor          = .clear
 		textFieldProxy.isUserInteractionEnabled = false
 		textFieldProxy.isAccessibilityElement   = false
 		textFieldProxy.translatesAutoresizingMaskIntoConstraints = false

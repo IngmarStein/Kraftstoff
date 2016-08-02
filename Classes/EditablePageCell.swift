@@ -41,7 +41,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.textAlignment            = .right
 		textField.autocapitalizationType   = .none
 		textField.autocorrectionType       = .no
-		textField.backgroundColor          = .clear()
+		textField.backgroundColor          = .clear
 		textField.clearButtonMode          = .whileEditing
 		textField.contentVerticalAlignment = .center
 		textField.isUserInteractionEnabled = false
@@ -52,8 +52,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		self.contentView.addSubview(textField)
 
 		keyLabel.textAlignment        = .left
-		keyLabel.highlightedTextColor = .black()
-		keyLabel.textColor            = .black()
+		keyLabel.highlightedTextColor = .black
+		keyLabel.textColor            = .black
 		keyLabel.setContentHuggingPriority(750, for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +95,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	var invalidTextColor: UIColor? {
-		return UIApplication.shared().delegate!.window!!.tintColor
+		return UIApplication.shared.delegate!.window!!.tintColor
 	}
 
 	// MARK: - UITextFieldDelegate

@@ -75,7 +75,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(CarViewController.localeChanged(_:)),
-               name: Locale.currentLocaleDidChangeNotification,
+               name: NSLocale.currentLocaleDidChangeNotification,
              object: nil)
 	}
 
@@ -104,7 +104,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	override func decodeRestorableState(with coder: NSCoder) {
 		super.decodeRestorableState(with: coder)
 
-		if let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey: kSRCarViewEditedObject) as? String {
+		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRCarViewEditedObject) as? String {
 			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 
@@ -200,7 +200,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		// Update the toolbar button
-		self.navigationItem.leftBarButtonItem = (carCount == 0) ? nil : self.editButtonItem()
+		self.navigationItem.leftBarButtonItem = (carCount == 0) ? nil : self.editButtonItem
 		checkEnableEditButton()
 	}
 
@@ -306,7 +306,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	private func checkEnableEditButton() {
-		self.editButtonItem().isEnabled = fetchedResultsController.fetchedObjects!.count > 0
+		self.editButtonItem.isEnabled = fetchedResultsController.fetchedObjects!.count > 0
 	}
 
 	func insertNewObject(_ sender: AnyObject) {
@@ -570,7 +570,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-		editButtonItem().isEnabled = false
+		editButtonItem.isEnabled = false
 		hideHelp(true)
 	}
 
@@ -630,7 +630,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
-		if let fuelEventController = segue.destinationViewController as? FuelEventController, let selection = tableView.indexPathForSelectedRow {
+		if let fuelEventController = segue.destination as? FuelEventController, let selection = tableView.indexPathForSelectedRow {
 			let selectedCar = self.fetchedResultsController.object(at: selection)
 			fuelEventController.selectedCar = selectedCar
 		}

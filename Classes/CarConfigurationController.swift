@@ -70,7 +70,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NotificationCenter.default.addObserver(self, selector: #selector(CarConfigurationController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CarConfigurationController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -117,11 +117,11 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRConfiguratorPreviousSelectionIndex) as? IndexPath
-		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey: kSRConfiguratorName) as? String
-		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey: kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey: kSRConfiguratorFuelUnit)
-		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey: kSRConfiguratorFuelConsumptionUnit)
+		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRConfiguratorPreviousSelectionIndex) as? IndexPath
+		self.name                   = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorName) as? String
+		self.plate                  = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorPlate) as? String
+		self.fuelUnit               = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 

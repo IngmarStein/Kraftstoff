@@ -72,7 +72,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.localeChanged(_:)), name: Locale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
 	}
 
@@ -94,7 +94,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		self.restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? IndexPath
+		self.restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? IndexPath
 		self.isShowingConvertSheet = coder.decodeBool(forKey: kSRCalculatorConvertSheet)
 
 		if coder.decodeBool(forKey: kSRCalculatorEditing) {
@@ -143,7 +143,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - Shake Events
 
-	override func canBecomeFirstResponder() -> Bool {
+	override var canBecomeFirstResponder: Bool {
 		return true
 	}
 
@@ -610,7 +610,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		guard let car = self.car else { return false }
 		guard let distance = self.distance else { return false }
 
-		guard car.odometer != .notA else { return false }
+		guard car.odometer != .notANumber else { return false }
 
 		// 1.) entered "distance" must be larger than car odometer
 		let odometerUnit = car.ksOdometerUnit
@@ -633,7 +633,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100Kilometers)
 
-		if rawConsumption == .notA {
+		if rawConsumption == .notANumber {
 			return false
 		}
 
@@ -641,7 +641,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100Kilometers)
 
-		if convConsumption == .notA {
+		if convConsumption == .notANumber {
 			return false
 		}
 
@@ -652,7 +652,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
-		if avgConsumption == .notA {
+		if avgConsumption == .notANumber {
 			loBound = NSDecimalNumber(mantissa:  2, exponent: 0, isNegative: false)
 			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
 		} else {

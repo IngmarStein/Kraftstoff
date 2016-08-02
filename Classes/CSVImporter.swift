@@ -77,7 +77,8 @@ final class CSVImporter {
 	private func guessModelFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
 			// CSV file exported in new format: model is first part of filename
-			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__"), nameComponents.count == 2 {
+			let nameComponents = sourceURL.deletingPathExtension().lastPathComponent.components(separatedBy: "__")
+			if nameComponents.count == 2 {
 				let part = nameComponents[0]
 
 				if !part.isEmpty {
@@ -95,7 +96,8 @@ final class CSVImporter {
 
 	private func guessPlateFromURL(_ sourceURL: URL) -> String? {
 		if sourceURL.isFileURL {
-			if let nameComponents = try? sourceURL.deletingPathExtension().lastPathComponent!.components(separatedBy: "__"), nameComponents.count <= 2 {
+			let nameComponents = sourceURL.deletingPathExtension().lastPathComponent.components(separatedBy: "__")
+			if nameComponents.count <= 2 {
 				// CSV file in new format: plate is second part of filename
 				//     for unknown format: use the whole filename if it is a single component
 				let part = nameComponents.last!
@@ -199,14 +201,14 @@ final class CSVImporter {
 		// consumption with parsed distance
 		let rawConsumption = Units.consumptionForKilometers(distance, liters: liters, inUnit: .litersPer100Kilometers)
 
-		if rawConsumption == .notA {
+		if rawConsumption == .notANumber {
 			return distance
 		}
 
 		// consumption with increased distance
 		let convConsumption = Units.consumptionForKilometers(convDistance, liters: liters, inUnit: .litersPer100Kilometers)
 
-		if convConsumption == .notA {
+		if convConsumption == .notANumber {
 			return distance
 		}
 
@@ -497,7 +499,7 @@ final class CSVImporter {
 		nfSystem.usesGroupingSeparator = true
 		nfSystem.numberStyle = .decimal
 		nfSystem.isLenient = true
-		nfSystem.locale = Locale.system
+		nfSystem.locale = nil
 
 		return nfSystem
 	}()
@@ -518,7 +520,7 @@ final class CSVImporter {
 			return NSDecimalNumber(decimal: d)
 		}
 
-		scanner.locale = Locale.system
+		scanner.locale = nil
 		scanner.scanLocation = 0
 
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
@@ -550,7 +552,7 @@ final class CSVImporter {
 
 	private let systemDateFormatter: DateFormatter = {
 		let df = DateFormatter()
-		df.locale = Locale.system
+		df.locale = nil
 		df.dateFormat = "yyyy-MM-dd"
 		df.isLenient = false
 		return df
@@ -567,8 +569,8 @@ final class CSVImporter {
 
 	private let systemTimeFormatter: DateFormatter = {
 		let df = DateFormatter()
-		df.timeZone = TimeZone(forSecondsFromGMT: 0)
-		df.locale = Locale.system
+		df.timeZone = TimeZone(secondsFromGMT: 0)
+		df.locale = nil
 		df.dateFormat = "HH:mm"
 		df.isLenient = false
 		return df
@@ -576,7 +578,7 @@ final class CSVImporter {
 
 	private let currentTimeFormatter: DateFormatter = {
 		let df = DateFormatter()
-		df.timeZone = TimeZone(forSecondsFromGMT: 0)
+		df.timeZone = TimeZone(secondsFromGMT: 0)
 		df.locale = Locale.current
 		df.timeStyle = .short
 		df.dateStyle = .none

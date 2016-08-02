@@ -405,7 +405,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				let lastY = y
 				y = rint (self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
 
-				context.translate(x: 0.0, y: y - lastY)
+				context.translateBy(x: 0.0, y: y - lastY)
 				path.stroke()
 			}
 
@@ -448,7 +448,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			let lastX = x
 			x = rint (self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
 
-			context.translate(x: x - lastX, y: 0.0)
+			context.translateBy(x: x - lastX, y: 0.0)
 			path.stroke()
         }
 

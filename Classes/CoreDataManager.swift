@@ -24,8 +24,7 @@ final class CoreDataManager {
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
 
-	// swiftlint:disable:next force_try
-	private static let iCloudStoreURL = try! URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
+	private static let iCloudStoreURL = URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
 
 	private static let iCloudStoreDescription: NSPersistentStoreDescription = {
 		let storeDescription = NSPersistentStoreDescription()
@@ -143,7 +142,7 @@ final class CoreDataManager {
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
-				UIApplication.shared().keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+				UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
 		}
 	}
@@ -155,7 +154,7 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = 32
 
 		// Sorting keys
-		let sortDescriptor = SortDescriptor(key: "order", ascending: true)
+		let sortDescriptor = NSSortDescriptor(key: "order", ascending: true)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
@@ -169,17 +168,17 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = fetchSize
 
 		// Predicates
-		let parentPredicate = Predicate(format: "car == %@", car)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
 
 		if let date = date {
-			let datePredicate = Predicate(format: "timestamp \(dateCompare) %@", date)
-			fetchRequest.predicate = CompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
+			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date)
+			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
 		}
 
 		// Sorting keys
-		let sortDescriptor = SortDescriptor(key: "timestamp", ascending: false)
+		let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
@@ -238,10 +237,10 @@ final class CoreDataManager {
 		fetchRequest.fetchBatchSize = 2
 
 		// Predicates
-		let parentPredicate = Predicate(format: "car == %@", car)
-		let datePredicate = Predicate(format: "timestamp == %@", date)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
+		let datePredicate = NSPredicate(format: "timestamp == %@", date)
 
-		fetchRequest.predicate = CompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
+		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 
 		// Check whether fetch would reveal any event objects
 		do {

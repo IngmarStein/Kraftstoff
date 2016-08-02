@@ -97,8 +97,8 @@ class FuelStatisticsViewController: UIViewController {
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
-				let label = AttributedString(string: text, attributes: labelAttributes)
-				let labelSelected = AttributedString(string: text, attributes: labelSelectedAttributes)
+				let label = NSAttributedString(string: text, attributes: labelAttributes)
+				let labelSelected = NSAttributedString(string: text, attributes: labelSelectedAttributes)
 				button.setAttributedTitle(label, for: [])
 				button.setAttributedTitle(label, for: .highlighted)
 				button.setAttributedTitle(labelSelected, for: .selected)
@@ -117,11 +117,11 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	// MARK: - View Rotation
-	override func shouldAutorotate() -> Bool {
+	override var shouldAutorotate: Bool {
 		return true
 	}
 
-	override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return .landscape
 	}
 

@@ -72,7 +72,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 		if let parent = record.parent {
 			let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
-			fetchRequest.predicate = Predicate(format: "cloudKitRecordName LIKE[c] %@", parent.recordID.recordName)
+			fetchRequest.predicate = NSPredicate(format: "cloudKitRecordName LIKE[c] %@", parent.recordID.recordName)
 
 			let fetchResults = CoreDataManager.objectsForFetchRequest(fetchRequest)
 			if fetchResults.count == 1 {

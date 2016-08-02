@@ -63,7 +63,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelStatisticsPageController.localeChanged(_:)),
-               name: Locale.currentLocaleDidChangeNotification,
+               name: NSLocale.currentLocaleDidChangeNotification,
              object: nil)
 
 		NotificationCenter.default.addObserver(self,
@@ -87,7 +87,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		return statisticsViewController.pageIndex
 	}
 
-	override func preferredStatusBarStyle() -> UIStatusBarStyle {
+	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
 
@@ -100,7 +100,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	// MARK: - View Rotation
 
-	override func shouldAutorotate() -> Bool {
+	override var shouldAutorotate: Bool {
 		return true
 	}
 
