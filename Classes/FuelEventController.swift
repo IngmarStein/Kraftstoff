@@ -37,10 +37,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// Perform the data fetch
 		do {
 			try fetchController.performFetch()
-		} catch let error as NSError {
+		} catch let error {
 			fatalError(error.localizedDescription)
-		} catch {
-			fatalError()
 		}
 
 		return fetchController

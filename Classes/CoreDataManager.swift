@@ -57,7 +57,7 @@ final class CoreDataManager {
 				try context.save()
 
 				CloudKitManager.save(modifiedRecords: modifiedRecords, deletedRecordIDs: deletedRecordIDs)
-			} catch let error as NSError {
+			} catch let error {
 				let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
 					message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
 					preferredStyle: .alert)
@@ -212,7 +212,7 @@ final class CoreDataManager {
 		// Perform the Core Data fetch
 		do {
 			try fetchedResultsController.performFetch()
-		} catch let error as NSError {
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
 
@@ -223,7 +223,7 @@ final class CoreDataManager {
 		let fetchedObjects: [ResultType]?
 		do {
 			fetchedObjects = try moc.fetch(fetchRequest)
-		} catch let error as NSError {
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
 
@@ -243,7 +243,7 @@ final class CoreDataManager {
 		// Check whether fetch would reveal any event objects
 		do {
 			return try moc.count(for: fetchRequest) > 0
-		} catch let error as NSError {
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
 	}
@@ -460,7 +460,7 @@ final class CoreDataManager {
 
 			do {
 				try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: managedObjectContext)
-			} catch let error as NSError {
+			} catch let error {
 				print(error)
 			}
 		}

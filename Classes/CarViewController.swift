@@ -451,7 +451,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		tableCell.large = true
 
-		// Car and Numberplate
+		// name and number plate
 		tableCell.topLeftLabel.text = managedObject.name
 		tableCell.topLeftAccessibilityLabel = nil
 
@@ -621,7 +621,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		self.tableView.endUpdates()
+		// FIXME: this seems to be necessary in iOS 10 (up to Beta 4)
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			// ignore
+		}
+
+		tableView.endUpdates()
 
 		updateHelp(true)
 		checkEnableEditButton()

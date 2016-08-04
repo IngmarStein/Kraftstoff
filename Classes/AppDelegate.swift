@@ -255,7 +255,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if url.isFileURL {
 			do {
 				try FileManager.default.removeItem(at: url as URL)
-			} catch let error as NSError {
+			} catch let error {
 				print(error.localizedDescription)
 			}
 		}
@@ -366,7 +366,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			let requestContents = ["receipt-data": receiptData]
 			let requestData = try JSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
 			return requestData
-		} catch let error as NSError {
+		} catch let error {
 			print(error)
 		}
 
@@ -400,7 +400,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					return
 				}
 				onCompletion(statusCode, json)
-			} catch let error as NSError {
+			} catch let error {
 				print(error)
 				onCompletion(nil, nil)
 			}
