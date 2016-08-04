@@ -13,6 +13,9 @@ final class FuelStatisticsPageController: UIPageViewController {
 	// Set by presenting view controller
 	var selectedCar: Car!
 	var statisticsViewControllers = [FuelStatisticsViewController]()
+	let priceDistanceDataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
+	let avgConsumptionDataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
+	let priceAmountDataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
 
 	// MARK: - View Lifecycle
 
@@ -30,19 +33,19 @@ final class FuelStatisticsPageController: UIPageViewController {
 		// Load content pages
 		// swiftlint:disable:next force_cast
 		let priceDistanceViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-		priceDistanceViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceDistance()
+		priceDistanceViewController.dataSource = priceDistanceDataSource
 		priceDistanceViewController.selectedCar = self.selectedCar
 		priceDistanceViewController.pageIndex = 0
 
 		// swiftlint:disable:next force_cast
 		let avgConsumptionViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-		avgConsumptionViewController.dataSource = FuelStatisticsViewControllerDataSourceAvgConsumption()
+		avgConsumptionViewController.dataSource = avgConsumptionDataSource
 		avgConsumptionViewController.selectedCar = self.selectedCar
 		avgConsumptionViewController.pageIndex = 1
 
 		// swiftlint:disable:next force_cast
 		let priceAmountViewController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsGraphViewController") as! FuelStatisticsGraphViewController
-		priceAmountViewController.dataSource = FuelStatisticsViewControllerDataSourcePriceAmount()
+		priceAmountViewController.dataSource = priceAmountDataSource
 		priceAmountViewController.selectedCar = self.selectedCar
 		priceAmountViewController.pageIndex = 2
 

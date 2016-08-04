@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-protocol FuelStatisticsViewControllerDataSource {
+protocol FuelStatisticsViewControllerDataSource: class {
 	var curveGradient: CGGradient { get }
 
 	func averageFormatter(_ precise: Bool, forCar: Car) -> NumberFormatter
@@ -91,7 +91,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private var zoomRecognizer: UILongPressGestureRecognizer!
 	private var zoomIndex = 0
-	var dataSource: FuelStatisticsViewControllerDataSource?
+	weak var dataSource: FuelStatisticsViewControllerDataSource?
 
 	// MARK: -  Default Position/Dimension Data for Graphs
 

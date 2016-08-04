@@ -99,6 +99,7 @@ final class UnitConverterReciprocal: UnitConverter, NSSecureCoding {
 // Base unit = l / 100 km
 extension UnitFuelEfficiency {
 
+	// FIXME: this should be UnitConverterReciprocal
 	@nonobjc static let kilometersPerLiter = UnitFuelEfficiency(symbol: "km/l", converter: UnitConverterLinear(coefficient: 100.0))
 	@nonobjc static let gallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k", converter: UnitConverterLinear(coefficient: 42.5170068027))
 	@nonobjc static let imperialGallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k", converter: UnitConverterLinear(coefficient: 35.3982300885))

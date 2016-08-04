@@ -12,10 +12,10 @@ import CoreData
 private struct FuelCalculatorDataRow: OptionSet {
 	let rawValue: UInt
 
-	static let Distance = FuelCalculatorDataRow(rawValue: 0b0001)
-	static let Price = FuelCalculatorDataRow(rawValue: 0b0010)
-	static let Amount = FuelCalculatorDataRow(rawValue: 0b0100)
-	static let All = FuelCalculatorDataRow(rawValue: 0b0111)
+	static let distance = FuelCalculatorDataRow(rawValue: 0b0001)
+	static let price = FuelCalculatorDataRow(rawValue: 0b0010)
+	static let amount = FuelCalculatorDataRow(rawValue: 0b0100)
+	static let all = FuelCalculatorDataRow(rawValue: 0b0111)
 }
 
 final class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
@@ -40,8 +40,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	var filledUp: Bool?
 	var comment: String?
 
-	var doneButton: UIBarButtonItem!
-	var saveButton: UIBarButtonItem!
+	let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(FuelCalculatorController.endEditingMode(_:)))
+	let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: #selector(FuelCalculatorController.saveAction(_:)))
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -52,9 +52,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		userActivity?.isEligibleForSearch = true
 
 		// Title bar
-		self.doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(FuelCalculatorController.endEditingMode(_:)))
+		self.doneButton.target = self
 		self.doneButton.accessibilityIdentifier = "done"
-		self.saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(FuelCalculatorController.saveAction(_:)))
+		self.saveButton.target = self
 		self.saveButton.accessibilityIdentifier = "save"
 		self.title = NSLocalizedString("Fill-Up", comment: "")
 	}
@@ -121,7 +121,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			super.setEditing(enabled, animated: animated)
 
 			if enabled {
-				self.navigationItem.leftBarButtonItem = self.doneButton
+				self.navigationItem.leftBarButtonItem = doneButton
 				self.navigationItem.rightBarButtonItem = nil
 
 				removeSectionAtIndex(1, withAnimation: animation)
@@ -269,7 +269,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
-		if rowMask.contains(.Distance) {
+		if rowMask.contains(.distance) {
 			if self.distance == nil {
 				if let recentDistance = UserDefaults.standard.object(forKey: "recentDistance") as? NSNumber {
 					self.distance = NSDecimalNumber(decimal: recentDistance.decimalValue)
@@ -286,7 +286,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
               withAnimation: animation)
 		}
 
-		if rowMask.contains(.Price) {
+		if rowMask.contains(.price) {
 			if self.price == nil {
 				if let recentPrice = UserDefaults.standard.object(forKey: "recentPrice") as? NSNumber {
 					self.price = NSDecimalNumber(decimal: recentPrice.decimalValue)
@@ -303,7 +303,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
               withAnimation: animation)
 		}
 
-		if rowMask.contains(.Amount) {
+		if rowMask.contains(.amount) {
 			if self.fuelVolume == nil {
 				if let recentFuelVolume = UserDefaults.standard.object(forKey: "recentFuelVolume") as? NSNumber {
 					self.fuelVolume = NSDecimalNumber(decimal: recentFuelVolume.decimalValue)
@@ -372,7 +372,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
           withAnimation: animation)
 
 		// Data rows for distance, price, fuel amount
-		createDataRows(.All, withAnimation: animation)
+		createDataRows(.all, withAnimation: animation)
 
 		// Full-fillup selector
 		self.filledUp = UserDefaults.standard.bool(forKey: "recentFilledUp")
@@ -433,7 +433,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			removeRow(at: row, inSection: 0, withAnimation: .none)
 		}
 
-		createDataRows(.All, withAnimation: .none)
+		createDataRows(.all, withAnimation: .none)
 
 		// Update the tableview
 		let odoChanged = oldCar == nil || oldCar!.odometerUnit != self.car!.odometerUnit
@@ -463,7 +463,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		// Replace distance row in the internal data model
 		removeRow(at: rowOffset, inSection: 0, withAnimation: .none)
-		createDataRows(.Distance, withAnimation: .none)
+		createDataRows(.distance, withAnimation: .none)
 
 		// Update the tableview
 		if animation != .none {
@@ -599,7 +599,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			saveValid = false
 		}
 
-		self.navigationItem.rightBarButtonItem = saveValid ? self.saveButton : nil
+		self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil
 	}
 
 

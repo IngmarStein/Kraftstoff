@@ -12,46 +12,46 @@ private let minusOne = NSDecimalNumber(mantissa: 1, exponent: 0, isNegative: tru
 
 // MARK: - Comparable
 
-extension NSDecimalNumber: Comparable {}
+extension NSDecimalNumber: Comparable {
+	public static func == (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
+		return lhs.compare(rhs) == .orderedSame
+	}
 
-public func == (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-	return lhs.compare(rhs) == .orderedSame
-}
+	public static func < (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
+		return lhs.compare(rhs) == .orderedAscending
+	}
 
-public func < (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-	return lhs.compare(rhs) == .orderedAscending
-}
+	// MARK: - Arithmetic Operators
 
-// MARK: - Arithmetic Operators
+	public static prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
+		return minusOne.multiplying(by: value)
+	}
 
-public prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
-	return minusOne.multiplying(by: value)
-}
+	public static func + (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
+		return lhs.adding(rhs)
+	}
 
-public func + (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.adding(rhs)
-}
+	public static func - (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
+		return lhs.subtracting(rhs)
+	}
 
-public func - (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.subtracting(rhs)
-}
+	public static func * (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
+		return lhs.multiplying(by: rhs)
+	}
 
-public func * (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.multiplying(by: rhs)
-}
+	public static func / (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
+		return lhs.dividing(by: rhs)
+	}
 
-public func / (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-	return lhs.dividing(by: rhs)
-}
+	public static func ^ (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
+		return lhs.raising(toPower: rhs)
+	}
 
-public func ^ (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.raising(toPower: rhs)
-}
+	public static func << (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
+		return lhs.multiplying(byPowerOf10: Int16(rhs))
+	}
 
-public func << (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.multiplying(byPowerOf10: Int16(rhs))
-}
-
-public func >> (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-	return lhs.multiplying(byPowerOf10: Int16(-rhs))
+	public static func >> (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
+		return lhs.multiplying(byPowerOf10: Int16(-rhs))
+	}
 }

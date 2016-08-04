@@ -86,9 +86,7 @@ final class CoreDataManager {
 	}
 
 	static func managedObjectForModelIdentifier<ResultType: NSManagedObject>(_ identifier: String) -> ResultType? {
-		let objectURL = URL(string: identifier)!
-
-		if objectURL.scheme == "x-coredata" {
+		if let objectURL = URL(string: identifier), objectURL.scheme == "x-coredata" {
 			if let objectID = persistentContainer.persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
 				if let existingObject = try? managedObjectContext.existingObject(with: objectID) {
 					return existingObject as? ResultType
