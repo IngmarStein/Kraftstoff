@@ -15,11 +15,11 @@ class EditablePageCellTextField: UITextField {
 
 	// Disable cut & paste functionality to properly handle special text inputs methods for our textfields
 	override func canPerformAction(_ action: Selector, withSender sender: AnyObject?) -> Bool {
-		if action == #selector(NSObject.cut(_:)) && !self.allowCut {
+		if action == #selector(UIResponderStandardEditActions.cut(_:)) && !self.allowCut {
 			return false
 		}
 
-		if action == #selector(NSObject.paste(_:)) && !self.allowPaste {
+		if action == #selector(UIResponderStandardEditActions.paste(_:)) && !self.allowPaste {
 			return false
 		}
 
