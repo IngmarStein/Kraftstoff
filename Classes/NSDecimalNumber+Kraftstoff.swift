@@ -6,7 +6,7 @@
 //
 //
 
-import Foundation
+import UIKit
 
 private let minusOne = NSDecimalNumber(mantissa: 1, exponent: 0, isNegative: true)
 
@@ -53,5 +53,11 @@ extension NSDecimalNumber: Comparable {
 
 	public static func >> (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
 		return lhs.multiplying(byPowerOf10: Int16(-rhs))
+	}
+}
+
+extension NSNumber {
+	public convenience init(value: CGFloat) {
+		self.init(value: Float(value))
 	}
 }

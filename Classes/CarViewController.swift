@@ -596,7 +596,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 	}
 
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: AnyObject, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		guard !changeIsUserDriven else { return }
 
 		switch type {
@@ -636,7 +636,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = false
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: AnyObject?) {
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if let fuelEventController = segue.destination as? FuelEventController, let selection = tableView.indexPathForSelectedRow {
 			let selectedCar = self.fetchedResultsController.object(at: selection)
 			fuelEventController.selectedCar = selectedCar

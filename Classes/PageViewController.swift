@@ -29,7 +29,7 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Dismissing the Keyboard
 
-	func dismissKeyboardWithCompletion(_ completion: () -> Void) {
+	func dismissKeyboardWithCompletion(_ completion: @escaping () -> Void) {
 		let scrollToTop = self.tableView.contentOffset.y > 0.0
 
 		UIView.animate(withDuration: scrollToTop ? 0.25 : 0.15, animations: {

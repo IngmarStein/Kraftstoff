@@ -50,7 +50,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		showDatePicker(false)
 	}
 
-	private func updateTextFieldColorForValue(_ value: AnyObject?) {
+	private func updateTextFieldColorForValue(_ value: Any?) {
 		let valid: Bool
 		if let validator = self.delegate as? EditablePageCellValidator {
 			valid = validator.valueValid(value, identifier: self.valueIdentifier)

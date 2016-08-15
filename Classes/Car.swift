@@ -66,16 +66,16 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 	func asCloudKitRecord() -> CKRecord {
 		let record = CKRecord(recordType: "car", recordID: cloudKitRecordID)
 
-		record["timestamp"] = timestamp
+		record["timestamp"] = timestamp as NSDate
 		record["distanceTotalSum"] = distanceTotalSum
-		record["fuelUnit"] = Int(fuelUnit)
-		record["order"] = Int(order)
+		record["fuelUnit"] = NSNumber(value: fuelUnit)
+		record["order"] = NSNumber(value: order)
 		record["fuelVolumeTotalSum"] = fuelVolumeTotalSum
 		record["odometer"] = odometer
-		record["fuelConsumptionUnit"] = Int(fuelConsumptionUnit)
-		record["odometerUnit"] = Int(odometerUnit)
-		record["name"] = name
-		record["numberPlate"] = numberPlate
+		record["fuelConsumptionUnit"] = NSNumber(value: fuelConsumptionUnit)
+		record["odometerUnit"] = NSNumber(value: odometerUnit)
+		record["name"] = name as NSString
+		record["numberPlate"] = numberPlate as NSString
 
 		return record
 	}

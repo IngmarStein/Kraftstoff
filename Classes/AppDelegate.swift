@@ -25,7 +25,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
-	private var appReceipt: [String: AnyObject]?
+	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
 
 	private var importAlert: UIAlertController?
@@ -54,7 +54,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		super.init()
 	}
 
-	private func commonLaunchInitialization(_ launchOptions: [NSObject: AnyObject]?) {
+	private func commonLaunchInitialization(_ launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) {
 		if !initialized {
 			initialized = true
 
@@ -96,7 +96,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			updateShortcutItems()
 
 			// Switch once to the car view for new users
-			if launchOptions?[UIApplicationLaunchOptionsURLKey] == nil {
+			if launchOptions?[.url] == nil {
 				let defaults = UserDefaults.standard
 
 				if defaults.bool(forKey: "firstStartup") {
@@ -132,7 +132,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
 		if shortcutItem.type == "fillup" {
 			// switch to fill-up tab and select the car
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -148,7 +148,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
 		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -178,12 +178,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
@@ -198,7 +198,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - Notifications
 
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject: AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		CloudKitManager.handlePush(userInfo, completionHandler: completionHandler)
 	}
 
@@ -261,7 +261,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
 		// Ugly, but don't allow nested imports
 		if self.importAlert != nil {
 			removeFileItem(at: url)
@@ -373,7 +373,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return nil
 	}
 
-	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool, onCompletion: (Int?, AnyObject?) -> Void) {
+	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool, onCompletion: @escaping (Int?, Any?) -> Void) {
 		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
 
 		guard let receiptData = receiptData(appStoreReceiptURL), let url = URL(string: serverURL) else {
@@ -393,9 +393,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			}
 
 			do {
-				let json = try JSONSerialization.jsonObject(with: data, options: [])
+				let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
 				//print(json)
-				guard let statusCode = json["status"] as? Int else {
+				guard let statusCode = json?["status"] as? Int else {
 					onCompletion(nil, json)
 					return
 				}
@@ -408,8 +408,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		task.resume()
 	}
 
-	private func validateReceipt(_ appStoreReceiptURL: URL?, onCompletion: (Bool) -> Void) {
-		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: AnyObject?) -> Void in
+	private func validateReceipt(_ appStoreReceiptURL: URL?, onCompletion: @escaping (Bool) -> Void) {
+		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: Any?) -> Void in
 			guard let status = statusCode else {
 				onCompletion(false)
 				return
@@ -417,14 +417,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			// This receipt is from the test environment, but it was sent to the production environment for verification.
 			if status == 21007 {
-				self.validateReceiptInternal(appStoreReceiptURL, isProd: false) { (statusCode: Int?, json: AnyObject?) -> Void in
+				self.validateReceiptInternal(appStoreReceiptURL, isProd: false) { (statusCode: Int?, json: Any?) -> Void in
 					guard let statusValue = statusCode else {
 						onCompletion(false)
 						return
 					}
 
 					// 0 if the receipt is valid
-					if let receipt = json?["receipt"] as? [String: AnyObject], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+					if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 						self.appReceipt = receipt
 						onCompletion(true)
 					} else {
@@ -433,7 +433,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 
 				// 0 if the receipt is valid
-			} else if let receipt = json?["receipt"] as? [String: AnyObject], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+			} else if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
 				self.appReceipt = receipt
 				onCompletion(true)
 			} else {
@@ -460,7 +460,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0, 0.466, 0.721, 0.870, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let blueGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+        let blueGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
 
 		return blueGradient
 	}()
@@ -469,7 +469,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0, 0.662, 0.815, 0.502, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+		let greenGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
 
 		return greenGradient
     }()
@@ -478,7 +478,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0, 0.988, 0.662, 0.333, 0.9 ]
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let orangeGradient = CGGradient(colorComponentsSpace: colorSpace, components: colorComponentsFlat, locations: nil, count: 2)!
+		let orangeGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
 
 		return orangeGradient
     }()

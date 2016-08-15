@@ -52,7 +52,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		restorationClass = self.dynamicType
+		restorationClass = type(of: self)
 	}
 
 	override func viewDidLoad() {
@@ -83,7 +83,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - State Restoration
 
-	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			if let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
 				controller.editingExistingObject = coder.decodeBool(forKey: kSRConfiguratorEditMode)
@@ -394,7 +394,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	func valueChanged(_ newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: Any?, identifier valueIdentifier: String) {
 		if let stringValue = newValue as? String {
 			if valueIdentifier == "name" {
 				self.name = stringValue

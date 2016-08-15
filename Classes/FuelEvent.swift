@@ -47,9 +47,9 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		record["price"] = price
 		record["inheritedDistance"] = inheritedDistance
 		record["inheritedFuelVolume"] = inheritedFuelVolume
-		record["timestamp"] = timestamp
-		record["filledUp"] = filledUp
-		record["comment"] = comment
+		record["timestamp"] = timestamp as NSDate
+		record["filledUp"] = NSNumber(value: filledUp)
+		record["comment"] = comment as NSString?
 		record["fuelVolume"] = fuelVolume
 		record.parent = CKReference(recordID: car.cloudKitRecordID, action: .none)
 

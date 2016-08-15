@@ -33,7 +33,7 @@ final class CoreDataManager {
 		storeDescription.shouldMigrateStoreAutomatically = true
 		storeDescription.shouldInferMappingModelAutomatically = true
 		storeDescription.shouldAddStoreAsynchronously = false
-		storeDescription.setOption("Kraftstoff2", forKey: NSPersistentStoreUbiquitousContentNameKey)
+		storeDescription.setOption("Kraftstoff2" as NSString, forKey: NSPersistentStoreUbiquitousContentNameKey)
 		return storeDescription
 	}()
 
@@ -112,8 +112,8 @@ final class CoreDataManager {
 		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: persistentContainer.managedObjectModel)
 
 		var migrationOptions = iCloudStoreDescription.options
-		migrationOptions[NSReadOnlyPersistentStoreOption] = true
-		migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = true
+		migrationOptions[NSReadOnlyPersistentStoreOption] = NSNumber(value: true)
+		migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = NSNumber(value: true)
 
 		// Open the existing store
 		do {
@@ -169,7 +169,7 @@ final class CoreDataManager {
 		let parentPredicate = NSPredicate(format: "car == %@", car)
 
 		if let date = date {
-			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date)
+			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as CVarArg)
 			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
@@ -236,7 +236,7 @@ final class CoreDataManager {
 
 		// Predicates
 		let parentPredicate = NSPredicate(format: "car == %@", car)
-		let datePredicate = NSPredicate(format: "timestamp == %@", date)
+		let datePredicate = NSPredicate(format: "timestamp == %@", date as CVarArg)
 
 		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 

@@ -132,7 +132,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
 	}
 
-	private func updatePageVisibility() {
+	fileprivate func updatePageVisibility() {
 		for controller in statisticsViewControllers {
 			if viewControllers!.contains(controller) {
 				controller.noteStatisticsPageBecomesVisible()

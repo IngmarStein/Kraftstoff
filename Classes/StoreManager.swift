@@ -89,7 +89,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 		userDefaults.synchronize()
 	}
 
-	private func keychainItemForProduct(_ product: String) -> [String: AnyObject] {
+	private func keychainItemForProduct(_ product: String) -> [String: Any] {
 		return [
 			String(kSecClass): kSecClassGenericPassword,
 			String(kSecAttrService): "com.github.ingmarstein.kraftstoff",

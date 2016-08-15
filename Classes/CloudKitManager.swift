@@ -47,7 +47,7 @@ final class CloudKitManager {
 		// TODO: full sync
 	}
 
-	private static func handleCloudKitUnavailable(accountStatus: CKAccountStatus, error: NSError?) {
+	private static func handleCloudKitUnavailable(accountStatus: CKAccountStatus, error: Error?) {
 		var errorText = "Synchronization is disabled\n"
 		if let error = error {
 			print("handleCloudKitUnavailable ERROR: \(error)")
@@ -146,8 +146,9 @@ final class CloudKitManager {
 	}
 	*/
 
-	static func handlePush(_ userInfo: [NSObject: AnyObject], completionHandler: (UIBackgroundFetchResult) -> Void) {
-		if let stringObjectUserInfo = userInfo as? [String: NSObject] {
+	static func handlePush(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) {
+		// TODO: remove intermediary cast
+		if let stringObjectUserInfo = userInfo as Any as? [String: NSObject] {
 			let notification = CKNotification(fromRemoteNotificationDictionary: stringObjectUserInfo)
 
 			if notification.subscriptionID == privateChangesSubscriptionID {

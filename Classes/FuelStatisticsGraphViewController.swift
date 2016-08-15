@@ -283,19 +283,19 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let numberFormatter = self.dataSource!.axisFormatterForCar(car)
 
 		state.hMarkPositions[0] = 1.0 - (1.0  * valStretchFactorForDisplay)
-		state.hMarkNames[0] = numberFormatter.string(from: (valMin + valRange))!
+		state.hMarkNames[0] = numberFormatter.string(from: NSNumber(value: valMin + valRange))!
 
 		state.hMarkPositions[1] = 1.0 - (0.75 * valStretchFactorForDisplay)
-		state.hMarkNames[1] = numberFormatter.string(from: (valMin + valRange*0.75))!
+		state.hMarkNames[1] = numberFormatter.string(from: NSNumber(value: valMin + valRange*0.75))!
 
 		state.hMarkPositions[2] = 1.0 - (0.5  * valStretchFactorForDisplay)
-		state.hMarkNames[2] = numberFormatter.string(from: (valMin + valRange*0.5))!
+		state.hMarkNames[2] = numberFormatter.string(from: NSNumber(value: valMin + valRange*0.5))!
 
 		state.hMarkPositions[3] = 1.0 - (0.25 * valStretchFactorForDisplay)
-		state.hMarkNames[3] = numberFormatter.string(from: (valMin + valRange*0.25))!
+		state.hMarkNames[3] = numberFormatter.string(from: NSNumber(value: valMin + valRange*0.25))!
 
 		state.hMarkPositions[4] = 1.0
-		state.hMarkNames[4] = numberFormatter.string(from: valMin)!
+		state.hMarkNames[4] = numberFormatter.string(from: NSNumber(value: valMin))!
 		state.hMarkCount = 5
 
 		// Markers for horizontal axis
@@ -333,7 +333,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state == nil {
 			state = FuelStatisticsSamplingData()
-			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc)
+			state.contentAverage = NSNumber(value: resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc))
 		}
 
 		// Create image data from resampled data
@@ -364,14 +364,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			return
 		}
 
-		let font = UIFont.preferredFont(forTextStyle: UIFontTextStyleFootnote)
+		let font = UIFont.preferredFont(forTextStyle: .footnote)
 		let path = UIBezierPath()
 
 		context.saveGState()
 
 		if state.dataCount == 0 {
 
-			let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+			let attributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(attributes: attributes)
@@ -417,7 +417,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for horizontal marker lines markers
 		context.saveGState()
 
-		let attributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) ]
+		let attributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) ]
 
 		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
@@ -457,7 +457,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for vertical marker lines
 		context.saveGState()
 
-		let vMarkAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
+		let vMarkAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
 
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
@@ -691,7 +691,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 						let renderer = UIGraphicsImageRenderer(bounds: self.view.bounds, format: format)
 
 						let valueString = String(format: self.dataSource!.averageFormatString(false, forCar: self.selectedCar),
-						                         self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: cell.lensValue[minIndex])!)
+						                         self.dataSource!.averageFormatter(true, forCar: self.selectedCar).string(from: NSNumber(value: cell.lensValue[minIndex]))!)
 
 						imageView.image = renderer.image { context in
 							drawFlatLensWithBGImage(cell.contentImage, lensLocation: lensLocation, info: valueString, context: context.cgContext)
@@ -733,7 +733,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleCaption2),
+		let attributes: [String: AnyObject] = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: .caption2),
                                  NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var infoRect = CGRect()

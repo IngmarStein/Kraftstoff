@@ -10,11 +10,11 @@ import UIKit
 
 protocol EditablePageCellDelegate: class {
 	func valueForIdentifier(_ valueIdentifier: String) -> Any?
-	func valueChanged(_ newValue: AnyObject?, identifier: String)
+	func valueChanged(_ newValue: Any?, identifier: String)
 }
 
 protocol EditablePageCellValidator {
-	func valueValid(_ newValue: AnyObject?, identifier: String) -> Bool
+	func valueValid(_ newValue: Any?, identifier: String) -> Bool
 }
 
 protocol EditablePageCellFocusHandler {
@@ -46,7 +46,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.contentVerticalAlignment = .center
 		textField.isUserInteractionEnabled = false
 		textField.translatesAutoresizingMaskIntoConstraints = false
-		textField.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+		textField.font = UIFont.preferredFont(forTextStyle: .body)
 		textField.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(textField)
@@ -57,7 +57,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.setContentHuggingPriority(750, for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
-		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+		keyLabel.font = UIFont.preferredFont(forTextStyle: .body)
 		keyLabel.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(keyLabel)

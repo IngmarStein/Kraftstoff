@@ -50,7 +50,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		self.restorationClass = self.dynamicType
+		self.restorationClass = type(of: self)
 	}
 
 	override func viewDidLoad() {
@@ -82,7 +82,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - State Restoration
 
-	static func viewController(withRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
+	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
 			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventEventID) as? String {
@@ -455,7 +455,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 	}
 
-	func valueChanged(_ newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: Any?, identifier valueIdentifier: String) {
 		if valueIdentifier == "date" {
 			if let dateValue = newValue as? Date {
 				let newDate = Date.dateWithoutSeconds(dateValue)
@@ -516,7 +516,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - EditablePageCellValidator
 
-	func valueValid(_ newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
+	func valueValid(_ newValue: Any?, identifier valueIdentifier: String) -> Bool {
 		// Date must be collision free
 		if let date = newValue as? Date {
 			if valueIdentifier == "date" {

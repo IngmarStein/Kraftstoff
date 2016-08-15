@@ -18,9 +18,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	private let pickerViewCellHeight: CGFloat =  44.0
 
 	// Attributes for custom PickerViews
-	private var prefixAttributes = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleHeadline),
+	private var prefixAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: .headline),
 	                                NSForegroundColorAttributeName: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
-	private var suffixAttributes = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyleSubheadline),
+	private var suffixAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: .subheadline),
 									NSForegroundColorAttributeName: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
 
 	required init() {

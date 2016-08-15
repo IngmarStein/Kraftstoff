@@ -190,9 +190,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).setFill()
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
-		let font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
-		let labelAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
-		let valueAttributes = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+		let font = UIFont.preferredFont(forTextStyle: .body)
+		let labelAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
+		let valueAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var x: CGFloat
 		var y: CGFloat

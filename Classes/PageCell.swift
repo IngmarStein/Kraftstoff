@@ -10,11 +10,11 @@ import UIKit
 
 class PageCell: UITableViewCell {
 	class var reuseIdentifier: String {
-		return String(self)
+		return String(describing: self)
 	}
 
 	required init() {
-		super.init(style: .default, reuseIdentifier: self.dynamicType.reuseIdentifier)
+		super.init(style: .default, reuseIdentifier: type(of: self).reuseIdentifier)
 
 		self.detailTextLabel?.isHidden = true
 	}

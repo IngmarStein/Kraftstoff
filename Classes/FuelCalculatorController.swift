@@ -753,7 +753,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	func valueChanged(_ newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: Any?, identifier valueIdentifier: String) {
 		if let date = newValue as? Date {
 
 			if valueIdentifier == "date" {
@@ -786,7 +786,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 
 		} else if valueIdentifier == "filledUp" {
-			self.filledUp = newValue!.boolValue
+			self.filledUp = newValue as? Bool
 
 			let defaults = UserDefaults.standard
 
@@ -819,7 +819,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - EditablePageCellValidator
 
-	func valueValid(_ newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
+	func valueValid(_ newValue: Any?, identifier valueIdentifier: String) -> Bool {
 		// Validate only when there is a car for saving
 		guard let car = self.car else { return true }
 

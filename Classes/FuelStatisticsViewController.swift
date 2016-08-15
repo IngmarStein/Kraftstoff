@@ -79,10 +79,10 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	private func setupFonts() {
-		let titleFont = UIFont.preferredFont(forTextStyle: UIFontTextStyleCaption2)
-		let font = UIFont.preferredFont(forTextStyle: UIFontTextStyleBody)
+		let titleFont = UIFont.preferredFont(forTextStyle: .caption2)
+		let font = UIFont.preferredFont(forTextStyle: .body)
 
-		let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: UIFontTextStyleBody).withSymbolicTraits(.traitBold)!
+		let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)!
 		let fontSelected = UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
 
 		self.leftLabel.adjustsFontForContentSizeCategory = true
@@ -92,8 +92,8 @@ class FuelStatisticsViewController: UIViewController {
 		self.rightLabel.adjustsFontForContentSizeCategory = true
 		self.rightLabel.font = titleFont
 
-		let labelAttributes = [NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1)]
-		let labelSelectedAttributes = [NSFontAttributeName: fontSelected, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)]
+		let labelAttributes: [String: AnyObject] = [NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1)]
+		let labelSelectedAttributes: [String: AnyObject] = [NSFontAttributeName: fontSelected, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
@@ -220,7 +220,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NotificationCenter.default.post(name: "numberOfMonthsSelected" as Notification.Name, object: self, userInfo: ["span": sender.tag])
+		NotificationCenter.default.post(name: Notification.Name("numberOfMonthsSelected"), object: self, userInfo: ["span": sender.tag])
 	}
 
 	// MARK: - Memory Management
