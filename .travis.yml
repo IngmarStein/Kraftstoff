@@ -5,12 +5,12 @@ xcode_scheme: Kraftstoff
 xcode_sdk: iphonesimulator
 cache:
 - bundler
-before_script:
-- "./scripts/install-swift.sh"
+#before_script:
+#- "./scripts/install-swift.sh"
 script:
 # temporary workaround for Xcode 8 (see https://github.com/fastlane/fastlane/issues/5163)
 - export PATH="`pwd`/fastlane:$PATH"
 - fastlane test
-env:
-  global:
-    - TOOLCHAINS=swift
+#env:
+#  global:
+#    - TOOLCHAINS=swift
