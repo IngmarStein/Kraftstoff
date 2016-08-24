@@ -262,7 +262,6 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			}
 		}
 
-
 		// Build curve data from resampled values
 		state.dataCount = 0
 

@@ -602,7 +602,6 @@ final class CSVImporter {
 		return nil
 	}
 
-
 	private func scanTimeWithString(_ string: String?) -> Date? {
 		guard let string = string else { return nil }
 

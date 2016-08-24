@@ -39,7 +39,7 @@ class KraftstoffTests: XCTestCase {
         super.tearDown()
     }
 
-	private func testRoundtrip(_ language: String) {
+	private func roundtrip(_ language: String) {
 		let car = Car(context: managedObjectContext)
 
 		car.order = 0
@@ -78,7 +78,7 @@ class KraftstoffTests: XCTestCase {
 
 	func testLanguages() {
 		for language in ["en", "de", "fr"] {
-			testRoundtrip(language)
+			roundtrip(language)
 		}
 	}
 

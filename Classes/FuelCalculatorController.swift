@@ -351,7 +351,6 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 		}
 
-
 		// Date selector
 		if self.date == nil {
 			self.date = Date.dateWithoutSeconds(Date())
@@ -601,7 +600,6 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil
 	}
-
 
 	// MARK: - Conversion for Odometer
 
