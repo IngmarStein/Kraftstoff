@@ -30,7 +30,7 @@ platform :ios do
     snapshot
     increment_build_number
     # sigh
-    gym(scheme: "Kraftstoff", configuration: "Release")
+    gym(configuration: "Release")
     pilot
   end
 
@@ -40,7 +40,7 @@ platform :ios do
     snapshot
     increment_build_number
     # sigh
-    gym(scheme: "Kraftstoff", configuration: "Release")
+    gym(configuration: "Release")
     deliver(force: true)
     # frameit
 

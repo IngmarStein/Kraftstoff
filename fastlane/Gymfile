@@ -1,0 +1,2 @@
+scheme "Kraftstoff"
+toolchain "com.apple.dt.toolchain.Swift_3_0"
