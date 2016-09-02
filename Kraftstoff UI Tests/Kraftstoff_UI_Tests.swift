@@ -65,7 +65,7 @@ class KraftstoffUITests: XCTestCase {
 		snapshot("04_chart_cost")
 
 		app.pageIndicators.element(boundBy: 0).tap()
-		//app.scrollViews.element(boundBy: 0).swipeLeft()
+		// app.scrollViews.element(boundBy: 0).swipeLeft()
 
 		snapshot("05_chart_fuel")
 

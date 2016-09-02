@@ -103,4 +103,5 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	func textFieldDidEndEditing(_ textField: UITextField) {
 		textField.isUserInteractionEnabled = false
 	}
+
 }

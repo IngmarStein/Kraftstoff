@@ -18,7 +18,7 @@ final class SwitchTableCell: PageCell {
 
 	weak var delegate: EditablePageCellDelegate?
 
-	required init () {
+	required init() {
 		self.keyLabel = UILabel(frame: .zero)
 		self.valueSwitch = UISwitch(frame: .zero)
 		self.valueLabel = UILabel(frame: .zero)
@@ -93,4 +93,5 @@ final class SwitchTableCell: PageCell {
 		self.delegate?.valueChanged(isOn, identifier: self.valueIdentifier)
 		self.valueLabel.text = NSLocalizedString(isOn ? "Yes" : "No", comment: "")
 	}
+
 }

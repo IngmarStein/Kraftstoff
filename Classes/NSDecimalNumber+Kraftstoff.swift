@@ -13,6 +13,7 @@ private let minusOne = NSDecimalNumber(mantissa: 1, exponent: 0, isNegative: tru
 // MARK: - Comparable
 
 extension NSDecimalNumber: Comparable {
+
 	public static func == (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
 		return lhs.compare(rhs) == .orderedSame
 	}
@@ -54,6 +55,7 @@ extension NSDecimalNumber: Comparable {
 	public static func >> (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
 		return lhs.multiplying(byPowerOf10: Int16(-rhs))
 	}
+
 }
 
 extension NSNumber {
