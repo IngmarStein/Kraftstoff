@@ -9,83 +9,90 @@
 import UIKit
 
 final class Formatters {
-	static let sharedLongDateFormatter : NSDateFormatter = {
-		let dateFormatter = NSDateFormatter()
-		dateFormatter.timeStyle = .ShortStyle
-		dateFormatter.dateStyle = .LongStyle
+
+	static let shortMeasurementFormatter: MeasurementFormatter = {
+		let measurementFormatter = MeasurementFormatter()
+		measurementFormatter.unitStyle = .short
+		return measurementFormatter
+	}()
+
+	static let longDateFormatter: DateFormatter = {
+		let dateFormatter = DateFormatter()
+		dateFormatter.timeStyle = .short
+		dateFormatter.dateStyle = .long
 		return dateFormatter
 	}()
 
-	static let sharedDateFormatter : NSDateFormatter = {
-		let dateFormatter = NSDateFormatter()
-		dateFormatter.timeStyle = .NoStyle
-		dateFormatter.dateStyle = .MediumStyle
+	static let dateFormatter: DateFormatter = {
+		let dateFormatter = DateFormatter()
+		dateFormatter.timeStyle = .none
+		dateFormatter.dateStyle = .medium
 		return dateFormatter
 	}()
 
-	static let sharedDateTimeFormatter : NSDateFormatter = {
-        let dateTimeFormatter = NSDateFormatter()
-		dateTimeFormatter.timeStyle = .ShortStyle
-		dateTimeFormatter.dateStyle = .MediumStyle
+	static let dateTimeFormatter: DateFormatter = {
+        let dateTimeFormatter = DateFormatter()
+		dateTimeFormatter.timeStyle = .short
+		dateTimeFormatter.dateStyle = .medium
 		return dateTimeFormatter
     }()
 
-	static let sharedDistanceFormatter : NSNumberFormatter = {
-        let distanceFormatter = NSNumberFormatter()
+	static let distanceFormatter: NumberFormatter = {
+        let distanceFormatter = NumberFormatter()
         distanceFormatter.generatesDecimalNumbers = true
-        distanceFormatter.numberStyle = .DecimalStyle
+        distanceFormatter.numberStyle = .decimal
         distanceFormatter.minimumFractionDigits = 1
         distanceFormatter.maximumFractionDigits = 1
 		return distanceFormatter
     }()
 
-	static let sharedFuelVolumeFormatter : NSNumberFormatter = {
-        let fuelVolumeFormatter = NSNumberFormatter()
+	static let fuelVolumeFormatter: NumberFormatter = {
+        let fuelVolumeFormatter = NumberFormatter()
         fuelVolumeFormatter.generatesDecimalNumbers = true
-        fuelVolumeFormatter.numberStyle = .DecimalStyle
+        fuelVolumeFormatter.numberStyle = .decimal
         fuelVolumeFormatter.minimumFractionDigits = 2
         fuelVolumeFormatter.maximumFractionDigits = 2
 		return fuelVolumeFormatter
     }()
 
-	static let sharedPreciseFuelVolumeFormatter : NSNumberFormatter = {
-        let preciseFuelVolumeFormatter = NSNumberFormatter()
+	static let preciseFuelVolumeFormatter: NumberFormatter = {
+        let preciseFuelVolumeFormatter = NumberFormatter()
         preciseFuelVolumeFormatter.generatesDecimalNumbers = true
-        preciseFuelVolumeFormatter.numberStyle = .DecimalStyle
+        preciseFuelVolumeFormatter.numberStyle = .decimal
         preciseFuelVolumeFormatter.minimumFractionDigits = 3
         preciseFuelVolumeFormatter.maximumFractionDigits = 3
 		return preciseFuelVolumeFormatter
     }()
 
 	// Standard currency formatter
-	static let sharedCurrencyFormatter : NSNumberFormatter = {
-        let currencyFormatter = NSNumberFormatter()
+	static let currencyFormatter: NumberFormatter = {
+        let currencyFormatter = NumberFormatter()
         currencyFormatter.generatesDecimalNumbers = true
-        currencyFormatter.numberStyle = .CurrencyStyle
+        currencyFormatter.numberStyle = .currency
 		return currencyFormatter
     }()
 
 	// Currency formatter with empty currency symbol for axis of statistic graphs
-	static let sharedAxisCurrencyFormatter : NSNumberFormatter = {
-        let axisCurrencyFormatter = NSNumberFormatter()
+	static let axisCurrencyFormatter: NumberFormatter = {
+        let axisCurrencyFormatter = NumberFormatter()
         axisCurrencyFormatter.generatesDecimalNumbers = true
-        axisCurrencyFormatter.numberStyle = .CurrencyStyle
+        axisCurrencyFormatter.numberStyle = .currency
         axisCurrencyFormatter.currencySymbol = ""
 		return axisCurrencyFormatter
     }()
 
 	// Currency formatter with empty currency symbol and one additional fractional digit - used for active textfields
-	static let sharedEditPreciseCurrencyFormatter : NSNumberFormatter = {
-        var fractionDigits = sharedCurrencyFormatter.maximumFractionDigits
+	static let editPreciseCurrencyFormatter: NumberFormatter = {
+        var fractionDigits = currencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
 		if fractionDigits > 0 {
             fractionDigits += 1
 		}
 
-        let editPreciseCurrencyFormatter = NSNumberFormatter()
+        let editPreciseCurrencyFormatter = NumberFormatter()
         editPreciseCurrencyFormatter.generatesDecimalNumbers = true
-        editPreciseCurrencyFormatter.numberStyle = .CurrencyStyle
+        editPreciseCurrencyFormatter.numberStyle = .currency
         editPreciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.maximumFractionDigits = fractionDigits
         editPreciseCurrencyFormatter.currencySymbol = ""
@@ -94,23 +101,23 @@ final class Formatters {
         editPreciseCurrencyFormatter.roundingIncrement = 0
 
         // Needed since NSNumberFormatters can't parse their own € output
-        editPreciseCurrencyFormatter.lenient = true
+        editPreciseCurrencyFormatter.isLenient = true
 
 		return editPreciseCurrencyFormatter
     }()
 
 	// Currency formatter with one additional fractional digit - used for inactive textfields
-	static let sharedPreciseCurrencyFormatter : NSNumberFormatter = {
-        var fractionDigits = sharedCurrencyFormatter.maximumFractionDigits
+	static let preciseCurrencyFormatter: NumberFormatter = {
+        var fractionDigits = currencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
 		if fractionDigits > 0 {
             fractionDigits += 1
 		}
 
-        let preciseCurrencyFormatter = NSNumberFormatter()
+        let preciseCurrencyFormatter = NumberFormatter()
         preciseCurrencyFormatter.generatesDecimalNumbers = true
-        preciseCurrencyFormatter.numberStyle = .CurrencyStyle
+        preciseCurrencyFormatter.numberStyle = .currency
         preciseCurrencyFormatter.minimumFractionDigits = fractionDigits
         preciseCurrencyFormatter.maximumFractionDigits = fractionDigits
 
@@ -118,16 +125,16 @@ final class Formatters {
         preciseCurrencyFormatter.roundingIncrement = 0
 
         // Needed since NSNumberFormatters can't parse their own € output
-        preciseCurrencyFormatter.lenient = true
+        preciseCurrencyFormatter.isLenient = true
 
 		return preciseCurrencyFormatter
     }()
 
 	// Rounding handler for computation of average consumption
-	static let sharedConsumptionRoundingHandler : NSDecimalNumberHandler = {
-        let fractionDigits = sharedFuelVolumeFormatter.maximumFractionDigits
+	static let consumptionRoundingHandler: NSDecimalNumberHandler = {
+        let fractionDigits = fuelVolumeFormatter.maximumFractionDigits
         return NSDecimalNumberHandler(
-			roundingMode: .RoundPlain,
+			roundingMode: .plain,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,
@@ -136,10 +143,10 @@ final class Formatters {
     }()
 
 	// Rounding handler for precise price computations
-	static let sharedPriceRoundingHandler : NSDecimalNumberHandler = {
-        let fractionDigits = sharedEditPreciseCurrencyFormatter.maximumFractionDigits
+	static let priceRoundingHandler: NSDecimalNumberHandler = {
+        let fractionDigits = editPreciseCurrencyFormatter.maximumFractionDigits
 		return NSDecimalNumberHandler(
-			roundingMode: .RoundUp,
+			roundingMode: .up,
 			scale: Int16(fractionDigits),
 			raiseOnExactness: false,
 			raiseOnOverflow: false,

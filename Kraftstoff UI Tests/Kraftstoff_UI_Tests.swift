@@ -8,11 +8,11 @@
 
 import XCTest
 
-class Kraftstoff_UI_Tests: XCTestCase {
-        
+class KraftstoffUITests: XCTestCase {
+
     override func setUp() {
         super.setUp()
-        
+
 		continueAfterFailure = false
 
 		let app = XCUIApplication()
@@ -20,13 +20,13 @@ class Kraftstoff_UI_Tests: XCTestCase {
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
 		app.launch()
 
-		XCUIDevice.sharedDevice().orientation = .Portrait
+		XCUIDevice.shared().orientation = .portrait
     }
-    
+
     override func tearDown() {
         super.tearDown()
     }
-    
+
     func testSnapshots() {
 
 		let app = XCUIApplication()
@@ -34,7 +34,7 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		// start by adding the demo car
 
-		tabBarsQuery.buttons.elementBoundByIndex(1).tap() // Cars
+		tabBarsQuery.buttons.element(boundBy: 1).tap() // Cars
 		app.navigationBars.buttons["add"].tap()
 
 		let tablesQuery = app.tables
@@ -51,27 +51,27 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		snapshot("02_cars")
 
-		tablesQuery.cells.elementBoundByIndex(0).tap()
+		tablesQuery.cells.element(boundBy: 0).tap()
 
 		snapshot("03_fuelevents")
 
-		XCUIDevice.sharedDevice().orientation = .LandscapeLeft
+		XCUIDevice.shared().orientation = .landscapeLeft
 
 		let imagesQuery = app.images
 		let button = imagesQuery.buttons["5Y"]
 		button.tap()
 
-		imagesQuery["graphImage"].coordinateWithNormalizedOffset(CGVector(dx: 0.536, dy: 0.5)).pressForDuration(0.6)
+		imagesQuery["graphImage"].coordinate(withNormalizedOffset: CGVector(dx: 0.536, dy: 0.5)).press(forDuration: 0.6)
 		snapshot("04_chart_cost")
 
-		//app.pageIndicators.elementBoundByIndex(0).tap()
-		app.scrollViews.elementBoundByIndex(0).swipeLeft()
+		app.pageIndicators.element(boundBy: 0).tap()
+		// app.scrollViews.element(boundBy: 0).swipeLeft()
 
 		snapshot("05_chart_fuel")
-		
-		XCUIDevice.sharedDevice().orientation = .Portrait
 
-		tabBarsQuery.buttons.elementBoundByIndex(0).tap() // Fill-Up
+		XCUIDevice.shared().orientation = .portrait
+
+		tabBarsQuery.buttons.element(boundBy: 0).tap() // Fill-Up
 
 		let distanceTextField = tablesQuery.textFields["distance"]
 		distanceTextField.tap()
@@ -101,5 +101,5 @@ class Kraftstoff_UI_Tests: XCTestCase {
 
 		snapshot("01_entry")
     }
-    
+
 }

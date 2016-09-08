@@ -9,61 +9,57 @@
 import UIKit
 import CoreData
 
-private struct FuelCalculatorDataRow: OptionSetType {
+private struct FuelCalculatorDataRow: OptionSet {
 	let rawValue: UInt
 
-	static let Distance = FuelCalculatorDataRow(rawValue: 0b0001)
-	static let Price = FuelCalculatorDataRow(rawValue: 0b0010)
-	static let Amount = FuelCalculatorDataRow(rawValue: 0b0100)
-	static let All = FuelCalculatorDataRow(rawValue: 0b0111)
+	static let distance = FuelCalculatorDataRow(rawValue: 0b0001)
+	static let price = FuelCalculatorDataRow(rawValue: 0b0010)
+	static let amount = FuelCalculatorDataRow(rawValue: 0b0100)
+	static let all = FuelCalculatorDataRow(rawValue: 0b0111)
 }
 
 final class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
-	var selectedCarId : String?
+	var selectedCarId: String?
 
-	private var _fetchedResultsController: NSFetchedResultsController?
-	private var fetchedResultsController: NSFetchedResultsController {
-		if _fetchedResultsController == nil {
-			let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-			fetchedResultsController.delegate = self
-			_fetchedResultsController = fetchedResultsController
-		}
-		return _fetchedResultsController!
-	}
+	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
+		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
+	}()
 
-	var restoredSelectionIndex: NSIndexPath?
+	var restoredSelectionIndex: IndexPath?
 	var car: Car?
-	var date: NSDate?
-	var lastChangeDate: NSDate?
+	var date: Date?
+	var lastChangeDate: Date?
 	var distance: NSDecimalNumber?
 	var price: NSDecimalNumber?
 	var fuelVolume: NSDecimalNumber?
 	var filledUp: Bool?
 	var comment: String?
 
-	var doneButton: UIBarButtonItem!
-	var saveButton: UIBarButtonItem!
+	let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(FuelCalculatorController.endEditingMode(_:)))
+	let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: nil, action: #selector(FuelCalculatorController.saveAction(_:)))
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")
-		userActivity?.title = NSLocalizedString("Fill-Up", comment:"")
-		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment:"") ]
-		userActivity?.eligibleForSearch = true
+		userActivity?.title = NSLocalizedString("Fill-Up", comment: "")
+		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
+		userActivity?.isEligibleForSearch = true
 
 		// Title bar
-		self.doneButton = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(FuelCalculatorController.endEditingMode(_:)))
+		self.doneButton.target = self
 		self.doneButton.accessibilityIdentifier = "done"
-		self.saveButton = UIBarButtonItem(barButtonSystemItem:.Save, target:self, action:#selector(FuelCalculatorController.saveAction(_:)))
+		self.saveButton.target = self
 		self.saveButton.accessibilityIdentifier = "save"
-		self.title = NSLocalizedString("Fill-Up", comment:"")
+		self.title = NSLocalizedString("Fill-Up", comment: "")
 	}
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -72,38 +68,37 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Table contents
-		createTableContentsWithAnimation(.None)
+		createTableContentsWithAnimation(.none)
 		self.tableView.reloadData()
 		updateSaveButtonState()
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.willEnterForeground(_:)), name:UIApplicationWillEnterForegroundNotification, object:nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(FuelCalculatorController.storesDidChange(_:)), name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
 	private let kSRCalculatorSelectedIndex = "FuelCalculatorSelectedIndex"
 	private let kSRCalculatorConvertSheet  = "FuelCalculatorConvertSheet"
 	private let kSRCalculatorEditing       = "FuelCalculatorEditing"
 
-	override func encodeRestorableStateWithCoder(coder: NSCoder) {
+	override func encodeRestorableState(with coder: NSCoder) {
 		if let indexPath = self.restoredSelectionIndex ?? self.tableView.indexPathForSelectedRow {
-			coder.encodeObject(indexPath, forKey: kSRCalculatorSelectedIndex)
+			coder.encode(indexPath, forKey: kSRCalculatorSelectedIndex)
 		}
 
-		coder.encodeBool(isShowingConvertSheet, forKey:kSRCalculatorConvertSheet)
-		coder.encodeBool(self.editing, forKey:kSRCalculatorEditing)
+		coder.encode(isShowingConvertSheet, forKey: kSRCalculatorConvertSheet)
+		coder.encode(self.isEditing, forKey: kSRCalculatorEditing)
 
-		super.encodeRestorableStateWithCoder(coder)
+		super.encodeRestorableState(with: coder)
 	}
 
-	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		self.restoredSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey: kSRCalculatorSelectedIndex)
-		self.isShowingConvertSheet = coder.decodeBoolForKey(kSRCalculatorConvertSheet)
-    
-		if coder.decodeBoolForKey(kSRCalculatorEditing) {
-			self.setEditing(true, animated:false)
+	override func decodeRestorableState(with coder: NSCoder) {
+		self.restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? IndexPath
+		self.isShowingConvertSheet = coder.decodeBool(forKey: kSRCalculatorConvertSheet)
+
+		if coder.decodeBool(forKey: kSRCalculatorEditing) {
+			self.setEditing(true, animated: false)
 
 			if isShowingConvertSheet {
 				showOdometerConversionAlert()
@@ -113,105 +108,105 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 		}
 
-		super.decodeRestorableStateWithCoder(coder)
+		super.decodeRestorableState(with: coder)
 	}
 
-	//MARK: - Modeswitching for Table Rows
+	// MARK: - Mode switching for Table Rows
 
-	override func setEditing(enabled: Bool, animated: Bool) {
-		if self.editing != enabled {
+	override func setEditing(_ enabled: Bool, animated: Bool) {
+		if self.isEditing != enabled {
 
-			let animation: UITableViewRowAnimation = animated ? .Fade : .None
-        
-			super.setEditing(enabled, animated:animated)
-        
+			let animation: UITableViewRowAnimation = animated ? .fade : .none
+
+			super.setEditing(enabled, animated: animated)
+
 			if enabled {
-				self.navigationItem.leftBarButtonItem = self.doneButton
+				self.navigationItem.leftBarButtonItem = doneButton
 				self.navigationItem.rightBarButtonItem = nil
 
-				removeSectionAtIndex(1, withAnimation:animation)
+				removeSectionAtIndex(1, withAnimation: animation)
 			} else {
 				self.navigationItem.leftBarButtonItem = nil
-            
+
 				if consumptionRowNeeded() {
 					createConsumptionRowWithAnimation(animation)
 				}
 
 				updateSaveButtonState()
 			}
-        
+
 			if !animated {
 				self.tableView.reloadData()
 			}
 		}
 	}
 
-	//MARK: - Shake Events
+	// MARK: - Shake Events
 
-	override func canBecomeFirstResponder() -> Bool {
+	override var canBecomeFirstResponder: Bool {
 		return true
 	}
 
-	override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?)	{
-		if motion == .MotionShake {
+	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+		if motion == .motionShake {
 			handleShake()
 		} else {
-			super.motionEnded(motion, withEvent:event)
+			super.motionEnded(motion, with: event)
 		}
 	}
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		self.userActivity?.becomeCurrent()
 	}
 
-	override func viewDidDisappear(animated: Bool) {
+	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 
 		userActivity?.resignCurrent()
 	}
 
 	func handleShake() {
-		if self.editing {
+		if self.isEditing {
 			return
 		}
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if (distance == nil || distance! == zero) && (fuelVolume == nil || fuelVolume! == zero) && (price == nil || price! == zero) {
 			return
 		}
 
-		UIView.animateWithDuration(0.3,
+		UIView.animate(withDuration: 0.3,
                      animations: {
-                         self.removeSectionAtIndex(1, withAnimation:.Fade)
+                         self.removeSectionAtIndex(1, withAnimation: .fade)
                      }, completion: { finished in
 
-                         let now = NSDate()
+                         let now = Date()
 
-                         self.valueChanged(NSDate.dateWithoutSeconds(now), identifier:"date")
-                         self.valueChanged(now,  identifier:"lastChangeDate")
-                         self.valueChanged(zero, identifier:"distance")
-                         self.valueChanged(zero, identifier:"price")
-                         self.valueChanged(zero, identifier:"fuelVolume")
-                         self.valueChanged(true, identifier:"filledUp")
-						 self.valueChanged("", identifier:"comment")
+                         self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
+                         self.valueChanged(now, identifier: "lastChangeDate")
+                         self.valueChanged(zero, identifier: "distance")
+                         self.valueChanged(zero, identifier: "price")
+                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(true, identifier: "filledUp")
+						 self.valueChanged("", identifier: "comment")
 
-                         self.recreateTableContentsWithAnimation(.Left)
+                         self.recreateTableContentsWithAnimation(.left)
                          self.updateSaveButtonState()
                      })
 	}
 
-	//MARK: - Creating the Table Rows
+	// MARK: - Creating the Table Rows
 
 	func consumptionRowNeeded() -> Bool {
 
-		if self.editing {
+		if self.isEditing {
 			return false
 		}
 
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		if (distance == nil || distance! <= zero) || (fuelVolume == nil || fuelVolume! <= zero) {
 			return false
@@ -220,11 +215,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		return true
 	}
 
-	func createConsumptionRowWithAnimation(animation: UITableViewRowAnimation) {
+	func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Conversion units
-		let odometerUnit: KSDistance
-		let fuelUnit: KSVolume
-		let consumptionUnit: KSFuelConsumption
+		let odometerUnit: UnitLength
+		let fuelUnit: UnitVolume
+		let consumptionUnit: UnitFuelEfficiency
 
 		if let car = self.car {
 			odometerUnit    = car.ksOdometerUnit
@@ -239,34 +234,30 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// Compute the average consumption
 		let cost = fuelVolume! * price!
 
-		let liters      = Units.litersForVolume(fuelVolume!, withUnit:fuelUnit)
-		let kilometers  = Units.kilometersForDistance(distance!, withUnit:odometerUnit)
-		let consumption = Units.consumptionForKilometers(kilometers, liters:liters, inUnit:consumptionUnit)
+		let liters      = Units.litersForVolume(fuelVolume!, withUnit: fuelUnit)
+		let kilometers  = Units.kilometersForDistance(distance!, withUnit: odometerUnit)
+		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
+		let consumptionUnitSymbol = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 
-		let consumptionString = String(format:"%@ %@ %@ %@",
-                                        Formatters.sharedCurrencyFormatter.stringFromNumber(cost)!,
-										NSLocalizedString("/", comment:""),
-                                        Formatters.sharedFuelVolumeFormatter.stringFromNumber(consumption)!,
-                                        consumptionUnit.localizedString)
-
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(consumptionUnitSymbol)"
 
 		// Substrings for highlighting
-		let highlightStrings = [Formatters.sharedCurrencyFormatter.currencySymbol!,
-								consumptionUnit.localizedString]
+		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
+								consumptionUnitSymbol]
 
-		addSectionAtIndex(1, withAnimation:animation)
+		addSectionAtIndex(1, withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 0,
-              inSection:1,
-              cellClass:ConsumptionTableCell.self,
-               cellData:["label":consumptionString,
-                         "highlightStrings":highlightStrings],
-          withAnimation:animation)
+              inSection: 1,
+              cellClass: ConsumptionTableCell.self,
+               cellData: ["label": consumptionString,
+                          "highlightStrings": highlightStrings],
+          withAnimation: animation)
 	}
 
-	private func createDataRows(rowMask: FuelCalculatorDataRow, withAnimation animation: UITableViewRowAnimation) {
-		let odometerUnit: KSDistance
-		let fuelUnit: KSVolume
+	private func createDataRows(_ rowMask: FuelCalculatorDataRow, withAnimation animation: UITableViewRowAnimation) {
+		let odometerUnit: UnitLength
+		let fuelUnit: UnitVolume
 
 		if let car = self.car {
 			odometerUnit = car.ksOdometerUnit
@@ -278,127 +269,132 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
-		if rowMask.contains(.Distance) {
+		if rowMask.contains(.distance) {
 			if self.distance == nil {
-				self.distance = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentDistance")! as! NSNumber).decimalValue)
+				if let recentDistance = UserDefaults.standard.object(forKey: "recentDistance") as? NSNumber {
+					self.distance = NSDecimalNumber(decimal: recentDistance.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 0 + rowOffset,
-                  inSection:0,
-                  cellClass:NumberEditTableCell.self,
-				   cellData:["label": NSLocalizedString("Distance", comment:""),
-                             "suffix": " ".stringByAppendingString(odometerUnit.description),
-                             "formatter": Formatters.sharedDistanceFormatter,
-                             "valueIdentifier": "distance"],
-              withAnimation:animation)
+                  inSection: 0,
+                  cellClass: NumberEditTableCell.self,
+				   cellData: ["label": NSLocalizedString("Distance", comment: ""),
+                              "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: odometerUnit)),
+                              "formatter": Formatters.distanceFormatter,
+                              "valueIdentifier": "distance"],
+              withAnimation: animation)
 		}
 
-		if rowMask.contains(.Price) {
+		if rowMask.contains(.price) {
 			if self.price == nil {
-				self.price = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentPrice")! as! NSNumber).decimalValue)
+				if let recentPrice = UserDefaults.standard.object(forKey: "recentPrice") as? NSNumber {
+					self.price = NSDecimalNumber(decimal: recentPrice.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 1 + rowOffset,
-                  inSection:0,
-                  cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelPriceUnitDescription(fuelUnit),
-							 "formatter": Formatters.sharedEditPreciseCurrencyFormatter,
-                             "alternateFormatter": Formatters.sharedPreciseCurrencyFormatter,
-                             "valueIdentifier": "price"],
-              withAnimation:animation)
+                  inSection: 0,
+                  cellClass: NumberEditTableCell.self,
+                   cellData: ["label": Units.fuelPriceUnitDescription(fuelUnit),
+							  "formatter": Formatters.editPreciseCurrencyFormatter,
+                              "alternateFormatter": Formatters.preciseCurrencyFormatter,
+                              "valueIdentifier": "price"],
+              withAnimation: animation)
 		}
 
-		if rowMask.contains(.Amount) {
+		if rowMask.contains(.amount) {
 			if self.fuelVolume == nil {
-				self.fuelVolume = NSDecimalNumber(decimal: (NSUserDefaults.standardUserDefaults().objectForKey("recentFuelVolume")! as! NSNumber).decimalValue)
+				if let recentFuelVolume = UserDefaults.standard.object(forKey: "recentFuelVolume") as? NSNumber {
+					self.fuelVolume = NSDecimalNumber(decimal: recentFuelVolume.decimalValue)
+				}
 			}
 
 			addRowAtIndex(rowIndex: 2 + rowOffset,
-                  inSection:0,
-                  cellClass:NumberEditTableCell.self,
-                   cellData:["label": Units.fuelUnitDescription(fuelUnit, discernGallons:false, pluralization:true),
-                             "suffix": " ".stringByAppendingString(fuelUnit.description),
-                             "formatter": fuelUnit.isMetric
-                                                ? Formatters.sharedFuelVolumeFormatter
-                                                : Formatters.sharedPreciseFuelVolumeFormatter,
-                             "valueIdentifier": "fuelVolume"],
-              withAnimation:animation)
+                  inSection: 0,
+                  cellClass: NumberEditTableCell.self,
+                   cellData: ["label": Units.fuelUnitDescription(fuelUnit, discernGallons: false, pluralization: true),
+                              "suffix": " ".appending(Formatters.shortMeasurementFormatter.string(from: fuelUnit)),
+                              "formatter": fuelUnit == UnitVolume.liters
+                                                 ? Formatters.fuelVolumeFormatter
+                                                 : Formatters.preciseFuelVolumeFormatter,
+                              "valueIdentifier": "fuelVolume"],
+              withAnimation: animation)
 		}
 	}
 
-	private func createTableContentsWithAnimation(animation: UITableViewRowAnimation) {
-		addSectionAtIndex(0, withAnimation:animation)
+	private func createTableContentsWithAnimation(_ animation: UITableViewRowAnimation) {
+		addSectionAtIndex(0, withAnimation: animation)
 
 		// Car selector (optional)
 		self.car = nil
 
 		if self.fetchedResultsController.fetchedObjects?.count ?? 0 > 0 {
 			if let selectedCar = selectedCarId {
-				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar) as? Car
-			} else if let preferredCar = NSUserDefaults.standardUserDefaults().stringForKey("preferredCarID") {
-				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar) as? Car
+				self.car = CoreDataManager.managedObjectForModelIdentifier(selectedCar)
+			} else if let preferredCar = UserDefaults.standard.string(forKey: "preferredCarID") {
+				self.car = CoreDataManager.managedObjectForModelIdentifier(preferredCar)
 			}
 
 			if self.car == nil {
-				self.car = self.fetchedResultsController.fetchedObjects!.first as? Car
+				self.car = self.fetchedResultsController.fetchedObjects!.first!
 			}
 
 			if self.fetchedResultsController.fetchedObjects!.count > 1 {
 				addRowAtIndex(rowIndex: 0,
-                      inSection:0,
-                      cellClass:CarTableCell.self,
-					   cellData:["label": NSLocalizedString("Car", comment:""),
-                                 "valueIdentifier": "car",
-                                 "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
-                  withAnimation:animation)
+                      inSection: 0,
+                      cellClass: CarTableCell.self,
+					   cellData: ["label": NSLocalizedString("Car", comment: ""),
+                                  "valueIdentifier": "car",
+                                  "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
+                  withAnimation: animation)
 			}
 		}
-
 
 		// Date selector
 		if self.date == nil {
-			self.date = NSDate.dateWithoutSeconds(NSDate())
+			self.date = Date.dateWithoutSeconds(Date())
 		}
 
 		if self.lastChangeDate == nil {
-			self.lastChangeDate = NSDate()
+			self.lastChangeDate = Date()
 		}
 
 		addRowAtIndex(rowIndex: self.car != nil ? 1 : 0,
-              inSection:0,
-              cellClass:DateEditTableCell.self,
-			   cellData:["label": NSLocalizedString("Date", comment:""),
-                         "formatter": Formatters.sharedDateTimeFormatter,
-                         "valueIdentifier": "date",
-                         "valueTimestamp": "lastChangeDate",
-                         "autorefresh": true],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: DateEditTableCell.self,
+			   cellData: ["label": NSLocalizedString("Date", comment: ""),
+                          "formatter": Formatters.dateTimeFormatter,
+                          "valueIdentifier": "date",
+                          "valueTimestamp": "lastChangeDate",
+                          "autorefresh": true],
+          withAnimation: animation)
 
 		// Data rows for distance, price, fuel amount
-		createDataRows(.All, withAnimation:animation)
+		createDataRows(.all, withAnimation: animation)
 
 		// Full-fillup selector
-		self.filledUp = NSUserDefaults.standardUserDefaults().boolForKey("recentFilledUp")
+		self.filledUp = UserDefaults.standard.bool(forKey: "recentFilledUp")
 
 		if self.car != nil {
 			addRowAtIndex(rowIndex: 5,
-                  inSection:0,
-                  cellClass:SwitchTableCell.self,
-				   cellData:["label": NSLocalizedString("Full Fill-Up", comment:""),
-                             "valueIdentifier": "filledUp"],
-              withAnimation:animation)
+                  inSection: 0,
+                  cellClass: SwitchTableCell.self,
+				   cellData: ["label": NSLocalizedString("Full Fill-Up", comment: ""),
+                              "valueIdentifier": "filledUp"],
+              withAnimation: animation)
 
 			if self.comment == nil {
-				self.comment = NSUserDefaults.standardUserDefaults().stringForKey("recentComment")!
+				self.comment = UserDefaults.standard.string(forKey: "recentComment")!
 			}
 
 			addRowAtIndex(rowIndex: 6,
-				inSection:0,
-				cellClass:TextEditTableCell.self,
-				cellData:["label": NSLocalizedString("Comment", comment:""),
-					"valueIdentifier": "comment",
-					"maximumTextFieldLength": 0],
-				withAnimation:animation)
+				inSection: 0,
+				cellClass: TextEditTableCell.self,
+				cellData: ["label": NSLocalizedString("Comment", comment: ""),
+					 "valueIdentifier": "comment",
+					 "maximumTextFieldLength": 0],
+				withAnimation: animation)
 		}
 
 		// Consumption info (optional)
@@ -407,98 +403,98 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	//MARK: - Updating the Table Rows
+	// MARK: - Updating the Table Rows
 
-	func recreateTableContentsWithAnimation(anim: UITableViewRowAnimation) {
+	func recreateTableContentsWithAnimation(_ anim: UITableViewRowAnimation) {
 		// Update model contents
 		let animation: UITableViewRowAnimation
 		if tableSections.isEmpty {
-			animation = .None
+			animation = .none
 		} else {
 			animation = anim
-			removeAllSectionsWithAnimation(.None)
+			removeAllSectionsWithAnimation(.none)
 		}
 
-		createTableContentsWithAnimation(.None)
+		createTableContentsWithAnimation(.none)
 
 		// Update the tableview
-		if animation == .None {
+		if animation == .none {
 			self.tableView?.reloadData()
 		} else {
-			self.tableView?.reloadSections(NSIndexSet(indexesInRange:NSRange (location: 0, length: self.tableView.numberOfSections)),
-                      withRowAnimation:animation)
+			self.tableView?.reloadSections(IndexSet(integersIn: 0..<self.tableView.numberOfSections),
+                      with: animation)
 		}
 	}
 
-	private func recreateDataRowsWithPreviousCar(oldCar: Car?) {
+	private func recreateDataRowsWithPreviousCar(_ oldCar: Car?) {
 		// Replace data rows in the internal data model
 		for row in 2...4 {
-			removeRowAtIndex(row, inSection:0, withAnimation:.None)
+			removeRow(at: row, inSection: 0, withAnimation: .none)
 		}
 
-		createDataRows(.All, withAnimation:.None)
+		createDataRows(.all, withAnimation: .none)
 
 		// Update the tableview
 		let odoChanged = oldCar == nil || oldCar!.odometerUnit != self.car!.odometerUnit
 
-		let fuelChanged = oldCar == nil || oldCar!.ksFuelUnit.isMetric != self.car!.ksFuelUnit.isMetric
+		let fuelChanged = oldCar == nil || (oldCar!.ksFuelUnit == UnitVolume.liters) != (self.car!.ksFuelUnit == UnitVolume.liters)
 
 		var count = 0
 
 		for row in 2...4 {
 			let animation: UITableViewRowAnimation
 			if (row == 2 && odoChanged) || (row != 2 && fuelChanged) {
-				animation = (count % 2) == 0 ? .Right : .Left
+				animation = (count % 2) == 0 ? .right : .left
 				count += 1
 			} else {
-				animation = .None
+				animation = .none
 			}
 
-			self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow:row, inSection:0)], withRowAnimation:animation)
+			self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: animation)
 		}
 
 		// Reload date row too to get colors updates
-		self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow:1, inSection:0)], withRowAnimation:.None)
+		self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
 	}
 
-	private func recreateDistanceRowWithAnimation(animation: UITableViewRowAnimation) {
+	private func recreateDistanceRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
 		// Replace distance row in the internal data model
-		removeRowAtIndex(rowOffset, inSection:0, withAnimation:.None)
-		createDataRows(.Distance, withAnimation:.None)
+		removeRow(at: rowOffset, inSection: 0, withAnimation: .none)
+		createDataRows(.distance, withAnimation: .none)
 
 		// Update the tableview
-		if animation != .None {
-			self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow:rowOffset, inSection:0)], withRowAnimation:animation)
+		if animation != .none {
+			self.tableView.reloadRows(at: [IndexPath(row: rowOffset, section: 0)], with: animation)
 		} else {
 			self.tableView.reloadData()
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
-    
+
 		dismissKeyboardWithCompletion {
-			self.recreateTableContentsWithAnimation(.None)
+			self.recreateTableContentsWithAnimation(.none)
 			self.selectRowAtIndexPath(previousSelection)
 		}
 	}
 
-	//MARK: - System Events
+	// MARK: - System Events
 
-	func willEnterForeground(notification: NSNotification) {
+	func willEnterForeground(_ notification: NSNotification) {
 		if tableSections.isEmpty {
 			return
 		}
 
 		// Last update must be longer than 5 minutes ago
-		let noChangeInterval: NSTimeInterval
+		let noChangeInterval: TimeInterval
 
 		if let lastChangeDate = self.lastChangeDate {
-			noChangeInterval = NSDate().timeIntervalSinceDate(lastChangeDate)
+			noChangeInterval = Date().timeIntervalSince(lastChangeDate)
 		} else {
 			noChangeInterval = -1
 		}
@@ -506,30 +502,22 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if self.lastChangeDate == nil || noChangeInterval >= 300 || noChangeInterval < 0 {
 
 			// Reset date to current time
-			let now = NSDate()
-			self.date = NSDate.dateWithoutSeconds(now)
+			let now = Date()
+			self.date = Date.dateWithoutSeconds(now)
 			self.lastChangeDate = now
 
 			// Update table
 			let rowOffset = (self.fetchedResultsController.fetchedObjects?.count ?? 0 < 2) ? 0 : 1
 
-			self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow:rowOffset, inSection:0)],
-								withRowAnimation:.None)
+			self.tableView.reloadRows(at: [IndexPath(row: rowOffset, section: 0)], with: .none)
 		}
 	}
 
-	func storesDidChange(notification: NSNotification) {
-		_fetchedResultsController = nil
-		NSFetchedResultsController.deleteCacheWithName(nil)
-		recreateTableContentsWithAnimation(.None)
-		updateSaveButtonState()
-	}
+	// MARK: - Programmatically Selecting Table Rows
 
-	//MARK: - Programmatically Selecting Table Rows
-
-	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
-		let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
-		let field : UITextField?
+	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
+		let cell = self.tableView.cellForRow(at: indexPath)!
+		let field: UITextField?
 
 		if let carCell = cell as? CarTableCell {
 			field = carCell.textField
@@ -545,55 +533,55 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		return field
 	}
 
-	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func activateTextFieldAtIndexPath(_ indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
-			field.userInteractionEnabled = true
+			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.tableView.beginUpdates()
 				self.tableView.endUpdates()
 			}
 		}
 	}
 
-	private func selectRowAtIndexPath(indexPath: NSIndexPath?) {
+	private func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let path = indexPath {
-			self.tableView.selectRowAtIndexPath(path, animated:false, scrollPosition:.None)
-			self.tableView(self.tableView, didSelectRowAtIndexPath:path)
+			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
+			self.tableView(self.tableView, didSelectRowAt: path)
 		}
 	}
 
-	//MARK: - Storing Information in the Database
+	// MARK: - Storing Information in the Database
 
-	func saveAction(sender: AnyObject) {
+	func saveAction(_ sender: AnyObject) {
 		self.navigationItem.rightBarButtonItem = nil
-        
-		UIView.animateWithDuration(0.3,
+
+		UIView.animate(withDuration: 0.3,
                      animations: {
                          // Remove consumption row
-                         self.removeSectionAtIndex(1, withAnimation:.Fade)
+                         self.removeSectionAtIndex(1, withAnimation: .fade)
                      },
                      completion: { finished in
                          // Add new event object
                          self.changeIsUserDriven = true
 
-                         CoreDataManager.addToArchiveWithCar(self.car!,
-                                                     date:self.date!,
-                                                 distance:self.distance!,
-                                                    price:self.price!,
-                                               fuelVolume:self.fuelVolume!,
-                                                 filledUp:self.filledUp ?? false,
-												  comment:self.comment,
-                                      forceOdometerUpdate:false)
+                         CoreDataManager.addToArchive(car: self.car!,
+                                                     date: self.date!,
+                                                 distance: self.distance!,
+                                                    price: self.price!,
+                                               fuelVolume: self.fuelVolume!,
+                                                 filledUp: self.filledUp ?? false,
+												  comment: self.comment,
+                                      forceOdometerUpdate: false)
 
                          // Reset calculator table
-                         let zero = NSDecimalNumber.zero()
+                         let zero = NSDecimalNumber.zero
 
-                         self.valueChanged(zero, identifier:"distance")
-                         self.valueChanged(zero, identifier:"price")
-                         self.valueChanged(zero, identifier:"fuelVolume")
-                         self.valueChanged(true, identifier:"filledUp")
-						 self.valueChanged("", identifier:"comment")
+                         self.valueChanged(zero, identifier: "distance")
+                         self.valueChanged(zero, identifier: "price")
+                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(true, identifier: "filledUp")
+						 self.valueChanged("", identifier: "comment")
 
 						 CoreDataManager.saveContext()
                      })
@@ -604,74 +592,73 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance! == NSDecimalNumber.zero()) || (fuelVolume == nil || fuelVolume! == NSDecimalNumber.zero()) {
+		} else if (distance == nil || distance! == .zero) || (fuelVolume == nil || fuelVolume! == .zero) {
 			saveValid = false
-		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate:self.date!) {
+		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate: self.date!) {
 			saveValid = false
 		}
 
-		self.navigationItem.rightBarButtonItem = saveValid ? self.saveButton : nil
+		self.navigationItem.rightBarButtonItem = saveValid ? saveButton : nil
 	}
 
-
-	//MARK: - Conversion for Odometer
+	// MARK: - Conversion for Odometer
 
 	// A simple heuristic when to ask for distance conversion
 	func needsOdometerConversionSheet() -> Bool {
 		guard let car = self.car else { return false }
 		guard let distance = self.distance else { return false }
 
-		guard car.odometer != NSDecimalNumber.notANumber() else { return false }
+		guard car.odometer != .notANumber else { return false }
 
 		// 1.) entered "distance" must be larger than car odometer
 		let odometerUnit = car.ksOdometerUnit
 
-		let rawDistance  = Units.kilometersForDistance(distance, withUnit:odometerUnit)
+		let rawDistance  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let convDistance = rawDistance - car.odometer
-    
-		if convDistance <= NSDecimalNumber.zero() {
+
+		if convDistance <= .zero {
 			return false
 		}
-    
+
 		// 2.) consumption with converted distances is more 'logical'
-		let liters = Units.litersForVolume(fuelVolume!, withUnit:car.ksFuelUnit)
-    
-		if liters <= NSDecimalNumber.zero() {
+		let liters = Units.litersForVolume(fuelVolume!, withUnit: car.ksFuelUnit)
+
+		if liters <= .zero {
 			return false
 		}
 
 		let rawConsumption = Units.consumptionForKilometers(rawDistance,
-                                                                      liters:liters,
-                                                                      inUnit:.LitersPer100km)
+                                                                      liters: liters,
+                                                                      inUnit: .litersPer100Kilometers)
 
-		if rawConsumption == NSDecimalNumber.notANumber() {
+		if rawConsumption == .notANumber {
 			return false
 		}
 
 		let convConsumption = Units.consumptionForKilometers(convDistance,
-                                                                      liters:liters,
-                                                                      inUnit:.LitersPer100km)
-    
-		if convConsumption == NSDecimalNumber.notANumber() {
+                                                                      liters: liters,
+                                                                      inUnit: .litersPer100Kilometers)
+
+		if convConsumption == .notANumber {
 			return false
 		}
 
 		let avgConsumption = Units.consumptionForKilometers(car.distanceTotalSum,
-                                                                     liters:car.fuelVolumeTotalSum,
-                                                                     inUnit:.LitersPer100km)
-    
+                                                                     liters: car.fuelVolumeTotalSum,
+                                                                     inUnit: .litersPer100Kilometers)
+
 		let loBound: NSDecimalNumber
 		let hiBound: NSDecimalNumber
 
-		if avgConsumption == NSDecimalNumber.notANumber() {
-			loBound = NSDecimalNumber(mantissa: 2, exponent:0, isNegative:false)
-			hiBound = NSDecimalNumber(mantissa:20, exponent:0, isNegative:false)
+		if avgConsumption == .notANumber {
+			loBound = NSDecimalNumber(mantissa:  2, exponent: 0, isNegative: false)
+			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
 		} else {
-			loBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent: -1, isNegative:false)
-			hiBound = avgConsumption * NSDecimalNumber(mantissa:5, exponent:  0, isNegative:false)
+			loBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: -1, isNegative: false)
+			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent:  0, isNegative: false)
 		}
-    
-		// conversion only when rawConsumtion <= lowerBound
+
+		// conversion only when rawConsumption <= lowerBound
 		if rawConsumption > loBound {
 			return false
 		}
@@ -680,81 +667,77 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if convConsumption < loBound || convConsumption > hiBound {
 			return false
 		}
-    
+
 		// 3.) the event must be the youngest one
-		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
-																								afterDate:self.date!,
-																							  dateMatches:false))
-    
+		let youngerEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
+																								afterDate: self.date!,
+																							  dateMatches: false))
+
 		if youngerEvents.count > 0 {
 			return false
 		}
-    
+
 		// => ask for a conversion
 		return true
 	}
 
 	func showOdometerConversionAlert() {
 		let odometerUnit = self.car!.ksOdometerUnit
-		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
+		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
 		let convDistance = rawDistance - self.car!.odometer
 
-		let distanceFormatter = Formatters.sharedDistanceFormatter
+		let distanceFormatter = Formatters.distanceFormatter
 
-		let rawButton = String(format: "%@ %@",
-                                distanceFormatter.stringFromNumber(Units.distanceForKilometers(rawDistance, withUnit:odometerUnit))!,
-                                odometerUnit.description)
+		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
-		let convButton = String(format:"%@ %@",
-                                distanceFormatter.stringFromNumber(Units.distanceForKilometers(convDistance, withUnit:odometerUnit))!,
-								odometerUnit.description)
+		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
-		let alertController = UIAlertController(title:NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment:""),
-																			 message:nil,
-																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:rawButton, style:.Default) { _ in
+		let alertController = UIAlertController(title: NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
+																			 message: nil,
+																	  preferredStyle: .actionSheet)
+		let cancelAction = UIAlertAction(title: rawButton, style: .default) { _ in
 			self.isShowingConvertSheet = false
-			self.setEditing(false, animated:true)
+			self.setEditing(false, animated: true)
 		}
 
-		let destructiveAction = UIAlertAction(title:convButton, style:.Destructive) { _ in
+		let destructiveAction = UIAlertAction(title: convButton, style: .destructive) { _ in
 			self.isShowingConvertSheet = false
 
 			// Replace distance in table with difference to car odometer
 			let odometerUnit = self.car!.ksOdometerUnit
-			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit:odometerUnit)
+			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
 			let convDistance = rawDistance - self.car!.odometer
 
-			self.distance = Units.distanceForKilometers(convDistance, withUnit:odometerUnit)
-			self.valueChanged(self.distance, identifier:"distance")
+			self.distance = Units.distanceForKilometers(convDistance, withUnit: odometerUnit)
+			self.valueChanged(self.distance, identifier: "distance")
 
-			self.recreateDistanceRowWithAnimation(.Right)
+			self.recreateDistanceRowWithAnimation(.right)
 
-			self.setEditing(false, animated:true)
+			self.setEditing(false, animated: true)
 		}
 
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
 		isShowingConvertSheet = true
-		presentViewController(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
-	//MARK: - Leaving Editing Mode
+	// MARK: - Leaving Editing Mode
 
-	@IBAction func endEditingMode(sender: AnyObject) {
+	@IBAction func endEditingMode(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
 			if self.needsOdometerConversionSheet() {
 				self.showOdometerConversionAlert()
 			} else {
-				self.setEditing(false, animated:true)
+				self.setEditing(false, animated: true)
 			}
 		}
     }
 
-	//MARK: - EditablePageCellDelegate
+	// MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
 		case "car": return self.car
 		case "date": return self.date
@@ -768,11 +751,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 	}
 
-	func valueChanged(newValue: AnyObject?, identifier valueIdentifier: String) {
-		if let date = newValue as? NSDate {
+	func valueChanged(_ newValue: Any?, identifier valueIdentifier: String) {
+		if let date = newValue as? Date {
 
 			if valueIdentifier == "date" {
-				self.date = NSDate.dateWithoutSeconds(date)
+				self.date = Date.dateWithoutSeconds(date)
 			} else if valueIdentifier == "lastChangeDate" {
 				self.lastChangeDate = date
 			}
@@ -794,26 +777,26 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			}
 
 			if let recentKey = recentKey {
-				let defaults = NSUserDefaults.standardUserDefaults()
+				let defaults = UserDefaults.standard
 
-				defaults.setObject(newValue, forKey:recentKey)
+				defaults.set(newValue, forKey: recentKey)
 				defaults.synchronize()
 			}
 
 		} else if valueIdentifier == "filledUp" {
-			self.filledUp = newValue!.boolValue
+			self.filledUp = newValue as? Bool
 
-			let defaults = NSUserDefaults.standardUserDefaults()
+			let defaults = UserDefaults.standard
 
-			defaults.setObject(newValue, forKey:"recentFilledUp")
+			defaults.set(newValue, forKey: "recentFilledUp")
 			defaults.synchronize()
 
 		} else if valueIdentifier == "comment" {
 			comment = newValue as? String
 
-			let defaults = NSUserDefaults.standardUserDefaults()
+			let defaults = UserDefaults.standard
 
-			defaults.setObject(newValue, forKey:"recentComment")
+			defaults.set(newValue, forKey: "recentComment")
 			defaults.synchronize()
 
 		} else if valueIdentifier == "car" {
@@ -823,10 +806,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				recreateDataRowsWithPreviousCar(oldCar)
 			}
 
-			if !self.car!.objectID.temporaryID {
-				let defaults = NSUserDefaults.standardUserDefaults()
+			if !self.car!.objectID.isTemporaryID {
+				let defaults = UserDefaults.standard
 
-				defaults.setObject(CoreDataManager.modelIdentifierForManagedObject(self.car!), forKey:"preferredCarID")
+				defaults.set(CoreDataManager.modelIdentifierForManagedObject(self.car!) as NSString?, forKey: "preferredCarID")
 				defaults.synchronize()
 			}
 		}
@@ -834,14 +817,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - EditablePageCellValidator
 
-	func valueValid(newValue: AnyObject?, identifier valueIdentifier: String) -> Bool {
+	func valueValid(_ newValue: Any?, identifier valueIdentifier: String) -> Bool {
 		// Validate only when there is a car for saving
 		guard let car = self.car else { return true }
 
 		// Date must be collision free
-		if let date = newValue as? NSDate {
+		if let date = newValue as? Date {
 			if valueIdentifier == "date" {
-				if CoreDataManager.containsEventWithCar(car, andDate:date) {
+				if CoreDataManager.containsEventWithCar(car, andDate: date) {
 					return false
 				}
 			}
@@ -850,7 +833,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		// DecimalNumbers <= 0.0 are invalid
 		if let decimalNumber = newValue as? NSDecimalNumber {
 			if valueIdentifier != "price" {
-				if decimalNumber <= NSDecimalNumber.zero() {
+				if decimalNumber <= .zero {
 					return false
 				}
 			}
@@ -859,53 +842,53 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		return true
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
-		recreateTableContentsWithAnimation(changeIsUserDriven ? .Right : .None)
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		recreateTableContentsWithAnimation(changeIsUserDriven ? .right : .none)
 		updateSaveButtonState()
 
 		changeIsUserDriven = false
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-		let cell = tableView.cellForRowAtIndexPath(indexPath)
+	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		let cell = tableView.cellForRow(at: indexPath)
 
 		if cell is SwitchTableCell || cell is ConsumptionTableCell {
 			return nil
 		}
 
-		setEditing(true, animated:true)
+		setEditing(true, animated: true)
 		return indexPath
 	}
 
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
-	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				tableView.beginUpdates()
 				tableView.endUpdates()
 			}
 		}
 	}
 
-	//MARK: -
+	// MARK: -
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 }

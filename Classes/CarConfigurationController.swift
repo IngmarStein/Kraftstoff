@@ -9,14 +9,14 @@
 import UIKit
 
 enum CarConfigurationResult: Int {
-	case Canceled
-	case CreateSucceeded
-	case EditSucceeded
-	case Aborted
+	case canceled
+	case createSucceeded
+	case editSucceeded
+	case aborted
 }
 
 protocol CarConfigurationControllerDelegate: class {
-	func carConfigurationController(controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
+	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
 }
 
 private let kSRConfiguratorDelegate               = "FuelConfiguratorDelegate"
@@ -34,7 +34,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	var isShowingCancelSheet = false
 	var dataChanged = false
-	var previousSelectionIndex: NSIndexPath?
+	var previousSelectionIndex: IndexPath?
 
 	var name: String?
 	var plate: String?
@@ -47,12 +47,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	weak var delegate: CarConfigurationControllerDelegate?
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		restorationClass = self.dynamicType
+		restorationClass = type(of: self)
 	}
 
 	override func viewDidLoad() {
@@ -61,65 +61,67 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		recreateTableContents()
 
 		// Configure the navigation bar
-		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Done, target:self, action:#selector(CarConfigurationController.handleSave(_:)))
+		let leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CarConfigurationController.handleSave(_:)))
 		leftBarButtonItem.accessibilityIdentifier = "done"
 		self.navigationItem.leftBarButtonItem = leftBarButtonItem
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Cancel, target:self, action:#selector(CarConfigurationController.handleCancel(_:)))
-		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment:"") : NSLocalizedString("New Car", comment:"")
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(CarConfigurationController.handleCancel(_:)))
+		self.navigationItem.title = self.editingExistingObject ? NSLocalizedString("Edit Car", comment: "") : NSLocalizedString("New Car", comment: "")
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
 
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(CarConfigurationController.localeChanged(_:)), name:NSCurrentLocaleDidChangeNotification, object:nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CarConfigurationController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
 	}
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		dataChanged = false
 
-		selectRowAtIndexPath(NSIndexPath(forRow:0, inSection:0))
+		selectRowAtIndexPath(IndexPath(row: 0, section: 0))
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
-	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewControllerWithIdentifier("CarConfigurationController") as! CarConfigurationController
-			controller.editingExistingObject = coder.decodeBoolForKey(kSRConfiguratorEditMode)
+	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+			if let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
+				controller.editingExistingObject = coder.decodeBool(forKey: kSRConfiguratorEditMode)
 
-			return controller
+				return controller
+			}
 		}
 
 		return nil
 	}
 
-	override func encodeRestorableStateWithCoder(coder: NSCoder) {
+	override func encodeRestorableState(with coder: NSCoder) {
 		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
-		coder.encodeObject(self.delegate,            forKey:kSRConfiguratorDelegate)
-		coder.encodeBool(self.editingExistingObject, forKey:kSRConfiguratorEditMode)
-		coder.encodeBool(isShowingCancelSheet,       forKey:kSRConfiguratorCancelSheet)
-		coder.encodeBool(dataChanged,                forKey:kSRConfiguratorDataChanged)
-		coder.encodeObject(indexPath,                forKey:kSRConfiguratorPreviousSelectionIndex)
-		coder.encodeObject(self.name,                forKey:kSRConfiguratorName)
-		coder.encodeObject(self.plate,               forKey:kSRConfiguratorPlate)
-		coder.encodeObject(self.fuelUnit,            forKey:kSRConfiguratorFuelUnit)
-		coder.encodeObject(self.fuelConsumptionUnit, forKey:kSRConfiguratorFuelConsumptionUnit)
+		// swiftlint:disable comma
+		coder.encode(self.delegate,              forKey: kSRConfiguratorDelegate)
+		coder.encode(self.editingExistingObject, forKey: kSRConfiguratorEditMode)
+		coder.encode(isShowingCancelSheet,       forKey: kSRConfiguratorCancelSheet)
+		coder.encode(dataChanged,                forKey: kSRConfiguratorDataChanged)
+		coder.encode(indexPath,                  forKey: kSRConfiguratorPreviousSelectionIndex)
+		coder.encode(self.name as NSString?,     forKey: kSRConfiguratorName)
+		coder.encode(self.plate as NSString?,    forKey: kSRConfiguratorPlate)
+		coder.encode(self.fuelUnit,              forKey: kSRConfiguratorFuelUnit)
+		coder.encode(self.fuelConsumptionUnit,   forKey: kSRConfiguratorFuelConsumptionUnit)
+		// swiftlint:enable comma
 
-		super.encodeRestorableStateWithCoder(coder)
+		super.encodeRestorableState(with: coder)
 	}
 
-	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		//TODO: use decodeObjectOfClass:forKey:
-		self.delegate               = coder.decodeObjectForKey(kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
-		self.isShowingCancelSheet   = coder.decodeBoolForKey(kSRConfiguratorCancelSheet)
-		self.dataChanged            = coder.decodeBoolForKey(kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObjectOfClass(NSIndexPath.self, forKey:kSRConfiguratorPreviousSelectionIndex)
-		self.name                   = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorName) as? String
-		self.plate                  = coder.decodeObjectOfClass(NSString.self, forKey:kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelUnit)
-		self.fuelConsumptionUnit    = coder.decodeObjectOfClass(NSNumber.self, forKey:kSRConfiguratorFuelConsumptionUnit)
+	override func decodeRestorableState(with coder: NSCoder) {
+		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
+		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
+		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)
+		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRConfiguratorPreviousSelectionIndex) as? IndexPath
+		self.name                   = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorName) as? String
+		self.plate                  = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorPlate) as? String
+		self.fuelUnit               = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 
@@ -129,135 +131,139 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			selectRowAtIndexPath(previousSelectionIndex)
 		}
 
-		super.decodeRestorableStateWithCoder(coder)
+		super.decodeRestorableState(with: coder)
 	}
 
-	//MARK: - Creating the Table Rows
+	// MARK: - Creating the Table Rows
 
-	func createOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		let suffix = " ".stringByAppendingString(KSDistance(rawValue: self.odometerUnit!.intValue)!.description)
+	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+		let unit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+		let suffix = " ".appending(Formatters.shortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
-			self.odometer = NSDecimalNumber.zero()
+			self.odometer = .zero
 		}
 
 		addRowAtIndex(rowIndex: 3,
-              inSection:0,
-              cellClass:NumberEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Reading", comment:""),
-                         "suffix":          suffix,
-                         "formatter":       Formatters.sharedDistanceFormatter,
-                         "valueIdentifier": "odometer"],
-          withAnimation:animation)
+              inSection: 0,
+              cellClass: NumberEditTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Odometer Reading", comment: ""),
+                          "suffix":          suffix,
+                          "formatter":       Formatters.distanceFormatter,
+                          "valueIdentifier": "odometer"],
+          withAnimation: animation)
 	}
 
 	private func createTableContents() {
-		addSectionAtIndex(0, withAnimation:.None)
+		addSectionAtIndex(0, withAnimation: .none)
 
 		if self.name == nil {
 			self.name = ""
 		}
 
 		addRowAtIndex(rowIndex: 0,
-              inSection:0,
-              cellClass:TextEditTableCell.self,
-			   cellData:["label":           NSLocalizedString("Name", comment:""),
-                         "valueIdentifier": "name"],
-          withAnimation:.None)
+              inSection: 0,
+              cellClass: TextEditTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Name", comment: ""),
+                          "valueIdentifier": "name"],
+          withAnimation: .none)
 
 		if self.plate == nil {
 			self.plate = ""
 		}
 
 		addRowAtIndex(rowIndex: 1,
-              inSection:0,
-              cellClass:TextEditTableCell.self,
-			   cellData:["label":             NSLocalizedString("License Plate", comment:""),
-                         "valueIdentifier":   "plate",
-                         "autocapitalizeAll": true],
-          withAnimation:.None)
+              inSection: 0,
+              cellClass: TextEditTableCell.self,
+			   cellData: ["label":             NSLocalizedString("License Plate", comment: ""),
+                          "valueIdentifier":   "plate",
+                          "autocapitalizeAll": true],
+          withAnimation: .none)
 
 		if self.odometerUnit == nil {
-			self.odometerUnit = Int(Units.distanceUnitFromLocale.rawValue)
+			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.persistentId)
 		}
 
-		let odometerUnitPickerLabels = [Units.odometerUnitDescription(.Kilometer,   pluralization:true),
-										Units.odometerUnitDescription(.StatuteMile, pluralization:true)]
+		let measurementFormatter = MeasurementFormatter()
+		measurementFormatter.unitStyle = .long
+
+		let odometerUnitPickerLabels = [measurementFormatter.string(from: UnitLength.kilometers).capitalized,
+										measurementFormatter.string(from: UnitLength.miles).capitalized]
 
 		addRowAtIndex(rowIndex: 2,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Odometer Type", comment:""),
-                         "valueIdentifier": "odometerUnit",
-                         "labels":          odometerUnitPickerLabels],
-          withAnimation:.None)
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Odometer Type", comment: ""),
+                          "valueIdentifier": "odometerUnit",
+                          "labels":          odometerUnitPickerLabels],
+          withAnimation: .none)
 
-		createOdometerRowWithAnimation(.None)
+		createOdometerRowWithAnimation(.none)
 
 		if self.fuelUnit == nil {
-			self.fuelUnit = Int(Units.volumeUnitFromLocale.rawValue)
+			self.fuelUnit = NSNumber(value: Units.volumeUnitFromLocale.persistentId)
 		}
 
-		let fuelUnitPickerLabels = [Units.fuelUnitDescription(.Liter, discernGallons:true, pluralization:true),
-									Units.fuelUnitDescription(.GalUS, discernGallons:true, pluralization:true),
-									Units.fuelUnitDescription(.GalUK, discernGallons:true, pluralization:true)]
+		let fuelUnitPickerLabels = [measurementFormatter.string(from: UnitVolume.liters).capitalized,
+		                            measurementFormatter.string(from: UnitVolume.gallons).capitalized,
+		                            measurementFormatter.string(from: UnitVolume.imperialGallons).capitalized]
 
 		addRowAtIndex(rowIndex: 4,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Fuel Unit", comment:""),
-						 "valueIdentifier": "fuelUnit",
-                         "labels":          fuelUnitPickerLabels],
-          withAnimation:.None)
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Fuel Unit", comment: ""),
+						  "valueIdentifier": "fuelUnit",
+                          "labels":          fuelUnitPickerLabels],
+          withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
-			self.fuelConsumptionUnit = Int(Units.fuelConsumptionUnitFromLocale.rawValue)
+			self.fuelConsumptionUnit = NSNumber(value: Units.fuelConsumptionUnitFromLocale.persistentId)
 		}
 
-		let fuelConsumptionUnitPickerLabels = [KSFuelConsumption.LitersPer100km.description,
-                    KSFuelConsumption.KilometersPerLiter.description,
-                    KSFuelConsumption.MilesPerGallonUS.description,
-                    KSFuelConsumption.MilesPerGallonUK.description,
-                    KSFuelConsumption.GP10KUS.description,
-					KSFuelConsumption.GP10KUK.description]
+		let fuelConsumptionUnitPickerLabels = [measurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
+                    measurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
+                    measurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
+                    measurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
+                    measurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
+					measurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized]
 
-		let fuelConsumptionUnitPickerShortLabels = [KSFuelConsumption.LitersPer100km.shortDescription,
-                         KSFuelConsumption.KilometersPerLiter.shortDescription,
-                         KSFuelConsumption.MilesPerGallonUS.shortDescription,
-                         KSFuelConsumption.MilesPerGallonUK.shortDescription,
-                         KSFuelConsumption.GP10KUS.shortDescription,
-                         KSFuelConsumption.GP10KUK.shortDescription]
+		let fuelConsumptionUnitPickerShortLabels = [measurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
+                         measurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
+                         measurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
+                         measurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
+                         measurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
+                         measurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)]
 
 		addRowAtIndex(rowIndex: 5,
-              inSection:0,
-              cellClass:PickerTableCell.self,
-			   cellData:["label":           NSLocalizedString("Mileage", comment:""),
-                         "valueIdentifier": "fuelConsumptionUnit",
-                         "labels":          fuelConsumptionUnitPickerLabels,
-                         "shortLabels":     fuelConsumptionUnitPickerShortLabels],
-			withAnimation:.None)
+              inSection: 0,
+              cellClass: PickerTableCell.self,
+			   cellData: ["label":           NSLocalizedString("Mileage", comment: ""),
+                          "valueIdentifier": "fuelConsumptionUnit",
+                          "labels":          fuelConsumptionUnitPickerLabels,
+                          "shortLabels":     fuelConsumptionUnitPickerShortLabels],
+			withAnimation: .none)
 	}
 
 	private func recreateTableContents() {
-		removeAllSectionsWithAnimation(.None)
+		removeAllSectionsWithAnimation(.none)
 		createTableContents()
 		self.tableView.reloadData()
 	}
 
-	func recreateOdometerRowWithAnimation(animation: UITableViewRowAnimation) {
-		removeRowAtIndex(3, inSection:0, withAnimation:.None)
-		createOdometerRowWithAnimation(.None)
+	func recreateOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+		removeRow(at: 3, inSection: 0, withAnimation: .none)
+		createOdometerRowWithAnimation(.none)
 
-		if animation == .None {
+		if animation == .none {
 			self.tableView.reloadData()
 		} else {
-			self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow:3, inSection:0)], withRowAnimation:animation)
+			self.tableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: animation)
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {
@@ -266,10 +272,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	//MARK: - Programmatically Selecting Table Rows
+	// MARK: - Programmatically Selecting Table Rows
 
-	private func textFieldAtIndexPath(indexPath: NSIndexPath) -> UITextField? {
-		let cell = tableView.cellForRowAtIndexPath(indexPath)!
+	private func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
+		let cell = tableView.cellForRow(at: indexPath)!
 		let field: UITextField?
 
 		if let textCell = cell as? TextEditTableCell {
@@ -285,27 +291,27 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		return field
 	}
 
-	private func activateTextFieldAtIndexPath(indexPath: NSIndexPath) {
+	private func activateTextFieldAtIndexPath(_ indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
-			field.userInteractionEnabled = true
+			field.isUserInteractionEnabled = true
 			field.becomeFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.tableView.beginUpdates()
 				self.tableView.endUpdates()
 			}
 		}
 	}
 
-	func selectRowAtIndexPath(indexPath: NSIndexPath?) {
+	func selectRowAtIndexPath(_ indexPath: IndexPath?) {
 		if let indexPath = indexPath {
-			tableView.selectRowAtIndexPath(indexPath, animated:true, scrollPosition:.Middle)
+			tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
 			activateTextFieldAtIndexPath(indexPath)
 		}
 	}
 
-	//MARK: - Cancel Button
+	// MARK: - Cancel Button
 
-	@IBAction func handleCancel(sender: AnyObject) {
+	@IBAction func handleCancel(_ sender: AnyObject) {
 		previousSelectionIndex = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion { self.handleCancelCompletion() }
@@ -323,60 +329,60 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer! == NSDecimalNumber.zero() {
+			&& self.odometer! == .zero {
 			showCancelSheet = false
 		}
 
 		if showCancelSheet {
 			self.showCancelSheet()
 		} else {
-			self.delegate?.carConfigurationController(self, didFinishWithResult:.Canceled)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: .canceled)
 		}
 	}
 
 	func showCancelSheet() {
 		isShowingCancelSheet = true
 
-		let alertController = UIAlertController(title:self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment:"") : NSLocalizedString("Delete the newly created car?", comment:""),
-																			 message:nil,
-																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.Cancel) { _ in
+		let alertController = UIAlertController(title: self.editingExistingObject ? NSLocalizedString("Revert Changes for Car?", comment: "") : NSLocalizedString("Delete the newly created car?", comment: ""),
+																			 message: nil,
+																	  preferredStyle: .actionSheet)
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 			self.isShowingCancelSheet = false
 			self.selectRowAtIndexPath(self.previousSelectionIndex)
 			self.previousSelectionIndex = nil
 		}
-		let destructiveAction = UIAlertAction(title:self.editingExistingObject ? NSLocalizedString("Revert", comment:"") : NSLocalizedString("Delete", comment:""), style:.Destructive) { _ in
+		let destructiveAction = UIAlertAction(title: self.editingExistingObject ? NSLocalizedString("Revert", comment: "") : NSLocalizedString("Delete", comment: ""), style: .destructive) { _ in
 			self.isShowingCancelSheet = false
-			self.delegate?.carConfigurationController(self, didFinishWithResult:.Canceled)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: .canceled)
 			self.previousSelectionIndex = nil
 		}
 		alertController.addAction(cancelAction)
 		alertController.addAction(destructiveAction)
 		alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-		presentViewController(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
-	//MARK: - Save Button
+	// MARK: - Save Button
 
-	@IBAction func handleSave(sender: AnyObject) {
+	@IBAction func handleSave(_ sender: AnyObject) {
 		dismissKeyboardWithCompletion {
-			self.delegate?.carConfigurationController(self, didFinishWithResult:self.editingExistingObject ? .EditSucceeded : .CreateSucceeded)
+			self.delegate?.carConfigurationController(self, didFinishWithResult: self.editingExistingObject ? .editSucceeded : .createSucceeded)
 		}
 	}
 
-	//MARK: - EditablePageCellFocusHandler
+	// MARK: - EditablePageCellFocusHandler
 
-	func focusNextFieldForValueIdentifier(valueIdentifier: String) {
+	func focusNextFieldForValueIdentifier(_ valueIdentifier: String) {
 		if valueIdentifier == "name" {
-			selectRowAtIndexPath(NSIndexPath(forRow:1, inSection:0))
+			selectRowAtIndexPath(IndexPath(row: 1, section: 0))
 		} else {
-			selectRowAtIndexPath(NSIndexPath(forRow:2, inSection:0))
+			selectRowAtIndexPath(IndexPath(row: 2, section: 0))
 		}
 	}
 
-	//MARK: - EditablePageCellDelegate
+	// MARK: - EditablePageCellDelegate
 
-	func valueForIdentifier(valueIdentifier: String) -> AnyObject? {
+	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
 		case "name": return self.name
 		case "plate": return self.plate
@@ -388,7 +394,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 	}
 
-	func valueChanged(newValue: AnyObject?, identifier valueIdentifier: String) {
+	func valueChanged(_ newValue: Any?, identifier valueIdentifier: String) {
 		if let stringValue = newValue as? String {
 			if valueIdentifier == "name" {
 				self.name = stringValue
@@ -401,14 +407,14 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = KSDistance(rawValue: self.odometerUnit!.intValue)!
-				let newUnit = KSDistance(rawValue: numberValue.intValue)!
+				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+				let newUnit = UnitLength.fromPersistentId(numberValue.int32Value)
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue
-					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit:oldUnit), withUnit:newUnit)
+					self.odometer     = Units.distanceForKilometers(Units.kilometersForDistance(self.odometer!, withUnit: oldUnit), withUnit: newUnit)
 
-					recreateOdometerRowWithAnimation(newUnit == .Kilometer ? .Left : .Right)
+					recreateOdometerRowWithAnimation(newUnit == UnitLength.kilometers ? .left : .right)
 				}
 			} else if valueIdentifier == "fuelUnit" {
 				self.fuelUnit = numberValue
@@ -420,26 +426,26 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		dataChanged = true
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		activateTextFieldAtIndexPath(indexPath)
-		tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition:.Middle, animated:true)
+		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
-	override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
 		if let field = textFieldAtIndexPath(indexPath) {
 			field.resignFirstResponder()
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				tableView.beginUpdates()
 				tableView.endUpdates()
 			}
 		}
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

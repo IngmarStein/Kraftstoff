@@ -16,8 +16,8 @@ final class TextEditTableCell: EditablePageCell {
 	required init() {
 		super.init()
 
-		self.textField.keyboardType  = .Default
-		self.textField.returnKeyType = .Next
+		self.textField.keyboardType  = .default
+		self.textField.returnKeyType = .next
 		self.textField.allowCut      = true
 		self.textField.allowPaste    = true
 	}
@@ -26,13 +26,13 @@ final class TextEditTableCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
-		if let autocapitalizeAll = dictionary["autocapitalizeAll"] where autocapitalizeAll.boolValue == true {
-			self.textField.autocapitalizationType = .AllCharacters
+		if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool, autocapitalizeAll {
+			self.textField.autocapitalizationType = .allCharacters
 		} else {
-			self.textField.autocapitalizationType = .Words
+			self.textField.autocapitalizationType = .words
 		}
 		if let maximumTextFieldLength = dictionary["maximumTextFieldLength"] as? Int {
 			self.maximumTextFieldLength = maximumTextFieldLength
@@ -44,9 +44,9 @@ final class TextEditTableCell: EditablePageCell {
 		self.textField.accessibilityIdentifier = self.valueIdentifier
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
-	func textFieldShouldReturn(textField: UITextField) -> Bool {
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		// Let the focus handler handle switching to next textfield
 		if let focusHandler = self.delegate as? EditablePageCellFocusHandler {
 			focusHandler.focusNextFieldForValueIdentifier(self.valueIdentifier)
@@ -55,37 +55,39 @@ final class TextEditTableCell: EditablePageCell {
 		return false
 	}
 
-	func textFieldShouldClear(textField: UITextField) -> Bool {
+	func textFieldShouldClear(_ textField: UITextField) -> Bool {
 		// Propagate cleared value to the delegate
-		self.delegate.valueChanged("", identifier:self.valueIdentifier)
+		self.delegate.valueChanged("", identifier: self.valueIdentifier)
 
 		return true
 	}
 
-	func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-		var newValue = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString:string)
+	@objc(textField:shouldChangeCharactersInRange:replacementString:)
+	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+		var newValue = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 
 		// Don't allow too large strings
 		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {
 			return false
 		}
 
-		if textField.textAlignment == .Right {
+		if textField.textAlignment == .right {
 			// http://stackoverflow.com/questions/19569688/right-aligned-uitextfield-spacebar-does-not-advance-cursor-in-ios-7
-			newValue = newValue.stringByReplacingOccurrencesOfString(" ", withString:"\u{00a0}")
+			newValue = newValue.replacingOccurrences(of: " ", with: "\u{00a0}")
 		}
 
 		// Do the update here and propagate the new value back to the delegate
 		textField.text = newValue
 
-		self.delegate.valueChanged(newValue, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(newValue, identifier: self.valueIdentifier)
 
 		return false
 	}
 
-	override func textFieldDidEndEditing(textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField) {
 		super.textFieldDidEndEditing(textField)
 
-		textField.text = textField.text?.stringByReplacingOccurrencesOfString("\u{00a0}", withString: " ")
+		textField.text = textField.text?.replacingOccurrences(of: "\u{00a0}", with: " ")
 	}
+
 }

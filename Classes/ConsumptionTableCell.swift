@@ -13,48 +13,33 @@ final class ConsumptionTableCell: PageCell {
 	private(set) var coloredLabel: ConsumptionLabel
 
 	required init() {
-		self.coloredLabel = ConsumptionLabel(frame:CGRectZero)
+		self.coloredLabel = ConsumptionLabel(frame: .zero)
 
 		super.init()
 
-		self.selectionStyle = .None
+		self.selectionStyle = .none
 
-		self.coloredLabel.textAlignment             = .Center
+		self.coloredLabel.textAlignment             = .center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
-		self.coloredLabel.backgroundColor           = UIColor.clearColor()
-		self.coloredLabel.highlightedTextColor      = UIColor(white:0.5, alpha:1.0)
-		self.coloredLabel.textColor                 = UIColor.blackColor()
+		self.coloredLabel.backgroundColor           = .clear
+		self.coloredLabel.highlightedTextColor      = #colorLiteral(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+		self.coloredLabel.textColor                 = .black
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
-
-		setupFonts()
+		self.coloredLabel.adjustsFontForContentSizeCategory = true
+		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: .title3)
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel" : coloredLabel]))
-
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ConsumptionTableCell.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategoryDidChangeNotification, object: nil)
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
+		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
-	}
-
-	func contentSizeCategoryDidChange(notification: NSNotification!) {
-		setupFonts()
-	}
-
-	private func setupFonts() {
-		self.coloredLabel.font               = UIFont.applicationFontForStyle(UIFontTextStyleCaption1)
-		self.coloredLabel.minimumScaleFactor = 12.0/self.coloredLabel.font.pointSize
-	}
-
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		self.coloredLabel.highlightStrings = dictionary["highlightStrings"] as? [String]
 		self.coloredLabel.text             = dictionary["label"] as? String

@@ -20,35 +20,29 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	var selectedCarId: String?
 	var selectedCar: Car!
 
-	private lazy var fetchRequest: NSFetchRequest = {
-		return CoreDataManager.fetchRequestForEventsForCar(self.selectedCar,
-			afterDate:nil,
-			dateMatches:true)
+	private lazy var fetchRequest: NSFetchRequest<FuelEvent> = {
+		return CoreDataManager.fetchRequestForEvents(car: self.selectedCar,
+			afterDate: nil,
+			dateMatches: true)
 	}()
 
-	private var _fetchedResultsController: NSFetchedResultsController?
-	private var fetchedResultsController: NSFetchedResultsController {
-		if _fetchedResultsController == nil {
-			let fetchController = NSFetchedResultsController(fetchRequest:self.fetchRequest,
-				managedObjectContext:CoreDataManager.managedObjectContext,
-				sectionNameKeyPath:nil,
-				cacheName:nil)
+	private lazy var fetchedResultsController: NSFetchedResultsController<FuelEvent> = {
+		let fetchController = NSFetchedResultsController(fetchRequest: self.fetchRequest,
+			managedObjectContext: CoreDataManager.managedObjectContext,
+			sectionNameKeyPath: nil,
+			cacheName: nil)
 
-			fetchController.delegate = self
+		fetchController.delegate = self
 
-			// Perform the data fetch
-			do {
-				try fetchController.performFetch()
-			} catch let error as NSError {
-				fatalError(error.localizedDescription)
-			} catch {
-				fatalError()
-			}
-			_fetchedResultsController = fetchController
+		// Perform the data fetch
+		do {
+			try fetchController.performFetch()
+		} catch let error {
+			fatalError(error.localizedDescription)
 		}
 
-		return _fetchedResultsController!
-	}
+		return fetchController
+	}()
 
 	private var statisticsController: FuelStatisticsPageController!
 
@@ -64,75 +58,66 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	private var mailComposeController: MFMailComposeViewController!
 	private var documentPickerViewController: UIDocumentPickerViewController!
 
-	//MARK: - View Lifecycle
+	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		self.restorationClass = self.dynamicType
+		self.restorationClass = type(of: self)
 	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		if let selectedCarId = selectedCarId where selectedCar == nil {
+		if let selectedCarId = selectedCarId, selectedCar == nil {
 			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
 		}
 
-		statisticsController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelStatisticsPageController") as! FuelStatisticsPageController
+		// swiftlint:disable:next force_cast
+		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as! FuelStatisticsPageController
 
 		// Configure root view
 		self.title = selectedCar.name
 
 		// Export button in navigation bar
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem:.Action, target:self, action:#selector(FuelEventController.showExportSheet(_:)))
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(FuelEventController.showExportSheet(_:)))
 
-		self.navigationItem.rightBarButtonItem!.enabled = false
+		self.navigationItem.rightBarButtonItem!.isEnabled = false
 
 		// Reset tint color
 		self.navigationController?.navigationBar.tintColor = nil
 
 		// Background image
-		let backgroundView = UIView(frame:CGRectZero)
-		backgroundView.backgroundColor = UIColor(red:0.935, green:0.935, blue:0.956, alpha:1.0)
-		let backgroundImage = UIImageView(image:UIImage(named:"Pumps"))
+		let backgroundView = UIView(frame: .zero)
+		backgroundView.backgroundColor = #colorLiteral(red: 0.937254902, green: 0.937254902, blue: 0.937254902, alpha: 1)
+		let backgroundImage = UIImageView(image: #imageLiteral(resourceName: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.Bottom,  relatedBy:.Equal, toItem:backgroundImage, attribute:.Bottom,  multiplier:1.0, constant:90.0))
-		backgroundView.addConstraint(NSLayoutConstraint(item:backgroundView, attribute:.CenterX, relatedBy:.Equal, toItem:backgroundImage, attribute:.CenterX, multiplier:1.0, constant:0.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .bottom, relatedBy: .equal, toItem: backgroundImage, attribute: .bottom, multiplier: 1.0, constant: 90.0))
+		backgroundView.addConstraint(NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem: backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0))
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
-		NSNotificationCenter.defaultCenter().addObserver(self,
-           selector:#selector(FuelEventController.localeChanged(_:)),
-               name:NSCurrentLocaleDidChangeNotification,
-             object:nil)
-
-		NSNotificationCenter.defaultCenter().addObserver(self,
-			selector: #selector(FuelEventController.storesDidChange(_:)),
-			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
-			object: CoreDataManager.managedObjectContext.persistentStoreCoordinator!)
+		NotificationCenter.default.addObserver(self,
+           selector: #selector(FuelEventController.localeChanged(_:)),
+               name: NSLocale.currentLocaleDidChangeNotification,
+             object: nil)
 
 		// Dismiss any presented view controllers
 		if presentedViewController != nil {
-			dismissViewControllerAnimated(false, completion:nil)
+			dismiss(animated: false, completion: nil)
 		}
 	}
 
-	@objc func storesDidChange(notification: NSNotification) {
-		_fetchedResultsController = nil
-		self.tableView.reloadData()
-	}
-
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		validateExport()
 	}
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		setObserveDeviceRotation(true)
@@ -146,7 +131,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	override func viewWillDisappear(animated: Bool) {
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
 		if presentedViewController == nil {
@@ -154,12 +139,12 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 	}
 
-	//MARK: - State Restoration
+	// MARK: - State Restoration
 
-	static func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObjectForKey(UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
-			let controller = storyboard.instantiateViewControllerWithIdentifier("FuelEventController") as! FuelEventController
-			let modelIdentifier = coder.decodeObjectOfClass(NSString.self, forKey:kSRFuelEventSelectedCarID) as! String
+	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
+				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
 
 			if controller.selectedCar == nil {
@@ -171,54 +156,54 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return nil
 	}
 
-	override func encodeRestorableStateWithCoder(coder: NSCoder) {
-		coder.encodeObject(CoreDataManager.modelIdentifierForManagedObject(selectedCar), forKey:kSRFuelEventSelectedCarID)
-		coder.encodeBool(restoreExportSheet || isShowingExportSheet, forKey:kSRFuelEventExportSheet)
-		coder.encodeBool(restoreOpenIn || (openInController != nil), forKey:kSRFuelEventShowOpenIn)
-		coder.encodeBool(restoreMailComposer || (mailComposeController != nil), forKey:kSRFuelEventShowComposer)
+	override func encodeRestorableState(with coder: NSCoder) {
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: kSRFuelEventSelectedCarID)
+		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: kSRFuelEventExportSheet)
+		coder.encode(restoreOpenIn || (openInController != nil), forKey: kSRFuelEventShowOpenIn)
+		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: kSRFuelEventShowComposer)
 
 		// don't use a snapshot image for next launch when graph is currently visible
 		if presentedViewController != nil {
-			UIApplication.sharedApplication().ignoreSnapshotOnNextApplicationLaunch()
+			UIApplication.shared.ignoreSnapshotOnNextApplicationLaunch()
 		}
 
-		super.encodeRestorableStateWithCoder(coder)
+		super.encodeRestorableState(with: coder)
 	}
 
-	override func decodeRestorableStateWithCoder(coder: NSCoder) {
-		restoreExportSheet = coder.decodeBoolForKey(kSRFuelEventExportSheet)
-		restoreOpenIn = coder.decodeBoolForKey(kSRFuelEventShowOpenIn)
-		restoreMailComposer = coder.decodeBoolForKey(kSRFuelEventShowComposer)
+	override func decodeRestorableState(with coder: NSCoder) {
+		restoreExportSheet = coder.decodeBool(forKey: kSRFuelEventExportSheet)
+		restoreOpenIn = coder.decodeBool(forKey: kSRFuelEventShowOpenIn)
+		restoreMailComposer = coder.decodeBool(forKey: kSRFuelEventShowComposer)
 
-		super.decodeRestorableStateWithCoder(coder)
+		super.decodeRestorableState(with: coder)
 
 		// -> openradar #13438788
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Device Rotation
+	// MARK: - Device Rotation
 
-	func setObserveDeviceRotation(observeRotation: Bool) {
+	func setObserveDeviceRotation(_ observeRotation: Bool) {
 		if observeRotation && !isObservingRotationEvents {
-			UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
+			UIDevice.current.beginGeneratingDeviceOrientationNotifications()
 
-			NSNotificationCenter.defaultCenter().addObserver(self,
-               selector:#selector(FuelEventController.orientationChanged(_:)),
-                   name:UIDeviceOrientationDidChangeNotification,
-                 object:UIDevice.currentDevice())
+			NotificationCenter.default.addObserver(self,
+               selector: #selector(FuelEventController.orientationChanged(_:)),
+                   name: Notification.Name.UIDeviceOrientationDidChange,
+                 object: UIDevice.current)
 
 		} else if !observeRotation && isObservingRotationEvents {
-			NSNotificationCenter.defaultCenter().removeObserver(self,
-                      name:UIDeviceOrientationDidChangeNotification,
-                    object:UIDevice.currentDevice())
+			NotificationCenter.default.removeObserver(self,
+                      name: Notification.Name.UIDeviceOrientationDidChange,
+                    object: UIDevice.current)
 
-			UIDevice.currentDevice().endGeneratingDeviceOrientationNotifications()
+			UIDevice.current.endGeneratingDeviceOrientationNotifications()
 		}
 
 		isObservingRotationEvents = observeRotation
 	}
 
-	func orientationChanged(aNotification: NSNotification) {
+	func orientationChanged(_ aNotification: NSNotification) {
 		// Ignore rotation when sheets or alerts are visible
 		if openInController != nil || documentPickerViewController != nil || mailComposeController != nil {
 			return
@@ -229,76 +214,76 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 
 		// Switch view controllers according rotation state
-		let deviceOrientation = UIDevice.currentDevice().orientation
+		let deviceOrientation = UIDevice.current.orientation
 
 		if UIDeviceOrientationIsLandscape(deviceOrientation) && presentedViewController == nil {
 			isPerformingRotation = true
 			statisticsController.selectedCar = selectedCar
-			presentViewController(statisticsController, animated:true, completion: { self.isPerformingRotation = false })
+			present(statisticsController, animated: true, completion: { self.isPerformingRotation = false })
 		} else if UIDeviceOrientationIsPortrait(deviceOrientation) && presentedViewController != nil {
 			isPerformingRotation = true
-			dismissViewControllerAnimated(true, completion: { self.isPerformingRotation = false })
+			dismiss(animated: true, completion: { self.isPerformingRotation = false })
 		}
 	}
 
-	//MARK: - Locale Handling
+	// MARK: - Locale Handling
 
-	func localeChanged(object: AnyObject) {
+	func localeChanged(_ object: AnyObject) {
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Export Support
+	// MARK: - Export Support
 
 	func validateExport() {
-		self.navigationItem.rightBarButtonItem?.enabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
+		self.navigationItem.rightBarButtonItem?.isEnabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
 	}
 
 	private var exportFilename: String {
-		let rawFilename = String(format:"%@__%@.csv", selectedCar.name, selectedCar.numberPlate)
-		let illegalCharacters = NSCharacterSet(charactersInString:"/\\?%*|\"<>")
+		let rawFilename = "\(selectedCar.name)__\(selectedCar.numberPlate).csv"
+		let illegalCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>")
 
-		return rawFilename.componentsSeparatedByCharactersInSet(illegalCharacters).joinWithSeparator("")
+		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
 	}
 
-	private var exportURL: NSURL {
-		return NSURL(fileURLWithPath:(NSTemporaryDirectory() as NSString).stringByAppendingPathComponent(exportFilename))
+	private var exportURL: URL {
+		return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFilename)
 	}
 
-	func exportTextData() -> NSData {
-		let fetchedObjects = self.fetchedResultsController.fetchedObjects as! [FuelEvent]
-		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar:selectedCar)
-		return csvString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+	func exportTextData() -> Data {
+		let fetchedObjects = self.fetchedResultsController.fetchedObjects!
+		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar: selectedCar)
+		return csvString.data(using: String.Encoding.utf8, allowLossyConversion: true)!
 	}
 
 	private func exportTextDescription() -> String {
-		let outputFormatter = NSDateFormatter()
+		let outputFormatter = DateFormatter()
 
-		outputFormatter.dateStyle = .MediumStyle
-		outputFormatter.timeStyle = .NoStyle
+		outputFormatter.dateStyle = .medium
+		outputFormatter.timeStyle = .none
 
         let fetchedObjects = self.fetchedResultsController.fetchedObjects!
         let fetchCount = fetchedObjects.count
 
-		let last = fetchedObjects.last as? FuelEvent
-		let first = fetchedObjects.first as? FuelEvent
+		let last = fetchedObjects.last
+		let first = fetchedObjects.first
 
 		let period: String
         switch fetchCount {
-		case 0:  period = NSLocalizedString("", comment:"")
-		case 1:  period = String(format:NSLocalizedString("on %@", comment:""), outputFormatter.stringFromDate(last!.timestamp))
-		default: period = String(format:NSLocalizedString("in the period from %@ to %@", comment:""), outputFormatter.stringFromDate(last!.timestamp), outputFormatter.stringFromDate(first!.timestamp))
+		case 0:  period = NSLocalizedString("", comment: "")
+		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
         }
 
-		let count = String(format:NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment:""), fetchCount)
+		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
-		return String(format:NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment:""),
+		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
             selectedCar.name,
             selectedCar.numberPlate,
             period,
             count)
 	}
 
-	//MARK: - Export data
+	// MARK: - Export data
 
 	func showOpenIn() {
 		restoreOpenIn = false
@@ -306,37 +291,37 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
-			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
-				message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
-				preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
+				message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
+				preferredStyle: .alert)
+			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 			return
 		}
 
 		// show document interaction controller
-		openInController = UIDocumentInteractionController(URL:exportURL)
+		openInController = UIDocumentInteractionController(url: exportURL)
 
 		openInController.delegate = self
 		openInController.name = exportFilename
-		openInController.UTI = "public.comma-separated-values-text"
+		openInController.uti = "public.comma-separated-values-text"
 
-		if !openInController.presentOpenInMenuFromBarButtonItem(self.navigationItem.rightBarButtonItem!, animated:true) {
-			let alertController = UIAlertController(title:NSLocalizedString("Open In Failed", comment:""),
-				message:NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment:""),
-																		  preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+		if !openInController.presentOpenInMenu(from: self.navigationItem.rightBarButtonItem!, animated: true) {
+			let alertController = UIAlertController(title: NSLocalizedString("Open In Failed", comment: ""),
+				message: NSLocalizedString("Sorry, there seems to be no compatible app to open the data.", comment: ""),
+																		  preferredStyle: .alert)
+			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 
 			self.openInController = nil
 		}
@@ -348,54 +333,54 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// write exported data
 		let data = exportTextData()
 		do {
-			try data.writeToURL(exportURL, options:.DataWritingFileProtectionComplete)
+			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
-			let alertController = UIAlertController(title:NSLocalizedString("Export Failed", comment:""),
-			                                        message:NSLocalizedString("Sorry, could not save the CSV-data for export.", comment:""),
-			                                        preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
+			                                        message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
+			                                        preferredStyle: .alert)
+			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 				self.isShowingAlert = false
 			}
 			alertController.addAction(defaultAction)
 			self.isShowingAlert = true
-			presentViewController(alertController, animated:true, completion:nil)
+			present(alertController, animated: true, completion: nil)
 			return
 		}
 
-		documentPickerViewController = UIDocumentPickerViewController(URL: exportURL, inMode: .ExportToService)
+		documentPickerViewController = UIDocumentPickerViewController(url: exportURL, in: .exportToService)
 		documentPickerViewController.delegate = self
 
-		presentViewController(documentPickerViewController, animated: true, completion: nil)
+		present(documentPickerViewController, animated: true, completion: nil)
 	}
 
-	func documentPickerWasCancelled(controller: UIDocumentPickerViewController) {
+	func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
 		documentPickerViewController = nil
 	}
 
-	func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
 		documentPickerViewController = nil
 	}
 
-	func documentInteractionControllerDidDismissOpenInMenu(controller: UIDocumentInteractionController) {
+	func documentInteractionControllerDidDismissOpenInMenu(_ controller: UIDocumentInteractionController) {
 		do {
-			try NSFileManager.defaultManager().removeItemAtURL(exportURL)
+			try FileManager.default.removeItem(at: exportURL)
 		} catch _ {
 		}
 
 		openInController = nil
 	}
 
-	//MARK: - Export Objects via email
+	// MARK: - Export Objects via email
 
 	func showMailComposer() {
 		restoreMailComposer = false
@@ -405,56 +390,56 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format:NSLocalizedString("Your fuel data for %@", comment:""), selectedCar.numberPlate))
-			mailComposeController.setMessageBody(exportTextDescription(), isHTML:false)
-			mailComposeController.addAttachmentData(exportTextData(), mimeType:"text/csv", fileName:exportFilename)
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
+			mailComposeController.setMessageBody(exportTextDescription(), isHTML: false)
+			mailComposeController.addAttachmentData(exportTextData(), mimeType: "text/csv", fileName: exportFilename)
 
-			presentViewController(mailComposeController, animated:true, completion:nil)
+			present(mailComposeController, animated: true, completion: nil)
 		}
 	}
 
-	func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-		dismissViewControllerAnimated(true) {
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+		dismiss(animated: true) {
 
 			self.mailComposeController = nil
 
-			if result == MFMailComposeResultFailed {
-				let alertController = UIAlertController(title:NSLocalizedString("Sending Failed", comment:""),
-					message:NSLocalizedString("The exported fuel data could not be sent.", comment:""),
-																			  preferredStyle:.Alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+			if result == .failed {
+				let alertController = UIAlertController(title: NSLocalizedString("Sending Failed", comment: ""),
+					message: NSLocalizedString("The exported fuel data could not be sent.", comment: ""),
+																			  preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 					self.isShowingAlert = false
 				}
 				alertController.addAction(defaultAction)
 				self.isShowingAlert = true
-				self.presentViewController(alertController, animated:true, completion:nil)
+				self.present(alertController, animated: true, completion: nil)
 			}
 		}
 	}
 
-	//MARK: - Export Action Sheet
+	// MARK: - Export Action Sheet
 
-	func showExportSheet(sender: UIBarButtonItem!) {
+	func showExportSheet(_ sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 
-		let alertController = UIAlertController(title:NSLocalizedString("Export Fuel Data in CSV Format", comment:""),
-																			 message:nil,
-																	  preferredStyle:.ActionSheet)
-		let cancelAction = UIAlertAction(title:NSLocalizedString("Cancel", comment:""), style:.Cancel) { _ in
+		let alertController = UIAlertController(title: NSLocalizedString("Export Fuel Data in CSV Format", comment: ""),
+																			 message: nil,
+																	  preferredStyle: .actionSheet)
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 			self.isShowingExportSheet = false
 		}
-		let mailAction = UIAlertAction(title:NSLocalizedString("Send as Email", comment:""), style:.Default) { _ in
+		let mailAction = UIAlertAction(title: NSLocalizedString("Send as Email", comment: ""), style: .default) { _ in
 			self.isShowingExportSheet = false
-			dispatch_async(dispatch_get_main_queue()) { self.showMailComposer() }
+			DispatchQueue.main.async { self.showMailComposer() }
 		}
-		let openInAction = UIAlertAction(title:NSLocalizedString("Open in ...", comment:""), style:.Default) { _ in
+		let openInAction = UIAlertAction(title: NSLocalizedString("Open in ...", comment: ""), style: .default) { _ in
 			self.isShowingExportSheet = false
-			dispatch_async(dispatch_get_main_queue()) { self.showOpenIn() }
+			DispatchQueue.main.async { self.showOpenIn() }
 		}
-		let exportAction = UIAlertAction(title:NSLocalizedString("Export", comment:""), style:.Default) { _ in
+		let exportAction = UIAlertAction(title: NSLocalizedString("Export", comment: ""), style: .default) { _ in
 			self.isShowingExportSheet = false
-			dispatch_async(dispatch_get_main_queue()) { self.showExportDocumentPicker() }
+			DispatchQueue.main.async { self.showExportDocumentPicker() }
 		}
 		if MFMailComposeViewController.canSendMail() {
 			alertController.addAction(mailAction)
@@ -464,13 +449,13 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		alertController.addAction(cancelAction)
 		alertController.popoverPresentationController?.barButtonItem = sender
 
-		presentViewController(alertController, animated:true, completion:nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
-	func configureCell(tableCell: QuadInfoCell, atIndexPath indexPath: NSIndexPath) {
-		let managedObject = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
+	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: IndexPath) {
+		let managedObject = self.fetchedResultsController.object(at: indexPath)
 
 		let car = managedObject.car
 		let distance = managedObject.distance
@@ -480,25 +465,23 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Timestamp
-		tableCell.topLeftLabel.text = Formatters.sharedDateFormatter.stringForObjectValue(managedObject.timestamp)
+		tableCell.topLeftLabel.text = Formatters.dateFormatter.string(for: managedObject.timestamp)
 		tableCell.topLeftAccessibilityLabel = nil
 
 		// Distance
 		let convertedDistance: NSDecimalNumber
 
-		if odometerUnit == .Kilometer {
+		if odometerUnit == UnitLength.kilometers {
 			convertedDistance = distance
 		} else {
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = String(format:"%@ %@",
-                    Formatters.sharedDistanceFormatter.stringFromNumber(convertedDistance)!,
-                    odometerUnit.description)
+		tableCell.botLeftLabel.text = "\(Formatters.distanceFormatter.string(from: convertedDistance)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
-		tableCell.topRightLabel.text = Formatters.sharedCurrencyFormatter.stringFromNumber(managedObject.cost)
+		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: managedObject.cost)
 		tableCell.topRightAccessibilityLabel = tableCell.topRightLabel.text
 
 		// Consumption combined with inherited data from earlier events
@@ -507,117 +490,112 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			let totalDistance = distance + managedObject.inheritedDistance
 			let totalFuelVolume = fuelVolume + managedObject.inheritedFuelVolume
 
-			let avg = Units.consumptionForKilometers(totalDistance, liters:totalFuelVolume, inUnit:consumptionUnit)
+			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 
-			consumptionDescription = Formatters.sharedFuelVolumeFormatter.stringFromNumber(avg)!
+			consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg)!
 
-			tableCell.botRightAccessibilityLabel = String(format:", %@ %@",
-                                                    consumptionDescription,
-                                                    consumptionUnit.accessibilityDescription)
+			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 
 		} else {
-			consumptionDescription = NSLocalizedString("-", comment:"")
-			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment:"")
+			consumptionDescription = NSLocalizedString("-", comment: "")
+			tableCell.botRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")
 		}
 
-		tableCell.botRightLabel.text = String(format:"%@ %@", consumptionDescription, consumptionUnit.localizedString)
+		tableCell.botRightLabel.text = "\(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 	}
 
-	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	override func numberOfSections(in tableView: UITableView) -> Int {
 		return self.fetchedResultsController.sections?.count ?? 0
 	}
 
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		let sectionInfo = self.fetchedResultsController.sections?[section]
 		return sectionInfo?.numberOfObjects ?? 0
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let CellIdentifier = "FuelCell"
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: "FuelCell", for: indexPath)
 
-		var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier) as? QuadInfoCell
-
-		if cell == nil {
-			cell = QuadInfoCell(style:.Default, reuseIdentifier:CellIdentifier, enlargeTopRightLabel:false)
+		if let quadInfoCell = cell as? QuadInfoCell {
+			configureCell(quadInfoCell, atIndexPath: indexPath)
 		}
 
-		configureCell(cell!, atIndexPath:indexPath)
-		return cell!
+		return cell
 	}
 
-	override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-		if editingStyle == .Delete {
-			let fuelEvent = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
-			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate:false)
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			let fuelEvent = self.fetchedResultsController.object(at: indexPath)
+			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate: false)
 			CoreDataManager.saveContext()
 		}
 	}
 
-	//MARK: - UIDataSourceModelAssociation
+	// MARK: - UIDataSourceModelAssociation
 
-	func indexPathForElementWithModelIdentifier(identifier: String, inView view: UIView) -> NSIndexPath? {
-		let object = CoreDataManager.managedObjectForModelIdentifier(identifier)!
-
-		return self.fetchedResultsController.indexPathForObject(object)
+	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
+		if let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as? FuelEvent {
+			return self.fetchedResultsController.indexPath(forObject: object)
+		}
+		return nil
 	}
 
-	func modelIdentifierForElementAtIndexPath(idx: NSIndexPath, inView view: UIView) -> String? {
-		let object = self.fetchedResultsController.objectAtIndexPath(idx) as! NSManagedObject
+	func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
+		let object = self.fetchedResultsController.object(at: idx)
 
 		return CoreDataManager.modelIdentifierForManagedObject(object)
 	}
 
-	//MARK: - UITableViewDelegate
+	// MARK: - UITableViewDelegate
 
-	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-		let editController = self.storyboard!.instantiateViewControllerWithIdentifier("FuelEventEditor") as! FuelEventEditorController
-
-		editController.event = self.fetchedResultsController.objectAtIndexPath(indexPath) as! FuelEvent
-
-		self.navigationController?.pushViewController(editController, animated:true)
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		if let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController {
+			editController.event = self.fetchedResultsController.object(at: indexPath)
+			self.navigationController?.pushViewController(editController, animated: true)
+		}
 	}
 
-	//MARK: - NSFetchedResultsControllerDelegate
+	// MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		self.tableView.beginUpdates()
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
-        case .Insert:
-            self.tableView.insertSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
-        case .Delete:
-            self.tableView.deleteSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
-		case .Move, .Update:
-			self.tableView.reloadSections(NSIndexSet(index:sectionIndex), withRowAnimation:.Fade)
+        case .insert:
+            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .move, .update:
+			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
 		}
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		switch type {
-        case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
-        case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
-        case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation:.Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation:.Fade)
-        case .Update:
-            tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation:.Automatic)
+        case .insert:
+			tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+			tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .update:
+            tableView.reloadRows(at: [indexPath!], with: .automatic)
 		}
 	}
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		self.tableView.endUpdates()
 
 		validateExport()
 		statisticsController.invalidateCaches()
 	}
 
-	//MARK: - Memory Management
+	// MARK: - Memory Management
 
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 }

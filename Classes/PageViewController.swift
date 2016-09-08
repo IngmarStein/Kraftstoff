@@ -20,28 +20,28 @@ class PageViewController: UITableViewController {
 		tableView.rowHeight = UITableViewAutomaticDimension
 	}
 
-	override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-		super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		super.viewWillTransition(to: size, with: coordinator)
 
 		// this fixes a layout issue: the UITextFieldLabels contained in UITextFields are not correctly resized
 		self.tableView.reloadData()
 	}
 
-	//MARK: - Dismissing the Keyboard
+	// MARK: - Dismissing the Keyboard
 
-	func dismissKeyboardWithCompletion(completion: () -> Void) {
-		let scrollToTop = (self.tableView.contentOffset.y > 0.0)
-    
-		UIView.animateWithDuration(scrollToTop ? 0.25 : 0.15, animations: {
+	func dismissKeyboardWithCompletion(_ completion: @escaping () -> Void) {
+		let scrollToTop = self.tableView.contentOffset.y > 0.0
+
+		UIView.animate(withDuration: scrollToTop ? 0.25 : 0.15, animations: {
 			if let indexPath = self.tableView.indexPathForSelectedRow {
-				self.tableView.deselectRowAtIndexPath(indexPath, animated:false)
-				self.tableView.delegate?.tableView?(self.tableView, didDeselectRowAtIndexPath: indexPath)
+				self.tableView.deselectRow(at: indexPath, animated: false)
+				self.tableView.delegate?.tableView?(self.tableView, didDeselectRowAt: indexPath)
 			}
 
 			if scrollToTop {
-				self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow:0, inSection:0),
-					atScrollPosition:.Top,
-					animated:false)
+				self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
+					at: .top,
+					animated: false)
 			}
 		}, completion: { finished in
 			self.view.endEditing(true)
@@ -49,9 +49,9 @@ class PageViewController: UITableViewController {
 		})
 	}
 
-	//MARK: - Access to Table Cells
+	// MARK: - Access to Table Cells
 
-	func cellDescriptionForRow(rowIndex: Int, inSection sectionIndex: Int) -> PageCellDescription? {
+	func cellDescriptionForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCellDescription? {
 		if tableSections.count <= sectionIndex {
 			return nil
 		}
@@ -65,26 +65,26 @@ class PageViewController: UITableViewController {
 		return section[rowIndex]
 	}
 
-	func classForRow(rowIndex: Int, inSection sectionIndex: Int) -> PageCell.Type? {
-		return cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellClass
+	func classForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCell.Type? {
+		return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellClass
 	}
 
-	func dataForRow(rowIndex: Int, inSection sectionIndex: Int) -> [NSObject:AnyObject]? {
-		return cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellData
+	func dataForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> [String: Any]? {
+		return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData
 	}
 
-	func setData(object: [NSObject:AnyObject], forRow rowIndex: Int, inSection sectionIndex: Int) {
-		cellDescriptionForRow(rowIndex, inSection:sectionIndex)?.cellData = object
+	func setData(_ object: [String: Any], forRow rowIndex: Int, inSection sectionIndex: Int) {
+		cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData = object
 
-		let indexPath = NSIndexPath(forRow:rowIndex, inSection:sectionIndex)
-		let cell = self.tableView.cellForRowAtIndexPath(indexPath) as! PageCell
-
-		cell.configureForData(object, viewController:self, tableView:self.tableView, indexPath:indexPath)
+		let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+		if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell {
+			cell.configureForData(object, viewController: self, tableView: self.tableView, indexPath: indexPath)
+		}
 	}
 
-	//MARK: - Access to Table Sections
+	// MARK: - Access to Table Sections
 
-	func addSectionAtIndex(idx: Int, withAnimation animation: UITableViewRowAnimation) {
+	func addSectionAtIndex(_ idx: Int, withAnimation animation: UITableViewRowAnimation) {
 		let sectionIndex: Int
 		if idx > tableSections.count {
 			sectionIndex = tableSections.count
@@ -92,38 +92,38 @@ class PageViewController: UITableViewController {
 			sectionIndex = idx
 		}
 
-		tableSections.insert([PageCellDescription](), atIndex: sectionIndex)
+		tableSections.insert([PageCellDescription](), at: sectionIndex)
 
-		if animation != .None {
-			self.tableView.insertSections(NSIndexSet(index:sectionIndex), withRowAnimation:animation)
+		if animation != .none {
+			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: animation)
 		}
 	}
 
-	func removeSectionAtIndex(sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeSectionAtIndex(_ sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
 		if sectionIndex < tableSections.count {
-			tableSections.removeAtIndex(sectionIndex)
+			tableSections.remove(at: sectionIndex)
 
-			if animation != .None {
-				self.tableView.deleteSections(NSIndexSet(index:sectionIndex), withRowAnimation:animation)
+			if animation != .none {
+				self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: animation)
 			}
 		}
 	}
 
-	func removeAllSectionsWithAnimation(animation: UITableViewRowAnimation) {
-		tableSections.removeAll(keepCapacity: false)
+	func removeAllSectionsWithAnimation(_ animation: UITableViewRowAnimation) {
+		tableSections.removeAll(keepingCapacity: false)
 
-		if animation != .None {
-			let allSections = NSIndexSet(indexesInRange:NSRange(location: 0, length: tableSections.count))
-			self.tableView.deleteSections(allSections, withRowAnimation:animation)
+		if animation != .none {
+			let allSections = IndexSet(integersIn: 0..<tableSections.count)
+			self.tableView.deleteSections(allSections, with: animation)
 		}
 	}
 
-	//MARK: - Access to Table Rows
+	// MARK: - Access to Table Rows
 
-	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [NSObject:AnyObject], withAnimation animation: UITableViewRowAnimation) {
+	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [String: Any], withAnimation animation: UITableViewRowAnimation) {
 		// Get valid section index and section
 		if tableSections.isEmpty {
-			addSectionAtIndex(0, withAnimation:animation)
+			addSectionAtIndex(0, withAnimation: animation)
 		}
 
 		let sectionIndex: Int
@@ -142,68 +142,70 @@ class PageViewController: UITableViewController {
 		}
 
 		// Store cell description
-		let description = PageCellDescription(cellClass:cellClass, andData:cellData)
-		tableSections[sectionIndex].insert(description, atIndex: rowIndex)
+		let description = PageCellDescription(cellClass: cellClass, andData: cellData)
+		tableSections[sectionIndex].insert(description, at: rowIndex)
 
-		if animation != .None {
+		if animation != .none {
 			// If necessary update position for former bottom row of the section
-			if self.tableView.style == .Grouped {
+			if self.tableView.style == .grouped {
 				if rowIndex == tableSections[sectionIndex].count - 1 && rowIndex > 0 {
-					setData(dataForRow(rowIndex-1, inSection:sectionIndex)!,
-						forRow:rowIndex-1,
-						inSection:sectionIndex)
+					setData(dataForRow(rowIndex-1,
+						inSection: sectionIndex)!,
+						forRow: rowIndex-1,
+						inSection: sectionIndex)
 				}
 			}
 
 			// Add row to table
-			let indexPath = NSIndexPath(forRow:rowIndex, inSection:sectionIndex)
-			self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation:animation)
+			let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+			self.tableView.insertRows(at: [indexPath], with: animation)
 		}
 	}
 
-	func removeRowAtIndex(rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeRow(at rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
 		if sectionIndex < tableSections.count {
 			if rowIndex < tableSections[sectionIndex].count {
-				tableSections[sectionIndex].removeAtIndex(rowIndex)
+				tableSections[sectionIndex].remove(at: rowIndex)
 
-				if animation != .None {
-					let indexPath = NSIndexPath(forRow:rowIndex, inSection:sectionIndex)
-					self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:animation)
+				if animation != .none {
+					let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+					self.tableView.deleteRows(at: [indexPath], with: animation)
 				}
 			}
 		}
 	}
 
-	//MARK: - UITableViewDataSource
+	// MARK: - UITableViewDataSource
 
-	override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+	override func numberOfSections(in tableView: UITableView) -> Int {
 		return tableSections.count
 	}
 
-	override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return tableSections[section].count
 	}
 
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		return nil
 	}
 
-	override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+	override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
 		return false
 	}
 
-	override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-		return .None
+	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+		return .none
 	}
 
-	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let description = cellDescriptionForRow(indexPath.row, inSection:indexPath.section)!
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let description = cellDescriptionForRow(indexPath.row, inSection: indexPath.section)!
 
 		let cellClass = description.cellClass
-		let cell = tableView.dequeueReusableCellWithIdentifier(description.cellClass.reuseIdentifier) as? PageCell ?? cellClass.init()
+		let cell = tableView.dequeueReusableCell(withIdentifier: description.cellClass.reuseIdentifier) as? PageCell ?? cellClass.init()
 
-		cell.configureForData(description.cellData, viewController:self, tableView:tableView, indexPath:indexPath)
+		cell.configureForData(description.cellData, viewController: self, tableView: tableView, indexPath: indexPath)
 
 		return cell
 	}
+
 }

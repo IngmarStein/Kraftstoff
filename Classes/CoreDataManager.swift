@@ -8,89 +8,64 @@
 
 import UIKit
 import CoreData
+import CloudKit
 
 final class CoreDataManager {
 	// CoreData support
 	static let managedObjectContext: NSManagedObjectContext = {
-		let managedObjectContext = NSManagedObjectContext(concurrencyType:.MainQueueConcurrencyType)
-		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
-		managedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-		return managedObjectContext
+		let context = persistentContainer.viewContext
+		context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+		return context
 	}()
 
-	private static let managedObjectModel: NSManagedObjectModel = {
-		let modelPath = NSBundle.mainBundle().pathForResource("Kraftstoffrechner", ofType:"momd")!
-		return NSManagedObjectModel(contentsOfURL:NSURL(fileURLWithPath: modelPath))!
+	static let persistentContainer: NSPersistentContainer = {
+		return NSPersistentContainer(name: "Kraftstoffrechner")
 	}()
 
-	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).last!
+	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
 
-	private static let localStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Kraftstoffrechner.sqlite")
-	private static let iCloudStoreURL = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("Fuel.sqlite")
+	private static let iCloudStoreURL = URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
 
-	private static var iCloudLocalStoreURL : NSURL? {
-		let ubiquityContainer = NSURL(fileURLWithPath:applicationDocumentsDirectory).URLByAppendingPathComponent("CoreDataUbiquitySupport")
-		if let peers = try? NSFileManager.defaultManager().contentsOfDirectoryAtURL(ubiquityContainer, includingPropertiesForKeys: nil, options: []) {
-			let fileManager = NSFileManager.defaultManager()
-			for peer in peers {
-				let localStoreURL = peer.URLByAppendingPathComponent("Kraftstoff/local/store/Fuel.sqlite")
-				if fileManager.fileExistsAtPath(localStoreURL.path!) {
-					return localStoreURL
-				}
-			}
-		}
-		return nil
-	}
-
-	private static let localStoreOptions = [
-		NSMigratePersistentStoresAutomaticallyOption: true,
-		NSInferMappingModelAutomaticallyOption: true,
-	]
-
-	private static let iCloudStoreOptions = [
-		NSMigratePersistentStoresAutomaticallyOption: true,
-		NSInferMappingModelAutomaticallyOption: true,
-		NSPersistentStoreUbiquitousContentNameKey: "Kraftstoff2"
-	]
+	private static let iCloudStoreDescription: NSPersistentStoreDescription = {
+		let storeDescription = NSPersistentStoreDescription()
+		storeDescription.type = NSSQLiteStoreType
+		storeDescription.url = iCloudStoreURL
+		storeDescription.shouldMigrateStoreAutomatically = true
+		storeDescription.shouldInferMappingModelAutomatically = true
+		storeDescription.shouldAddStoreAsynchronously = false
+		storeDescription.setOption("Kraftstoff2" as NSString, forKey: NSPersistentStoreUbiquitousContentNameKey)
+		return storeDescription
+	}()
 
 	static let sharedInstance = CoreDataManager()
 
-	private static let persistentStoreCoordinator: NSPersistentStoreCoordinator = {
-		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel:managedObjectModel)
+	// MARK: - Core Data Support
 
-		do {
-			try persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:iCloudStoreURL, options:iCloudStoreOptions)
-		} catch let error as NSError {
-			let alertController = UIAlertController(title:NSLocalizedString("Can't Open Database", comment:""),
-				message:NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment:""),
-				preferredStyle:.Alert)
-			let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
-				fatalError(error.localizedDescription)
-			}
-			alertController.addAction(defaultAction)
-			UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
-		} catch {
-			fatalError()
-		}
-
-		return persistentStoreCoordinator
-	}()
-
-	//MARK: - Core Data Support
-
-	static func saveContext(context: NSManagedObjectContext = managedObjectContext) -> Bool {
+	@discardableResult static func saveContext(_ context: NSManagedObjectContext = managedObjectContext) -> Bool {
 		if context.hasChanges {
 			do {
+				let modifiedManagedObjects = context.insertedObjects.union(context.updatedObjects)
+				let modifiedRecords = modifiedManagedObjects.flatMap { (managedObject) -> CKRecord? in
+					if let ckManagedObject = managedObject as? CloudKitManagedObject {
+						return ckManagedObject.asCloudKitRecord()
+					}
+					return nil
+				}
+
+				let deletedRecordIDs = context.deletedObjects.flatMap { ($0 as? CloudKitManagedObject)?.cloudKitRecordID }
+
 				try context.save()
-			} catch let error as NSError {
-				let alertController = UIAlertController(title:NSLocalizedString("Can't Save Database", comment:""),
-					message:NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment:""),
-					preferredStyle:.Alert)
-				let defaultAction = UIAlertAction(title:NSLocalizedString("OK", comment:""), style:.Default) { _ in
+
+				CloudKitManager.save(modifiedRecords: modifiedRecords, deletedRecordIDs: deletedRecordIDs)
+			} catch let error {
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
+					message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
+					preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 					fatalError(error.localizedDescription)
 				}
 				alertController.addAction(defaultAction)
-				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.presentViewController(alertController, animated:true, completion:nil)
+				UIApplication.kraftstoffAppDelegate.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
 
 			return true
@@ -99,280 +74,192 @@ final class CoreDataManager {
 		return false
 	}
 
-	static func modelIdentifierForManagedObject(object: NSManagedObject) -> String? {
-		if object.objectID.temporaryID {
+	static func modelIdentifierForManagedObject(_ object: NSManagedObject) -> String? {
+		if object.objectID.isTemporaryID {
 			do {
-				try managedObjectContext.obtainPermanentIDsForObjects([object])
+				try managedObjectContext.obtainPermanentIDs(for: [object])
 			} catch {
 				return nil
 			}
 		}
-		return object.objectID.URIRepresentation().absoluteString
+		return object.objectID.uriRepresentation().absoluteString
 	}
 
-	static func managedObjectForModelIdentifier(identifier: String) -> NSManagedObject? {
-		let objectURL = NSURL(string:identifier)!
-
-		if objectURL.scheme == "x-coredata" {
-			if let objectID = persistentStoreCoordinator.managedObjectIDForURIRepresentation(objectURL) {
-				return try? managedObjectContext.existingObjectWithID(objectID)
+	static func managedObjectForModelIdentifier<ResultType: NSManagedObject>(_ identifier: String) -> ResultType? {
+		if let objectURL = URL(string: identifier), objectURL.scheme == "x-coredata" {
+			if let objectID = persistentContainer.persistentStoreCoordinator.managedObjectID(forURIRepresentation: objectURL) {
+				if let existingObject = try? managedObjectContext.existingObject(with: objectID) {
+					return existingObject as? ResultType
+				}
 			}
 		}
 
 		return nil
 	}
 
-	static func existingObject(object: NSManagedObject, inManagedObjectContext moc: NSManagedObjectContext) -> NSManagedObject? {
-		if object.deleted {
+	static func existingObject(_ object: NSManagedObject, inManagedObjectContext moc: NSManagedObjectContext) -> NSManagedObject? {
+		if object.isDeleted {
 			return nil
 		} else {
-			return try? moc.existingObjectWithID(object.objectID)
+			return try? moc.existingObject(with: object.objectID)
 		}
 	}
 
-	//MARK: - iCloud support
+	// MARK: - iCloud support
 
-	private static func migrateStore(sourceStoreURL: NSURL, options: [NSObject : AnyObject]) {
-		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+	static func migrateFromiCloud() {
+		// migrate iCloud store to local
+		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: persistentContainer.managedObjectModel)
 
-		var migrationOptions = options
-		migrationOptions[NSReadOnlyPersistentStoreOption] = true
+		var migrationOptions = iCloudStoreDescription.options
+		migrationOptions[NSReadOnlyPersistentStoreOption] = NSNumber(value: true)
+		migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = NSNumber(value: true)
 
-		// Open the existing local store
+		// Open the existing store
 		do {
-			let sourceStore = try migrationPSC.addPersistentStoreWithType(NSSQLiteStoreType, configuration:nil, URL:sourceStoreURL, options:migrationOptions)
+			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: iCloudStoreURL, options: migrationOptions)
+			let targetStoreDescription = persistentContainer.persistentStoreDescriptions[0]
 			do {
-				try migrationPSC.migratePersistentStore(sourceStore, toURL:iCloudStoreURL, options:iCloudStoreOptions, withType:NSSQLiteStoreType)
-				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-					let fileCoordinator = NSFileCoordinator()
-					var error: NSError?
-					fileCoordinator.coordinateWritingItemAtURL(sourceStoreURL, options: .ForMoving, error: &error) { writingURL in
-						let targetURL = sourceStoreURL.URLByAppendingPathExtension("migrated")
-						do {
-							try NSFileManager.defaultManager().moveItemAtURL(sourceStoreURL, toURL: targetURL)
-						} catch let error as NSError {
-							NSLog("error renaming store after migration: %@", error.localizedDescription)
-						}
-					}
-				}
-			} catch let error as NSError {
-				NSLog("error while migrating to iCloud: %@", error.localizedDescription)
+				try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: targetStoreDescription.options, withType: targetStoreDescription.type)
+				//NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
+			} catch let error {
+				print("error while migrating from iCloud: \(error)")
 			}
-		} catch let error as NSError {
-			NSLog("failed to open local store for migration: %@", error.localizedDescription)
+		} catch let error {
+			print("failed to open iCloud store for migration: \(error)")
 		}
 	}
 
-	static func migrateToiCloud() {
-		// migrate old non-iCloud store
-		if NSFileManager.defaultManager().fileExistsAtPath(localStoreURL.path!) {
-			migrateStore(localStoreURL, options: localStoreOptions)
-		}
-
-		// migrate old iCloud store without iCloud Documents entitlement
-		if let url = iCloudLocalStoreURL where NSFileManager.defaultManager().fileExistsAtPath(url.path!) {
-			migrateStore(url, options: localStoreOptions)
-		}
-	}
-
-	func registerForiCloudNotifications() {
-		let notificationCenter = NSNotificationCenter.defaultCenter()
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.storesWillChange(_:)),
-			name: NSPersistentStoreCoordinatorStoresWillChangeNotification,
-			object: CoreDataManager.persistentStoreCoordinator)
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.storesDidChange(_:)),
-			name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
-			object: CoreDataManager.persistentStoreCoordinator)
-
-		notificationCenter.addObserver(self,
-			selector: #selector(CoreDataManager.persistentStoreDidImportUbiquitousContentChanges(_:)),
-			name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
-			object: CoreDataManager.persistentStoreCoordinator)
-	}
-
-	private static func cleanupDetachedFuelEvents(moc : NSManagedObjectContext) {
-		let fetchRequest = NSFetchRequest()
-		fetchRequest.entity = NSEntityDescription.entityForName("fuelEvent", inManagedObjectContext:moc)
-		fetchRequest.predicate = NSPredicate(format:"car == nil")
-
-		let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-		do {
-			try moc.executeRequest(deleteRequest)
-		} catch {
-			// ignore
-		}
-	}
-
-	@objc func persistentStoreDidImportUbiquitousContentChanges(changeNotification: NSNotification) {
-		let context = CoreDataManager.managedObjectContext
-
-		context.performBlock {
-			context.mergeChangesFromContextDidSaveNotification(changeNotification)
-			CoreDataManager.cleanupDetachedFuelEvents(context)
-		}
-	}
-
-	@objc func storesWillChange(notification: NSNotification) {
-		let context = CoreDataManager.managedObjectContext
-
-		context.performBlockAndWait {
-			if context.hasChanges {
-				do {
-					try context.save()
-				} catch let error as NSError {
-					NSLog("%@", error.localizedDescription)
-				} catch {
-					fatalError()
+	static func load() {
+		persistentContainer.loadPersistentStores { (storeDescription, error) in
+			if let error = error {
+				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
+				                                        message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
+				                                        preferredStyle: .alert)
+				let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
+					fatalError(error.localizedDescription)
 				}
+				alertController.addAction(defaultAction)
+				UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
-
-			context.reset()
 		}
 	}
 
-	@objc func storesDidChange(notification: NSNotification) {
-		NSLog("storesDidChange: %@", notification)
-	}
+	// MARK: - Preconfigured Core Data Fetches
 
-	//MARK: - Preconfigured Core Data Fetches
-
-	static func fetchRequestForCarsInManagedObjectContext(moc: NSManagedObjectContext) -> NSFetchRequest {
-		let fetchRequest = NSFetchRequest()
-
-		// Entity name
-		let entity = NSEntityDescription.entityForName("car", inManagedObjectContext:moc)
-		fetchRequest.entity = entity
+	static func fetchRequestForCars() -> NSFetchRequest<Car> {
+		let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
 		fetchRequest.fetchBatchSize = 32
 
 		// Sorting keys
-		let sortDescriptor = NSSortDescriptor(key:"order", ascending:true)
+		let sortDescriptor = NSSortDescriptor(key: "order", ascending: true)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
-                                       andDate date: NSDate?,
+	static func fetchRequestForEvents(car: Car,
+                                       andDate date: Date?,
                                 dateComparator dateCompare: String,
-                                     fetchSize: Int,
-                        inManagedObjectContext moc: NSManagedObjectContext) -> NSFetchRequest {
-		let fetchRequest = NSFetchRequest()
-
-		// Entity name
-		let entity = NSEntityDescription.entityForName("fuelEvent", inManagedObjectContext:moc)
-		fetchRequest.entity = entity
+                                     fetchSize: Int) -> NSFetchRequest<FuelEvent> {
+		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = fetchSize
 
 		// Predicates
-		let parentPredicate = NSPredicate(format:"car == %@", car)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
 
 		if let date = date {
-			let datePredicate = NSPredicate(format:"timestamp \(dateCompare) %@", date)
+			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as CVarArg)
 			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
 		}
 
 		// Sorting keys
-		let sortDescriptor = NSSortDescriptor(key:"timestamp", ascending:false)
+		let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 
 		return fetchRequest
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
-                                     afterDate date: NSDate?,
-                                   dateMatches: Bool,
-                        inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
-		return fetchRequestForEventsForCar(car,
-                                     andDate:date,
-                              dateComparator:dateMatches ? ">=" : ">",
-                                   fetchSize:128,
-                      inManagedObjectContext:moc)
+	static func fetchRequestForEvents(car: Car,
+                                     afterDate date: Date?,
+                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
+		return fetchRequestForEvents(car: car,
+                                     andDate: date,
+                              dateComparator: dateMatches ? ">=" : ">",
+                                   fetchSize: 128)
 	}
 
-	static func fetchRequestForEventsForCar(car: Car,
-                                    beforeDate date: NSDate?,
-                                   dateMatches: Bool,
-                        inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchRequest {
-		return fetchRequestForEventsForCar(car,
-                                     andDate:date,
-                              dateComparator:dateMatches ? "<=" : "<",
-                                   fetchSize:8,
-                      inManagedObjectContext:moc)
+	static func fetchRequestForEvents(car: Car,
+                                    beforeDate date: Date?,
+                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
+		return fetchRequestForEvents(car: car,
+                                     andDate: date,
+                              dateComparator: dateMatches ? "<=" : "<",
+                                   fetchSize: 8)
 	}
 
-	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController {
-		let fetchRequest = fetchRequestForCarsInManagedObjectContext(moc)
+	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
+		let fetchRequest = fetchRequestForCars()
 
 		// No section names; perform fetch without cache
-		let fetchedResultsController = NSFetchedResultsController(fetchRequest:fetchRequest,
-			managedObjectContext:moc,
-			sectionNameKeyPath:nil,
-            cacheName:nil)
+		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+			managedObjectContext: moc,
+			sectionNameKeyPath: nil,
+            cacheName: nil)
 
 		// Perform the Core Data fetch
 		do {
 			try fetchedResultsController.performFetch()
-		} catch let error as NSError {
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
 
 		return fetchedResultsController
 	}
 
-	static func objectsForFetchRequest(fetchRequest: NSFetchRequest, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [NSManagedObject] {
-		let fetchedObjects: [AnyObject]?
+	static func objectsForFetchRequest<ResultType>(_ fetchRequest: NSFetchRequest<ResultType>, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> [ResultType] {
+		let fetchedObjects: [ResultType]?
 		do {
-			fetchedObjects = try moc.executeFetchRequest(fetchRequest)
-		} catch let error as NSError {
+			fetchedObjects = try moc.fetch(fetchRequest)
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
 
-		return fetchedObjects as! [NSManagedObject]
+		return fetchedObjects!
 	}
 
-	static func containsEventWithCar(car: Car, andDate date: NSDate, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
-		let fetchRequest = NSFetchRequest()
-
-		// Entity name
-		let entity = NSEntityDescription.entityForName("fuelEvent", inManagedObjectContext:moc)
-		fetchRequest.entity = entity
+	static func containsEventWithCar(_ car: Car, andDate date: Date, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> Bool {
+		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = 2
 
 		// Predicates
-		let parentPredicate = NSPredicate(format:"car == %@", car)
-		let datePredicate = NSPredicate(format:"timestamp == %@", date)
+		let parentPredicate = NSPredicate(format: "car == %@", car)
+		let datePredicate = NSPredicate(format: "timestamp == %@", date as CVarArg)
 
 		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
 
 		// Check whether fetch would reveal any event objects
-		var error: NSError?
-		let objectCount = moc.countForFetchRequest(fetchRequest, error:&error)
-
-		if let error = error {
+		do {
+			return try moc.count(for: fetchRequest) > 0
+		} catch let error {
 			fatalError(error.localizedDescription)
 		}
-
-		return objectCount > 0
 	}
 
-	//MARK: - Core Data Updates
+	// MARK: - Core Data Updates
 
-	static func addToArchiveWithCar(car: Car, date: NSDate, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
-		let zero = NSDecimalNumber.zero()
+	@discardableResult static func addToArchive(car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
+		let zero = NSDecimalNumber.zero
 
 		// Convert distance and fuelvolume to SI units
 		let fuelUnit     = car.ksFuelUnit
 		let odometerUnit = car.ksOdometerUnit
 
-		let liters        = Units.litersForVolume(fuelVolume, withUnit:fuelUnit)
+		let liters        = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
 		let kilometers    = Units.kilometersForDistance(distance, withUnit:odometerUnit)
-		let pricePerLiter = Units.pricePerLiter(price, withUnit:fuelUnit)
+		let pricePerLiter = Units.pricePerLiter(price, withUnit: fuelUnit)
 
 		var inheritedCost       = zero
 		var inheritedDistance   = zero
@@ -383,11 +270,10 @@ final class CoreDataManager {
 		// Compute inherited data from older element
 
 		// Fetch older events
-        let olderEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
-                                                                                    beforeDate:date,
-                                                                                   dateMatches:false,
-                                                                        inManagedObjectContext:moc),
-                                     inManagedObjectContext:moc) as! [FuelEvent]
+        let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
+                                                                                    beforeDate: date,
+                                                                                   dateMatches: false),
+                                     inManagedObjectContext: moc)
 
         if olderEvents.count > 0 {
 			let olderEvent = olderEvents.first!
@@ -403,11 +289,10 @@ final class CoreDataManager {
 
 		// Update inherited distance/volume for younger events, probably mark the car odometer for an update
         // Fetch younger events
-        let youngerEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
-                                                                                       afterDate:date,
-                                                                                     dateMatches:false,
-                                                                          inManagedObjectContext:moc),
-                                       inManagedObjectContext:moc) as! [FuelEvent]
+		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
+                                                                                       afterDate: date,
+                                                                                     dateMatches: false),
+                                       inManagedObjectContext: moc)
 
         if youngerEvents.count > 0 {
 
@@ -423,7 +308,7 @@ final class CoreDataManager {
                 ? -inheritedFuelVolume
                 : liters
 
-			for youngerEvent in youngerEvents.reverse() {
+			for youngerEvent in youngerEvents.reversed() {
 				youngerEvent.inheritedCost = max(youngerEvent.inheritedCost + deltaCost, zero)
 				youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance + deltaDistance, zero)
 				youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume + deltaFuelVolume, zero)
@@ -438,7 +323,7 @@ final class CoreDataManager {
 		}
 
 		// Create new managed object for this event
-		let newEvent = NSEntityDescription.insertNewObjectForEntityForName("fuelEvent", inManagedObjectContext:moc) as! FuelEvent
+		let newEvent = FuelEvent(context: moc)
 
 		newEvent.car = car
 		newEvent.timestamp = date
@@ -485,7 +370,7 @@ final class CoreDataManager {
 		return newEvent
 	}
 
-	static func removeEventFromArchive(event: FuelEvent!, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, forceOdometerUpdate odometerUpdate: Bool) {
+	static func removeEventFromArchive(_ event: FuelEvent!, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, forceOdometerUpdate odometerUpdate: Bool) {
 		// catch nil events
 		if event == nil {
 			return
@@ -495,14 +380,13 @@ final class CoreDataManager {
 		let car = event.car
 		let distance = event.distance
 		let fuelVolume = event.fuelVolume
-		let zero = NSDecimalNumber.zero()
+		let zero = NSDecimalNumber.zero
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
-		let youngerEvents = objectsForFetchRequest(fetchRequestForEventsForCar(car,
-                                                                                  afterDate:event.timestamp,
-                                                                                dateMatches:false,
-                                                                     inManagedObjectContext:moc),
-                                   inManagedObjectContext:moc) as! [FuelEvent]
+		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
+                                                                                  afterDate: event.timestamp,
+                                                                                dateMatches: false),
+                                   inManagedObjectContext: moc)
 
 		var row = youngerEvents.count
 		if row > 0 {
@@ -567,16 +451,16 @@ final class CoreDataManager {
 		}
 
 		// Delete the managed event object
-		moc.deleteObject(event)
+		moc.delete(event)
 	}
 
 	static func deleteAllObjects() {
-		for entity in managedObjectModel.entitiesByName.keys {
+		for entity in persistentContainer.managedObjectModel.entitiesByName.keys {
 			let deleteRequest = NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: entity))
 
 			do {
-				try persistentStoreCoordinator.executeRequest(deleteRequest, withContext: managedObjectContext)
-			} catch let error as NSError {
+				try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: managedObjectContext)
+			} catch let error {
 				print(error)
 			}
 		}

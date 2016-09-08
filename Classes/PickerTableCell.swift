@@ -14,8 +14,8 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 	var pickerLabels: [String]!
 	var pickerShortLabels: [String]?
 
-	private let PickerViewCellWidth: CGFloat  = 290.0
-	private let PickerViewCellHeight: CGFloat =  44.0
+	private let pickerViewCellWidth: CGFloat  = 290.0
+	private let pickerViewCellHeight: CGFloat =  44.0
 
 	required init() {
 		pickerView = UIPickerView()
@@ -26,16 +26,16 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		pickerView.dataSource              = self
 		pickerView.delegate                = self
 		pickerView.translatesAutoresizingMaskIntoConstraints = false
-		pickerView.hidden = true
+		pickerView.isHidden = true
 
 		let stackView = UIStackView(arrangedSubviews: [pickerView])
 		stackView.translatesAutoresizingMaskIntoConstraints = false
-		stackView.axis = .Vertical
-		stackView.alignment = .Center
+		stackView.axis = .vertical
+		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[stackView]-|", options: [], metrics: nil, views: ["stackView" : stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel" : keyLabel, "stackView" : stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView]))
+		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView]))
 	}
 
 	required init(coder aDecoder: NSCoder) {
@@ -47,9 +47,9 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 
 		showPicker(false)
 	}
-	
-	override func configureForData(dictionary: [NSObject:AnyObject], viewController: UIViewController, tableView: UITableView, indexPath: NSIndexPath) {
-		super.configureForData(dictionary, viewController:viewController, tableView:tableView, indexPath:indexPath)
+
+	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
 		// Array of picker labels
 		self.pickerLabels = dictionary["labels"] as? [String]
@@ -57,71 +57,72 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		self.pickerView.reloadAllComponents()
 
 		// (Re-)configure initial selected row
-		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier)?.integerValue ?? 0
+		let initialIndex = self.delegate.valueForIdentifier(self.valueIdentifier) as? Int ?? 0
 
-		self.pickerView.selectRow(initialIndex, inComponent:0, animated:false)
+		self.pickerView.selectRow(initialIndex, inComponent: 0, animated: false)
 		self.pickerView.reloadComponent(0)
 
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[initialIndex]
 	}
 
-	private func selectRow(row: Int) {
+	private func selectRow(_ row: Int) {
 		self.textFieldProxy.text = (self.pickerShortLabels ?? self.pickerLabels)[row]
 
-		self.delegate.valueChanged(row, identifier:self.valueIdentifier)
+		self.delegate.valueChanged(row, identifier: self.valueIdentifier)
 	}
 
-	private func showPicker(show: Bool) {
-		pickerView.hidden = !show
+	private func showPicker(_ show: Bool) {
+		pickerView.isHidden = !show
 	}
 
-	//MARK: - UIPickerViewDataSource
+	// MARK: - UIPickerViewDataSource
 
-	func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
 
-	func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		return self.pickerLabels.count
 	}
 
-	func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		selectRow(row)
 	}
 
-	//MARK: - UIPickerViewDelegate
+	// MARK: - UIPickerViewDelegate
 
-	func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-		return PickerViewCellHeight
+	func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+		return pickerViewCellHeight
 	}
 
-	func pickerView(pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-		return PickerViewCellWidth
+	func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+		return pickerViewCellWidth
 	}
 
-	func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
 		return self.pickerLabels[row]
 	}
 
-	func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		let label = (view as? UILabel) ?? UILabel()
 
-		label.font = UIFont.applicationFontForStyle(self.pickerShortLabels != nil ? UIFontTextStyleCaption2 : UIFontTextStyleCaption1)
-		label.frame = CGRect(x:0.0, y:0.0, width:PickerViewCellWidth-20.0, height:PickerViewCellHeight)
-		label.backgroundColor = UIColor.clearColor()
+		label.font = UIFont.preferredFont(forTextStyle: self.pickerShortLabels != nil ? .caption2 : .caption1)
+		label.frame = CGRect(x: 0.0, y: 0.0, width: pickerViewCellWidth-20.0, height: pickerViewCellHeight)
+		label.backgroundColor = .clear
 
-		label.text = self.pickerView(pickerView, titleForRow:row, forComponent:component)
+		label.text = self.pickerView(pickerView, titleForRow: row, forComponent: component)
 
 		return label
 	}
 
-	//MARK: - UITextFieldDelegate
+	// MARK: - UITextFieldDelegate
 
-	func textFieldDidBeginEditing(textField: UITextField) {
+	func textFieldDidBeginEditing(_ textField: UITextField) {
 		showPicker(true)
 	}
 
-	override func textFieldDidEndEditing(textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showPicker(false)
 	}
+
 }

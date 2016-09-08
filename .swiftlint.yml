@@ -1,0 +1,16 @@
+disabled_rules:
+  - line_length
+  - function_body_length
+  - type_body_length
+  - file_length
+  - cyclomatic_complexity
+  - function_parameter_count
+opt_in_rules:
+  - vertical_whitespace
+variable_name:
+  min_length: 1
+  max_length: 50
+type_name:
+  max_length: 70
+force_cast: warning
+force_try: warning

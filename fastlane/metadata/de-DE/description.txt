@@ -1,0 +1,23 @@
+'Kraftstoff' bietet Ihnen eine einfache und elegante Erfassung ihres Kraftstoffverbrauches (Spritrechner).
+
+Fahrzeuge:
+○ Verwalten beliebig vieler Fahrzeuge (verfügbar als In-App Kauf)
+
+Tanken:
+○ Erfassen Sie Tankfüllungen durch Eingabe von gefahrenen Kilometern (als Distanz seit dem letzten Tanken), Preis pro Liter und getankter Kraftstoffmenge
+○ Nachträgliches Eintragen und Editieren von Tankvorgängen möglich
+○ Nachtanken ist möglich; diese Daten werden beim nächsten Volltanken verrechnet
+
+Grafische Auswertung:
+○ Durch Drehen Ihres iPhones, iPods oder iPads um 90° erhalten Sie für ein ausgewähltes Fahrzeug Diagramme und Statistiken für Verbrauch/Effizienz sowie Treibstoffkosten pro Liter und Kilometer
+
+Backup:
+○ Export von Tankdaten für ein Fahrzeug über Email (als CSV-Dateianhang)
+○ Reimport der CVS-Dateien über 'Öffnen in' möglich, z.B. aus Mail heraus
+
+Weitere Features:
+○ 64 Bit
+○ Optimiert für iOS 9
+○ Daten werden mit allen Geräten über iCloud synchronisiert
+
+'Kraftstoff' ist werbefrei und übermittelt keine Daten an Dritte!

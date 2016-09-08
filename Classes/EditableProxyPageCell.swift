@@ -15,25 +15,27 @@ class EditableProxyPageCell: EditablePageCell {
 	required init() {
 		// Create a proxy overlay for the textfield that is used to display the textField contents
 		// without a flashing cursor and no cut & paste possibilities
-		textFieldProxy = UILabel(frame:CGRectZero)
+		textFieldProxy = UILabel(frame: .zero)
 
 		super.init()
 
-		textFieldProxy.textAlignment          = .Right
-		textFieldProxy.backgroundColor        = UIColor.clearColor()
-		textFieldProxy.userInteractionEnabled = false
-		textFieldProxy.isAccessibilityElement = false
+		textFieldProxy.textAlignment            = .right
+		textFieldProxy.backgroundColor          = .clear
+		textFieldProxy.isUserInteractionEnabled = false
+		textFieldProxy.isAccessibilityElement   = false
 		textFieldProxy.translatesAutoresizingMaskIntoConstraints = false
+		textFieldProxy.adjustsFontForContentSizeCategory = true
+		textFieldProxy.font = self.textField.font
 
 		self.contentView.addSubview(self.textFieldProxy)
 
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Left, relatedBy: .Equal, toItem: textField, attribute: .Left, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Right, relatedBy: .Equal, toItem: textField, attribute: .Right, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Top, relatedBy: .Equal, toItem: textField, attribute: .Top, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .Bottom, relatedBy: .Equal, toItem: textField, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .left, relatedBy: .equal, toItem: textField, attribute: .left, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .top, relatedBy: .equal, toItem: textField, attribute: .top, multiplier: 1.0, constant: 0.0))
+		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1.0, constant: 0.0))
 
 		// Hide the textfield used for keyboard interaction
-		textField.hidden = true
+		textField.isHidden = true
 		textField.inputView = UIView() // hide keyboard
 	}
 
@@ -41,15 +43,9 @@ class EditableProxyPageCell: EditablePageCell {
 	    fatalError("init(coder:) has not been implemented")
 	}
 
-	override func setupFonts() {
-		super.setupFonts()
-
-		self.textFieldProxy.font = self.textField.font
-	}
-
 	override var accessibilityLabel: String? {
 		get {
-			if let text1 = self.keyLabel.text, text2 = self.textFieldProxy.text {
+			if let text1 = self.keyLabel.text, let text2 = self.textFieldProxy.text {
 				return "\(text1) \(text2)"
 			}
 			return nil

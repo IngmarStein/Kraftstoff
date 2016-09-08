@@ -11,19 +11,19 @@ import UIKit
 import CoreData
 @testable import kraftstoff
 
-class Kraftstoff_Tests: XCTestCase {
+class KraftstoffTests: XCTestCase {
 	private var managedObjectContext: NSManagedObjectContext!
 
 	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
-		let managedObjectModel = NSManagedObjectModel.mergedModelFromBundles([NSBundle.mainBundle()])!
+		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main])!
 
 		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
 		do {
-			try persistentStoreCoordinator.addPersistentStoreWithType(NSInMemoryStoreType, configuration: nil, URL: nil, options: nil)
+			try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
 		} catch _ {
 		}
 
-		let managedObjectContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+		let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
 
 		return managedObjectContext
@@ -34,43 +34,42 @@ class Kraftstoff_Tests: XCTestCase {
 
 		managedObjectContext = setUpInMemoryManagedObjectContext()
 	}
-    
+
     override func tearDown() {
         super.tearDown()
     }
 
-	private func testRoundtrip(language: String) {
-		let car = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+	private func roundtrip(_ language: String) {
+		let car = Car(context: managedObjectContext)
 
 		car.order = 0
-		car.timestamp = NSDate()
+		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .Kilometer
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.ksFuelUnit = .Liter
-		car.ksFuelConsumptionUnit = .LitersPer100km
+		car.ksFuelUnit = .liters
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
-		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
-		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
-			beforeDate:nil,
-			dateMatches:true,
-			inManagedObjectContext:managedObjectContext),
-			inManagedObjectContext:managedObjectContext) as! [FuelEvent]
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
+			beforeDate: nil,
+			dateMatches: true),
+			inManagedObjectContext: managedObjectContext)
 
-		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar:car, language:language)
+		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car, language: language)
 
 		var numCars   = 0
 		var numEvents = 0
-		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let importer = CSVImporter()
-		let success = importer.importFromCSVString(csvString,
-			detectedCars:&numCars,
-			detectedEvents:&numEvents,
-			sourceURL:url,
-			inContext:managedObjectContext)
+		let success = importer.`import`(csvString,
+			detectedCars: &numCars,
+			detectedEvents: &numEvents,
+			sourceURL: url,
+			inContext: managedObjectContext)
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")
@@ -79,33 +78,33 @@ class Kraftstoff_Tests: XCTestCase {
 
 	func testLanguages() {
 		for language in ["en", "de", "fr"] {
-			testRoundtrip(language)
+			roundtrip(language)
 		}
 	}
 
     func testCSVExport() {
-		let car = NSEntityDescription.insertNewObjectForEntityForName("car", inManagedObjectContext:managedObjectContext) as! Car
+		let car = Car(context: managedObjectContext)
 
 		car.order = 0
-		car.timestamp = NSDate()
+		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.ksOdometerUnit = .Kilometer
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.ksFuelUnit = .Liter
-		car.ksFuelConsumptionUnit = .LitersPer100km
+		car.ksFuelUnit = .liters
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
-		DemoData.addDemoEventsForCar(car, inContext: managedObjectContext)
+		DemoData.addDemoEvents(car, inContext: managedObjectContext)
 
-		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEventsForCar(car,
-			beforeDate:nil,
-			dateMatches:true,
-			inManagedObjectContext:managedObjectContext),
-			inManagedObjectContext:managedObjectContext) as! [FuelEvent]
+		let fuelEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: car,
+			beforeDate: nil,
+			dateMatches: true),
+			inManagedObjectContext: managedObjectContext)
 
-		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar:car)
+		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car)
+		print(csvString)
 
-		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers;Comment\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
+		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters Per 100 Kilometers;Comment\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
 		XCTAssert(csvString.characters.count == 5473, "CSV data should have the expected size")
     }
 
@@ -113,14 +112,14 @@ class Kraftstoff_Tests: XCTestCase {
 		let importer = CSVImporter()
 		var numCars   = 0
 		var numEvents = 0
-		let url = NSURL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
 
 		let CSVString = "yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"
-		let success = importer.importFromCSVString(CSVString,
-			detectedCars:&numCars,
-			detectedEvents:&numEvents,
-			sourceURL:url,
-			inContext:managedObjectContext)
+		let success = importer.`import`(CSVString,
+			detectedCars: &numCars,
+			detectedEvents: &numEvents,
+			sourceURL: url,
+			inContext: managedObjectContext)
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")
