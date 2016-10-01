@@ -78,26 +78,26 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - State Restoration
 
-	private let kSRCalculatorSelectedIndex = "FuelCalculatorSelectedIndex"
-	private let kSRCalculatorConvertSheet  = "FuelCalculatorConvertSheet"
-	private let kSRCalculatorEditing       = "FuelCalculatorEditing"
+	private let SRCalculatorSelectedIndex = "FuelCalculatorSelectedIndex"
+	private let SRCalculatorConvertSheet  = "FuelCalculatorConvertSheet"
+	private let SRCalculatorEditing       = "FuelCalculatorEditing"
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let indexPath = self.restoredSelectionIndex ?? self.tableView.indexPathForSelectedRow {
-			coder.encode(indexPath, forKey: kSRCalculatorSelectedIndex)
+			coder.encode(indexPath, forKey: SRCalculatorSelectedIndex)
 		}
 
-		coder.encode(isShowingConvertSheet, forKey: kSRCalculatorConvertSheet)
-		coder.encode(self.isEditing, forKey: kSRCalculatorEditing)
+		coder.encode(isShowingConvertSheet, forKey: SRCalculatorConvertSheet)
+		coder.encode(self.isEditing, forKey: SRCalculatorEditing)
 
 		super.encodeRestorableState(with: coder)
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		self.restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRCalculatorSelectedIndex) as? IndexPath
-		self.isShowingConvertSheet = coder.decodeBool(forKey: kSRCalculatorConvertSheet)
+		self.restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRCalculatorSelectedIndex) as? IndexPath
+		self.isShowingConvertSheet = coder.decodeBool(forKey: SRCalculatorConvertSheet)
 
-		if coder.decodeBool(forKey: kSRCalculatorEditing) {
+		if coder.decodeBool(forKey: SRCalculatorEditing) {
 			self.setEditing(true, animated: false)
 
 			if isShowingConvertSheet {
@@ -651,11 +651,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let hiBound: NSDecimalNumber
 
 		if avgConsumption == .notANumber {
-			loBound = NSDecimalNumber(mantissa:  2, exponent: 0, isNegative: false)
+			loBound = NSDecimalNumber(mantissa: 2, exponent: 0, isNegative: false)
 			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
 		} else {
 			loBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: -1, isNegative: false)
-			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent:  0, isNegative: false)
+			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: 0, isNegative: false)
 		}
 
 		// conversion only when rawConsumption <= lowerBound

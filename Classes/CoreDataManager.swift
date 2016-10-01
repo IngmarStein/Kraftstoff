@@ -121,7 +121,7 @@ final class CoreDataManager {
 			let targetStoreDescription = persistentContainer.persistentStoreDescriptions[0]
 			do {
 				try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: targetStoreDescription.options, withType: targetStoreDescription.type)
-				//NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
+				// NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
 			} catch let error {
 				print("error while migrating from iCloud: \(error)")
 			}
@@ -170,7 +170,7 @@ final class CoreDataManager {
 
 		if let date = date {
 			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as CVarArg)
-			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
+			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
 		}
@@ -238,7 +238,7 @@ final class CoreDataManager {
 		let parentPredicate = NSPredicate(format: "car == %@", car)
 		let datePredicate = NSPredicate(format: "timestamp == %@", date as CVarArg)
 
-		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:[parentPredicate, datePredicate])
+		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, datePredicate])
 
 		// Check whether fetch would reveal any event objects
 		do {
@@ -258,7 +258,7 @@ final class CoreDataManager {
 		let odometerUnit = car.ksOdometerUnit
 
 		let liters        = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
-		let kilometers    = Units.kilometersForDistance(distance, withUnit:odometerUnit)
+		let kilometers    = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let pricePerLiter = Units.pricePerLiter(price, withUnit: fuelUnit)
 
 		var inheritedCost       = zero
@@ -465,4 +465,5 @@ final class CoreDataManager {
 			}
 		}
 	}
+
 }

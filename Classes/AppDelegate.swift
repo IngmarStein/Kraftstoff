@@ -54,7 +54,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		super.init()
 	}
 
-	private func commonLaunchInitialization(_ launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) {
+	private func commonLaunchInitialization(_ launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) {
 		if !initialized {
 			initialized = true
 
@@ -178,12 +178,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return false
 	}
 
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
@@ -198,7 +198,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - Notifications
 
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		CloudKitManager.handlePush(userInfo, completionHandler: completionHandler)
 	}
 
@@ -245,8 +245,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// Read file contents from given URL, guess file encoding
 	private static func contentsOfURL(_ url: URL) -> String? {
 		var enc: String.Encoding = String.Encoding.utf8
-		if let contents = try? String(contentsOf: url as URL, usedEncoding: &enc) { return contents }
-		if let contents = try? String(contentsOf: url as URL, encoding: String.Encoding.macOSRoman) { return contents }
+		if let contents = try? String(contentsOf: url as URL, usedEncoding: &enc) {
+			return contents
+		}
+		if let contents = try? String(contentsOf: url as URL, encoding: String.Encoding.macOSRoman) {
+			return contents
+		}
 		return nil
 	}
 
@@ -385,7 +389,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		request.httpMethod = "POST"
 		request.httpBody = receiptData
 
-		let task = URLSession.shared.dataTask(with: request, completionHandler: {data, response, error -> Void in
+		let task = URLSession.shared.dataTask(with: request, completionHandler: { data, response, error -> Void in
 
 			guard let data = data, error == nil else {
 				onCompletion(nil, nil)
@@ -394,7 +398,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 			do {
 				let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-				//print(json)
+				// print(json)
 				guard let statusCode = json?["status"] as? Int else {
 					onCompletion(nil, json)
 					return

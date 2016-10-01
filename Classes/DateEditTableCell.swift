@@ -141,4 +141,5 @@ final class DateEditTableCell: EditableProxyPageCell {
 	override func textFieldDidEndEditing(_ textField: UITextField) {
 		showDatePicker(false)
 	}
+
 }

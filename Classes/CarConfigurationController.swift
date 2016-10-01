@@ -19,16 +19,16 @@ protocol CarConfigurationControllerDelegate: class {
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
 }
 
-private let kSRConfiguratorDelegate               = "FuelConfiguratorDelegate"
-private let kSRConfiguratorEditMode               = "FuelConfiguratorEditMode"
-private let kSRConfiguratorCancelSheet            = "FuelConfiguratorCancelSheet"
-private let kSRConfiguratorDataChanged            = "FuelConfiguratorDataChanged"
-private let kSRConfiguratorPreviousSelectionIndex = "FuelConfiguratorPreviousSelectionIndex"
-private let kSRConfiguratorName                   = "FuelConfiguratorName"
-private let kSRConfiguratorPlate                  = "FuelConfiguratorPlate"
-private let kSRConfiguratorOdometerUnit           = "FuelConfiguratorOdometerUnit"
-private let kSRConfiguratorFuelUnit               = "FuelConfiguratorFuelUnit"
-private let kSRConfiguratorFuelConsumptionUnit    = "FuelConfiguratorFuelConsumptionUnit"
+private let SRConfiguratorDelegate               = "FuelConfiguratorDelegate"
+private let SRConfiguratorEditMode               = "FuelConfiguratorEditMode"
+private let SRConfiguratorCancelSheet            = "FuelConfiguratorCancelSheet"
+private let SRConfiguratorDataChanged            = "FuelConfiguratorDataChanged"
+private let SRConfiguratorPreviousSelectionIndex = "FuelConfiguratorPreviousSelectionIndex"
+private let SRConfiguratorName                   = "FuelConfiguratorName"
+private let SRConfiguratorPlate                  = "FuelConfiguratorPlate"
+private let SRConfiguratorOdometerUnit           = "FuelConfiguratorOdometerUnit"
+private let SRConfiguratorFuelUnit               = "FuelConfiguratorFuelUnit"
+private let SRConfiguratorFuelConsumptionUnit    = "FuelConfiguratorFuelConsumptionUnit"
 
 final class CarConfigurationController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellFocusHandler {
 
@@ -86,7 +86,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			if let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
-				controller.editingExistingObject = coder.decodeBool(forKey: kSRConfiguratorEditMode)
+				controller.editingExistingObject = coder.decodeBool(forKey: SRConfiguratorEditMode)
 
 				return controller
 			}
@@ -99,29 +99,31 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		// swiftlint:disable comma
-		coder.encode(self.delegate,              forKey: kSRConfiguratorDelegate)
-		coder.encode(self.editingExistingObject, forKey: kSRConfiguratorEditMode)
-		coder.encode(isShowingCancelSheet,       forKey: kSRConfiguratorCancelSheet)
-		coder.encode(dataChanged,                forKey: kSRConfiguratorDataChanged)
-		coder.encode(indexPath,                  forKey: kSRConfiguratorPreviousSelectionIndex)
-		coder.encode(self.name as NSString?,     forKey: kSRConfiguratorName)
-		coder.encode(self.plate as NSString?,    forKey: kSRConfiguratorPlate)
-		coder.encode(self.fuelUnit,              forKey: kSRConfiguratorFuelUnit)
-		coder.encode(self.fuelConsumptionUnit,   forKey: kSRConfiguratorFuelConsumptionUnit)
+		// tailor:off
+		coder.encode(self.delegate,              forKey: SRConfiguratorDelegate)
+		coder.encode(self.editingExistingObject, forKey: SRConfiguratorEditMode)
+		coder.encode(isShowingCancelSheet,       forKey: SRConfiguratorCancelSheet)
+		coder.encode(dataChanged,                forKey: SRConfiguratorDataChanged)
+		coder.encode(indexPath,                  forKey: SRConfiguratorPreviousSelectionIndex)
+		coder.encode(self.name as NSString?,     forKey: SRConfiguratorName)
+		coder.encode(self.plate as NSString?,    forKey: SRConfiguratorPlate)
+		coder.encode(self.fuelUnit,              forKey: SRConfiguratorFuelUnit)
+		coder.encode(self.fuelConsumptionUnit,   forKey: SRConfiguratorFuelConsumptionUnit)
+		// tailor:on
 		// swiftlint:enable comma
 
 		super.encodeRestorableState(with: coder)
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		self.delegate               = coder.decodeObject(forKey: kSRConfiguratorDelegate) as? CarConfigurationControllerDelegate
-		self.isShowingCancelSheet   = coder.decodeBool(forKey: kSRConfiguratorCancelSheet)
-		self.dataChanged            = coder.decodeBool(forKey: kSRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRConfiguratorPreviousSelectionIndex) as? IndexPath
-		self.name                   = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorName) as? String
-		self.plate                  = coder.decodeObject(of: NSString.self, forKey: kSRConfiguratorPlate) as? String
-		self.fuelUnit               = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelUnit)
-		self.fuelConsumptionUnit    = coder.decodeObject(of: NSNumber.self, forKey: kSRConfiguratorFuelConsumptionUnit)
+		self.delegate               = coder.decodeObject(forKey: SRConfiguratorDelegate) as? CarConfigurationControllerDelegate
+		self.isShowingCancelSheet   = coder.decodeBool(forKey: SRConfiguratorCancelSheet)
+		self.dataChanged            = coder.decodeBool(forKey: SRConfiguratorDataChanged)
+		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRConfiguratorPreviousSelectionIndex) as? IndexPath
+		self.name                   = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorName) as? String
+		self.plate                  = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorPlate) as? String
+		self.fuelUnit               = coder.decodeObject(of: NSNumber.self, forKey: SRConfiguratorFuelUnit)
+		self.fuelConsumptionUnit    = coder.decodeObject(of: NSNumber.self, forKey: SRConfiguratorFuelConsumptionUnit)
 
 		self.tableView.reloadData()
 
@@ -147,9 +149,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 3,
               inSection: 0,
               cellClass: NumberEditTableCell.self,
-			   cellData: ["label":           NSLocalizedString("Odometer Reading", comment: ""),
-                          "suffix":          suffix,
-                          "formatter":       Formatters.distanceFormatter,
+			   cellData: ["label": NSLocalizedString("Odometer Reading", comment: ""),
+                          "suffix": suffix,
+                          "formatter": Formatters.distanceFormatter,
                           "valueIdentifier": "odometer"],
           withAnimation: animation)
 	}
@@ -164,7 +166,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 0,
               inSection: 0,
               cellClass: TextEditTableCell.self,
-			   cellData: ["label":           NSLocalizedString("Name", comment: ""),
+			   cellData: ["label": NSLocalizedString("Name", comment: ""),
                           "valueIdentifier": "name"],
           withAnimation: .none)
 
@@ -175,8 +177,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 1,
               inSection: 0,
               cellClass: TextEditTableCell.self,
-			   cellData: ["label":             NSLocalizedString("License Plate", comment: ""),
-                          "valueIdentifier":   "plate",
+			   cellData: ["label": NSLocalizedString("License Plate", comment: ""),
+                          "valueIdentifier": "plate",
                           "autocapitalizeAll": true],
           withAnimation: .none)
 
@@ -193,9 +195,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 2,
               inSection: 0,
               cellClass: PickerTableCell.self,
-			   cellData: ["label":           NSLocalizedString("Odometer Type", comment: ""),
+			   cellData: ["label": NSLocalizedString("Odometer Type", comment: ""),
                           "valueIdentifier": "odometerUnit",
-                          "labels":          odometerUnitPickerLabels],
+                          "labels": odometerUnitPickerLabels],
           withAnimation: .none)
 
 		createOdometerRowWithAnimation(.none)
@@ -211,9 +213,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 4,
               inSection: 0,
               cellClass: PickerTableCell.self,
-			   cellData: ["label":           NSLocalizedString("Fuel Unit", comment: ""),
+			   cellData: ["label": NSLocalizedString("Fuel Unit", comment: ""),
 						  "valueIdentifier": "fuelUnit",
-                          "labels":          fuelUnitPickerLabels],
+                          "labels": fuelUnitPickerLabels],
           withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
@@ -237,10 +239,10 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		addRowAtIndex(rowIndex: 5,
               inSection: 0,
               cellClass: PickerTableCell.self,
-			   cellData: ["label":           NSLocalizedString("Mileage", comment: ""),
+			   cellData: ["label": NSLocalizedString("Mileage", comment: ""),
                           "valueIdentifier": "fuelConsumptionUnit",
-                          "labels":          fuelConsumptionUnitPickerLabels,
-                          "shortLabels":     fuelConsumptionUnitPickerShortLabels],
+                          "labels": fuelConsumptionUnitPickerLabels,
+                          "shortLabels": fuelConsumptionUnitPickerShortLabels],
 			withAnimation: .none)
 	}
 

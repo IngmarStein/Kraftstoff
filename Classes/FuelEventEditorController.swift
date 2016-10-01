@@ -9,18 +9,18 @@
 import UIKit
 import CoreData
 
-private let kSRFuelEventCancelSheet     = "FuelEventCancelSheet"
-private let kSRFuelEventDataChanged     = "FuelEventDataChanged"
-private let kSRFuelEventSelectionIndex  = "FuelEventMostSelectionIndex"
-private let kSRFuelEventEventID         = "FuelEventEventID"
-private let kSRFuelEventCarID           = "FuelEventCarID"
-private let kSRFuelEventDate            = "FuelEventDate"
-private let kSRFuelEventDistance        = "FuelEventDistance"
-private let kSRFuelEventPrice           = "FuelEventPrice"
-private let kSRFuelEventVolume          = "FuelEventVolume "
-private let kSRFuelEventFilledUp        = "FuelEventFilledUp"
-private let kSRFuelEventEditing         = "FuelEventEditing"
-private let kSRFuelEventComment         = "FuelEventComment"
+private let SRFuelEventCancelSheet     = "FuelEventCancelSheet"
+private let SRFuelEventDataChanged     = "FuelEventDataChanged"
+private let SRFuelEventSelectionIndex  = "FuelEventMostSelectionIndex"
+private let SRFuelEventEventID         = "FuelEventEventID"
+private let SRFuelEventCarID           = "FuelEventCarID"
+private let SRFuelEventDate            = "FuelEventDate"
+private let SRFuelEventDistance        = "FuelEventDistance"
+private let SRFuelEventPrice           = "FuelEventPrice"
+private let SRFuelEventVolume          = "FuelEventVolume "
+private let SRFuelEventFilledUp        = "FuelEventFilledUp"
+private let SRFuelEventEditing         = "FuelEventEditing"
+private let SRFuelEventComment         = "FuelEventComment"
 
 final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
@@ -85,7 +85,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventEventID) as? String {
+			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as? String {
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
 
 			if controller.event == nil {
@@ -101,38 +101,38 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	override func encodeRestorableState(with coder: NSCoder) {
 		let indexPath = isShowingCancelSheet ? restoredSelectionIndex : self.tableView.indexPathForSelectedRow
 
-		coder.encode(isShowingCancelSheet, forKey: kSRFuelEventCancelSheet)
-		coder.encode(dataChanged, forKey: kSRFuelEventDataChanged)
-		coder.encode(indexPath, forKey: kSRFuelEventSelectionIndex)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event) as NSString?, forKey: kSRFuelEventEventID)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car) as NSString?, forKey: kSRFuelEventCarID)
-		coder.encode(date, forKey: kSRFuelEventDate)
-		coder.encode(distance, forKey: kSRFuelEventDistance)
-		coder.encode(price, forKey: kSRFuelEventPrice)
-		coder.encode(fuelVolume, forKey: kSRFuelEventVolume)
-		coder.encode(filledUp, forKey: kSRFuelEventFilledUp)
-		coder.encode(comment as NSString?, forKey: kSRFuelEventComment)
-		coder.encode(self.isEditing, forKey: kSRFuelEventEditing)
+		coder.encode(isShowingCancelSheet, forKey: SRFuelEventCancelSheet)
+		coder.encode(dataChanged, forKey: SRFuelEventDataChanged)
+		coder.encode(indexPath, forKey: SRFuelEventSelectionIndex)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event) as NSString?, forKey: SRFuelEventEventID)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car) as NSString?, forKey: SRFuelEventCarID)
+		coder.encode(date, forKey: SRFuelEventDate)
+		coder.encode(distance, forKey: SRFuelEventDistance)
+		coder.encode(price, forKey: SRFuelEventPrice)
+		coder.encode(fuelVolume, forKey: SRFuelEventVolume)
+		coder.encode(filledUp, forKey: SRFuelEventFilledUp)
+		coder.encode(comment as NSString?, forKey: SRFuelEventComment)
+		coder.encode(self.isEditing, forKey: SRFuelEventEditing)
 
 		super.encodeRestorableState(with: coder)
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		isShowingCancelSheet   = coder.decodeBool(forKey: kSRFuelEventCancelSheet)
-		dataChanged            = coder.decodeBool(forKey: kSRFuelEventDataChanged)
-		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: kSRFuelEventSelectionIndex) as? IndexPath
-		date                   = coder.decodeObject(of: NSDate.self, forKey: kSRFuelEventDate) as? Date
-		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventDistance)
-		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventPrice)
-		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: kSRFuelEventVolume)
-		filledUp               = coder.decodeBool(forKey: kSRFuelEventFilledUp)
-		comment                = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventComment) as? String
+		isShowingCancelSheet   = coder.decodeBool(forKey: SRFuelEventCancelSheet)
+		dataChanged            = coder.decodeBool(forKey: SRFuelEventDataChanged)
+		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRFuelEventSelectionIndex) as? IndexPath
+		date                   = coder.decodeObject(of: NSDate.self, forKey: SRFuelEventDate) as? Date
+		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventDistance)
+		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventPrice)
+		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventVolume)
+		filledUp               = coder.decodeBool(forKey: SRFuelEventFilledUp)
+		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as? String
 
-		if let carId = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventCarID) as? String {
+		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as? String {
 			car = CoreDataManager.managedObjectForModelIdentifier(carId) as? Car
 		}
 
-		if coder.decodeBool(forKey: kSRFuelEventEditing) {
+		if coder.decodeBool(forKey: SRFuelEventEditing) {
 			setEditing(true, animated: false)
 
 			if isShowingCancelSheet {
@@ -322,7 +322,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		addRowAtIndex(rowIndex: 0,
               inSection: 1,
               cellClass: ConsumptionTableCell.self,
-               cellData: ["label":            consumptionString,
+               cellData: ["label": consumptionString,
                           "highlightStrings": highlightStrings],
           withAnimation: animation)
 	}

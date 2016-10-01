@@ -151,4 +151,5 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 			}
 		}
 	}
+
 }
