@@ -42,7 +42,7 @@ platform :ios do
     # sigh
     gym(configuration: "Release")
     deliver(force: true)
-    # frameit
+    frameit(path: './fastlane/screenshots')
 
     add_git_tag tag: version_number
   end
