@@ -168,6 +168,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 }
 
 extension FuelStatisticsPageController: UIPageViewControllerDelegate {
+
 	func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
 		return .landscape
 	}
@@ -177,6 +178,7 @@ extension FuelStatisticsPageController: UIPageViewControllerDelegate {
 			updatePageVisibility()
 		}
 	}
+
 }
 
 extension FuelStatisticsPageController: UIPageViewControllerDataSource {
@@ -208,4 +210,5 @@ extension FuelStatisticsPageController: UIPageViewControllerDataSource {
 	func presentationIndex(for pageViewController: UIPageViewController) -> Int {
 		return currentPage
 	}
+
 }

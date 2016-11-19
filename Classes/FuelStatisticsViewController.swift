@@ -229,4 +229,5 @@ class FuelStatisticsViewController: UIViewController {
 		super.didReceiveMemoryWarning()
 		purgeDiscardableCacheContent()
 	}
+
 }
