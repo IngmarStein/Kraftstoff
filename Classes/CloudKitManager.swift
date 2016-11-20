@@ -167,7 +167,7 @@ final class CloudKitManager {
 			if let error = error {
 				print("CKModifyRecordsOperation error: \(error)")
 			} else {
-				print("Record modification successful for recordID: \(record?.recordID)")
+				print("Record modification successful for record: \(record)")
 			}
 		}
 		modifyRecordsOperation.modifyRecordsCompletionBlock = { (savedRecords, deletedRecords, error) in
