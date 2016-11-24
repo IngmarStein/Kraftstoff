@@ -294,7 +294,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
 			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
-				message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
+				message: NSLocalizedString("Sorry, could not save the CSV data for export.", comment: ""),
 				preferredStyle: .alert)
 			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 				self.isShowingAlert = false
@@ -336,7 +336,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			try data.write(to: exportURL, options: .completeFileProtection)
 		} catch _ {
 			let alertController = UIAlertController(title: NSLocalizedString("Export Failed", comment: ""),
-			                                        message: NSLocalizedString("Sorry, could not save the CSV-data for export.", comment: ""),
+			                                        message: NSLocalizedString("Sorry, could not save the CSV data for export.", comment: ""),
 			                                        preferredStyle: .alert)
 			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
 				self.isShowingAlert = false
