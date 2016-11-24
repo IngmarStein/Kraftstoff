@@ -12,17 +12,15 @@
 		<key>Imported %d car(s) with %d fuel event(s).</key>
 		<dict>
 			<key>NSStringLocalizedFormatKey</key>
-			<string>Imported %#@cars@ with %#@events@.</string>
+			<string>%#@events@燃料イベントで%#@cars@台の車を輸入。</string>
 			<key>cars</key>
 			<dict>
 				<key>NSStringFormatSpecTypeKey</key>
 				<string>NSStringPluralRuleType</string>
 				<key>NSStringFormatValueTypeKey</key>
 				<string>d</string>
-				<key>one</key>
-				<string>one car</string>
 				<key>other</key>
-				<string>%d cars</string>
+				<string>%d</string>
 			</dict>
 			<key>events</key>
 			<dict>
@@ -31,9 +29,9 @@
 				<key>NSStringFormatValueTypeKey</key>
 				<string>d</string>
 				<key>one</key>
-				<string>one fuel event</string>
+				<string>%d</string>
 				<key>other</key>
-				<string>%d fuel events</string>
+				<string>%dつの</string>
 			</dict>
 		</dict>
     </dict>
