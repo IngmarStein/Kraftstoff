@@ -468,7 +468,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		if distance > .zero && fuelVolume > .zero {
 			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit))!
 			tableCell.topRightAccessibilityLabel = avgConsumption
-			tableCell.botRightAccessibilityLabel = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
+			tableCell.botRightAccessibilityLabel = Formatters.mediumMeasurementFormatter.string(from: consumptionUnit)
 		} else {
 			avgConsumption = NSLocalizedString("-", comment: "")
 			tableCell.topRightAccessibilityLabel = NSLocalizedString("fuel mileage not available", comment: "")

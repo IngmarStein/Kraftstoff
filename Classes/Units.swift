@@ -100,8 +100,8 @@ final class UnitConverterReciprocal: UnitConverter, NSSecureCoding {
 extension UnitFuelEfficiency {
 
 	@nonobjc static let kilometersPerLiter = UnitFuelEfficiency(symbol: "km/l", converter: UnitConverterReciprocal(coefficient: 100.0))
-	@nonobjc static let gallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k", converter: UnitConverterLinear(coefficient: 42.5170068027))
-	@nonobjc static let imperialGallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k", converter: UnitConverterLinear(coefficient: 35.3982300885))
+	@nonobjc static let gallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_us", converter: UnitConverterLinear(coefficient: 42.5170068027))
+	@nonobjc static let imperialGallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_uk", converter: UnitConverterLinear(coefficient: 35.3982300885))
 
 	var persistentId: Int32 {
 		switch self {

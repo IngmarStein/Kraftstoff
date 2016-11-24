@@ -494,7 +494,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg)!
 
-			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
+			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(Formatters.mediumMeasurementFormatter.string(from: consumptionUnit))"
 
 		} else {
 			consumptionDescription = NSLocalizedString("-", comment: "")

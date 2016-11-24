@@ -453,7 +453,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: animation)
 		}
 
-		// Reload date row too to get colors updates
+		// Reload date row too to update colors
 		self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
 	}
 

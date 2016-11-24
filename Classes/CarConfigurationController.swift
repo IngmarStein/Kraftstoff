@@ -186,11 +186,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.persistentId)
 		}
 
-		let measurementFormatter = MeasurementFormatter()
-		measurementFormatter.unitStyle = .long
-
-		let odometerUnitPickerLabels = [measurementFormatter.string(from: UnitLength.kilometers).capitalized,
-										measurementFormatter.string(from: UnitLength.miles).capitalized]
+		let odometerUnitPickerLabels = [Formatters.longMeasurementFormatter.string(from: UnitLength.kilometers).capitalized,
+										Formatters.longMeasurementFormatter.string(from: UnitLength.miles).capitalized]
 
 		addRowAtIndex(rowIndex: 2,
               inSection: 0,
@@ -206,9 +203,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			self.fuelUnit = NSNumber(value: Units.volumeUnitFromLocale.persistentId)
 		}
 
-		let fuelUnitPickerLabels = [measurementFormatter.string(from: UnitVolume.liters).capitalized,
-		                            measurementFormatter.string(from: UnitVolume.gallons).capitalized,
-		                            measurementFormatter.string(from: UnitVolume.imperialGallons).capitalized]
+		let fuelUnitPickerLabels = [Formatters.longMeasurementFormatter.string(from: UnitVolume.liters).capitalized,
+		                            Formatters.longMeasurementFormatter.string(from: UnitVolume.gallons).capitalized,
+		                            Formatters.longMeasurementFormatter.string(from: UnitVolume.imperialGallons).capitalized]
 
 		addRowAtIndex(rowIndex: 4,
               inSection: 0,
@@ -222,19 +219,19 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			self.fuelConsumptionUnit = NSNumber(value: Units.fuelConsumptionUnitFromLocale.persistentId)
 		}
 
-		let fuelConsumptionUnitPickerLabels = [measurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
-                    measurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
-                    measurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
-                    measurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
-                    measurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
-					measurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized]
+		let fuelConsumptionUnitPickerLabels = [Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
+                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
+                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
+                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
+                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
+					Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized]
 
-		let fuelConsumptionUnitPickerShortLabels = [measurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
-                         measurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
-                         measurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
-                         measurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
-                         measurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
-                         measurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)]
+		let fuelConsumptionUnitPickerShortLabels = [Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
+                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
+                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
+                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
+                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
+                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)]
 
 		addRowAtIndex(rowIndex: 5,
               inSection: 0,

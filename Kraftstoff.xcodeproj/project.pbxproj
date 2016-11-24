@@ -58,6 +58,7 @@
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
 		9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */; };
 		9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */; };
+		9EB2B04E1DE6DD060027281E /* LocalizedMeasurementFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +145,7 @@
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CloudKitManager.swift; path = Classes/CloudKitManager.swift; sourceTree = "<group>"; };
 		9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManagedObject.swift; sourceTree = "<group>"; };
+		9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedMeasurementFormatter.swift; sourceTree = "<group>"; };
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */,
 				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
+				9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
 			);
 			name = "Other Sources";
@@ -667,6 +670,7 @@
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,
 				95CE70CE1B0DF23000370781 /* CoreDataManager.swift in Sources */,
+				9EB2B04E1DE6DD060027281E /* LocalizedMeasurementFormatter.swift in Sources */,
 				4D2CF10E15D69B33003962B7 /* Kraftstoffrechner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
