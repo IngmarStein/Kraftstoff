@@ -146,7 +146,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 				SKPaymentQueue.default().finishTransaction(transaction)
 			case .failed:
 				SKPaymentQueue.default().finishTransaction(transaction)
-				print("Transaction failed: \(transaction.error)")
+				print("Transaction failed: \(transaction.error!)")
 			default: ()
 			}
 		}
