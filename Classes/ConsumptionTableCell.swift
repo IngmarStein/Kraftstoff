@@ -30,8 +30,9 @@ final class ConsumptionTableCell: PageCell {
 
 		self.contentView.addSubview(self.coloredLabel)
 
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
-		self.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel]))
+		let constraints = NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
+			+ NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
+		NSLayoutConstraint.activate(constraints)
 	}
 
 	required init(coder aDecoder: NSCoder) {

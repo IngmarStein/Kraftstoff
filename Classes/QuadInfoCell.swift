@@ -64,12 +64,17 @@ final class QuadInfoCell: UITableViewCell {
 
 		// setup constraints
 		let views = ["topLeftLabel": topLeftLabel, "botLeftLabel": botLeftLabel, "topRightLabel": topRightLabel, "botRightLabel": botRightLabel]
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views))
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views))
-		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: topRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
-		contentView.addConstraint(NSLayoutConstraint(item: botLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: botRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0))
-		contentView.addConstraint(NSLayoutConstraint(item: topLeftLabel, attribute: .left, relatedBy: .equal, toItem: botLeftLabel, attribute: .left, multiplier: 1.0, constant: 0.0))
-		contentView.addConstraint(NSLayoutConstraint(item: topRightLabel, attribute: .right, relatedBy: .equal, toItem: botRightLabel, attribute: .right, multiplier: 1.0, constant: 0.0))
+
+		let constraints1 = [
+			NSLayoutConstraint(item: topLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: topRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: botLeftLabel, attribute: .lastBaseline, relatedBy: .equal, toItem: botRightLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: topLeftLabel, attribute: .left, relatedBy: .equal, toItem: botLeftLabel, attribute: .left, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: topRightLabel, attribute: .right, relatedBy: .equal, toItem: botRightLabel, attribute: .right, multiplier: 1.0, constant: 0.0)
+		]
+		let constraints = constraints1
+			+ NSLayoutConstraint.constraints(withVisualFormat: "V:|-(20)-[topLeftLabel]-(2)-[botLeftLabel]-(20)-|", options: [], metrics: nil, views: views)
+			+ NSLayoutConstraint.constraints(withVisualFormat: "H:|-(15)-[topLeftLabel]-(2)-[topRightLabel]-(15)-|", options: [], metrics: nil, views: views)
+		NSLayoutConstraint.activate(constraints)
 
 		self.accessoryType = .disclosureIndicator
 	}
