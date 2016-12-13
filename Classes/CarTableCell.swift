@@ -36,7 +36,6 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		carPicker.delegate                = self
 		carPicker.translatesAutoresizingMaskIntoConstraints = false
 		carPicker.isHidden = true
-		carPicker.addConstraint(carPickerHeightConstraint)
 
 		let stackView = UIStackView(arrangedSubviews: [carPicker])
 		stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,8 +43,12 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		stackView.alignment = .center
 
 		contentView.addSubview(stackView)
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView]))
-		contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView]))
+
+		let constraints1 = [ carPickerHeightConstraint ]
+		let constraints = constraints1
+			+ NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView])
+			+ NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView])
+		NSLayoutConstraint.activate(constraints)
 	}
 
 	required init(coder aDecoder: NSCoder) {

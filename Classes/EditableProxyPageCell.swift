@@ -29,10 +29,13 @@ class EditableProxyPageCell: EditablePageCell {
 
 		self.contentView.addSubview(self.textFieldProxy)
 
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .left, relatedBy: .equal, toItem: textField, attribute: .left, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .top, relatedBy: .equal, toItem: textField, attribute: .top, multiplier: 1.0, constant: 0.0))
-		self.contentView.addConstraint(NSLayoutConstraint(item: textFieldProxy, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1.0, constant: 0.0))
+		let constraints = [
+			NSLayoutConstraint(item: textFieldProxy, attribute: .left, relatedBy: .equal, toItem: textField, attribute: .left, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: textFieldProxy, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: textFieldProxy, attribute: .top, relatedBy: .equal, toItem: textField, attribute: .top, multiplier: 1.0, constant: 0.0),
+			NSLayoutConstraint(item: textFieldProxy, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1.0, constant: 0.0)
+		]
+		NSLayoutConstraint.activate(constraints)
 
 		// Hide the textfield used for keyboard interaction
 		textField.isHidden = true
