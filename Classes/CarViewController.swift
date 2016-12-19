@@ -550,9 +550,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		guard let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as? Car else { return nil }
+		guard let car: Car = CoreDataManager.managedObjectForModelIdentifier(identifier) else { return nil }
 
-		return self.fetchedResultsController.indexPath(forObject: object)
+		return self.fetchedResultsController.indexPath(forObject: car)
 	}
 
 	func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {

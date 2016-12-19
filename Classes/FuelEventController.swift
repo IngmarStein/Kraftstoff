@@ -70,7 +70,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		super.viewDidLoad()
 
 		if let selectedCarId = selectedCarId, selectedCar == nil {
-			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId) as? Car
+			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId)
 		}
 
 		// swiftlint:disable:next force_cast
@@ -147,7 +147,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
-			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? Car
+			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.selectedCar == nil {
 				return nil
@@ -536,8 +536,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		if let object = CoreDataManager.managedObjectForModelIdentifier(identifier) as? FuelEvent {
-			return self.fetchedResultsController.indexPath(forObject: object)
+		if let fuelEvent: FuelEvent = CoreDataManager.managedObjectForModelIdentifier(identifier) {
+			return self.fetchedResultsController.indexPath(forObject: fuelEvent)
 		}
 		return nil
 	}

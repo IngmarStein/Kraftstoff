@@ -161,7 +161,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, CoreDataManager.managedObjectForModelIdentifier(carIdentifier) as? Car != nil {
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, CoreDataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
 						if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
 							fuelEventController.selectedCarId = carIdentifier
 							if let navigationController = tabBarController.selectedViewController as? UINavigationController {

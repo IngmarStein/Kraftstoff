@@ -86,7 +86,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
 			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as? String {
-			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier) as? FuelEvent
+			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.event == nil {
 				return nil
@@ -129,7 +129,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as? String
 
 		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as? String {
-			car = CoreDataManager.managedObjectForModelIdentifier(carId) as? Car
+			car = CoreDataManager.managedObjectForModelIdentifier(carId)
 		}
 
 		if coder.decodeBool(forKey: SRFuelEventEditing) {
