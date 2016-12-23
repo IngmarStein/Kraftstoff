@@ -43,7 +43,7 @@ class PageViewController: UITableViewController {
 					at: .top,
 					animated: false)
 			}
-		}, completion: { finished in
+		}, completion: { _ in
 			self.view.endEditing(true)
 			completion()
 		})

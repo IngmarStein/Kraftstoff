@@ -93,7 +93,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	private var zoomIndex = 0
 	weak var dataSource: FuelStatisticsViewControllerDataSource?
 
-	// MARK: -  Default Position/Dimension Data for Graphs
+	// MARK: - Default Position/Dimension Data for Graphs
 
 	var graphLeftBorder: CGFloat {
 		return statisticGraphMargin

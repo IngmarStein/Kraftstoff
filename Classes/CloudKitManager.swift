@@ -28,9 +28,7 @@ final class CloudKitManager {
 	}
 
 	static func initialize() {
-		container.accountStatus {
-			(accountStatus, error) in
-
+		container.accountStatus { (accountStatus, error) in
 			switch accountStatus {
 			case .available:
 				initializeCloudKit()
@@ -76,9 +74,7 @@ final class CloudKitManager {
 			let firstButtonAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 			alertController.addAction(firstButtonAction)
 
-			let secondButtonAction = UIAlertAction(title: "Don't show again", style: .destructive) {
-				action in
-
+			let secondButtonAction = UIAlertAction(title: "Don't show again", style: .destructive) { _ in
 				UserDefaults.standard.set(true, forKey: "SuppressCloudKitError")
 			}
 			alertController.addAction(secondButtonAction)

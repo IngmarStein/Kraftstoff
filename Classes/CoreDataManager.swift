@@ -131,7 +131,7 @@ final class CoreDataManager {
 	}
 
 	static func load() {
-		persistentContainer.loadPersistentStores { (storeDescription, error) in
+		persistentContainer.loadPersistentStores { (_, error) in
 			if let error = error {
 				let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
 				                                        message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),

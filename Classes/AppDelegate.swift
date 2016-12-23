@@ -389,7 +389,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		request.httpMethod = "POST"
 		request.httpBody = receiptData
 
-		let task = URLSession.shared.dataTask(with: request, completionHandler: { data, response, error -> Void in
+		let task = URLSession.shared.dataTask(with: request, completionHandler: { data, _, error -> Void in
 
 			guard let data = data, error == nil else {
 				onCompletion(nil, nil)

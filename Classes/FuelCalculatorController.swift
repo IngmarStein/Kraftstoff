@@ -181,8 +181,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		UIView.animate(withDuration: 0.3,
                      animations: {
                          self.removeSectionAtIndex(1, withAnimation: .fade)
-                     }, completion: { finished in
-
+                     }, completion: { _ in
                          let now = Date()
 
                          self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
@@ -561,7 +560,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                          // Remove consumption row
                          self.removeSectionAtIndex(1, withAnimation: .fade)
                      },
-                     completion: { finished in
+                     completion: { _ in
                          // Add new event object
                          self.changeIsUserDriven = true
 

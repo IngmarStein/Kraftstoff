@@ -169,7 +169,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			if animated {
 				UIView.animate(withDuration: 0.33, delay: 0.0, options: .curveEaseOut,
                              animations: { helpView?.alpha = 0.0 },
-                             completion: { finished in helpView?.removeFromSuperview() })
+                             completion: { _ in helpView?.removeFromSuperview() })
 			} else {
 				helpView?.removeFromSuperview()
 			}
@@ -213,7 +213,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
                                   delay: 0.0,
                                 options: .curveEaseOut,
                              animations: { helpView.alpha = 0.0 },
-                             completion: { finished in helpView.removeFromSuperview() })
+                             completion: { _ in helpView.removeFromSuperview() })
 			} else {
 				helpView.removeFromSuperview()
 			}
