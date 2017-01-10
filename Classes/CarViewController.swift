@@ -13,9 +13,11 @@ import CoreSpotlight
 private let maxEditHelpCounter = 1
 private let kSRCarViewEditedObject = "CarViewEditedObject"
 
-final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate {
+final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIDocumentPickerDelegate {
 
 	var editedObject: Car!
+
+	private var documentPickerViewController: UIDocumentPickerViewController!
 
 	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
 		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
@@ -311,7 +313,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.editButtonItem.isEnabled = fetchedResultsController.fetchedObjects!.count > 0
 	}
 
-	func insertNewObject(_ sender: AnyObject) {
+	func insertNewObject(_ sender: UIBarButtonItem) {
 		if !StoreManager.sharedInstance.checkCarCount() {
 			StoreManager.sharedInstance.showBuyOptions(self)
 			return
@@ -319,16 +321,47 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		setEditing(false, animated: true)
 
-		if let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
-			configurator.delegate = self
-			configurator.editingExistingObject = false
-
-			let navController = UINavigationController(rootViewController: configurator)
-			navController.restorationIdentifier = "CarConfigurationNavigationController"
-			navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
-
-			present(navController, animated: true, completion: nil)
+		let alertController = UIAlertController(title: NSLocalizedString("New Car", comment: ""),
+		                                        message: nil,
+		                                        preferredStyle: .actionSheet)
+		let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel) { _ in
 		}
+		let newAction = UIAlertAction(title: NSLocalizedString("New Car", comment: ""), style: .default) { [unowned self] _ in
+			if let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
+				configurator.delegate = self
+				configurator.editingExistingObject = false
+
+				let navController = UINavigationController(rootViewController: configurator)
+				navController.restorationIdentifier = "CarConfigurationNavigationController"
+				navController.navigationBar.tintColor = self.navigationController!.navigationBar.tintColor
+
+				self.present(navController, animated: true, completion: nil)
+			}
+		}
+		let importAction = UIAlertAction(title: NSLocalizedString("Import", comment: ""), style: .default) { [unowned self] _ in
+			self.documentPickerViewController = UIDocumentPickerViewController(documentTypes: ["public.comma-separated-values-text"], in: .`import`)
+			self.documentPickerViewController.delegate = self
+
+			self.present(self.documentPickerViewController, animated: true, completion: nil)
+		}
+		alertController.addAction(cancelAction)
+		alertController.addAction(newAction)
+		alertController.addAction(importAction)
+		alertController.popoverPresentationController?.barButtonItem = sender
+
+		present(alertController, animated: true, completion: nil)
+	}
+
+	// MARK: - UIDocumentPickerDelegate
+
+	func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+		documentPickerViewController = nil
+	}
+
+	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+		UIApplication.kraftstoffAppDelegate.importCSV(at: url)
+
+		documentPickerViewController = nil
 	}
 
 	// MARK: - UIGestureRecognizerDelegate

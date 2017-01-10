@@ -265,18 +265,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-		// Ugly, but don't allow nested imports
-		if self.importAlert != nil {
-			removeFileItem(at: url)
-			return false
-		}
-
-		if !StoreManager.sharedInstance.checkCarCount() {
-			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
-			return false
-		}
-
+	func importCSV(at url: URL) {
 		// Show modal activity indicator while importing
 		showImportAlert()
 
@@ -298,10 +287,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				var numEvents = 0
 
 				let success = importer.`import`(CSVString,
-                                            detectedCars: &numCars,
-                                          detectedEvents: &numEvents,
-                                               sourceURL: url,
-                                               inContext: importContext)
+				                                detectedCars: &numCars,
+				                                detectedEvents: &numEvents,
+				                                sourceURL: url,
+				                                inContext: importContext)
 
 				// On success propagate changes to parent context
 				if success {
@@ -328,14 +317,29 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					self.hideImportAlert()
 
 					let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
-						message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
-						preferredStyle: .alert)
+					                                        message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
+					                                        preferredStyle: .alert)
 					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
 					alertController.addAction(defaultAction)
 					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 				}
 			}
 		}
+	}
+
+	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+		// Ugly, but don't allow nested imports
+		if self.importAlert != nil {
+			removeFileItem(at: url)
+			return false
+		}
+
+		if !StoreManager.sharedInstance.checkCarCount() {
+			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
+			return false
+		}
+
+		importCSV(at: url)
 
 		// Treat imports as successful first startups
 		UserDefaults.standard.set(false, forKey: "firstStartup")
