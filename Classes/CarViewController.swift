@@ -108,7 +108,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	override func decodeRestorableState(with coder: NSCoder) {
 		super.decodeRestorableState(with: coder)
 
-		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRCarViewEditedObject) as? String {
+		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRCarViewEditedObject) as String? {
 			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 

@@ -723,11 +723,11 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.stroke()
 
 		// Marker knob
-		path = UIBezierPath(arcCenter: location, radius: 5.5, startAngle: 0.0, endAngle: CGFloat(M_PI)*2.0, clockwise: false)
+		path = UIBezierPath(arcCenter: location, radius: 5.5, startAngle: 0.0, endAngle: .pi * 2.0, clockwise: false)
 		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).set()
 		path.fill()
 
-		path = UIBezierPath(arcCenter: location, radius: 5.0, startAngle: 0.0, endAngle: CGFloat(M_PI)*2.0, clockwise: false)
+		path = UIBezierPath(arcCenter: location, radius: 5.0, startAngle: 0.0, endAngle: .pi * 2.0, clockwise: false)
 		self.view.tintColor.set()
 		path.fill()
 

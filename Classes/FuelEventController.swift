@@ -146,7 +146,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
-				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as? String {
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as String? {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.selectedCar == nil {

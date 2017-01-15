@@ -210,7 +210,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
-		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as? String ?? "") ?? 0
+		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as String? ?? "") ?? 0
 
 		// we don't restore from iOS6 compatible or future versions of the App
 		return stateVersion >= 1572 && stateVersion <= bundleVersion

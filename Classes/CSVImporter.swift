@@ -185,7 +185,7 @@ final class CSVImporter {
 
 		// Now update order attribute of old car objects
 		for oldCar in fetchedCarObjects {
-			oldCar.order = oldCar.order + carForID.count
+			oldCar.order = oldCar.order + Int32(carForID.count)
 		}
 
 		return carForID.count

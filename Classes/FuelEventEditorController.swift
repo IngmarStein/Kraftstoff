@@ -85,7 +85,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as? String {
+			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
 			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.event == nil {
@@ -120,15 +120,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	override func decodeRestorableState(with coder: NSCoder) {
 		isShowingCancelSheet   = coder.decodeBool(forKey: SRFuelEventCancelSheet)
 		dataChanged            = coder.decodeBool(forKey: SRFuelEventDataChanged)
-		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRFuelEventSelectionIndex) as? IndexPath
-		date                   = coder.decodeObject(of: NSDate.self, forKey: SRFuelEventDate) as? Date
+		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRFuelEventSelectionIndex) as IndexPath?
+		date                   = coder.decodeObject(of: NSDate.self, forKey: SRFuelEventDate) as Date?
 		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventDistance)
 		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventPrice)
 		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventVolume)
 		filledUp               = coder.decodeBool(forKey: SRFuelEventFilledUp)
-		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as? String
+		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as String?
 
-		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as? String {
+		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as String? {
 			car = CoreDataManager.managedObjectForModelIdentifier(carId)
 		}
 

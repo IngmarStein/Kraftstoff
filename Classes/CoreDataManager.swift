@@ -169,7 +169,7 @@ final class CoreDataManager {
 		let parentPredicate = NSPredicate(format: "car == %@", car)
 
 		if let date = date {
-			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as CVarArg)
+			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as NSDate)
 			fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, datePredicate])
 		} else {
 			fetchRequest.predicate = parentPredicate
@@ -236,7 +236,7 @@ final class CoreDataManager {
 
 		// Predicates
 		let parentPredicate = NSPredicate(format: "car == %@", car)
-		let datePredicate = NSPredicate(format: "timestamp == %@", date as CVarArg)
+		let datePredicate = NSPredicate(format: "timestamp == %@", date as NSDate)
 
 		fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, datePredicate])
 
