@@ -140,7 +140,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let carCount = fetchedResultsController.fetchedObjects!.count
 
 		if !self.isEditing && carCount == 0 {
-			helpImage = StyleKit.imageOfStartHelpCanvas(text: NSLocalizedString("StartHelp", comment: ""))
+			helpImage = StyleKit.imageOfStartHelpCanvas(text: NSLocalizedString("StartHelp", comment: "")).withRenderingMode(.alwaysTemplate)
 			helpViewFrame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 70)
 			helpViewContentMode = .right
 
@@ -150,7 +150,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 			if editCounter < maxEditHelpCounter {
 				defaults.set(editCounter + 1, forKey: "editHelpCounter")
-				helpImage = StyleKit.imageOfEditHelpCanvas(line1: NSLocalizedString("EditHelp1", comment: ""), line2: NSLocalizedString("EditHelp2", comment: ""))
+				helpImage = StyleKit.imageOfEditHelpCanvas(line1: NSLocalizedString("EditHelp1", comment: ""), line2: NSLocalizedString("EditHelp2", comment: "")).withRenderingMode(.alwaysTemplate)
 				helpViewContentMode = .left
 				helpViewFrame = CGRect(x: 0.0, y: CGFloat(carCount) * 91.0 - 16.0, width: self.view.bounds.size.width, height: 92.0)
 			} else {
@@ -602,6 +602,10 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return self.isEditing ? nil : indexPath
 	}
 
+	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+		print("test")
+	}
+
 	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
 		editButtonItem.isEnabled = false
 		hideHelp(true)
@@ -670,7 +674,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if let fuelEventController = segue.destination as? FuelEventController, let selection = tableView.indexPathForSelectedRow {
+		let selection: IndexPath?
+		if let cell = sender as? UITableViewCell {
+			selection = tableView.indexPath(for: cell)
+		} else {
+			selection = tableView.indexPathForSelectedRow
+		}
+
+		if let fuelEventController = segue.destination as? FuelEventController, let selection = selection {
 			let selectedCar = self.fetchedResultsController.object(at: selection)
 			fuelEventController.selectedCar = selectedCar
 		}
