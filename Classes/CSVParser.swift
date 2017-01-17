@@ -272,7 +272,7 @@ final class CSVParser {
 			return nil
 		}
 
-		return matchedNewlines as? String
+		return matchedNewlines as String?
 	}
 
 	private func parseLineSeparator() -> String? {
@@ -291,7 +291,7 @@ final class CSVParser {
 	private func parseTextData() -> String? {
 		var data: NSString?
 		scanner.scanUpToCharacters(from: endTextCharacterSet, into: &data)
-		return data as? String
+		return data as String?
 	}
 
 }

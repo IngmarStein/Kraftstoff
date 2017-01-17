@@ -119,9 +119,9 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.delegate               = coder.decodeObject(forKey: SRConfiguratorDelegate) as? CarConfigurationControllerDelegate
 		self.isShowingCancelSheet   = coder.decodeBool(forKey: SRConfiguratorCancelSheet)
 		self.dataChanged            = coder.decodeBool(forKey: SRConfiguratorDataChanged)
-		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRConfiguratorPreviousSelectionIndex) as? IndexPath
-		self.name                   = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorName) as? String
-		self.plate                  = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorPlate) as? String
+		self.previousSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRConfiguratorPreviousSelectionIndex) as IndexPath?
+		self.name                   = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorName) as String?
+		self.plate                  = coder.decodeObject(of: NSString.self, forKey: SRConfiguratorPlate) as String?
 		self.fuelUnit               = coder.decodeObject(of: NSNumber.self, forKey: SRConfiguratorFuelUnit)
 		self.fuelConsumptionUnit    = coder.decodeObject(of: NSNumber.self, forKey: SRConfiguratorFuelConsumptionUnit)
 
