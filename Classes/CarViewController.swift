@@ -133,14 +133,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let defaults = UserDefaults.standard
 
 		// Number of cars determines the help badge
-		let helpImageName: String?
 		let helpViewFrame: CGRect
 		let helpViewContentMode: UIViewContentMode
+		let helpImage: UIImage?
 
 		let carCount = fetchedResultsController.fetchedObjects!.count
 
 		if !self.isEditing && carCount == 0 {
-			helpImageName = "StartFlat"
+			helpImage = StyleKit.imageOfStartHelpCanvas(text: NSLocalizedString("StartHelp", comment: ""))
 			helpViewFrame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 70)
 			helpViewContentMode = .right
 
@@ -150,16 +150,16 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 			if editCounter < maxEditHelpCounter {
 				defaults.set(editCounter + 1, forKey: "editHelpCounter")
-				helpImageName = "EditFlat"
+				helpImage = StyleKit.imageOfEditHelpCanvas(line1: NSLocalizedString("EditHelp1", comment: ""), line2: NSLocalizedString("EditHelp2", comment: ""))
 				helpViewContentMode = .left
 				helpViewFrame = CGRect(x: 0.0, y: CGFloat(carCount) * 91.0 - 16.0, width: self.view.bounds.size.width, height: 92.0)
 			} else {
-				helpImageName = nil
+				helpImage = nil
 				helpViewContentMode = .left
 				helpViewFrame = .zero
 			}
 		} else {
-			helpImageName = nil
+			helpImage = nil
 			helpViewContentMode = .left
 			helpViewFrame = .zero
 		}
@@ -167,7 +167,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Remove outdated help images
 		var helpView = self.view.viewWithTag(100) as? UIImageView
 
-		if helpImageName == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
+		if helpImage == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
 				UIView.animate(withDuration: 0.33, delay: 0.0, options: .curveEaseOut,
                              animations: { helpView?.alpha = 0.0 },
@@ -178,13 +178,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		// Add or update existing help image
-		if let helpImageName = helpImageName {
+		if let helpImage = helpImage {
 			if let helpView = helpView {
-				helpView.image = UIImage(named: helpImageName)
+				helpView.image = helpImage
 				helpView.frame = helpViewFrame
 			} else {
-				let helpImage   = UIImage(named: NSLocalizedString(helpImageName, comment: ""))!.withRenderingMode(.alwaysTemplate)
-
 				helpView        = UIImageView(image: helpImage)
 				helpView!.tag   = 100
 				helpView!.frame = helpViewFrame

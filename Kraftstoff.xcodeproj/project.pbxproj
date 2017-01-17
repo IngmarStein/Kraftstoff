@@ -20,6 +20,7 @@
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
 		95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */; };
 		95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */; };
+		957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957F24B21E2E673C007AC96A /* StyleKit.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D8E1AF7BDCC006A56D6 /* Car.swift */; };
 		95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */; };
@@ -100,6 +101,7 @@
 		95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarConfigurationController.swift; sourceTree = "<group>"; };
 		95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEventEditorController.swift; sourceTree = "<group>"; };
 		956E54611B41D5650031FCD0 /* kraftstoff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = kraftstoff.entitlements; path = Kraftstoff/kraftstoff.entitlements; sourceTree = "<group>"; };
+		957F24B21E2E673C007AC96A /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleKit.swift; path = Classes/StyleKit.swift; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95AE6D8E1AF7BDCC006A56D6 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEvent.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */,
+				957F24B21E2E673C007AC96A /* StyleKit.swift */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
 			);
 			name = "Other Sources";
@@ -548,9 +551,8 @@
 				LastUpgradeCheck = 0820;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = ADVP2P7SJK;
 						LastSwiftMigration = 0800;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -637,6 +639,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */,
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
 				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,
@@ -779,11 +782,14 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2217;
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.m-schmidt.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = kraftstoff;
+				PROVISIONING_PROFILE = "afa36a24-0fd9-4295-ab95-e441c6c2aec5";
+				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff Development";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -797,12 +803,15 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 2217;
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.m-schmidt.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = kraftstoff;
+				PROVISIONING_PROFILE = "d97e64d2-cdae-49a2-b7cd-c2ff0920b47b";
+				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff App Store";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -828,6 +837,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -867,6 +877,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -901,6 +912,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -941,6 +953,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
