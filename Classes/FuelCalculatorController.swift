@@ -200,8 +200,11 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	// MARK: - Creating the Table Rows
 
 	func consumptionRowNeeded() -> Bool {
-
 		if self.isEditing {
+			return false
+		}
+
+		if let filledUp = self.filledUp, !filledUp {
 			return false
 		}
 
