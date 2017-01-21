@@ -14,3 +14,5 @@ type_name:
   max_length: 70
 force_cast: warning
 force_try: warning
+excluded:
+  - Classes/StyleKit.swift
