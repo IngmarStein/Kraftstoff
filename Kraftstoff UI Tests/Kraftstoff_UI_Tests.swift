@@ -28,7 +28,6 @@ class KraftstoffUITests: XCTestCase {
     }
 
     func testSnapshots() {
-
 		let app = XCUIApplication()
 		let tabBarsQuery = app.tabBars
 
@@ -36,6 +35,7 @@ class KraftstoffUITests: XCTestCase {
 
 		tabBarsQuery.buttons.element(boundBy: 1).tap() // Cars
 		app.navigationBars.buttons["add"].tap()
+		app.sheets.buttons.element(boundBy: 0).tap() // New Car
 
 		let tablesQuery = app.tables
 
