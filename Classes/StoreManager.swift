@@ -13,15 +13,12 @@ import Security
 final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
 
-	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.2cars"
-	private let fiveCarsProductId = "com.github.ingmarstein.kraftstoff.5cars"
-	private let unlimitedCarsProductId = "com.github.ingmarstein.kraftstoff.unlimitedCars"
-	private let purchasedProductsKey = "purchasedProducts"
+	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.iap.2cars"
+	private let fiveCarsProductId = "com.github.ingmarstein.kraftstoff.iap.5cars"
+	private let unlimitedCarsProductId = "com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
 
 	override init() {
 		super.init()
-
-		migratePurchases()
 
 		SKPaymentQueue.default().add(self)
 	}
@@ -75,18 +72,6 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 		alert.popoverPresentationController?.sourceRect = parent.view.bounds
 		alert.popoverPresentationController?.permittedArrowDirections = []
 		parent.present(alert, animated: true, completion: nil)
-	}
-
-	// migrate purchases from UserDefaults to Keychain
-	private func migratePurchases() {
-		let userDefaults = UserDefaults.standard
-		if let purchasedProducts = userDefaults.array(forKey: purchasedProductsKey) as? [String] {
-			for product in purchasedProducts {
-				setProductPurchased(product, purchased: true)
-			}
-		}
-		userDefaults.removeObject(forKey: purchasedProductsKey)
-		userDefaults.synchronize()
 	}
 
 	private func keychainItemForProduct(_ product: String) -> [String: Any] {
