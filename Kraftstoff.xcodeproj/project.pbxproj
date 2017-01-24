@@ -136,6 +136,7 @@
 		95DA86291AFB426D001E1375 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_Tests.swift; sourceTree = "<group>"; };
 		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
+		95DF625E1E37981200294E0B /* Fuel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Fuel.xcdatamodel; sourceTree = "<group>"; };
 		95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_UI_Tests.swift; sourceTree = "<group>"; };
 		95E685461C4C1BC800C6D5F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1102,12 +1103,13 @@
 		4D2CF10C15D69B33003962B7 /* Fuel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				95DF625E1E37981200294E0B /* Fuel.xcdatamodel */,
 				95CBD42A1D19C6C4009637A4 /* Kraftstoffrechner 1.4.0.xcdatamodel */,
 				954F12251BB6C3D40022E7C8 /* Kraftstoffrechner 1.3.0.xcdatamodel */,
 				4D5B94E216484CC2008BDDD7 /* Kraftstoffrechner 1.0.10.xcdatamodel */,
 				4D2CF10D15D69B33003962B7 /* Kraftstoffrechner.xcdatamodel */,
 			);
-			currentVersion = 95CBD42A1D19C6C4009637A4 /* Kraftstoffrechner 1.4.0.xcdatamodel */;
+			currentVersion = 95DF625E1E37981200294E0B /* Fuel.xcdatamodel */;
 			path = Fuel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
