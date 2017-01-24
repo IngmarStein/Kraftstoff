@@ -13,16 +13,17 @@ import CloudKit
 final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 	@NSManaged var cloudKitRecordName: String?
-    @NSManaged var inheritedCost: NSDecimalNumber
-    @NSManaged var distance: NSDecimalNumber
-    @NSManaged var price: NSDecimalNumber
-    @NSManaged var inheritedDistance: NSDecimalNumber
-    @NSManaged var inheritedFuelVolume: NSDecimalNumber
-    @NSManaged var timestamp: Date
-    @NSManaged var filledUp: Bool
+	@NSManaged var lastUpdate: Date?
+	@NSManaged var inheritedCost: NSDecimalNumber
+	@NSManaged var distance: NSDecimalNumber
+	@NSManaged var price: NSDecimalNumber
+	@NSManaged var inheritedDistance: NSDecimalNumber
+	@NSManaged var inheritedFuelVolume: NSDecimalNumber
+	@NSManaged var timestamp: Date
+	@NSManaged var filledUp: Bool
 	@NSManaged var comment: String?
-    @NSManaged var fuelVolume: NSDecimalNumber
-    @NSManaged var car: Car
+	@NSManaged var fuelVolume: NSDecimalNumber
+	@NSManaged var car: Car
 
 	@nonobjc class func fetchRequest() -> NSFetchRequest<FuelEvent> {
 		return NSFetchRequest<FuelEvent>(entityName: "fuelEvent")
@@ -40,8 +41,13 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 	}
 
 	func asCloudKitRecord() -> CKRecord {
+		guard let lastUpdate = lastUpdate else {
+			fatalError("Required properties for record not set")
+		}
+
 		let record = CKRecord(recordType: "fuelEvent", recordID: cloudKitRecordID)
 
+		record["lastUpdate"] = lastUpdate as NSDate
 		record["inheritedCost"] = inheritedCost
 		record["distance"] = distance
 		record["price"] = price
@@ -58,6 +64,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
+		lastUpdate = record["lastUpdate"] as? Date
 		// swiftlint:disable force_cast
 		inheritedCost = record["inheritedCost"] as! NSDecimalNumber
 		distance = record["distance"] as! NSDecimalNumber

@@ -20,7 +20,7 @@ protocol FuelStatisticsViewControllerDataSource: class {
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar: Car) -> CGFloat
 }
 
-protocol FuelStatisticsViewControllerDelegate {
+protocol FuelStatisticsViewControllerDelegate: class {
 	func graphRightBorder(_ rightBorder: CGFloat, forCar: Car) -> CGFloat
 	func graphWidth(_ graphWidth: CGFloat, forCar: Car) -> CGFloat
 }
@@ -901,11 +901,8 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		let handler = Formatters.consumptionRoundingHandler
 		let distanceUnit = car.ksOdometerUnit
 
-		var distance = fuelEvent.distance
-		var cost = fuelEvent.cost
-
-		distance = distance + fuelEvent.inheritedDistance
-		cost     = cost + fuelEvent.inheritedCost
+		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
+		let cost = fuelEvent.cost + fuelEvent.inheritedCost
 
 		if cost == .zero {
 			return .nan

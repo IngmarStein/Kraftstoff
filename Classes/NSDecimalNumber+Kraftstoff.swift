@@ -32,8 +32,20 @@ extension NSDecimalNumber: Comparable {
 		return lhs.adding(rhs)
 	}
 
+	public static func += (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
+		// swiftlint:disable shorthand_operator
+		lhs = lhs + rhs
+		// swiftlint:enable shorthand_operator
+	}
+
 	public static func - (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
 		return lhs.subtracting(rhs)
+	}
+
+	public static func -= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
+		// swiftlint:disable shorthand_operator
+		lhs = lhs - rhs
+		// swiftlint:enable shorthand_operator
 	}
 
 	public static func * (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {

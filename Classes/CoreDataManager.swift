@@ -111,16 +111,20 @@ final class CoreDataManager {
 		// migrate iCloud store to local
 		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: persistentContainer.managedObjectModel)
 
-		var migrationOptions = iCloudStoreDescription.options
-		migrationOptions[NSReadOnlyPersistentStoreOption] = NSNumber(value: true)
-		migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = NSNumber(value: true)
-
 		// Open the existing store
 		do {
-			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: iCloudStoreURL, options: migrationOptions)
+			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: iCloudStoreURL, options: iCloudStoreDescription.options)
 			let targetStoreDescription = persistentContainer.persistentStoreDescriptions[0]
+
+			var migrationOptions = targetStoreDescription.options
+			migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = NSNumber(value: true)
+
 			do {
-				try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: targetStoreDescription.options, withType: targetStoreDescription.type)
+				try FileManager.default.removeItem(at: targetStoreDescription.url!)
+			}
+			do {
+				let migratedStore = try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: migrationOptions, withType: targetStoreDescription.type)
+				try migrationPSC.remove(migratedStore)
 				// NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
 			} catch let error {
 				print("error while migrating from iCloud: \(error)")
@@ -159,9 +163,9 @@ final class CoreDataManager {
 	}
 
 	static func fetchRequestForEvents(car: Car,
-                                       andDate date: Date?,
-                                dateComparator dateCompare: String,
-                                     fetchSize: Int) -> NSFetchRequest<FuelEvent> {
+	                                  andDate date: Date?,
+	                                  dateComparator dateCompare: String,
+	                                  fetchSize: Int) -> NSFetchRequest<FuelEvent> {
 		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = fetchSize
 
@@ -183,21 +187,21 @@ final class CoreDataManager {
 	}
 
 	static func fetchRequestForEvents(car: Car,
-                                     afterDate date: Date?,
-                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
+	                                  afterDate date: Date?,
+	                                  dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
-                                     andDate: date,
-                              dateComparator: dateMatches ? ">=" : ">",
-                                   fetchSize: 128)
+		                             andDate: date,
+		                             dateComparator: dateMatches ? ">=" : ">",
+		                             fetchSize: 128)
 	}
 
 	static func fetchRequestForEvents(car: Car,
-                                    beforeDate date: Date?,
-                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
+	                                  beforeDate date: Date?,
+	                                  dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
 		return fetchRequestForEvents(car: car,
-                                     andDate: date,
-                              dateComparator: dateMatches ? "<=" : "<",
-                                   fetchSize: 8)
+		                             andDate: date,
+		                             dateComparator: dateMatches ? "<=" : "<",
+		                             fetchSize: 8)
 	}
 
 	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
@@ -205,9 +209,9 @@ final class CoreDataManager {
 
 		// No section names; perform fetch without cache
 		let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
-			managedObjectContext: moc,
-			sectionNameKeyPath: nil,
-            cacheName: nil)
+		                                                          managedObjectContext: moc,
+		                                                          sectionNameKeyPath: nil,
+		                                                          cacheName: nil)
 
 		// Perform the Core Data fetch
 		do {
@@ -270,43 +274,43 @@ final class CoreDataManager {
 		// Compute inherited data from older element
 
 		// Fetch older events
-        let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-                                                                                    beforeDate: date,
-                                                                                   dateMatches: false),
-                                     inManagedObjectContext: moc)
+		let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
+		                                                               beforeDate: date,
+		                                                               dateMatches: false),
+		                                         inManagedObjectContext: moc)
 
         if olderEvents.count > 0 {
 			let olderEvent = olderEvents.first!
 
-            if !olderEvent.filledUp {
-                let cost = olderEvent.cost
+			if !olderEvent.filledUp {
+				let cost = olderEvent.cost
 
-                inheritedCost       = cost + olderEvent.inheritedCost
-                inheritedDistance   = olderEvent.distance + olderEvent.inheritedDistance
-                inheritedFuelVolume = olderEvent.fuelVolume + olderEvent.inheritedFuelVolume
-            }
+				inheritedCost       = cost + olderEvent.inheritedCost
+				inheritedDistance   = olderEvent.distance + olderEvent.inheritedDistance
+				inheritedFuelVolume = olderEvent.fuelVolume + olderEvent.inheritedFuelVolume
+			}
 		}
 
 		// Update inherited distance/volume for younger events, probably mark the car odometer for an update
-        // Fetch younger events
+		// Fetch younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-                                                                                       afterDate: date,
-                                                                                     dateMatches: false),
-                                       inManagedObjectContext: moc)
+		                                                                 afterDate: date,
+		                                                                 dateMatches: false),
+		                                           inManagedObjectContext: moc)
 
         if youngerEvents.count > 0 {
 
-            let deltaCost = filledUp
-                ? -inheritedCost
-                : liters * pricePerLiter
+			let deltaCost = filledUp
+				? -inheritedCost
+				: liters * pricePerLiter
 
-            let deltaDistance = filledUp
-                ? -inheritedDistance
-                : kilometers
+			let deltaDistance = filledUp
+				? -inheritedDistance
+				: kilometers
 
-            let deltaFuelVolume = filledUp
-                ? -inheritedFuelVolume
-                : liters
+			let deltaFuelVolume = filledUp
+				? -inheritedFuelVolume
+				: liters
 
 			for youngerEvent in youngerEvents.reversed() {
 				youngerEvent.inheritedCost = max(youngerEvent.inheritedCost + deltaCost, zero)
@@ -314,9 +318,9 @@ final class CoreDataManager {
 				youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume + deltaFuelVolume, zero)
 
 				if youngerEvent.filledUp {
-                    break
+					break
 				}
-            }
+			}
 		} else {
 			// New event will be the youngest one => update odometer too
             forceOdometerUpdate = true
@@ -325,6 +329,7 @@ final class CoreDataManager {
 		// Create new managed object for this event
 		let newEvent = FuelEvent(context: moc)
 
+		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.timestamp = date
 		newEvent.distance = kilometers
@@ -359,8 +364,8 @@ final class CoreDataManager {
 		}
 
 		// Update total car statistics
-		car.distanceTotalSum = car.distanceTotalSum + kilometers
-		car.fuelVolumeTotalSum = car.fuelVolumeTotalSum + liters
+		car.distanceTotalSum += kilometers
+		car.fuelVolumeTotalSum += liters
 
 		if forceOdometerUpdate {
 			// Update global odometer
@@ -384,9 +389,9 @@ final class CoreDataManager {
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
 		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-                                                                                  afterDate: event.timestamp,
-                                                                                dateMatches: false),
-                                   inManagedObjectContext: moc)
+		                                                                 afterDate: event.timestamp,
+		                                                                 dateMatches: false),
+		                                           inManagedObjectContext: moc)
 
 		var row = youngerEvents.count
 		if row > 0 {
@@ -398,12 +403,12 @@ final class CoreDataManager {
 
 				if inheritedCost > zero || inheritedDistance > zero || inheritedFuelVolume > zero {
 					while row > 0 {
-						row = row - 1
+						row -= 1
 						let youngerEvent = youngerEvents[row]
 
-						youngerEvent.inheritedCost = youngerEvent.inheritedCost + inheritedCost
-						youngerEvent.inheritedDistance = youngerEvent.inheritedDistance + inheritedDistance
-						youngerEvent.inheritedFuelVolume = youngerEvent.inheritedFuelVolume + inheritedFuelVolume
+						youngerEvent.inheritedCost += inheritedCost
+						youngerEvent.inheritedDistance += inheritedDistance
+						youngerEvent.inheritedFuelVolume += inheritedFuelVolume
 
 						if youngerEvent.filledUp {
 							break
@@ -414,7 +419,7 @@ final class CoreDataManager {
 				// Intermediate event deleted => remove distance/volume from inherited data
 
 				while row > 0 {
-					row = row - 1
+					row -= 1
 					let youngerEvent = youngerEvents[row]
 					let cost = event.price
 

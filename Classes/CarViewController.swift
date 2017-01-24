@@ -78,9 +78,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
 		NotificationCenter.default.addObserver(self,
-           selector: #selector(CarViewController.localeChanged(_:)),
-               name: NSLocale.currentLocaleDidChangeNotification,
-             object: nil)
+		                                       selector: #selector(CarViewController.localeChanged(_:)),
+		                                       name: NSLocale.currentLocaleDidChangeNotification,
+		                                       object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -170,8 +170,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		if helpImage == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
 				UIView.animate(withDuration: 0.33, delay: 0.0, options: .curveEaseOut,
-                             animations: { helpView?.alpha = 0.0 },
-                             completion: { _ in helpView?.removeFromSuperview() })
+				               animations: { helpView?.alpha = 0.0 },
+				               completion: { _ in helpView?.removeFromSuperview() })
 			} else {
 				helpView?.removeFromSuperview()
 			}
@@ -193,10 +193,10 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 				if animated {
 					UIView.animate(withDuration: 0.33,
-										delay: 0.8,
-                                    options: .curveEaseOut,
-                                 animations: { helpView!.alpha = 1.0 },
-                                 completion: nil)
+					               delay: 0.8,
+					               options: .curveEaseOut,
+					               animations: { helpView!.alpha = 1.0 },
+					               completion: nil)
 				}
 			}
 		}
@@ -210,10 +210,10 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		if let helpView = self.view.viewWithTag(100) as? UIImageView {
 			if animated {
 				UIView.animate(withDuration: 0.33,
-                                  delay: 0.0,
-                                options: .curveEaseOut,
-                             animations: { helpView.alpha = 0.0 },
-                             completion: { _ in helpView.removeFromSuperview() })
+				               delay: 0.0,
+				               options: .curveEaseOut,
+				               animations: { helpView.alpha = 0.0 },
+				               completion: { _ in helpView.removeFromSuperview() })
 			} else {
 				helpView.removeFromSuperview()
 			}
@@ -231,21 +231,22 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 			for car in self.fetchedResultsController.fetchedObjects! {
 				car.order += 1
-            }
+			}
 
-            // Detect demo data request
-            if controller.name!.lowercased() == "apple" && controller.plate!.lowercased() == "demo" {
-                addDemoContents = true
+			// Detect demo data request
+			if controller.name!.lowercased() == "apple" && controller.plate!.lowercased() == "demo" {
+				addDemoContents = true
 
-                controller.name  = "Toyota IQ+"
-                controller.plate = "SLS IOIOI"
-            }
+				controller.name  = "Toyota IQ+"
+				controller.plate = "SLS IOIOI"
+			}
 
 			changeIsUserDriven = false
 
 			// Create a new instance of the entity managed by the fetched results controller.
 			let newManagedObject = Car(context: CoreDataManager.managedObjectContext)
 
+			newManagedObject.lastUpdate = Date()
 			newManagedObject.order = 0
 			newManagedObject.timestamp = Date()
 			newManagedObject.name = controller.name!
@@ -273,7 +274,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			editedObject.odometerUnit = controller.odometerUnit!.int32Value
 
 			let odometer = max(Units.kilometersForDistance(controller.odometer!,
-                                                              withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.distanceTotalSum)
+			                                               withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.distanceTotalSum)
 
 			editedObject.odometer = odometer
 			editedObject.fuelUnit = controller.fuelUnit!.int32Value
@@ -459,7 +460,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			let order = managedObject.order
 
 			if order > deletedObjectOrder {
-                managedObject.order = order-1
+				managedObject.order = order-1
 			}
         }
 
@@ -624,9 +625,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
-        case .insert:
-            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .delete:
+		case .insert:
+			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .delete:
 			self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
 		case .move, .update:
 			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
@@ -637,20 +638,20 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		guard !changeIsUserDriven else { return }
 
 		switch type {
-        case .insert:
+		case .insert:
 			if let newIndexPath = newIndexPath {
 				tableView.insertRows(at: [newIndexPath], with: .fade)
 			}
-        case .delete:
+		case .delete:
 			if let indexPath = indexPath {
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			}
-        case .move:
+		case .move:
 			if let indexPath = indexPath, let newIndexPath = newIndexPath, indexPath != newIndexPath {
 				tableView.deleteRows(at: [indexPath], with: .fade)
 				tableView.insertRows(at: [newIndexPath], with: .fade)
 			}
-        case .update:
+		case .update:
 			if let indexPath = indexPath {
 				tableView.reloadRows(at: [indexPath], with: .automatic)
 			}

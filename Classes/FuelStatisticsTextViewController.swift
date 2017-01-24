@@ -96,9 +96,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			}
 
 			// Summarize all amounts
-			state.totalCost = state.totalCost + cost
-			state.totalFuelVolume = state.totalFuelVolume + fuelVolume
-			state.totalDistance = state.totalDistance + distance
+			state.totalCost += cost
+			state.totalFuelVolume += fuelVolume
+			state.totalDistance += distance
 
 			// Track consumption
 			if managedObject.filledUp {
@@ -110,7 +110,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
                                                                           liters: fuelVolume + inheritedFuelVolume,
                                                                           inUnit: consumptionUnit)
 
-				state.avgConsumption = state.avgConsumption + consumption
+				state.avgConsumption += consumption
 
 				if consumptionUnit.isEfficiency {
 					state.bestConsumption  = max(consumption, state.bestConsumption ?? consumption)

@@ -42,7 +42,27 @@ final class CloudKitManager {
 		print("CloudKit IS available")
 
 		subscribeToChanges()
-		// TODO: full sync
+
+		importFromCoreData()
+	}
+
+	private static func importFromCoreData() {
+		importFetchRequest(Car.fetchRequest())
+		importFetchRequest(FuelEvent.fetchRequest())
+
+		// this also saves the changes to CloudKit
+		CoreDataManager.saveContext()
+	}
+
+	private static func importFetchRequest(_ fetchRequest: NSFetchRequest<NSFetchRequestResult>) {
+		if let objects = try? CoreDataManager.managedObjectContext.fetch(fetchRequest) {
+			for managedObject in objects {
+				if let ckManagedObject = managedObject as? CloudKitManagedObject {
+					// this sets the `cloudKitRecordName` field as a side-effect
+					_ = ckManagedObject.asCloudKitRecord()
+				}
+			}
+		}
 	}
 
 	private static func handleCloudKitUnavailable(accountStatus: CKAccountStatus, error: Error?) {

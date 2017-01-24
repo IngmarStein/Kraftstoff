@@ -81,7 +81,7 @@ final class NumberEditTableCell: EditablePageCell {
 
 				// Special shift semantics when appending at end of string
 				value = value << 1
-				value = value + (digit / scale)
+				value += digit / scale
 			} else {
 				// Normal insert otherwise
 				text  = (text as NSString).replacingCharacters(in: range, with: string)

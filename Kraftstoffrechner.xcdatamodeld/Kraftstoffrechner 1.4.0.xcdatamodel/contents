@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D12b" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="1.0">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D32" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="1.0">
     <entity name="car" representedClassName=".Car" syncable="YES">
         <attribute name="cloudKitRecordName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="distanceTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="fuelConsumptionUnit" attributeType="Integer 32" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="fuelUnit" attributeType="Integer 32" minValueString="0" maxValueString="2" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="fuelVolumeTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="numberPlate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="odometer" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
@@ -23,12 +24,13 @@
         <attribute name="inheritedCost" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="inheritedDistance" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="inheritedFuelVolume" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="price" attributeType="Decimal" minValueString="0" defaultValueString="0" syncable="YES"/>
         <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <relationship name="car" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="car" inverseName="fuelEvents" inverseEntity="car" indexed="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="car" positionX="70" positionY="63" width="146" height="225"/>
-        <element name="fuelEvent" positionX="376" positionY="93" width="128" height="210"/>
+        <element name="car" positionX="70" positionY="63" width="146" height="240"/>
+        <element name="fuelEvent" positionX="376" positionY="93" width="128" height="225"/>
     </elements>
 </model>

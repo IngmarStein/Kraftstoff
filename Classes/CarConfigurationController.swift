@@ -147,13 +147,13 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 
 		addRowAtIndex(rowIndex: 3,
-              inSection: 0,
-              cellClass: NumberEditTableCell.self,
-			   cellData: ["label": NSLocalizedString("Odometer Reading", comment: ""),
-                          "suffix": suffix,
-                          "formatter": Formatters.distanceFormatter,
-                          "valueIdentifier": "odometer"],
-          withAnimation: animation)
+		              inSection: 0,
+		              cellClass: NumberEditTableCell.self,
+		              cellData: ["label": NSLocalizedString("Odometer Reading", comment: ""),
+		                         "suffix": suffix,
+		                         "formatter": Formatters.distanceFormatter,
+		                         "valueIdentifier": "odometer"],
+		              withAnimation: animation)
 	}
 
 	private func createTableContents() {
@@ -164,23 +164,23 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		}
 
 		addRowAtIndex(rowIndex: 0,
-              inSection: 0,
-              cellClass: TextEditTableCell.self,
-			   cellData: ["label": NSLocalizedString("Name", comment: ""),
-                          "valueIdentifier": "name"],
-          withAnimation: .none)
+		              inSection: 0,
+		              cellClass: TextEditTableCell.self,
+		              cellData: ["label": NSLocalizedString("Name", comment: ""),
+		                         "valueIdentifier": "name"],
+		              withAnimation: .none)
 
 		if self.plate == nil {
 			self.plate = ""
 		}
 
 		addRowAtIndex(rowIndex: 1,
-              inSection: 0,
-              cellClass: TextEditTableCell.self,
-			   cellData: ["label": NSLocalizedString("License Plate", comment: ""),
-                          "valueIdentifier": "plate",
-                          "autocapitalizeAll": true],
-          withAnimation: .none)
+		              inSection: 0,
+		              cellClass: TextEditTableCell.self,
+		              cellData: ["label": NSLocalizedString("License Plate", comment: ""),
+		                         "valueIdentifier": "plate",
+		                         "autocapitalizeAll": true],
+		              withAnimation: .none)
 
 		if self.odometerUnit == nil {
 			self.odometerUnit = NSNumber(value: Units.distanceUnitFromLocale.persistentId)
@@ -190,12 +190,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 										Formatters.longMeasurementFormatter.string(from: UnitLength.miles).capitalized]
 
 		addRowAtIndex(rowIndex: 2,
-              inSection: 0,
-              cellClass: PickerTableCell.self,
-			   cellData: ["label": NSLocalizedString("Odometer Type", comment: ""),
-                          "valueIdentifier": "odometerUnit",
-                          "labels": odometerUnitPickerLabels],
-          withAnimation: .none)
+		              inSection: 0,
+		              cellClass: PickerTableCell.self,
+		              cellData: ["label": NSLocalizedString("Odometer Type", comment: ""),
+		                         "valueIdentifier": "odometerUnit",
+		                         "labels": odometerUnitPickerLabels],
+		              withAnimation: .none)
 
 		createOdometerRowWithAnimation(.none)
 
@@ -208,39 +208,43 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		                            Formatters.longMeasurementFormatter.string(from: UnitVolume.imperialGallons).capitalized]
 
 		addRowAtIndex(rowIndex: 4,
-              inSection: 0,
-              cellClass: PickerTableCell.self,
-			   cellData: ["label": NSLocalizedString("Fuel Unit", comment: ""),
-						  "valueIdentifier": "fuelUnit",
-                          "labels": fuelUnitPickerLabels],
-          withAnimation: .none)
+		              inSection: 0,
+		              cellClass: PickerTableCell.self,
+		              cellData: ["label": NSLocalizedString("Fuel Unit", comment: ""),
+		                         "valueIdentifier": "fuelUnit",
+		                         "labels": fuelUnitPickerLabels],
+		              withAnimation: .none)
 
 		if self.fuelConsumptionUnit == nil {
 			self.fuelConsumptionUnit = NSNumber(value: Units.fuelConsumptionUnitFromLocale.persistentId)
 		}
 
-		let fuelConsumptionUnitPickerLabels = [Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
-                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
-                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
-                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
-                    Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
-					Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized]
+		let fuelConsumptionUnitPickerLabels = [
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized
+		]
 
-		let fuelConsumptionUnitPickerShortLabels = [Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
-                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
-                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
-                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
-                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
-                         Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)]
+		let fuelConsumptionUnitPickerShortLabels = [
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)
+		]
 
 		addRowAtIndex(rowIndex: 5,
-              inSection: 0,
-              cellClass: PickerTableCell.self,
-			   cellData: ["label": NSLocalizedString("Mileage", comment: ""),
-                          "valueIdentifier": "fuelConsumptionUnit",
-                          "labels": fuelConsumptionUnitPickerLabels,
-                          "shortLabels": fuelConsumptionUnitPickerShortLabels],
-			withAnimation: .none)
+		              inSection: 0,
+		              cellClass: PickerTableCell.self,
+		              cellData: ["label": NSLocalizedString("Mileage", comment: ""),
+		                         "valueIdentifier": "fuelConsumptionUnit",
+		                         "labels": fuelConsumptionUnitPickerLabels,
+		                         "shortLabels": fuelConsumptionUnitPickerShortLabels],
+		              withAnimation: .none)
 	}
 
 	private func recreateTableContents() {

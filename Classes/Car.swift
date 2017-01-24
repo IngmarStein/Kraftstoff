@@ -13,17 +13,18 @@ import CloudKit
 final class Car: NSManagedObject, CloudKitManagedObject {
 
 	@NSManaged var cloudKitRecordName: String?
-    @NSManaged var timestamp: Date
-    @NSManaged var distanceTotalSum: NSDecimalNumber
-    @NSManaged var fuelUnit: Int32
-    @NSManaged var order: Int32
-    @NSManaged var fuelVolumeTotalSum: NSDecimalNumber
-    @NSManaged var odometer: NSDecimalNumber
-    @NSManaged var fuelConsumptionUnit: Int32
-    @NSManaged var odometerUnit: Int32
-    @NSManaged var name: String
-    @NSManaged var numberPlate: String
-    @NSManaged var fuelEvents: Set<FuelEvent>
+	@NSManaged var lastUpdate: Date?
+	@NSManaged var timestamp: Date
+	@NSManaged var distanceTotalSum: NSDecimalNumber
+	@NSManaged var fuelUnit: Int32
+	@NSManaged var order: Int32
+	@NSManaged var fuelVolumeTotalSum: NSDecimalNumber
+	@NSManaged var odometer: NSDecimalNumber
+	@NSManaged var fuelConsumptionUnit: Int32
+	@NSManaged var odometerUnit: Int32
+	@NSManaged var name: String
+	@NSManaged var numberPlate: String
+	@NSManaged var fuelEvents: Set<FuelEvent>
 
 	@nonobjc class func fetchRequest() -> NSFetchRequest<Car> {
 		return NSFetchRequest<Car>(entityName: "car")
@@ -64,8 +65,13 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 	}
 
 	func asCloudKitRecord() -> CKRecord {
+		guard let lastUpdate = lastUpdate else {
+			fatalError("Required properties for record not set")
+		}
+
 		let record = CKRecord(recordType: "car", recordID: cloudKitRecordID)
 
+		record["lastUpdate"] = lastUpdate as NSDate
 		record["timestamp"] = timestamp as NSDate
 		record["distanceTotalSum"] = distanceTotalSum
 		record["fuelUnit"] = NSNumber(value: fuelUnit)
@@ -82,6 +88,7 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
+		lastUpdate = record["lastUpdate"] as? Date
 		// swiftlint:disable force_cast
 		timestamp = record["timestamp"] as! Date
 		distanceTotalSum = record["distanceTotalSum"] as! NSDecimalNumber

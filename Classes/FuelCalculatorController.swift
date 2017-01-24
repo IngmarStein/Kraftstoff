@@ -564,17 +564,17 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                          self.removeSectionAtIndex(1, withAnimation: .fade)
                      },
                      completion: { _ in
-                         // Add new event object
-                         self.changeIsUserDriven = true
+						// Add new event object
+						self.changeIsUserDriven = true
 
-                         CoreDataManager.addToArchive(car: self.car!,
-                                                     date: self.date!,
-                                                 distance: self.distance!,
-                                                    price: self.price!,
-                                               fuelVolume: self.fuelVolume!,
-                                                 filledUp: self.filledUp ?? false,
-												  comment: self.comment,
-                                      forceOdometerUpdate: false)
+						CoreDataManager.addToArchive(car: self.car!,
+						                             date: self.date!,
+						                             distance: self.distance!,
+						                             price: self.price!,
+						                             fuelVolume: self.fuelVolume!,
+						                             filledUp: self.filledUp ?? false,
+						                             comment: self.comment,
+						                             forceOdometerUpdate: false)
 
                          // Reset calculator table
                          let zero = NSDecimalNumber.zero

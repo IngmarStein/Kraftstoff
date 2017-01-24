@@ -43,18 +43,18 @@ final class Formatters {
 	}()
 
 	static let dateTimeFormatter: DateFormatter = {
-        let dateTimeFormatter = DateFormatter()
+		let dateTimeFormatter = DateFormatter()
 		dateTimeFormatter.timeStyle = .short
 		dateTimeFormatter.dateStyle = .medium
 		return dateTimeFormatter
     }()
 
 	static let distanceFormatter: NumberFormatter = {
-        let distanceFormatter = NumberFormatter()
-        distanceFormatter.generatesDecimalNumbers = true
-        distanceFormatter.numberStyle = .decimal
-        distanceFormatter.minimumFractionDigits = 1
-        distanceFormatter.maximumFractionDigits = 1
+		let distanceFormatter = NumberFormatter()
+		distanceFormatter.generatesDecimalNumbers = true
+		distanceFormatter.numberStyle = .decimal
+		distanceFormatter.minimumFractionDigits = 1
+		distanceFormatter.maximumFractionDigits = 1
 		return distanceFormatter
     }()
 

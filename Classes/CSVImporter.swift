@@ -26,6 +26,7 @@ final class CSVImporter {
 		// Create and configure new car object
 		let newCar = Car(context: managedObjectContext)
 
+		newCar.lastUpdate = Date()
 		newCar.order = Int32(order)
 		newCar.timestamp = Date()
 		newCar.name = name
@@ -41,6 +42,7 @@ final class CSVImporter {
 	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = FuelEvent(context: managedObjectContext)
 
+		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.timestamp = date
 		newEvent.distance = distance
@@ -66,8 +68,8 @@ final class CSVImporter {
 			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
-		car.distanceTotalSum = car.distanceTotalSum + distance
-		car.fuelVolumeTotalSum = car.fuelVolumeTotalSum + fuelVolume
+		car.distanceTotalSum += distance
+		car.fuelVolumeTotalSum += fuelVolume
 
 		return newEvent
 	}
@@ -185,7 +187,7 @@ final class CSVImporter {
 
 		// Now update order attribute of old car objects
 		for oldCar in fetchedCarObjects {
-			oldCar.order = oldCar.order + Int32(carForID.count)
+			oldCar.order += Int32(carForID.count)
 		}
 
 		return carForID.count
@@ -394,13 +396,13 @@ final class CSVImporter {
 							   inContext: managedObjectContext)
 
 					if filledUp {
-						inheritedCost       = zero
-						inheritedDistance   = zero
-						inheritedFuelVolume = zero
+						inheritedCost       = .zero
+						inheritedDistance   = .zero
+						inheritedFuelVolume = .zero
 					} else {
-						inheritedCost       = inheritedCost       + (volume * price!)
-						inheritedDistance   = inheritedDistance   + convertedDistance
-						inheritedFuelVolume = inheritedFuelVolume + volume
+						inheritedCost       += volume * price!
+						inheritedDistance   += convertedDistance
+						inheritedFuelVolume += volume
 					}
 
 					numEvents     += 1
@@ -715,14 +717,14 @@ final class CSVImporter {
 				unit = .kilometers
 				return key
 			}
-        }
+		}
 
 		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] {
 			if record[key] != nil {
 				unit = .miles
 				return key
 			}
-        }
+		}
 
 		return nil
 	}
@@ -733,7 +735,7 @@ final class CSVImporter {
 				unit = .liters
 				return key
 			}
-        }
+		}
 
 		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
 			if record[key] != nil {
@@ -747,7 +749,7 @@ final class CSVImporter {
 				unit = .imperialGallons
 				return key
 			}
-        }
+		}
 
 		return nil
 	}

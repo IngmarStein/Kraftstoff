@@ -42,6 +42,7 @@ class KraftstoffTests: XCTestCase {
 	private func roundtrip(_ language: String) {
 		let car = Car(context: managedObjectContext)
 
+		car.lastUpdate = Date()
 		car.order = 0
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"
@@ -85,6 +86,7 @@ class KraftstoffTests: XCTestCase {
     func testCSVExport() {
 		let car = Car(context: managedObjectContext)
 
+		car.lastUpdate = Date()
 		car.order = 0
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"

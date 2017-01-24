@@ -103,9 +103,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 
 		NotificationCenter.default.addObserver(self,
-           selector: #selector(FuelEventController.localeChanged(_:)),
-               name: NSLocale.currentLocaleDidChangeNotification,
-             object: nil)
+		                                       selector: #selector(FuelEventController.localeChanged(_:)),
+		                                       name: NSLocale.currentLocaleDidChangeNotification,
+		                                       object: nil)
 
 		// Dismiss any presented view controllers
 		if presentedViewController != nil {
@@ -263,18 +263,18 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		outputFormatter.dateStyle = .medium
 		outputFormatter.timeStyle = .none
 
-        let fetchedObjects = self.fetchedResultsController.fetchedObjects!
-        let fetchCount = fetchedObjects.count
+		let fetchedObjects = self.fetchedResultsController.fetchedObjects!
+		let fetchCount = fetchedObjects.count
 
 		let last = fetchedObjects.last
 		let first = fetchedObjects.first
 
 		let period: String
-        switch fetchCount {
+		switch fetchCount {
 		case 0:  period = NSLocalizedString("", comment: "")
 		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
 		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
-        }
+		}
 
 		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
