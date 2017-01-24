@@ -25,9 +25,9 @@ func snapshot(_ name: String, waitForLoadingIndicator: Bool = true) {
     Snapshot.snapshot(name, waitForLoadingIndicator: waitForLoadingIndicator)
 }
 
-class Snapshot: NSObject {
+open class Snapshot: NSObject {
 
-    class func setupSnapshot(_ app: XCUIApplication) {
+    open class func setupSnapshot(_ app: XCUIApplication) {
         setLanguage(app)
         setLocale(app)
         setLaunchArguments(app)
@@ -42,7 +42,7 @@ class Snapshot: NSObject {
 
         do {
             let trimCharacterSet = CharacterSet.whitespacesAndNewlines
-			deviceLanguage = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue).trimmingCharacters(in: trimCharacterSet) as String
+            deviceLanguage = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue).trimmingCharacters(in: trimCharacterSet) as String
             app.launchArguments += ["-AppleLanguages", "(\(deviceLanguage))"]
         } catch {
             print("Couldn't detect/set language...")
@@ -58,7 +58,7 @@ class Snapshot: NSObject {
 
         do {
             let trimCharacterSet = CharacterSet.whitespacesAndNewlines
-			locale = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue).trimmingCharacters(in: trimCharacterSet) as String
+            locale = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue).trimmingCharacters(in: trimCharacterSet) as String
         } catch {
             print("Couldn't detect/set locale...")
         }
@@ -79,7 +79,7 @@ class Snapshot: NSObject {
         do {
             let launchArguments = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String
             let regex = try NSRegularExpression(pattern: "(\\\".+?\\\"|\\S+)", options: [])
-			let matches = regex.matches(in: launchArguments, options: [], range: NSRange(location: 0, length: launchArguments.characters.count))
+            let matches = regex.matches(in: launchArguments, options: [], range: NSRange(location:0, length:launchArguments.characters.count))
             let results = matches.map { result -> String in
                 (launchArguments as NSString).substring(with: result.range)
             }
@@ -89,21 +89,30 @@ class Snapshot: NSObject {
         }
     }
 
-    class func snapshot(_ name: String, waitForLoadingIndicator: Bool = true) {
+    open class func snapshot(_ name: String, waitForLoadingIndicator: Bool = true) {
         if waitForLoadingIndicator {
             waitForLoadingIndicatorToDisappear()
         }
 
-        print("snapshot: \(name)") // more information about this, check out https://github.com/fastlane/snapshot
+        print("snapshot: \(name)") // more information about this, check out https://github.com/fastlane/fastlane/tree/master/snapshot#how-does-it-work
 
         sleep(1) // Waiting for the animation to be finished (kind of)
-        XCUIDevice.shared().orientation = .unknown
+
+        #if os(tvOS)
+            XCUIApplication().childrenMatchingType(.Browser).count
+        #else
+            XCUIDevice.shared().orientation = .unknown
+        #endif
     }
 
     class func waitForLoadingIndicatorToDisappear() {
-		let query = XCUIApplication().statusBars.children(matching: .other).element(boundBy: 1).children(matching: .other)
+        #if os(tvOS)
+            return
+        #endif
 
-		while (0..<query.count).map({ query.element(boundBy: $0) }).contains(where: { $0.isLoadingIndicator }) {
+        let query = XCUIApplication().statusBars.children(matching: .other).element(boundBy: 1).children(matching: .other)
+
+        while (0..<query.count).map({ query.element(boundBy: $0) }).contains(where: { $0.isLoadingIndicator }) {
             sleep(1)
             print("Waiting for loading indicator to disappear...")
         }
@@ -111,7 +120,7 @@ class Snapshot: NSObject {
 
     class func pathPrefix() -> NSString? {
         if let path = ProcessInfo().environment["SIMULATOR_HOST_HOME"] as NSString? {
-            return path.appendingPathComponent("Library/Caches/tools.fastlane") as NSString
+            return path.appendingPathComponent("Library/Caches/tools.fastlane") as NSString?
         }
         print("Couldn't find Snapshot configuration files at ~/Library/Caches/tools.fastlane")
         return nil
