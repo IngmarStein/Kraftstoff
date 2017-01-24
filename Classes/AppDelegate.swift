@@ -245,10 +245,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// Read file contents from given URL, guess file encoding
 	private static func contentsOfURL(_ url: URL) -> String? {
 		var enc: String.Encoding = String.Encoding.utf8
-		if let contents = try? String(contentsOf: url as URL, usedEncoding: &enc) {
+		if let contents = try? String(contentsOf: url, usedEncoding: &enc) {
 			return contents
 		}
-		if let contents = try? String(contentsOf: url as URL, encoding: String.Encoding.macOSRoman) {
+		if let contents = try? String(contentsOf: url, encoding: String.Encoding.macOSRoman) {
 			return contents
 		}
 		return nil
@@ -258,7 +258,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	private func removeFileItem(at url: URL) {
 		if url.isFileURL {
 			do {
-				try FileManager.default.removeItem(at: url as URL)
+				try FileManager.default.removeItem(at: url)
 			} catch let error {
 				print(error.localizedDescription)
 			}
@@ -367,7 +367,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	// MARK: - Receipt validation
 
 	private func receiptData(_ appStoreReceiptURL: URL?) -> Data? {
-		guard let receiptURL = appStoreReceiptURL, let receipt = try? Data(contentsOf: receiptURL as URL) else { return nil }
+		guard let receiptURL = appStoreReceiptURL, let receipt = try? Data(contentsOf: receiptURL) else { return nil }
 
 		do {
 			let receiptData = receipt.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
