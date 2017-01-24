@@ -69,7 +69,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 
-			CoreDataManager.migrateFromiCloud()
 			CoreDataManager.load()
 
 			CloudKitManager.initialize()
@@ -125,7 +124,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
 					attributeset.title = car.name
 					attributeset.contentDescription = car.numberPlate
-					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.m-schmidt.Kraftstoff.cars", attributeSet: attributeset)
+					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
 				}
 				CSSearchableIndex.default().indexSearchableItems(searchableItems, completionHandler: nil)
 			}
@@ -149,7 +148,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 	}
 
 	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-		if userActivity.activityType == "com.github.m-schmidt.Kraftstoff.fillup" {
+		if userActivity.activityType == "com.github.ingmarstein.kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
 				tabBarController.selectedIndex = 0
@@ -237,8 +236,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	private func hideImportAlert() {
-		self.window?.rootViewController?.dismiss(animated: true, completion: nil)
+	private func hideImportAlert(completion: @escaping () -> Void) {
+		self.window?.rootViewController?.dismiss(animated: true, completion: completion)
 		self.importAlert = nil
 	}
 
@@ -299,29 +298,29 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 
 				DispatchQueue.main.async {
-					self.hideImportAlert()
+					self.hideImportAlert {
+						let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
 
-					let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
+						let message = success
+							? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
+							: NSLocalizedString("No valid CSV data could be found.", comment: "")
 
-					let message = success
-						? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
-						: NSLocalizedString("No valid CSV data could be found.", comment: "")
-
-					let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
-					alertController.addAction(defaultAction)
-					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+						let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
+						alertController.addAction(defaultAction)
+						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+					}
 				}
 			} else {
 				DispatchQueue.main.async {
-					self.hideImportAlert()
-
-					let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
-					                                        message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
-					                                        preferredStyle: .alert)
-					let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
-					alertController.addAction(defaultAction)
-					self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+					self.hideImportAlert {
+						let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
+						                                        message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
+						                                        preferredStyle: .alert)
+						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+						alertController.addAction(defaultAction)
+						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+					}
 				}
 			}
 		}
@@ -432,7 +431,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 					}
 
 					// 0 if the receipt is valid
-					if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+					if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.ingmarstein.kraftstoff" {
 						self.appReceipt = receipt
 						onCompletion(true)
 					} else {
@@ -441,7 +440,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 
 				// 0 if the receipt is valid
-			} else if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.m-schmidt.kraftstoff" {
+			} else if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.ingmarstein.kraftstoff" {
 				self.appReceipt = receipt
 				onCompletion(true)
 			} else {

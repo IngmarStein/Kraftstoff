@@ -46,7 +46,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		userActivity = NSUserActivity(activityType: "com.github.m-schmidt.Kraftstoff.fillup")
+		userActivity = NSUserActivity(activityType: "com.github.ingmarstein.kraftstoff.fillup")
 		userActivity?.title = NSLocalizedString("Fill-Up", comment: "")
 		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
 		userActivity?.isEligibleForSearch = true

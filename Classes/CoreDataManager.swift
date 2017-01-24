@@ -19,23 +19,10 @@ final class CoreDataManager {
 	}()
 
 	static let persistentContainer: NSPersistentContainer = {
-		return NSPersistentContainer(name: "Kraftstoffrechner")
+		return NSPersistentContainer(name: "Fuel")
 	}()
 
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
-
-	private static let iCloudStoreURL = URL(fileURLWithPath: applicationDocumentsDirectory).appendingPathComponent("Fuel.sqlite")
-
-	private static let iCloudStoreDescription: NSPersistentStoreDescription = {
-		let storeDescription = NSPersistentStoreDescription()
-		storeDescription.type = NSSQLiteStoreType
-		storeDescription.url = iCloudStoreURL
-		storeDescription.shouldMigrateStoreAutomatically = true
-		storeDescription.shouldInferMappingModelAutomatically = true
-		storeDescription.shouldAddStoreAsynchronously = false
-		storeDescription.setOption("Kraftstoff2" as NSString, forKey: NSPersistentStoreUbiquitousContentNameKey)
-		return storeDescription
-	}()
 
 	static let sharedInstance = CoreDataManager()
 
@@ -102,35 +89,6 @@ final class CoreDataManager {
 			return nil
 		} else {
 			return try? moc.existingObject(with: object.objectID)
-		}
-	}
-
-	// MARK: - iCloud support
-
-	static func migrateFromiCloud() {
-		// migrate iCloud store to local
-		let migrationPSC = NSPersistentStoreCoordinator(managedObjectModel: persistentContainer.managedObjectModel)
-
-		// Open the existing store
-		do {
-			let sourceStore = try migrationPSC.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: iCloudStoreURL, options: iCloudStoreDescription.options)
-			let targetStoreDescription = persistentContainer.persistentStoreDescriptions[0]
-
-			var migrationOptions = targetStoreDescription.options
-			migrationOptions[NSPersistentStoreRemoveUbiquitousMetadataOption] = NSNumber(value: true)
-
-			do {
-				try FileManager.default.removeItem(at: targetStoreDescription.url!)
-			}
-			do {
-				let migratedStore = try migrationPSC.migratePersistentStore(sourceStore, to: targetStoreDescription.url!, options: migrationOptions, withType: targetStoreDescription.type)
-				try migrationPSC.remove(migratedStore)
-				// NSPersistentStoreCoordinator.removeUbiquitousContentAndPersistentStore(at: iCloudStoreURL, options: iCloudStoreDescription.options)
-			} catch let error {
-				print("error while migrating from iCloud: \(error)")
-			}
-		} catch let error {
-			print("failed to open iCloud store for migration: \(error)")
 		}
 	}
 

@@ -1,4 +1,4 @@
-app_identifier "com.github.m-schmidt.kraftstoff" # The bundle identifier of your app
+app_identifier "com.github.ingmarstein.kraftstoff" # The bundle identifier of your app
 apple_id "IngmarStein@gmx.net" # Your Apple email address
 
 team_name "Ingmar Stein"
