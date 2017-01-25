@@ -46,10 +46,12 @@ final class TextEditTableCell: EditablePageCell {
 
 	// MARK: - UITextFieldDelegate
 
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+	override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		// Let the focus handler handle switching to next textfield
 		if let focusHandler = self.delegate as? EditablePageCellFocusHandler {
 			focusHandler.focusNextFieldForValueIdentifier(self.valueIdentifier)
+		} else {
+			return super.textFieldShouldReturn(textField)
 		}
 
 		return false

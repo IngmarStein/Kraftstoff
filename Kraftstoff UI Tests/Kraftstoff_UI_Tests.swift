@@ -92,9 +92,9 @@ class KraftstoffUITests: XCTestCase {
 		let volumeTextField = tablesQuery.textFields["fuelVolume"]
 		volumeTextField.tap()
 		if deviceLanguage == "en" {
-			volumeTextField.typeText("7450")
+			volumeTextField.typeText("7450\n")
 		} else {
-			volumeTextField.typeText("2651")
+			volumeTextField.typeText("2651\n")
 		}
 
 		app.navigationBars.buttons["done"].tap()

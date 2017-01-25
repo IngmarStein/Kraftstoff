@@ -13,7 +13,7 @@ languages([
   "en-US",
   "de-DE",
   "fr-FR",
-  "jp-JP"
+  "ja-JP"
 ])
 
 # Arguments to pass to the app on launch. See https://github.com/fastlane/snapshot#launch_arguments

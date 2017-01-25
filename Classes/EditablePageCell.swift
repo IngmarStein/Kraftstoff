@@ -108,4 +108,10 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.isUserInteractionEnabled = false
 	}
 
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+
+		return false
+	}
+
 }
