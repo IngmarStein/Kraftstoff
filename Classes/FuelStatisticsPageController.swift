@@ -107,6 +107,10 @@ final class FuelStatisticsPageController: UIPageViewController {
 		return true
 	}
 
+	override var prefersStatusBarHidden: Bool {
+		return true
+	}
+
 	// MARK: - Cache Handling
 
 	func invalidateCaches() {
