@@ -90,10 +90,6 @@ final class FuelStatisticsPageController: UIPageViewController {
 		return statisticsViewController.pageIndex
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
-	}
-
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
@@ -103,8 +99,17 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	// MARK: - View Rotation
 
-	override var shouldAutorotate: Bool {
-		return true
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		coordinator.animate(alongsideTransition: { _ in
+			// Switch view controllers according rotation state
+			let interfaceOrientation = UIApplication.shared.statusBarOrientation
+
+			if UIInterfaceOrientationIsPortrait(interfaceOrientation) && self.presentingViewController != nil {
+				self.dismiss(animated: true, completion: nil)
+			}
+		}, completion: nil)
+
+		super.viewWillTransition(to: size, with: coordinator)
 	}
 
 	override var prefersStatusBarHidden: Bool {
@@ -172,10 +177,6 @@ final class FuelStatisticsPageController: UIPageViewController {
 }
 
 extension FuelStatisticsPageController: UIPageViewControllerDelegate {
-
-	func pageViewControllerSupportedInterfaceOrientations(_ pageViewController: UIPageViewController) -> UIInterfaceOrientationMask {
-		return .landscape
-	}
 
 	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
 		if completed {

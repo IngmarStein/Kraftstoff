@@ -47,8 +47,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	private var statisticsController: FuelStatisticsPageController!
 
 	private var isShowingAlert = false
-	private var isObservingRotationEvents = false
-	private var isPerformingRotation = false
 	private var isShowingExportSheet = false
 	private var restoreExportSheet = false
 	private var restoreOpenIn = false
@@ -122,22 +120,12 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
-		setObserveDeviceRotation(true)
-
 		if restoreExportSheet {
 			showExportSheet(nil)
 		} else if restoreOpenIn {
 			showOpenIn()
 		} else if restoreMailComposer {
 			showMailComposer()
-		}
-	}
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-
-		if presentedViewController == nil {
-			setObserveDeviceRotation(false)
 		}
 	}
 
@@ -185,47 +173,27 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	// MARK: - Device Rotation
 
-	func setObserveDeviceRotation(_ observeRotation: Bool) {
-		if observeRotation && !isObservingRotationEvents {
-			UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-
-			NotificationCenter.default.addObserver(self,
-               selector: #selector(FuelEventController.orientationChanged(_:)),
-                   name: Notification.Name.UIDeviceOrientationDidChange,
-                 object: UIDevice.current)
-
-		} else if !observeRotation && isObservingRotationEvents {
-			NotificationCenter.default.removeObserver(self,
-                      name: Notification.Name.UIDeviceOrientationDidChange,
-                    object: UIDevice.current)
-
-			UIDevice.current.endGeneratingDeviceOrientationNotifications()
-		}
-
-		isObservingRotationEvents = observeRotation
-	}
-
-	func orientationChanged(_ aNotification: NSNotification) {
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		// Ignore rotation when sheets or alerts are visible
 		if openInController != nil || documentPickerViewController != nil || mailComposeController != nil {
 			return
 		}
 
-		if isShowingExportSheet || isPerformingRotation || isShowingAlert || !isObservingRotationEvents {
+		if isShowingExportSheet || isShowingAlert {
 			return
 		}
 
-		// Switch view controllers according rotation state
-		let deviceOrientation = UIDevice.current.orientation
+		coordinator.animate(alongsideTransition: { _ in
+			// Switch view controllers according rotation state
+			let interfaceOrientation = UIApplication.shared.statusBarOrientation
 
-		if UIDeviceOrientationIsLandscape(deviceOrientation) && presentedViewController == nil {
-			isPerformingRotation = true
-			statisticsController.selectedCar = selectedCar
-			present(statisticsController, animated: true, completion: { self.isPerformingRotation = false })
-		} else if UIDeviceOrientationIsPortrait(deviceOrientation) && presentedViewController != nil {
-			isPerformingRotation = true
-			dismiss(animated: true, completion: { self.isPerformingRotation = false })
-		}
+			if UIInterfaceOrientationIsLandscape(interfaceOrientation) && self.presentedViewController == nil {
+				self.statisticsController.selectedCar = self.selectedCar
+				self.present(self.statisticsController, animated: true, completion: nil)
+			}
+		}, completion: nil)
+
+		super.viewWillTransition(to: size, with: coordinator)
 	}
 
 	// MARK: - Locale Handling
