@@ -793,6 +793,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			defaults.set(newValue, forKey: "recentFilledUp")
 			defaults.synchronize()
 
+			if !self.isEditing {
+				if consumptionRowNeeded() {
+					createConsumptionRowWithAnimation(UITableViewRowAnimation.fade)
+				} else {
+					removeSectionAtIndex(1, withAnimation: UITableViewRowAnimation.fade)
+				}
+			}
+
 		} else if valueIdentifier == "comment" {
 			comment = newValue as? String
 
