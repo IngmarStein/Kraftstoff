@@ -172,9 +172,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return
 		}
 
-		let zero = NSDecimalNumber.zero
-
-		if (distance == nil || distance! == zero) && (fuelVolume == nil || fuelVolume! == zero) && (price == nil || price! == zero) {
+		if (distance == nil || distance! == .zero) && (fuelVolume == nil || fuelVolume! == .zero) && (price == nil || price! == .zero) {
 			return
 		}
 
@@ -186,9 +184,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
                          self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
                          self.valueChanged(now, identifier: "lastChangeDate")
-                         self.valueChanged(zero, identifier: "distance")
-                         self.valueChanged(zero, identifier: "price")
-                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "distance")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "price")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "fuelVolume")
                          self.valueChanged(true, identifier: "filledUp")
 						 self.valueChanged("", identifier: "comment")
 
@@ -208,9 +206,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return false
 		}
 
-		let zero = NSDecimalNumber.zero
-
-		if (distance == nil || distance! <= zero) || (fuelVolume == nil || fuelVolume! <= zero) {
+		if (distance == nil || distance! <= .zero) || (fuelVolume == nil || fuelVolume! <= .zero) {
 			return false
 		}
 
@@ -577,11 +573,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 						                             forceOdometerUpdate: false)
 
                          // Reset calculator table
-                         let zero = NSDecimalNumber.zero
-
-                         self.valueChanged(zero, identifier: "distance")
-                         self.valueChanged(zero, identifier: "price")
-                         self.valueChanged(zero, identifier: "fuelVolume")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "distance")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "price")
+                         self.valueChanged(NSDecimalNumber.zero, identifier: "fuelVolume")
                          self.valueChanged(true, identifier: "filledUp")
 						 self.valueChanged("", identifier: "comment")
 

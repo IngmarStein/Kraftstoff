@@ -293,9 +293,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Don't add the section when no value can be computed
-		let zero = NSDecimalNumber.zero
-
-		if distance <= zero || fuelVolume <= zero {
+		if distance <= .zero || fuelVolume <= .zero {
 			return
 		}
 
@@ -501,9 +499,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Validation of Done button
 		var canBeSaved = true
 
-		let zero = NSDecimalNumber.zero
-
-		if !(distance > zero && fuelVolume > zero) {
+		if !(distance > .zero && fuelVolume > .zero) {
 			canBeSaved = false
 		} else if date != event.timestamp {
 			if CoreDataManager.containsEventWithCar(car, andDate: date) {

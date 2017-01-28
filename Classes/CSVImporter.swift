@@ -54,17 +54,15 @@ final class CSVImporter {
 			newEvent.filledUp = filledUp
 		}
 
-		let zero = NSDecimalNumber.zero
-
-		if inheritedCost != zero {
+		if inheritedCost != .zero {
 			newEvent.inheritedCost = inheritedCost
 		}
 
-		if inheritedDistance != zero {
+		if inheritedDistance != .zero {
 			newEvent.inheritedDistance = inheritedDistance
 		}
 
-		if inheritedFuelVolume != zero {
+		if inheritedFuelVolume != .zero {
 			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
@@ -293,11 +291,10 @@ final class CSVImporter {
 			var detectedEvents    = false
 			var initialFillUpSeen = false
 
-			let zero                = NSDecimalNumber.zero
-			var odometer            = zero
-			var inheritedCost       = zero
-			var inheritedDistance   = zero
-			var inheritedFuelVolume = zero
+			var odometer: NSDecimalNumber            = .zero
+			var inheritedCost: NSDecimalNumber       = .zero
+			var inheritedDistance: NSDecimalNumber   = .zero
+			var inheritedFuelVolume: NSDecimalNumber = .zero
 
 			// For all records...
 			for record in sortedRecords {
@@ -379,7 +376,7 @@ final class CSVImporter {
 				}
 
 				// Consistency check and import
-				if let distance = distance, let volume = volume, distance > zero && volume > zero {
+				if let distance = distance, let volume = volume, distance > .zero && volume > .zero {
 					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume: volume)
 
 					// Add event for car
