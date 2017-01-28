@@ -11,9 +11,6 @@ import Foundation
 // Calendar component-mask for date+time but without seconds
 private let noSecondsComponentMask: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute]
 
-// Calendar component-mask for hour+minutes
-private let timeOfDayComponentMask: Set<Calendar.Component> = [.hour, .minute]
-
 extension Date {
 
 	static func dateWithOffsetInMonths(_ numberOfMonths: Int, fromDate date: Date) -> Date {
@@ -37,19 +34,15 @@ extension Date {
 
 	static func timeIntervalSinceBeginningOfDay(_ date: Date) -> TimeInterval {
 		let gregorianCalendar = Calendar(identifier: Calendar.Identifier.gregorian)
-		let timeOfDayComponents = gregorianCalendar.dateComponents(timeOfDayComponentMask, from: date)
+		let startOfDay = gregorianCalendar.startOfDay(for: date)
 
-		return TimeInterval(timeOfDayComponents.hour! * 3600 + timeOfDayComponents.minute! * 60)
+		return date.timeIntervalSince(startOfDay)
 	}
 
 	static func numberOfCalendarDaysFrom(_ startDate: Date, to endDate: Date) -> Int {
 		let gregorianCalendar = Calendar(identifier: Calendar.Identifier.gregorian)
-		let referenceDate = Date(timeIntervalSinceReferenceDate: 0.0)
 
-		let daysToStart = gregorianCalendar.dateComponents([.day], from: referenceDate, to: startDate).day
-		let daysToEnd   = gregorianCalendar.dateComponents([.day], from: referenceDate, to: endDate).day
-
-		return daysToEnd! - daysToStart! + 1
+		return gregorianCalendar.dateComponents([.day], from: startDate, to: endDate).day!
 	}
 
 }
