@@ -211,8 +211,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as String? ?? "") ?? 0
 
-		// we don't restore from iOS6 compatible or future versions of the App
-		return stateVersion >= 1572 && stateVersion <= bundleVersion
+		// we don't restore from future versions of the app
+		return stateVersion <= bundleVersion
 	}
 
 	// MARK: - Data Import
