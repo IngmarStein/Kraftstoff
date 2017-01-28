@@ -99,7 +99,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	var invalidTextColor: UIColor? {
-		return UIApplication.shared.delegate!.window!!.tintColor
+		return UIApplication.kraftstoffAppDelegate.window?.tintColor
 	}
 
 	// MARK: - UITextFieldDelegate
