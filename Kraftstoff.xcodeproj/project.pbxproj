@@ -144,7 +144,7 @@
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CloudKitManager.swift; path = Classes/CloudKitManager.swift; sourceTree = "<group>"; };
 		9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManagedObject.swift; sourceTree = "<group>"; };
-		9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedMeasurementFormatter.swift; sourceTree = "<group>"; };
+		9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizedMeasurementFormatter.swift; path = Classes/LocalizedMeasurementFormatter.swift; sourceTree = "<group>"; };
 		9EB2B04F1DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		9EB2B0501DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EB2B0511DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
