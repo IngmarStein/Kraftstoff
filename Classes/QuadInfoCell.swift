@@ -105,7 +105,9 @@ final class QuadInfoCell: UITableViewCell {
 
 	override var accessibilityLabel: String? {
 		get {
-			var label = "\((topLeftAccessibilityLabel ?? topLeftLabel.text) ?? ""), \((botLeftAccessibilityLabel ?? botLeftLabel.text) ?? ""))"
+			let topLeftText = (topLeftAccessibilityLabel ?? topLeftLabel.text) ?? ""
+			let botLeftText = (botLeftAccessibilityLabel ?? botLeftLabel.text) ?? ""
+			var label = "\(topLeftText), \(botLeftText))"
 			if cellState == [] {
 				if let accessibilityLabel = topRightAccessibilityLabel {
 					label = "\(label), \(accessibilityLabel)"
