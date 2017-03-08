@@ -673,7 +673,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
                     // Date information
                     let df = Formatters.longDateFormatter
 
-					if cell.lensDate [minIndex][0] == cell.lensDate [minIndex][1] {
+					if cell.lensDate[minIndex][0] == cell.lensDate[minIndex][1] {
                         self.centerLabel.text = df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0]))
 					} else {
                         self.centerLabel.text = "\(df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][0])))  ➡  \(df.string(from: Date(timeIntervalSinceReferenceDate: cell.lensDate[minIndex][1])))"
