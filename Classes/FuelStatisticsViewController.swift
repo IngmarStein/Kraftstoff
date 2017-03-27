@@ -121,10 +121,8 @@ class FuelStatisticsViewController: UIViewController {
 	}
 
 	func purgeDiscardableCacheContent() {
-		for (key, value) in contentCache {
-			if key != displayedNumberOfMonths {
-                value.discardContent()
-			}
+		for (key, value) in contentCache where key != displayedNumberOfMonths {
+			value.discardContent()
         }
 	}
 

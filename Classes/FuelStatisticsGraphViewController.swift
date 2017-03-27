@@ -73,13 +73,11 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private var zooming = false {
 		didSet {
-			for subview in self.view.subviews {
-				if subview.tag > 0 {
-					if subview.tag < 1000 {
-						subview.isHidden = zooming
-					} else {
-						subview.isHidden = !zooming
-					}
+			for subview in self.view.subviews where subview.tag > 0 {
+				if subview.tag < 1000 {
+					subview.isHidden = zooming
+				} else {
+					subview.isHidden = !zooming
 				}
 			}
 
@@ -265,17 +263,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// Build curve data from resampled values
 		state.dataCount = 0
 
-		for i in 0..<maxSamples {
-			if samplesCount[i] > 0 {
+		for i in 0..<maxSamples where samplesCount[i] > 0 {
+			state.data[state.dataCount] = CGPoint(x: CGFloat(i) / CGFloat(maxSamples-1), y: 1.0 - samples [i] / CGFloat(samplesCount[i]))
 
-				state.data[state.dataCount] = CGPoint(x: CGFloat(i) / CGFloat(maxSamples-1), y: 1.0 - samples [i] / CGFloat(samplesCount[i]))
+			state.lensDate[state.dataCount][0] = state.lensDate[i][0]
+			state.lensDate[state.dataCount][1] = state.lensDate[i][(samplesCount[i] > 1) ? 1 : 0]
+			state.lensValue[state.dataCount] = state.lensValue[i] / CGFloat(samplesCount[i])
 
-				state.lensDate[state.dataCount][0] = state.lensDate[i][0]
-				state.lensDate[state.dataCount][1] = state.lensDate[i][(samplesCount[i] > 1) ? 1 : 0]
-				state.lensValue[state.dataCount] = state.lensValue[i] / CGFloat(samplesCount[i])
-
-				state.dataCount += 1
-			}
+			state.dataCount += 1
 		}
 
 		// Markers for vertical axis

@@ -456,12 +456,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		// Update order of existing objects
 		changeIsUserDriven = true
 
-		for managedObject in self.fetchedResultsController.fetchedObjects! {
-			let order = managedObject.order
-
-			if order > deletedObjectOrder {
-				managedObject.order = order-1
-			}
+		for managedObject in self.fetchedResultsController.fetchedObjects! where managedObject.order > deletedObjectOrder {
+			managedObject.order -= 1
         }
 
 		CoreDataManager.saveContext()

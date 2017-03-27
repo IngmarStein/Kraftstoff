@@ -671,91 +671,71 @@ final class CSVImporter {
 	// MARK: - Interpretation of CSV Header Names
 
 	private func keyForDate(_ record: CSVRecord) -> String? {
-		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForTime(_ record: CSVRecord) -> String? {
-		for key in [ "HHMM", "TIME", "ZEIT" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "HHMM", "TIME", "ZEIT" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForDistance(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
-		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] {
-			if record[key] != nil {
-				unit = .kilometers
-				return key
-			}
+		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] where record[key] != nil {
+			unit = .kilometers
+			return key
 		}
 
-		for key in [ "MILES", "MEILEN" ] {
-			if record[key] != nil {
-				unit = .miles
-				return key
-			}
+		for key in [ "MILES", "MEILEN" ] where record[key] != nil {
+			unit = .miles
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForOdometer(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
-		for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] {
-			if record[key] != nil {
-				unit = .kilometers
-				return key
-			}
+		for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] where record[key] != nil {
+			unit = .kilometers
+			return key
 		}
 
-		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] {
-			if record[key] != nil {
-				unit = .miles
-				return key
-			}
+		for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] where record[key] != nil {
+			unit = .miles
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForVolume(_ record: CSVRecord, unit: inout UnitVolume?) -> String? {
-		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] {
-			if record[key] != nil {
-				unit = .liters
-				return key
-			}
+		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] where record[key] != nil {
+			unit = .liters
+			return key
 		}
 
-		for key in [ "GALLONS(US)", "GALLONEN(US)" ] {
-			if record[key] != nil {
-				unit = .gallons
-				return key
-			}
+		for key in [ "GALLONS(US)", "GALLONEN(US)" ] where record[key] != nil {
+			unit = .gallons
+			return key
 		}
 
-		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] {
-			if record[key] != nil {
-				unit = .imperialGallons
-				return key
-			}
+		for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] where record[key] != nil {
+			unit = .imperialGallons
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForVolume(_ record: CSVRecord) -> String? {
-		for key in [ "GETANKT", "AMOUNTFILLED" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "GETANKT", "AMOUNTFILLED" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
@@ -763,60 +743,48 @@ final class CSVImporter {
 
 	private func keyForVolumeUnit(_ record: CSVRecord) -> String? {
 		// 'MAFLEINHEIT' happens when Windows encoding is misinterpreted as MacRoman...
-		for key in [ "MASSEINHEIT", "UNIT", "MAFLEINHEIT" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "MASSEINHEIT", "UNIT", "MAFLEINHEIT" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForPrice(_ record: CSVRecord) -> String? {
-		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForFillup(_ record: CSVRecord) -> String? {
-		for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForModel(_ record: CSVRecord) -> String? {
-		for key in [ "MODEL", "MODELL" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "MODEL", "MODELL" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForCarID(_ record: CSVRecord) -> String? {
-		for key in [ "CARID", "FAHRZEUGID" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "CARID", "FAHRZEUGID" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
 	}
 
 	private func keyForComment(_ record: CSVRecord) -> String? {
-		for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE" ] {
-			if record[key] != nil {
-				return key
-			}
+		for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE" ] where record[key] != nil {
+			return key
 		}
 
 		return nil
