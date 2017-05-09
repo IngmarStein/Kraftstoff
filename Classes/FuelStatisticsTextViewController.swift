@@ -72,18 +72,14 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		for fetchedObject in fetchedObjects.lazy.reversed() {
-			let managedObject: FuelEvent! = CoreDataManager.existingObject(fetchedObject, inManagedObjectContext: moc) as? FuelEvent
+			guard let fuelEvent = CoreDataManager.existingObject(fetchedObject, inManagedObjectContext: moc) as? FuelEvent else { continue }
 
-			if managedObject == nil {
-				continue
-			}
-
-			let distance = managedObject.distance
-			let fuelVolume = managedObject.fuelVolume
-			let cost = managedObject.cost
+			let distance = fuelEvent.ksDistance
+			let fuelVolume = fuelEvent.ksFuelVolume
+			let cost = fuelEvent.cost
 
 			// Collect dates of events
-			let timestamp = managedObject.timestamp
+			let timestamp = fuelEvent.ksTimestamp
 
 			if state.firstDate == nil || timestamp <= state.firstDate! {
 				state.firstDate = timestamp
@@ -99,10 +95,10 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			state.totalDistance += distance
 
 			// Track consumption
-			if managedObject.filledUp {
+			if fuelEvent.filledUp {
 
-				let inheritedDistance = managedObject.inheritedDistance
-				let inheritedFuelVolume = managedObject.inheritedFuelVolume
+				let inheritedDistance = fuelEvent.ksInheritedDistance
+				let inheritedFuelVolume = fuelEvent.ksInheritedFuelVolume
 
 				let consumption = Units.consumptionForKilometers(distance + inheritedDistance,
                                                                           liters: fuelVolume + inheritedFuelVolume,

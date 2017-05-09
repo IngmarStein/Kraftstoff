@@ -160,7 +160,7 @@ class FuelStatisticsViewController: UIViewController {
 
 				if recentEvents.count > 0 {
 					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext: sampleContext) as? FuelEvent {
-						recentFillupDate = recentEvent.timestamp
+						recentFillupDate = recentEvent.ksTimestamp
 					}
 				}
 

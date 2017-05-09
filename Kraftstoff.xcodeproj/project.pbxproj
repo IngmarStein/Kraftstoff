@@ -20,6 +20,14 @@
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
 		95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */; };
 		95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */; };
+		956E44B81EB9228A006317CE /* FetchRecordChangesForCloudKitZoneOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */; };
+		956E44B91EB92290006317CE /* ClearDeletedCloudKitObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */; };
+		956E44BA1EB92290006317CE /* FetchOfflineChangesFromCoreDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */; };
+		956E44BB1EB92290006317CE /* ProcessSyncChangesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */; };
+		956E44BD1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */; };
+		956E44BF1EBF34F5006317CE /* DeletedCloudKitObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */; };
+		956E44C11EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */; };
+		956E44C41EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */; };
 		957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957F24B21E2E673C007AC96A /* StyleKit.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D8E1AF7BDCC006A56D6 /* Car.swift */; };
@@ -90,6 +98,10 @@
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
+		953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProcessSyncChangesOperation.swift; sourceTree = "<group>"; };
+		953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearDeletedCloudKitObjectsOperation.swift; sourceTree = "<group>"; };
+		953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchOfflineChangesFromCoreDataOperation.swift; sourceTree = "<group>"; };
+		953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRecordChangesForCloudKitZoneOperation.swift; sourceTree = "<group>"; };
 		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -97,6 +109,10 @@
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
 		95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarConfigurationController.swift; sourceTree = "<group>"; };
 		95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEventEditorController.swift; sourceTree = "<group>"; };
+		956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRecordsForModifiedObjectsOperation.swift; sourceTree = "<group>"; };
+		956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletedCloudKitObject.swift; sourceTree = "<group>"; };
+		956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyRecordsFromManagedObjectsOperation.swift; sourceTree = "<group>"; };
+		956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveChangedRecordsToCoreDataOperation.swift; sourceTree = "<group>"; };
 		957F24B21E2E673C007AC96A /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleKit.swift; path = Classes/StyleKit.swift; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95AE6D8E1AF7BDCC006A56D6 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
@@ -142,7 +158,7 @@
 		9E228BA91C6CB193000EDD88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
-		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CloudKitManager.swift; path = Classes/CloudKitManager.swift; sourceTree = "<group>"; };
+		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManagedObject.swift; sourceTree = "<group>"; };
 		9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizedMeasurementFormatter.swift; path = Classes/LocalizedMeasurementFormatter.swift; sourceTree = "<group>"; };
 		9EB2B04F1DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -188,6 +204,7 @@
 				4D630C3E12EEF83500134FD7 /* Calculator */,
 				4D630C0812EEEE3400134FD7 /* Car Configurator */,
 				4D8079DB12A59FBE0082C40A /* Car View */,
+				953E099E1E4CCB4500B3BDFA /* CloudKit */,
 				4D8329E31401295600E4F22F /* CSV */,
 				4D1899B714328AEF001434BD /* Extensions */,
 				4DDC18771429EC4400383F92 /* FuelEvent Editor */,
@@ -230,7 +247,6 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D941AF8A4B5006A56D6 /* AppDelegate.swift */,
-				9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */,
 				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */,
@@ -428,11 +444,35 @@
 			name = "FuelEvent Statistics";
 			sourceTree = "<group>";
 		};
+		953E099E1E4CCB4500B3BDFA /* CloudKit */ = {
+			isa = PBXGroup;
+			children = (
+				9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */,
+				956E44C21EBF4518006317CE /* Operations */,
+			);
+			name = CloudKit;
+			sourceTree = "<group>";
+		};
+		956E44C21EBF4518006317CE /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */,
+				953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */,
+				953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */,
+				956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */,
+				956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */,
+				953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */,
+				956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */,
+			);
+			name = Operations;
+			sourceTree = "<group>";
+		};
 		95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */ = {
 			isa = PBXGroup;
 			children = (
 				95AE6D8E1AF7BDCC006A56D6 /* Car.swift */,
 				9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */,
+				956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */,
 				95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */,
 			);
 			name = "Managed Objects";
@@ -639,6 +679,7 @@
 				957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */,
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
+				956E44BA1EB92290006317CE /* FetchOfflineChangesFromCoreDataOperation.swift in Sources */,
 				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,
 				95F196301B961D90000E4D0C /* StoreManager.swift in Sources */,
 				95C071731AF62AC800DF261C /* TextEditTableCell.swift in Sources */,
@@ -652,25 +693,32 @@
 				95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */,
 				955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */,
 				952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */,
+				956E44C11EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift in Sources */,
 				95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */,
 				95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
 				9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */,
+				956E44BD1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
+				956E44BB1EB92290006317CE /* ProcessSyncChangesOperation.swift in Sources */,
 				95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,
 				95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */,
 				95C0717F1AF65A0100DF261C /* EditableProxyPageCell.swift in Sources */,
 				955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */,
+				956E44B81EB9228A006317CE /* FetchRecordChangesForCloudKitZoneOperation.swift in Sources */,
 				95AE6D971AF8CDAF006A56D6 /* CarViewController.swift in Sources */,
 				959A61B81AF4159600BDF116 /* Units.swift in Sources */,
 				95C071711AF6269400DF261C /* SwitchTableCell.swift in Sources */,
 				95AE6D9B1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift in Sources */,
 				95C071771AF638EF00DF261C /* EditablePageCellTextField.swift in Sources */,
+				956E44BF1EBF34F5006317CE /* DeletedCloudKitObject.swift in Sources */,
 				95C0716F1AF623AC00DF261C /* PageCellDescription.swift in Sources */,
+				956E44B91EB92290006317CE /* ClearDeletedCloudKitObjectsOperation.swift in Sources */,
 				95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */,
 				953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */,
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
+				956E44C41EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift in Sources */,
 				9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
@@ -1005,6 +1053,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WARNING_CFLAGS = (
@@ -1049,6 +1098,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LLVM_LTO = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				WARNING_CFLAGS = (

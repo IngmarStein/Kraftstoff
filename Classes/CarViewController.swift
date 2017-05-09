@@ -11,7 +11,7 @@ import CoreData
 import CoreSpotlight
 
 private let maxEditHelpCounter = 1
-private let kSRCarViewEditedObject = "CarViewEditedObject"
+private let CarViewEditedObject = "CarViewEditedObject"
 
 final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIDocumentPickerDelegate {
 
@@ -100,7 +100,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: kSRCarViewEditedObject)
+			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: CarViewEditedObject)
 		}
 		super.encodeRestorableState(with: coder)
 	}
@@ -108,7 +108,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	override func decodeRestorableState(with coder: NSCoder) {
 		super.decodeRestorableState(with: coder)
 
-		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRCarViewEditedObject) as String? {
+		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: CarViewEditedObject) as String? {
 			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 
@@ -244,24 +244,24 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			changeIsUserDriven = false
 
 			// Create a new instance of the entity managed by the fetched results controller.
-			let newManagedObject = Car(context: CoreDataManager.managedObjectContext)
+			let newCar = Car(context: CoreDataManager.managedObjectContext)
 
-			newManagedObject.lastUpdate = Date()
-			newManagedObject.order = 0
-			newManagedObject.timestamp = Date()
-			newManagedObject.name = controller.name!
-			newManagedObject.numberPlate = controller.plate!
-			newManagedObject.odometerUnit = controller.odometerUnit!.int32Value
+			newCar.lastUpdate = NSDate()
+			newCar.order = 0
+			newCar.timestamp = NSDate()
+			newCar.name = controller.name!
+			newCar.numberPlate = controller.plate!
+			newCar.odometerUnit = controller.odometerUnit!.int32Value
 
-			newManagedObject.odometer = Units.kilometersForDistance(controller.odometer!,
+			newCar.odometer = Units.kilometersForDistance(controller.odometer!,
 														withUnit: .fromPersistentId(controller.odometerUnit!.int32Value))
 
-			newManagedObject.fuelUnit = controller.fuelUnit!.int32Value
-			newManagedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.int32Value
+			newCar.fuelUnit = controller.fuelUnit!.int32Value
+			newCar.fuelConsumptionUnit = controller.fuelConsumptionUnit!.int32Value
 
 			// Add demo contents
 			if addDemoContents {
-				DemoData.addDemoEvents(newManagedObject, inContext: CoreDataManager.managedObjectContext)
+				DemoData.addDemoEvents(newCar, inContext: CoreDataManager.managedObjectContext)
 			}
 
 			// Saving here is important here to get a stable objectID for the fuelEvent fetches
@@ -274,7 +274,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			editedObject.odometerUnit = controller.odometerUnit!.int32Value
 
 			let odometer = max(Units.kilometersForDistance(controller.odometer!,
-			                                               withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.distanceTotalSum)
+			                                               withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.ksDistanceTotalSum)
 
 			editedObject.odometer = odometer
 			editedObject.fuelUnit = controller.fuelUnit!.int32Value
@@ -410,7 +410,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				}
 
 				configurator.odometerUnit = NSNumber(value: editedObject.odometerUnit)
-				configurator.odometer     = Units.distanceForKilometers(editedObject.odometer,
+				configurator.odometer     = Units.distanceForKilometers(editedObject.ksOdometer,
                                                                   withUnit: editedObject.ksOdometerUnit)
 
 				configurator.fuelUnit            = NSNumber(value: editedObject.fuelUnit)
@@ -477,23 +477,23 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
 
 		guard let tableCell = cell as? QuadInfoCell else { return }
-		let managedObject = self.fetchedResultsController.object(at: indexPath)
+		let car = self.fetchedResultsController.object(at: indexPath)
 
 		tableCell.large = true
 
 		// name and number plate
-		tableCell.topLeftLabel.text = managedObject.name
+		tableCell.topLeftLabel.text = car.name
 		tableCell.topLeftAccessibilityLabel = nil
 
-		tableCell.botLeftLabel.text = managedObject.numberPlate
+		tableCell.botLeftLabel.text = car.numberPlate
 		tableCell.topRightAccessibilityLabel = nil
 
 		// Average consumption
 		let avgConsumption: String
-		let consumptionUnit = managedObject.ksFuelConsumptionUnit
+		let consumptionUnit = car.ksFuelConsumptionUnit
 
-		let distance   = managedObject.distanceTotalSum
-		let fuelVolume = managedObject.fuelVolumeTotalSum
+		let distance   = car.ksDistanceTotalSum
+		let fuelVolume = car.ksFuelVolumeTotalSum
 
 		if distance > .zero && fuelVolume > .zero {
 			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit))!

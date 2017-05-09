@@ -13,22 +13,21 @@
 
 import UIKit
 
-public class StyleKit : NSObject {
+public class StyleKit: NSObject {
 
-    //// Drawing Methods
+    // Drawing Methods
 
     public dynamic class func drawStartHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, text: String = "Start here…") {
-        //// General Declarations
+        // General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
-        //// Resize to Target Frame
+
+        // Resize to Target Frame
         context.saveGState()
         let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 320, height: 92), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 320, y: resizedFrame.height / 92)
 
-
-        //// Label Drawing
+        // Label Drawing
         let labelRect = CGRect(x: 0, y: 36, width: 276, height: 24)
         let labelStyle = NSMutableParagraphStyle()
         labelStyle.alignment = .right
@@ -40,8 +39,7 @@ public class StyleKit : NSObject {
         text.draw(in: CGRect(x: labelRect.minX, y: labelRect.minY + (labelRect.height - labelTextHeight) / 2, width: labelRect.width, height: labelTextHeight), withAttributes: labelFontAttributes)
         context.restoreGState()
 
-
-        //// Arrow Drawing
+        // Arrow Drawing
         let arrowPath = UIBezierPath()
         arrowPath.move(to: CGPoint(x: 286.5, y: 49.5))
         arrowPath.addLine(to: CGPoint(x: 296.5, y: 49.5))
@@ -53,27 +51,25 @@ public class StyleKit : NSObject {
         arrowPath.lineWidth = 1
         arrowPath.lineCapStyle = .square
         arrowPath.stroke()
-        
-        context.restoreGState()
 
+        context.restoreGState()
     }
 
     public dynamic class func drawEditHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, line1: String = "Tap and hold", line2: String = "to modify a car…") {
-        //// General Declarations
+        // General Declarations
         let context = UIGraphicsGetCurrentContext()!
-        
-        //// Resize to Target Frame
+
+        // Resize to Target Frame
         context.saveGState()
         let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 320, height: 92), target: targetFrame)
         context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
         context.scaleBy(x: resizedFrame.width / 320, y: resizedFrame.height / 92)
 
-
-        //// Color Declarations
+        // Color Declarations
         let textForeground = UIColor(red: 0.000, green: 0.000, blue: 0.000, alpha: 1.000)
         let strokeColor = UIColor(red: 0.000, green: 0.000, blue: 0.000, alpha: 1.000)
 
-        //// Label Drawing
+        // Label Drawing
         let labelRect = CGRect(x: 76, y: 38, width: 244, height: 24)
         let labelStyle = NSMutableParagraphStyle()
         labelStyle.alignment = .left
@@ -85,8 +81,7 @@ public class StyleKit : NSObject {
         line1.draw(in: CGRect(x: labelRect.minX, y: labelRect.minY + (labelRect.height - labelTextHeight) / 2, width: labelRect.width, height: labelTextHeight), withAttributes: labelFontAttributes)
         context.restoreGState()
 
-
-        //// Label 2 Drawing
+        // Label 2 Drawing
         let label2Rect = CGRect(x: 76, y: 61.58, width: 244, height: 24)
         let label2Style = NSMutableParagraphStyle()
         label2Style.alignment = .left
@@ -99,7 +94,7 @@ public class StyleKit : NSObject {
         context.restoreGState()
 
 
-        //// Arrow Drawing
+        // Arrow Drawing
         let arrowPath = UIBezierPath()
         arrowPath.move(to: CGPoint(x: 64, y: 50))
         arrowPath.addLine(to: CGPoint(x: 54, y: 50))
@@ -111,12 +106,11 @@ public class StyleKit : NSObject {
         arrowPath.lineWidth = 1
         arrowPath.lineCapStyle = .square
         arrowPath.stroke()
-        
-        context.restoreGState()
 
+        context.restoreGState()
     }
 
-    //// Generated Images
+    // Generated Images
 
     public dynamic class func imageOfStartHelpCanvas(text: String = "Start here…") -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 92), false, 0)
@@ -178,4 +172,5 @@ public class StyleKit : NSObject {
             return result
         }
     }
+
 }

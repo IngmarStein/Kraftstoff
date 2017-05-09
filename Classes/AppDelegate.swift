@@ -115,7 +115,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if let cars = self.carsFetchedResultsController.fetchedObjects {
 			UIApplication.shared.shortcutItems = cars.map { car in
 				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId": $0] }
-				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
+				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.ksName, localizedSubtitle: car.ksNumberPlate, icon: nil, userInfo: userInfo)
 			}
 
 			if CSSearchableIndex.isIndexingAvailable() {

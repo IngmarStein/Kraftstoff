@@ -610,7 +610,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let odometerUnit = car.ksOdometerUnit
 
 		let rawDistance  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
-		let convDistance = rawDistance - car.odometer
+		let convDistance = rawDistance - car.ksOdometer
 
 		if convDistance <= .zero {
 			return false
@@ -639,8 +639,8 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return false
 		}
 
-		let avgConsumption = Units.consumptionForKilometers(car.distanceTotalSum,
-                                                                     liters: car.fuelVolumeTotalSum,
+		let avgConsumption = Units.consumptionForKilometers(car.ksDistanceTotalSum,
+                                                                     liters: car.ksFuelVolumeTotalSum,
                                                                      inUnit: .litersPer100Kilometers)
 
 		let loBound: NSDecimalNumber
@@ -680,7 +680,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	func showOdometerConversionAlert() {
 		let odometerUnit = self.car!.ksOdometerUnit
 		let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
-		let convDistance = rawDistance - self.car!.odometer
+		let convDistance = rawDistance - self.car!.ksOdometer
 
 		let distanceFormatter = Formatters.distanceFormatter
 
@@ -702,7 +702,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			// Replace distance in table with difference to car odometer
 			let odometerUnit = self.car!.ksOdometerUnit
 			let rawDistance  = Units.kilometersForDistance(self.distance!, withUnit: odometerUnit)
-			let convDistance = rawDistance - self.car!.odometer
+			let convDistance = rawDistance - self.car!.ksOdometer
 
 			self.distance = Units.distanceForKilometers(convDistance, withUnit: odometerUnit)
 			self.valueChanged(self.distance, identifier: "distance")

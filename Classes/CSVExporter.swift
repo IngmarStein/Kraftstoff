@@ -64,14 +64,14 @@ final class CSVExporter {
 		numberFormatter.minimumFractionDigits = 2
 
 		for fuelEvent in fuelEvents {
-			let timestamp = dateFormatter.string(from: fuelEvent.timestamp)
-			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.distance, withUnit: odometerUnit))!
-			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.fuelVolume, withUnit: fuelUnit))!
+			let timestamp = dateFormatter.string(from: fuelEvent.ksTimestamp)
+			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.ksDistance, withUnit: odometerUnit))!
+			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.ksFuelVolume, withUnit: fuelUnit))!
 			let filledUp = fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: "")
-			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.price, withUnit: fuelUnit))!
+			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.ksPrice, withUnit: fuelUnit))!
 			let consumption = fuelEvent.filledUp ? numberFormatter.string(from:
-				Units.consumptionForKilometers(fuelEvent.distance + fuelEvent.inheritedDistance,
-				                               liters: fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume,
+				Units.consumptionForKilometers(fuelEvent.ksDistance + fuelEvent.ksInheritedDistance,
+				                               liters: fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume,
 				                               inUnit: consumptionUnit))!
 				: " "
 			let comment = fuelEvent.comment ?? ""

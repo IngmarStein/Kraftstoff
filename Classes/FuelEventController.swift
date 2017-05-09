@@ -10,10 +10,10 @@ import UIKit
 import CoreData
 import MessageUI
 
-private let kSRFuelEventSelectedCarID     = "FuelEventSelectedCarID"
-private let kSRFuelEventExportSheet       = "FuelEventExportSheet"
-private let kSRFuelEventShowOpenIn        = "FuelEventShowOpenIn"
-private let kSRFuelEventShowComposer      = "FuelEventShowMailComposer"
+private let FuelEventSelectedCarID     = "FuelEventSelectedCarID"
+private let FuelEventExportSheet       = "FuelEventExportSheet"
+private let FuelEventShowOpenIn        = "FuelEventShowOpenIn"
+private let FuelEventShowComposer      = "FuelEventShowMailComposer"
 
 final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate {
 
@@ -134,7 +134,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
-				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: kSRFuelEventSelectedCarID) as String? {
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: FuelEventSelectedCarID) as String? {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.selectedCar == nil {
@@ -147,10 +147,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func encodeRestorableState(with coder: NSCoder) {
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: kSRFuelEventSelectedCarID)
-		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: kSRFuelEventExportSheet)
-		coder.encode(restoreOpenIn || (openInController != nil), forKey: kSRFuelEventShowOpenIn)
-		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: kSRFuelEventShowComposer)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: FuelEventSelectedCarID)
+		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: FuelEventExportSheet)
+		coder.encode(restoreOpenIn || (openInController != nil), forKey: FuelEventShowOpenIn)
+		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: FuelEventShowComposer)
 
 		// don't use a snapshot image for next launch when graph is currently visible
 		if presentedViewController != nil {
@@ -161,9 +161,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		restoreExportSheet = coder.decodeBool(forKey: kSRFuelEventExportSheet)
-		restoreOpenIn = coder.decodeBool(forKey: kSRFuelEventShowOpenIn)
-		restoreMailComposer = coder.decodeBool(forKey: kSRFuelEventShowComposer)
+		restoreExportSheet = coder.decodeBool(forKey: FuelEventExportSheet)
+		restoreOpenIn = coder.decodeBool(forKey: FuelEventShowOpenIn)
+		restoreMailComposer = coder.decodeBool(forKey: FuelEventShowComposer)
 
 		super.decodeRestorableState(with: coder)
 
@@ -209,7 +209,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	private var exportFilename: String {
-		let rawFilename = "\(selectedCar.name)__\(selectedCar.numberPlate).csv"
+		let rawFilename = "\(selectedCar.ksName)__\(selectedCar.ksNumberPlate).csv"
 		let illegalCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>")
 
 		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
@@ -239,16 +239,16 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 		let period: String
 		switch fetchCount {
-		case 0:  period = NSLocalizedString("", comment: "")
-		case 1:  period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
-		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
+		case 0: period = NSLocalizedString("", comment: "")
+		case 1: period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp))
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp), outputFormatter.string(from: first!.ksTimestamp))
 		}
 
 		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
 
 		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
-            selectedCar.name,
-            selectedCar.numberPlate,
+            selectedCar.ksName,
+            selectedCar.ksNumberPlate,
             period,
             count)
 	}
@@ -360,7 +360,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.ksNumberPlate))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML: false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType: "text/csv", fileName: exportFilename)
 
@@ -425,17 +425,17 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - UITableViewDataSource
 
 	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: IndexPath) {
-		let managedObject = self.fetchedResultsController.object(at: indexPath)
+		let fuelEvent = self.fetchedResultsController.object(at: indexPath)
 
-		let car = managedObject.car
-		let distance = managedObject.distance
-		let fuelVolume = managedObject.fuelVolume
+		let car = fuelEvent.car!
+		let distance = fuelEvent.ksDistance
+		let fuelVolume = fuelEvent.ksFuelVolume
 
 		let odometerUnit = car.ksOdometerUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Timestamp
-		tableCell.topLeftLabel.text = Formatters.dateFormatter.string(for: managedObject.timestamp)
+		tableCell.topLeftLabel.text = Formatters.dateFormatter.string(for: fuelEvent.timestamp)
 		tableCell.topLeftAccessibilityLabel = nil
 
 		// Distance
@@ -451,14 +451,14 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
-		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: managedObject.cost)
+		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: fuelEvent.cost)
 		tableCell.topRightAccessibilityLabel = tableCell.topRightLabel.text
 
 		// Consumption combined with inherited data from earlier events
 		let consumptionDescription: String
-		if managedObject.filledUp {
-			let totalDistance = distance + managedObject.inheritedDistance
-			let totalFuelVolume = fuelVolume + managedObject.inheritedFuelVolume
+		if fuelEvent.filledUp {
+			let totalDistance = distance + fuelEvent.ksInheritedDistance
+			let totalFuelVolume = fuelVolume + fuelEvent.ksInheritedFuelVolume
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 

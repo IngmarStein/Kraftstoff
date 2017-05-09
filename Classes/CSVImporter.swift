@@ -26,9 +26,9 @@ final class CSVImporter {
 		// Create and configure new car object
 		let newCar = Car(context: managedObjectContext)
 
-		newCar.lastUpdate = Date()
+		newCar.lastUpdate = NSDate()
 		newCar.order = Int32(order)
-		newCar.timestamp = Date()
+		newCar.ksTimestamp = Date()
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
@@ -42,9 +42,9 @@ final class CSVImporter {
 	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = FuelEvent(context: managedObjectContext)
 
-		newEvent.lastUpdate = Date()
+		newEvent.lastUpdate = NSDate()
 		newEvent.car = car
-		newEvent.timestamp = date
+		newEvent.ksTimestamp = date
 		newEvent.distance = distance
 		newEvent.price = price
 		newEvent.fuelVolume = fuelVolume
@@ -66,8 +66,8 @@ final class CSVImporter {
 			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
-		car.distanceTotalSum += distance
-		car.fuelVolumeTotalSum += fuelVolume
+		car.distanceTotalSum = car.ksDistanceTotalSum + distance
+		car.fuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
 
 		return newEvent
 	}
@@ -410,7 +410,7 @@ final class CSVImporter {
 
 			// Fixup car odometer
 			if detectedEvents {
-				car.odometer = max(odometer, car.distanceTotalSum)
+				car.odometer = max(odometer, car.ksDistanceTotalSum)
 			}
 		}
 

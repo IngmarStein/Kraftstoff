@@ -160,8 +160,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var valStretchFactorForDisplay: CGFloat
 
 		for i in (0..<fetchedObjects.count).reversed() {
-			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
-				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar: car)
+			if let fuelEvent = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
+				let value = self.dataSource!.valueForFuelEvent(fuelEvent, forCar: car)
 
 				if !value.isNaN {
 					valCount   += 1
@@ -177,10 +177,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 					if valLastIndex < 0 {
 						valLastIndex = i
-						lastDate = managedObject.timestamp
+						lastDate = fuelEvent.ksTimestamp
 					} else {
 						valFirstIndex = i
-						firstDate = managedObject.timestamp
+						firstDate = fuelEvent.ksTimestamp
 					}
 				}
 			}
@@ -237,12 +237,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let rangeInterval = firstDate!.timeIntervalSince(lastDate!)
 
 		for i in (valFirstIndex...valLastIndex).reversed() {
-			if let managedObject = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
-				let value = self.dataSource!.valueForFuelEvent(managedObject, forCar: car)
+			if let fuelEvent = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
+				let value = self.dataSource!.valueForFuelEvent(fuelEvent, forCar: car)
 
 				if !value.isNaN {
 					// Collect sample data
-					let sampleInterval = firstDate!.timeIntervalSince(managedObject.timestamp)
+					let sampleInterval = firstDate!.timeIntervalSince(fuelEvent.ksTimestamp)
 					let sampleIndex = Int(rint (CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
 
 					if valRange < 0.0001 {
@@ -252,7 +252,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					}
 
 					// Collect lens data
-					state.lensDate [sampleIndex][(samplesCount[sampleIndex] != 0) ? 1 : 0] = managedObject.timestamp.timeIntervalSinceReferenceDate
+					state.lensDate [sampleIndex][(samplesCount[sampleIndex] != 0) ? 1 : 0] = fuelEvent.ksTimestamp.timeIntervalSinceReferenceDate
 					state.lensValue[sampleIndex] += value
 
 					samplesCount[sampleIndex] += 1
@@ -802,8 +802,8 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 		}
 
 		let consumptionUnit = car.ksFuelConsumptionUnit
-		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
-		let fuelVolume = fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume
+		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
+		let fuelVolume = fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume
 
 		return CGFloat(Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit).floatValue)
 	}
@@ -836,7 +836,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	}
 
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
-		let price = fuelEvent.price
+		let price = fuelEvent.ksPrice
 
 		if price == .zero {
 			return .nan
@@ -896,8 +896,8 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		let handler = Formatters.consumptionRoundingHandler
 		let distanceUnit = car.ksOdometerUnit
 
-		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
-		let cost = fuelEvent.cost + fuelEvent.inheritedCost
+		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
+		let cost = fuelEvent.cost + fuelEvent.ksInheritedCost
 
 		if cost == .zero {
 			return .nan

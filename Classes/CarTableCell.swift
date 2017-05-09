@@ -81,7 +81,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	private func selectCar(_ car: Car) {
 		// Update textfield in cell
-		self.textFieldProxy.text = "\(car.name) \(car.numberPlate)"
+		self.textFieldProxy.text = "\(car.ksName) \(car.ksNumberPlate)"
 
 		// Store selected car in delegate
 		self.delegate.valueChanged(car, identifier: self.valueIdentifier)
@@ -118,8 +118,8 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 		// Strings to be displayed
 		let car = self.cars[row]
-		let name = car.name
-		let info = car.numberPlate
+		let name = car.ksName
+		let info = car.ksNumberPlate
 
 		var label: UILabel! = view as? UILabel
 		if label == nil {

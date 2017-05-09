@@ -42,9 +42,9 @@ class KraftstoffTests: XCTestCase {
 	private func roundtrip(_ language: String) {
 		let car = Car(context: managedObjectContext)
 
-		car.lastUpdate = Date()
+		car.lastUpdate = NSDate()
 		car.order = 0
-		car.timestamp = Date()
+		car.timestamp = NSDate()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
 		car.ksOdometerUnit = .kilometers
@@ -74,7 +74,7 @@ class KraftstoffTests: XCTestCase {
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")
-		XCTAssert(numEvents == car.fuelEvents.count, "should import all fuel events")
+		XCTAssert(numEvents == car.fuelEvents!.count, "should import all fuel events")
 	}
 
 	func testLanguages() {
@@ -86,9 +86,9 @@ class KraftstoffTests: XCTestCase {
     func testCSVExport() {
 		let car = Car(context: managedObjectContext)
 
-		car.lastUpdate = Date()
+		car.lastUpdate = NSDate()
 		car.order = 0
-		car.timestamp = Date()
+		car.timestamp = NSDate()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
 		car.ksOdometerUnit = .kilometers

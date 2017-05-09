@@ -65,7 +65,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.doneButton.accessibilityIdentifier = "done"
 		self.cancelButton.accessibilityIdentifier = "cancel"
 
-		self.title = Formatters.dateFormatter.string(from: self.event.timestamp)
+		self.title = Formatters.dateFormatter.string(from: self.event.ksTimestamp)
 		self.navigationItem.rightBarButtonItem = self.editButton
 
 		// Remove tint from navigation bar
@@ -175,11 +175,11 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit     = car.ksFuelUnit
 
-		self.title = Formatters.dateFormatter.string(from: event.timestamp)
-		date       = event.timestamp
-		distance   = Units.distanceForKilometers(event.distance, withUnit: odometerUnit)
-		price      = Units.pricePerUnit(event.price, withUnit: fuelUnit)
-		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit: fuelUnit)
+		self.title = Formatters.dateFormatter.string(from: event.ksTimestamp)
+		date       = event.ksTimestamp
+		distance   = Units.distanceForKilometers(event.ksDistance, withUnit: odometerUnit)
+		price      = Units.pricePerUnit(event.ksPrice, withUnit: fuelUnit)
+		fuelVolume = Units.volumeForLiters(event.ksFuelVolume, withUnit: fuelUnit)
 		filledUp   = event.filledUp
 		comment    = event.comment
 
@@ -501,7 +501,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		if !(distance > .zero && fuelVolume > .zero) {
 			canBeSaved = false
-		} else if date != event.timestamp {
+		} else if date != event.ksTimestamp {
 			if CoreDataManager.containsEventWithCar(car, andDate: date) {
 				canBeSaved = false
 			}
@@ -516,7 +516,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Date must be collision free
 		if let date = newValue as? Date {
 			if valueIdentifier == "date" {
-				if date != event.timestamp {
+				if date != event.ksTimestamp {
 					if CoreDataManager.containsEventWithCar(car, andDate: date) {
 						return false
 					}

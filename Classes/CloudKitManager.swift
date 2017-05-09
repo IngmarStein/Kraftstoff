@@ -11,6 +11,7 @@ import CloudKit
 import CoreData
 
 final class CloudKitManager {
+
 	private static let container = CKContainer.default()
 	private static let recordZone = CKRecordZone.default()
 
@@ -18,12 +19,33 @@ final class CloudKitManager {
 	private static var privateDBChangeToken: CKServerChangeToken?
 	private static var defaultZoneChangeToken: CKServerChangeToken?
 
+	private static let syncTimestampKey = "ckSyncTimestamp"
+
+	private static let operationQueue: OperationQueue = {
+		let queue = OperationQueue()
+		queue.maxConcurrentOperationCount = 1
+		return queue
+	}()
+
 	private static var subscriptionIsLocallyCached: Bool {
 		get {
 			return UserDefaults.standard.bool(forKey: "ckPrivateSubscription")
 		}
 		set {
 			UserDefaults.standard.set(newValue, forKey: "ckPrivateSubscription")
+		}
+	}
+
+	static var lastCloudKitSyncTimestamp: Date {
+		get {
+			if let lastCloudKitSyncTimestamp = UserDefaults.standard.object(forKey: syncTimestampKey) as? Date {
+				return lastCloudKitSyncTimestamp
+			} else {
+				return Date.distantPast
+			}
+		}
+		set {
+			UserDefaults.standard.set(newValue, forKey: syncTimestampKey)
 		}
 	}
 
@@ -163,14 +185,11 @@ final class CloudKitManager {
 	*/
 
 	static func handlePush(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) {
-		// TODO: remove intermediary cast
-		if let stringObjectUserInfo = userInfo as Any as? [String: NSObject] {
-			let notification = CKNotification(fromRemoteNotificationDictionary: stringObjectUserInfo)
+		let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
 
-			if notification.subscriptionID == privateChangesSubscriptionID {
-				fetchZoneChanges {
-					completionHandler(.newData)
-				}
+		if notification.subscriptionID == privateChangesSubscriptionID {
+			fetchZoneChanges {
+				completionHandler(.newData)
 			}
 		} else {
 			completionHandler(.noData)
@@ -198,6 +217,93 @@ final class CloudKitManager {
 			}
 		}
 		container.privateCloudDatabase.add(modifyRecordsOperation)
+	}
+
+	private static func queueFullSyncOperations() {
+		// 1. Fetch all the changes both locally and from each zone
+		let fetchOfflineChangesFromCoreDataOperation = FetchOfflineChangesFromCoreDataOperation(entityNames: ["Car", "FuelEvent"])
+		let fetchZoneChangesOperation = FetchRecordChangesForCloudKitZoneOperation(cloudKitZone: CloudKitManager.recordZone.zoneID)
+
+		// 2. Process the changes after transfering
+		let processSyncChangesOperation = ProcessSyncChangesOperation()
+		let transferDataToProcessSyncChangesOperation = BlockOperation {
+			[unowned processSyncChangesOperation, unowned fetchOfflineChangesFromCoreDataOperation, unowned fetchZoneChangesOperation] in
+
+			processSyncChangesOperation.preProcessLocalChangedObjectIDs.append(contentsOf: fetchOfflineChangesFromCoreDataOperation.updatedManagedObjects)
+			processSyncChangesOperation.preProcessLocalDeletedRecordIDs.append(contentsOf: fetchOfflineChangesFromCoreDataOperation.deletedRecordIDs)
+			processSyncChangesOperation.preProcessServerChangedRecords.append(contentsOf: fetchZoneChangesOperation.changedRecords)
+			processSyncChangesOperation.preProcessServerDeletedRecordIDs.append(contentsOf: fetchZoneChangesOperation.deletedRecordIDs)
+		}
+
+		// 3. Fetch records from the server that we need to change
+		let fetchRecordsForModifiedObjectsOperation = FetchRecordsForModifiedObjectsOperation()
+		let transferDataToFetchRecordsOperation = BlockOperation {
+			[unowned fetchRecordsForModifiedObjectsOperation, unowned processSyncChangesOperation] in
+
+			fetchRecordsForModifiedObjectsOperation.preFetchModifiedRecords = processSyncChangesOperation.postProcessChangesToServer
+		}
+
+		// 4. Modify records in the cloud
+		let modifyRecordsFromManagedObjectsOperation = ModifyRecordsFromManagedObjectsOperation()
+		let transferDataToModifyRecordsOperation = BlockOperation {
+			[unowned fetchRecordsForModifiedObjectsOperation, unowned modifyRecordsFromManagedObjectsOperation, unowned processSyncChangesOperation] in
+
+			if let fetchedRecordsDictionary = fetchRecordsForModifiedObjectsOperation.fetchedRecords {
+				modifyRecordsFromManagedObjectsOperation.fetchedRecordsToModify = fetchedRecordsDictionary
+			}
+			modifyRecordsFromManagedObjectsOperation.preModifiedRecords = processSyncChangesOperation.postProcessChangesToServer
+
+			// also set the recordIDsToDelete from what we processed
+			modifyRecordsFromManagedObjectsOperation.recordIDsToDelete = processSyncChangesOperation.postProcessDeletesToServer
+		}
+
+		// 5. Modify records locally
+		let saveChangedRecordsToCoreDataOperation = SaveChangedRecordsToCoreDataOperation()
+		let transferDataToSaveChangesToCoreDataOperation = BlockOperation {
+			[unowned saveChangedRecordsToCoreDataOperation, unowned processSyncChangesOperation] in
+
+			saveChangedRecordsToCoreDataOperation.changedRecords = processSyncChangesOperation.postProcessChangesToCoreData
+			saveChangedRecordsToCoreDataOperation.deletedRecordIDs = processSyncChangesOperation.postProcessDeletesToCoreData
+		}
+
+		// 6. Delete all of the DeletedCloudKitObjects
+		let clearDeletedCloudKitObjectsOperation = ClearDeletedCloudKitObjectsOperation()
+
+		// set dependencies
+		// 1. transfering all the fetched data to process for conflicts
+		transferDataToProcessSyncChangesOperation.addDependency(fetchOfflineChangesFromCoreDataOperation)
+		transferDataToProcessSyncChangesOperation.addDependency(fetchZoneChangesOperation)
+
+		// 2. processing the data onces its transferred
+		processSyncChangesOperation.addDependency(transferDataToProcessSyncChangesOperation)
+
+		// 3. fetching records changed local
+		transferDataToFetchRecordsOperation.addDependency(processSyncChangesOperation)
+		fetchRecordsForModifiedObjectsOperation.addDependency(transferDataToFetchRecordsOperation)
+
+		// 4. modifying records in CloudKit
+		transferDataToModifyRecordsOperation.addDependency(fetchRecordsForModifiedObjectsOperation)
+		modifyRecordsFromManagedObjectsOperation.addDependency(transferDataToModifyRecordsOperation)
+
+		// 5. modifying records in CoreData
+		transferDataToSaveChangesToCoreDataOperation.addDependency(processSyncChangesOperation)
+		saveChangedRecordsToCoreDataOperation.addDependency(transferDataToModifyRecordsOperation)
+
+		// 6. clear the deleteCloudKitObjects
+		clearDeletedCloudKitObjectsOperation.addDependency(saveChangedRecordsToCoreDataOperation)
+
+		// add operations to the queue
+		operationQueue.addOperation(fetchOfflineChangesFromCoreDataOperation)
+		operationQueue.addOperation(fetchZoneChangesOperation)
+		operationQueue.addOperation(transferDataToProcessSyncChangesOperation)
+		operationQueue.addOperation(processSyncChangesOperation)
+		operationQueue.addOperation(transferDataToFetchRecordsOperation)
+		operationQueue.addOperation(fetchRecordsForModifiedObjectsOperation)
+		operationQueue.addOperation(transferDataToModifyRecordsOperation)
+		operationQueue.addOperation(modifyRecordsFromManagedObjectsOperation)
+		operationQueue.addOperation(transferDataToSaveChangesToCoreDataOperation)
+		operationQueue.addOperation(saveChangedRecordsToCoreDataOperation)
+		operationQueue.addOperation(clearDeletedCloudKitObjectsOperation)
 	}
 
 }
