@@ -64,7 +64,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		// Background image
 		let backgroundView = UIView(frame: .zero)
-		backgroundView.backgroundColor = #colorLiteral(red: 0.937254902, green: 0.937254902, blue: 0.937254902, alpha: 1)
+		backgroundView.backgroundColor = self.tableView.backgroundColor
 		let backgroundImage = UIImageView(image: #imageLiteral(resourceName: "Pumps"))
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
