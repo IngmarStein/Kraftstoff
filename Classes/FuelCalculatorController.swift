@@ -472,7 +472,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - Locale Handling
 
-	func localeChanged(_ object: AnyObject) {
+	@objc func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {
@@ -483,7 +483,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - System Events
 
-	func willEnterForeground(_ notification: NSNotification) {
+	@objc func willEnterForeground(_ notification: NSNotification) {
 		if tableSections.isEmpty {
 			return
 		}
@@ -551,7 +551,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 	// MARK: - Storing Information in the Database
 
-	func saveAction(_ sender: AnyObject) {
+	@objc func saveAction(_ sender: AnyObject) {
 		self.navigationItem.rightBarButtonItem = nil
 
 		UIView.animate(withDuration: 0.3,

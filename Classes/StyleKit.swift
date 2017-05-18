@@ -17,7 +17,7 @@ public class StyleKit: NSObject {
 
     // Drawing Methods
 
-    public dynamic class func drawStartHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, text: String = "Start here…") {
+    @objc public dynamic class func drawStartHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, text: String = "Start here…") {
         // General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -55,7 +55,7 @@ public class StyleKit: NSObject {
         context.restoreGState()
     }
 
-    public dynamic class func drawEditHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, line1: String = "Tap and hold", line2: String = "to modify a car…") {
+    @objc public dynamic class func drawEditHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, line1: String = "Tap and hold", line2: String = "to modify a car…") {
         // General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -112,7 +112,7 @@ public class StyleKit: NSObject {
 
     // Generated Images
 
-    public dynamic class func imageOfStartHelpCanvas(text: String = "Start here…") -> UIImage {
+    @objc public dynamic class func imageOfStartHelpCanvas(text: String = "Start here…") -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 92), false, 0)
             StyleKit.drawStartHelpCanvas(text: text)
 
@@ -122,7 +122,7 @@ public class StyleKit: NSObject {
         return imageOfStartHelpCanvas
     }
 
-    public dynamic class func imageOfEditHelpCanvas(line1: String = "Tap and hold", line2: String = "to modify a car…") -> UIImage {
+    @objc public dynamic class func imageOfEditHelpCanvas(line1: String = "Tap and hold", line2: String = "to modify a car…") -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 92), false, 0)
             StyleKit.drawEditHelpCanvas(line1: line1, line2: line2)
 

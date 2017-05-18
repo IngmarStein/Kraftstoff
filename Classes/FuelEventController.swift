@@ -198,7 +198,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	// MARK: - Locale Handling
 
-	func localeChanged(_ object: AnyObject) {
+	@objc func localeChanged(_ object: AnyObject) {
 		self.tableView.reloadData()
 	}
 
@@ -389,7 +389,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	// MARK: - Export Action Sheet
 
-	func showExportSheet(_ sender: UIBarButtonItem!) {
+	@objc func showExportSheet(_ sender: UIBarButtonItem!) {
 		isShowingExportSheet = true
 		restoreExportSheet   = false
 

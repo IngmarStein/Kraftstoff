@@ -266,7 +266,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - Locale Handling
 
-	func localeChanged(_ object: AnyObject) {
+	@objc func localeChanged(_ object: AnyObject) {
 		let previousSelection = self.tableView.indexPathForSelectedRow
 
 		dismissKeyboardWithCompletion {

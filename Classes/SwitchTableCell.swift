@@ -92,7 +92,7 @@ final class SwitchTableCell: PageCell {
 		self.valueLabel.isHidden  = !showAlternate
 	}
 
-	func switchToggledAction(_ sender: UISwitch) {
+	@objc func switchToggledAction(_ sender: UISwitch) {
 		let isOn = sender.isOn
 
 		self.delegate?.valueChanged(isOn, identifier: self.valueIdentifier)

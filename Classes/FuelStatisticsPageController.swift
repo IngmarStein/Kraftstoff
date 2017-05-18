@@ -128,11 +128,11 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	// MARK: - System Events
 
-	func localeChanged(_ object: AnyObject) {
+	@objc func localeChanged(_ object: AnyObject) {
 		invalidateCaches()
 	}
 
-	func didEnterBackground(_ object: AnyObject) {
+	@objc func didEnterBackground(_ object: AnyObject) {
 		UserDefaults.standard.set(currentPage, forKey: "preferredStatisticsPage")
 		UserDefaults.standard.synchronize()
 
@@ -149,13 +149,13 @@ final class FuelStatisticsPageController: UIPageViewController {
 		}
 	}
 
-	func didBecomeActive(_ object: AnyObject) {
+	@objc func didBecomeActive(_ object: AnyObject) {
 		updatePageVisibility()
 	}
 
 	// MARK: - User Events
 
-	func numberOfMonthsSelected(_ notification: Notification) {
+	@objc func numberOfMonthsSelected(_ notification: Notification) {
 		// Remember selection in preferences
 		if let numberOfMonths = (notification as NSNotification).userInfo?["span"] as? Int {
 			UserDefaults.standard.set(numberOfMonths, forKey: "statisticTimeSpan")

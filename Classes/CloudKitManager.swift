@@ -152,8 +152,8 @@ final class CloudKitManager {
 		let changesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [recordZone.zoneID], optionsByRecordZoneID: [recordZone.zoneID: options])
 		changesOperation.recordChangedBlock = { record in
 		}
-		changesOperation.recordWithIDWasDeletedBlock = { ckRecordId in
-		}
+		//changesOperation.recordWithIDWasDeletedBlock = { ckRecordId in
+		//}
 		changesOperation.recordZoneChangeTokensUpdatedBlock = { (ckRecordZoneID, newChangeToken, data) in
 			defaultZoneChangeToken = newChangeToken
 		}

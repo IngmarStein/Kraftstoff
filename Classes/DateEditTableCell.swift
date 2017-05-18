@@ -78,7 +78,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		NotificationCenter.default.removeObserver(self)
 	}
 
-	func significantTimeChange(_ object: AnyObject) {
+	@objc func significantTimeChange(_ object: AnyObject) {
 		if let timestamp = self.valueTimestamp {
 			self.delegate.valueChanged(Date.distantPast, identifier: timestamp)
 		}
@@ -86,7 +86,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		refreshDatePickerWithDate(nil)
 	}
 
-	func datePickerValueChanged(_ sender: UIDatePicker) {
+	@objc func datePickerValueChanged(_ sender: UIDatePicker) {
 		let selectedDate = Date.dateWithoutSeconds(sender.date)
 
 		if let dateValue = self.delegate.valueForIdentifier(self.valueIdentifier) as? Date, dateValue != selectedDate {

@@ -118,7 +118,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	// MARK: - Locale Handling
 
-	func localeChanged(_ object: AnyObject) {
+	@objc func localeChanged(_ object: AnyObject) {
 		// Invalidate fuelEvent-controller and any precomputed statistics
 		if self.navigationController!.topViewController === self {
 			fuelEventController = nil
@@ -312,7 +312,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.editButtonItem.isEnabled = fetchedResultsController.fetchedObjects!.count > 0
 	}
 
-	func insertNewObject(_ sender: UIBarButtonItem) {
+	@objc func insertNewObject(_ sender: UIBarButtonItem) {
 		if !StoreManager.sharedInstance.checkCarCount() {
 			StoreManager.sharedInstance.showBuyOptions(self)
 			return
@@ -385,7 +385,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	// MARK: - Gesture Recognizer for Editing an Existing Object
 
-	func handleLongPress(_ sender: UILongPressGestureRecognizer) {
+	@objc func handleLongPress(_ sender: UILongPressGestureRecognizer) {
 		if sender.state == .began {
 
 			if let indexPath = self.tableView.indexPathForRow(at: sender.location(in: self.tableView)) {

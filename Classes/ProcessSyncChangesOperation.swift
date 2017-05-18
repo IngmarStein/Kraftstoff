@@ -116,8 +116,8 @@ class ProcessSyncChangesOperation: Operation {
 	// MARK: Process Conflicts
 	func processConflicts(managedObjectContext: NSManagedObjectContext) {
 		// make sets of the recordNames for both local and server changes
-		let changedLocalRecordNamesArray = changedCloudKitManagedObjects.flatMap { $0.cloudKitRecordID.recordName }
-		let changedServerRecordNamesArray = preProcessServerChangedRecords.flatMap { $0.recordID.recordName }
+		let changedLocalRecordNamesArray = changedCloudKitManagedObjects.map { $0.cloudKitRecordID.recordName }
+		let changedServerRecordNamesArray = preProcessServerChangedRecords.map { $0.recordID.recordName }
 		let changedLocalRecordNamesSet = Set(changedLocalRecordNamesArray)
 		let changedServerRecordNamesSet = Set(changedServerRecordNamesArray)
 

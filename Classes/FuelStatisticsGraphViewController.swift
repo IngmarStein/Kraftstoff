@@ -602,7 +602,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	// MARK: - Zoom Lens Handling
 
-	func longPressChanged(_ sender: AnyObject) {
+	@objc func longPressChanged(_ sender: AnyObject) {
 		switch zoomRecognizer.state {
         case .possible:
             break
