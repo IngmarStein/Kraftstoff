@@ -106,7 +106,7 @@ private let demoData = [
 	DemoDataItem(date: "2012-09-20 08:31:GMT+02:00", distance: 6308, fuelVolume: 2611, price: 1519),
 	DemoDataItem(date: "2012-10-05 08:21:GMT+02:00", distance: 6451, fuelVolume: 3007, price: 1499),
 
-	DemoDataItem(date: "2012-10-18 18:29:GMT+02:00", distance: 6042, fuelVolume: 2696, price: 1449),// -?
+	DemoDataItem(date: "2012-10-18 18:29:GMT+02:00", distance: 6042, fuelVolume: 2696, price: 1449),
 	DemoDataItem(date: "2012-11-01 18:42:GMT+01:00", distance: 6060, fuelVolume: 2655, price: 1419),
 	DemoDataItem(date: "2012-11-16 16:11:GMT+01:00", distance: 5728, fuelVolume: 2652, price: 1449),
 	DemoDataItem(date: "2012-11-30 08:38:GMT+01:00", distance: 5420, fuelVolume: 2536, price: 1489),
@@ -115,13 +115,13 @@ private let demoData = [
 	DemoDataItem(date: "2013-02-23 20:07:GMT+01:00", distance: 5820, fuelVolume: 2701, price: 1409),
 	DemoDataItem(date: "2013-03-08 08:23:GMT+01:00", distance: 5880, fuelVolume: 2567, price: 1389),
 	DemoDataItem(date: "2013-03-22 17:48:GMT+01:00", distance: 5920, fuelVolume: 2772, price: 1369),
-	DemoDataItem(date: "2013-04-09 18:15:GMT+02:00", distance: 5200, fuelVolume: 2381, price: 1379),// ?-
+	DemoDataItem(date: "2013-04-09 18:15:GMT+02:00", distance: 5200, fuelVolume: 2381, price: 1379),
 
 	DemoDataItem(date: "2013-04-24 18:20:GMT+02:00", distance: 6030, fuelVolume: 2809, price: 1329),
 	DemoDataItem(date: "2013-05-08 18:09:GMT+02:00", distance: 6080, fuelVolume: 2806, price: 1319),
-	DemoDataItem(date: "2013-05-24 08:29:GMT+02:00", distance: 5740, fuelVolume: 2521, price: 1399),// ?
+	DemoDataItem(date: "2013-05-24 08:29:GMT+02:00", distance: 5740, fuelVolume: 2521, price: 1399),
 	DemoDataItem(date: "2013-06-09 18:35:GMT+02:00", distance: 5840, fuelVolume: 2675, price: 1329),
-	DemoDataItem(date: "2013-06-29 19:31:GMT+02:00", distance: 6260, fuelVolume: 2337, price: 1329),// ?
+	DemoDataItem(date: "2013-06-29 19:31:GMT+02:00", distance: 6260, fuelVolume: 2337, price: 1329),
 	DemoDataItem(date: "2013-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389)
 ]
 

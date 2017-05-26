@@ -14,7 +14,7 @@ class FetchRecordsForModifiedObjectsOperation: CKFetchRecordsOperation {
     var fetchedRecords: [CKRecordID : CKRecord]?
     var preFetchModifiedRecords: [CKRecord]?
     private let modifiedManagedObjectIDs: [NSManagedObjectID]?
-    
+
     init(modifiedManagedObjectIDs: [NSManagedObjectID]) {
         self.modifiedManagedObjectIDs = modifiedManagedObjectIDs
 
@@ -33,7 +33,7 @@ class FetchRecordsForModifiedObjectsOperation: CKFetchRecordsOperation {
         setOperationBlocks()
 
         let managedObjectContext = CoreDataManager.persistentContainer.newBackgroundContext()
-        
+
 		managedObjectContext.performAndWait {
             if let modifiedManagedObjectIDs = self.modifiedManagedObjectIDs {
                 let modifiedCloudKitObjects = CoreDataManager.fetchCloudKitManagedObjects(managedObjectContext: managedObjectContext, managedObjectIDs: modifiedManagedObjectIDs)

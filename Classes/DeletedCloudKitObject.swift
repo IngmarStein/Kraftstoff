@@ -8,7 +8,6 @@
 import CloudKit
 import CoreData
 
-
 class DeletedCloudKitObject: NSManagedObject, CloudKitRecordIDObject {
 
 }

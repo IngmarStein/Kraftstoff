@@ -759,7 +759,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 }
 
-// MARK - Data Sources for Different Statistic Graphs
+// MARK: - Data Sources for Different Statistic Graphs
 
 class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewControllerDataSource, FuelStatisticsViewControllerDelegate {
 

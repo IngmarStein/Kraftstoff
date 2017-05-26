@@ -17,33 +17,23 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 	}
 
 	var ksInheritedCost: NSDecimalNumber {
-		get {
-			return inheritedCost!
-		}
+		return inheritedCost!
 	}
 
 	var ksDistance: NSDecimalNumber {
-		get {
-			return distance!
-		}
+		return distance!
 	}
 
 	var ksPrice: NSDecimalNumber {
-		get {
-			return price!
-		}
+		return price!
 	}
 
 	var ksInheritedDistance: NSDecimalNumber {
-		get {
-			return inheritedDistance!
-		}
+		return inheritedDistance!
 	}
 
 	var ksInheritedFuelVolume: NSDecimalNumber {
-		get {
-			return inheritedFuelVolume!
-		}
+		return inheritedFuelVolume!
 	}
 
 	var ksTimestamp: Date {
@@ -56,9 +46,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 	}
 
 	var ksFuelVolume: NSDecimalNumber {
-		get {
-			return fuelVolume!
-		}
+		return fuelVolume!
 	}
 
 	var cost: NSDecimalNumber {

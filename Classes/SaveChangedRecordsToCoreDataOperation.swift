@@ -10,7 +10,7 @@ import CloudKit
 import CoreData
 
 class SaveChangedRecordsToCoreDataOperation: Operation {
-    
+
     var changedRecords: [CKRecord]
     var deletedRecordIDs: [CKRecordID]
     private var carRecords: [CKRecord]
@@ -31,7 +31,7 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
 
         managedObjectContext.performAndWait {
             [unowned self] in
-            
+
             // loop through changed records and filter our child records
             for record in self.changedRecords {
 				if record.recordType == "car" {
@@ -40,12 +40,12 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
 					self.fuelEventRecords.append(record)
                 }
             }
-            
+
             // loop through all the changed root records first and insert or update them in core data
             for record in self.carRecords {
                 self.saveRecordToCoreData(record, managedObjectContext: managedObjectContext)
             }
-            
+
             // loop through all the changed child records next and insert or update them in core data
             for record in self.fuelEventRecords {
                 self.saveRecordToCoreData(record, managedObjectContext: managedObjectContext)
@@ -80,7 +80,7 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
 		fetchRequest.predicate = NSPredicate(format: "recordName LIKE[c] %@", recordName)
 		return fetchRequest
     }
-    
+
     private func fetchObject(fetchRequest: NSFetchRequest<NSFetchRequestResult>, managedObjectContext: NSManagedObjectContext) -> CloudKitManagedObject? {
         do {
             let fetchResults = try managedObjectContext.fetch(fetchRequest)
@@ -88,14 +88,14 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
             guard fetchResults.count <= 1 else {
                 fatalError("ERROR: Found more than one core data object with recordName")
             }
-            
+
             if fetchResults.count == 1 {
                 return fetchResults[0] as? CloudKitManagedObject
             }
         } catch let error {
             print("Error fetching from CoreData: \(error.localizedDescription)")
         }
-        
+
         return nil
     }
 

@@ -11,7 +11,7 @@ import CoreData
 import CoreSpotlight
 
 private let maxEditHelpCounter = 1
-private let CarViewEditedObject = "CarViewEditedObject"
+private let carViewEditedObject = "CarViewEditedObject"
 
 final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIDocumentPickerDelegate {
 
@@ -100,7 +100,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: CarViewEditedObject)
+			coder.encode(CoreDataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: carViewEditedObject)
 		}
 		super.encodeRestorableState(with: coder)
 	}
@@ -108,7 +108,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	override func decodeRestorableState(with coder: NSCoder) {
 		super.decodeRestorableState(with: coder)
 
-		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: CarViewEditedObject) as String? {
+		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: carViewEditedObject) as String? {
 			self.editedObject = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 

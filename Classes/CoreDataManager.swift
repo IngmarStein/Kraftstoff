@@ -437,7 +437,7 @@ final class CoreDataManager {
 	}
 
 	static func fetchCloudKitManagedObjects(managedObjectContext: NSManagedObjectContext, managedObjectIDs: [NSManagedObjectID]) -> [CloudKitManagedObject] {
-		return managedObjectIDs.flatMap{ managedObjectID in
+		return managedObjectIDs.flatMap { managedObjectID in
 			do {
 				return try managedObjectContext.existingObject(with: managedObjectID) as? CloudKitManagedObject
 			} catch {

@@ -10,10 +10,10 @@ import UIKit
 import CoreData
 import MessageUI
 
-private let FuelEventSelectedCarID     = "FuelEventSelectedCarID"
-private let FuelEventExportSheet       = "FuelEventExportSheet"
-private let FuelEventShowOpenIn        = "FuelEventShowOpenIn"
-private let FuelEventShowComposer      = "FuelEventShowMailComposer"
+private let fuelEventSelectedCarID = "FuelEventSelectedCarID"
+private let fuelEventExportSheet   = "FuelEventExportSheet"
+private let fuelEventShowOpenIn    = "FuelEventShowOpenIn"
+private let fuelEventShowComposer  = "FuelEventShowMailComposer"
 
 final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate {
 
@@ -134,7 +134,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
-				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: FuelEventSelectedCarID) as String? {
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: fuelEventSelectedCarID) as String? {
 			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.selectedCar == nil {
@@ -147,10 +147,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func encodeRestorableState(with coder: NSCoder) {
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: FuelEventSelectedCarID)
-		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: FuelEventExportSheet)
-		coder.encode(restoreOpenIn || (openInController != nil), forKey: FuelEventShowOpenIn)
-		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: FuelEventShowComposer)
+		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: fuelEventSelectedCarID)
+		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: fuelEventExportSheet)
+		coder.encode(restoreOpenIn || (openInController != nil), forKey: fuelEventShowOpenIn)
+		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: fuelEventShowComposer)
 
 		// don't use a snapshot image for next launch when graph is currently visible
 		if presentedViewController != nil {
@@ -161,9 +161,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func decodeRestorableState(with coder: NSCoder) {
-		restoreExportSheet = coder.decodeBool(forKey: FuelEventExportSheet)
-		restoreOpenIn = coder.decodeBool(forKey: FuelEventShowOpenIn)
-		restoreMailComposer = coder.decodeBool(forKey: FuelEventShowComposer)
+		restoreExportSheet = coder.decodeBool(forKey: fuelEventExportSheet)
+		restoreOpenIn = coder.decodeBool(forKey: fuelEventShowOpenIn)
+		restoreMailComposer = coder.decodeBool(forKey: fuelEventShowComposer)
 
 		super.decodeRestorableState(with: coder)
 

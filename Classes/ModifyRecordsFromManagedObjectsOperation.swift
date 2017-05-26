@@ -22,26 +22,26 @@ class ModifyRecordsFromManagedObjectsOperation: CKModifyRecordsOperation {
 
 		super.init()
     }
-    
+
     init(modifiedManagedObjectIDs: [NSManagedObjectID], deletedRecordIDs: [CKRecordID]) {
         // save off the modified objects and the fetch operation
         self.modifiedManagedObjectIDs = modifiedManagedObjectIDs
         self.fetchedRecordsToModify = nil
-        
+
         super.init()
-        
+
         // get the recordIDs for deleted objects
         recordIDsToDelete = deletedRecordIDs
     }
-    
+
     override func main() {
         print("ModifyRecordsFromManagedObjectsOperation.main()")
-        
+
         // setup the CKFetchRecordsOperation blocks
         setOperationBlocks()
-        
+
         let managedObjectContext = CoreDataManager.persistentContainer.newBackgroundContext()
-        
+
 		managedObjectContext.performAndWait {
             // before we run we need to map the records we fetched in the dependent operation into our records to save
             let modifiedRecords: [CKRecord]
@@ -52,7 +52,7 @@ class ModifyRecordsFromManagedObjectsOperation: CKModifyRecordsOperation {
             } else {
                 modifiedRecords = []
             }
-            
+
             if modifiedRecords.count > 0 {
                 if self.recordsToSave == nil {
                     self.recordsToSave = modifiedRecords
@@ -67,7 +67,7 @@ class ModifyRecordsFromManagedObjectsOperation: CKModifyRecordsOperation {
             super.main()
         }
     }
-    
+
     private func modifyFetchedRecordsIDs(managedObjectContext: NSManagedObjectContext, modifiedManagedObjectIDs: [NSManagedObjectID]) -> [CKRecord] {
         guard let fetchedRecords = fetchedRecordsToModify else {
             return []
@@ -89,17 +89,17 @@ class ModifyRecordsFromManagedObjectsOperation: CKModifyRecordsOperation {
     private func setOperationBlocks() {
         perRecordCompletionBlock = {
             (record: CKRecord?, error: Error?) -> Void in
-            
+
             if let error = error {
                 print("ModifyRecordsFromManagedObjectsOperation.perRecordCompletionBlock error: \(error)")
             } else {
                 print("Record modification successful for recordID: \(String(describing: record?.recordID))")
             }
         }
-        
+
         modifyRecordsCompletionBlock = {
             (savedRecords: [CKRecord]?, deletedRecords: [CKRecordID]?, error: Error?) -> Void in
-            
+
             if let error = error {
                 print("ModifyRecordsFromManagedObjectsOperation.modifyRecordsCompletionBlock error: \(error)")
             } else if let deletedRecords = deletedRecords {
