@@ -141,7 +141,7 @@ final class DemoData {
 				let fuelVolume = NSDecimalNumber(mantissa: item.fuelVolume, exponent: -2, isNegative: false)
 				let price = NSDecimalNumber(mantissa: item.price, exponent: -3, isNegative: false)
 
-				newEvent.lastUpdate = NSDate()
+				newEvent.lastUpdate = Date()
 				newEvent.ksTimestamp = df.date(from: item.date)!
 				newEvent.car = car
 				newEvent.distance = distance

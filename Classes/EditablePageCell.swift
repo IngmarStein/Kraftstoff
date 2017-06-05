@@ -54,8 +54,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.textAlignment        = .left
 		keyLabel.highlightedTextColor = .black
 		keyLabel.textColor            = .black
-		keyLabel.setContentHuggingPriority(750, for: .horizontal)
-		keyLabel.setContentCompressionResistancePriority(1000, for: .horizontal)
+		keyLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
+		keyLabel.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 		keyLabel.font = UIFont.preferredFont(forTextStyle: .body)
 		keyLabel.adjustsFontForContentSizeCategory = true
@@ -63,7 +63,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		self.contentView.addSubview(keyLabel)
 
 		let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottomMargin, multiplier: 1.0, constant: 0.0)
-		keyLabelBottomConstraint.priority = 500
+		keyLabelBottomConstraint.priority = UILayoutPriority(rawValue: 500)
 
 		let constraints = [
 			NSLayoutConstraint(item: keyLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .topMargin, multiplier: 1.0, constant: 0.0),

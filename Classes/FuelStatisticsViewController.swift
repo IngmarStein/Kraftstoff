@@ -83,8 +83,8 @@ class FuelStatisticsViewController: UIViewController {
 		let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)!
 		let fontSelected = UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
 
-		let labelAttributes: [String: AnyObject] = [NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1)]
-		let labelSelectedAttributes: [String: AnyObject] = [NSFontAttributeName: fontSelected, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)]
+		let labelAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1)]
+		let labelSelectedAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: fontSelected, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)]
 		for view in self.view.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!

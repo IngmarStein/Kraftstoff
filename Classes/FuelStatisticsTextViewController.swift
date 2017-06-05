@@ -185,8 +185,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
 		let font = UIFont.preferredFont(forTextStyle: .body)
-		let labelAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
-		let valueAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
+		let valueAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var x: CGFloat
 		var y: CGFloat
@@ -198,7 +198,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1).setFill()
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
-			let size = text.size(attributes: valueAttributes)
+			let size = text.size(withAttributes: valueAttributes)
 
             x = floor ((self.view.bounds.size.width -  size.width)/2.0)
             y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0)
@@ -294,7 +294,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			y = (gridTextHeight - font.lineHeight) / 2.0
 
 			func drawEntry(label: String, value: String) {
-				let size = label.size(attributes: labelAttributes)
+				let size = label.size(withAttributes: labelAttributes)
 				let x1 = self.gridLeftBorder + self.gridDesColumnWidth - size.width - gridTextXMargin
 				label.draw(at: CGPoint(x: x1, y: y), withAttributes: labelAttributes)
 

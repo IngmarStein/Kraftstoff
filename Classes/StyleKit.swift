@@ -31,7 +31,7 @@ public class StyleKit: NSObject {
         let labelRect = CGRect(x: 0, y: 36, width: 276, height: 24)
         let labelStyle = NSMutableParagraphStyle()
         labelStyle.alignment = .right
-        let labelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 20), NSForegroundColorAttributeName: UIColor.black, NSParagraphStyleAttributeName: labelStyle]
+        let labelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 20), NSAttributedStringKey.foregroundColor: UIColor.black, NSAttributedStringKey.paragraphStyle: labelStyle]
 
         let labelTextHeight: CGFloat = text.boundingRect(with: CGSize(width: labelRect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: labelFontAttributes, context: nil).height
         context.saveGState()
@@ -73,7 +73,7 @@ public class StyleKit: NSObject {
         let labelRect = CGRect(x: 76, y: 38, width: 244, height: 24)
         let labelStyle = NSMutableParagraphStyle()
         labelStyle.alignment = .left
-        let labelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 20), NSForegroundColorAttributeName: textForeground, NSParagraphStyleAttributeName: labelStyle]
+        let labelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 20), NSAttributedStringKey.foregroundColor: textForeground, NSAttributedStringKey.paragraphStyle: labelStyle]
 
         let labelTextHeight: CGFloat = line1.boundingRect(with: CGSize(width: labelRect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: labelFontAttributes, context: nil).height
         context.saveGState()
@@ -85,7 +85,7 @@ public class StyleKit: NSObject {
         let label2Rect = CGRect(x: 76, y: 61.58, width: 244, height: 24)
         let label2Style = NSMutableParagraphStyle()
         label2Style.alignment = .left
-        let label2FontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 20), NSForegroundColorAttributeName: textForeground, NSParagraphStyleAttributeName: label2Style]
+        let label2FontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 20), NSAttributedStringKey.foregroundColor: textForeground, NSAttributedStringKey.paragraphStyle: label2Style]
 
         let label2TextHeight: CGFloat = line2.boundingRect(with: CGSize(width: label2Rect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: label2FontAttributes, context: nil).height
         context.saveGState()

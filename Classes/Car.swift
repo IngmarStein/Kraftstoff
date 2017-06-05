@@ -18,10 +18,10 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 
 	var ksTimestamp: Date {
 		get {
-			return timestamp! as Date
+			return timestamp!
 		}
 		set {
-			timestamp = newValue as NSDate
+			timestamp = newValue
 		}
 	}
 
@@ -88,8 +88,8 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 
 		let record = CKRecord(recordType: cloudKitRecordType!, recordID: cloudKitRecordID)
 
-		record["lastUpdate"] = lastUpdate
-		record["timestamp"] = timestamp
+		record["lastUpdate"] = lastUpdate as NSDate?
+		record["timestamp"] = timestamp as NSDate?
 		record["distanceTotalSum"] = distanceTotalSum
 		record["fuelUnit"] = NSNumber(value: fuelUnit)
 		record["order"] = NSNumber(value: order)
@@ -105,9 +105,9 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
-		lastUpdate = record["lastUpdate"] as? NSDate
+		lastUpdate = record["lastUpdate"] as? Date
 		// swiftlint:disable force_cast
-		timestamp = record["timestamp"] as? NSDate
+		timestamp = record["timestamp"] as? Date
 		distanceTotalSum = record["distanceTotalSum"] as? NSDecimalNumber
 		fuelUnit = record["fuelUnit"] as! Int32
 		order = record["order"] as! Int32

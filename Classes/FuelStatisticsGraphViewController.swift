@@ -365,10 +365,10 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state.dataCount == 0 {
 
-			let attributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+			let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
-			let size = text.size(attributes: attributes)
+			let size = text.size(withAttributes: attributes)
 
             let x = floor ((self.view.bounds.size.width - size.width)/2.0)
             let y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0)
@@ -411,12 +411,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for horizontal marker lines markers
 		context.saveGState()
 
-		let attributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) ]
+		let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) ]
 
 		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
 
-				let size = mark.size(attributes: attributes)
+				let size = mark.size(withAttributes: attributes)
 
 				let x = self.graphRightBorder + 6
 				let y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state.hMarkPositions [i] - size.height) + 0.5
@@ -451,12 +451,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for vertical marker lines
 		context.saveGState()
 
-		let vMarkAttributes: [String: AnyObject] = [ NSFontAttributeName: font, NSForegroundColorAttributeName: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
+		let vMarkAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
 
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
 
-				let size = mark.size(attributes: attributes)
+				let size = mark.size(withAttributes: attributes)
 
 				let center = size.width * 0.5
 				var x = floor(self.graphLeftBorder + 0.5 + self.graphWidth * state.vMarkPositions[i] - center)
@@ -727,11 +727,11 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes: [String: AnyObject] = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: .caption2),
-                                 NSForegroundColorAttributeName: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+		let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption2),
+                                 NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
 
 		var infoRect = CGRect()
-		infoRect.size = info.size(attributes: attributes)
+		infoRect.size = info.size(withAttributes: attributes)
 		infoRect.size.width += statisticTrackInfoXMarginFlat * 2.0
 		infoRect.size.height += statisticTrackInfoYMarginFlat * 2.0
 		infoRect.origin.x = rint (location.x - infoRect.size.width/2)

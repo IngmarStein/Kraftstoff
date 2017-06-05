@@ -246,9 +246,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			// Create a new instance of the entity managed by the fetched results controller.
 			let newCar = Car(context: CoreDataManager.managedObjectContext)
 
-			newCar.lastUpdate = NSDate()
+			newCar.lastUpdate = Date()
 			newCar.order = 0
-			newCar.timestamp = NSDate()
+			newCar.timestamp = Date()
 			newCar.name = controller.name!
 			newCar.numberPlate = controller.plate!
 			newCar.odometerUnit = controller.odometerUnit!.int32Value

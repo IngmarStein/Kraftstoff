@@ -26,9 +26,9 @@ final class CSVImporter {
 		// Create and configure new car object
 		let newCar = Car(context: managedObjectContext)
 
-		newCar.lastUpdate = NSDate()
+		newCar.lastUpdate = Date()
 		newCar.order = Int32(order)
-		newCar.ksTimestamp = Date()
+		newCar.timestamp = Date()
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
@@ -42,7 +42,7 @@ final class CSVImporter {
 	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = FuelEvent(context: managedObjectContext)
 
-		newEvent.lastUpdate = NSDate()
+		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.ksTimestamp = date
 		newEvent.distance = distance

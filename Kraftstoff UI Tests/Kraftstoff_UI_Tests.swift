@@ -20,7 +20,7 @@ class KraftstoffUITests: XCTestCase {
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
 		app.launch()
 
-		XCUIDevice.shared().orientation = .portrait
+		XCUIDevice.shared.orientation = .portrait
     }
 
     override func tearDown() {
@@ -55,7 +55,7 @@ class KraftstoffUITests: XCTestCase {
 
 		snapshot("03_fuelevents")
 
-		XCUIDevice.shared().orientation = .landscapeLeft
+		XCUIDevice.shared.orientation = .landscapeLeft
 
 		let imagesQuery = app.images
 		let button = imagesQuery.buttons["5Y"]
@@ -69,7 +69,7 @@ class KraftstoffUITests: XCTestCase {
 
 		snapshot("05_chart_fuel")
 
-		XCUIDevice.shared().orientation = .portrait
+		XCUIDevice.shared.orientation = .portrait
 
 		tabBarsQuery.buttons.element(boundBy: 0).tap() // Fill-Up
 

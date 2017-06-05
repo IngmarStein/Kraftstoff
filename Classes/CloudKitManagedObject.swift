@@ -19,7 +19,7 @@ protocol CloudKitRecordIDObject: class {
 
 protocol CloudKitManagedObject: CloudKitRecordIDObject {
 
-	var lastUpdate: NSDate? { get set }
+	var lastUpdate: Date? { get set }
 
 	func asCloudKitRecord() -> CKRecord
 	func updateFromRecord(_ record: CKRecord)

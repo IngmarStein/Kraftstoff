@@ -18,10 +18,10 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 	private let pickerViewCellHeight: CGFloat =  44.0
 
 	// Attributes for custom PickerViews
-	private var prefixAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: .headline),
-	                                NSForegroundColorAttributeName: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
-	private var suffixAttributes: [String: AnyObject] = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: .subheadline),
-									NSForegroundColorAttributeName: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
+	private var prefixAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .headline),
+	                                NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
+	private var suffixAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .subheadline),
+									NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
 
 	required init() {
 		carPicker = UIPickerView()
@@ -30,7 +30,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		super.init()
 
 		let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 162.0)
-		carPickerHeightConstraint.priority = 750
+		carPickerHeightConstraint.priority = UILayoutPriority(rawValue: 750)
 		carPicker.showsSelectionIndicator = true
 		carPicker.dataSource              = self
 		carPicker.delegate                = self

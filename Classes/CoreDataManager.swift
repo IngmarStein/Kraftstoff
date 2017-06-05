@@ -295,7 +295,7 @@ final class CoreDataManager {
 		// Create new managed object for this event
 		let newEvent = FuelEvent(context: moc)
 
-		newEvent.lastUpdate = NSDate()
+		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.ksTimestamp = date
 		newEvent.distance = kilometers

@@ -38,10 +38,10 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 	var ksTimestamp: Date {
 		get {
-			return timestamp! as Date
+			return timestamp!
 		}
 		set {
-			timestamp = newValue as NSDate
+			timestamp = newValue
 		}
 	}
 
@@ -66,7 +66,7 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		record["price"] = price
 		record["inheritedDistance"] = inheritedDistance
 		record["inheritedFuelVolume"] = inheritedFuelVolume
-		record["timestamp"] = timestamp
+		record["timestamp"] = timestamp as NSDate?
 		record["filledUp"] = NSNumber(value: filledUp)
 		record["comment"] = comment as NSString?
 		record["fuelVolume"] = fuelVolume
@@ -79,14 +79,14 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 
 	func updateFromRecord(_ record: CKRecord) {
 		cloudKitRecordName = record.recordID.recordName
-		lastUpdate = record["lastUpdate"] as? NSDate
+		lastUpdate = record["lastUpdate"] as? Date
 		// swiftlint:disable force_cast
 		inheritedCost = record["inheritedCost"] as? NSDecimalNumber
 		distance = record["distance"] as? NSDecimalNumber
 		price = record["price"] as? NSDecimalNumber
 		inheritedDistance = record["inheritedDistance"] as? NSDecimalNumber
 		inheritedFuelVolume = record["inheritedFuelVolume"] as? NSDecimalNumber
-		timestamp = record["timestamp"] as? NSDate
+		timestamp = record["timestamp"] as? Date
 		filledUp = record["filledUp"] as! Bool
 		comment = record["comment"] as? String
 		fuelVolume = record["fuelVolume"] as? NSDecimalNumber
