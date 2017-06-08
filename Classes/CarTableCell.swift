@@ -19,9 +19,9 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 	// Attributes for custom PickerViews
 	private var prefixAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .headline),
-	                                NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)]
+	                                                              NSAttributedStringKey.foregroundColor: UIColor.black]
 	private var suffixAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .subheadline),
-									NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.3300000131, green: 0.3300000131, blue: 0.3300000131, alpha: 1)]
+	                                                              NSAttributedStringKey.foregroundColor: UIColor(named: "Suffix")! ]
 
 	required init() {
 		carPicker = UIPickerView()

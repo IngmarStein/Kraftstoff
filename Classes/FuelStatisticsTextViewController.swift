@@ -173,20 +173,20 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 	private func drawBackground(_ context: CGContext) {
 		// Background colors
-		#colorLiteral(red: 0.08235294118, green: 0.08235294118, blue: 0.08235294118, alpha: 1).setFill()
+		UIColor(named: "StatisticsBackground")?.setFill()
 		context.fill(self.view.bounds)
 
-		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).setFill()
+		UIColor.black.setFill()
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 28))
 	}
 
 	private func drawStatisticsForState(_ state: FuelStatisticsData, withHeight height: CGFloat, context: CGContext) {
-		#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).setFill()
+		UIColor.clear.setFill()
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
 		let font = UIFont.preferredFont(forTextStyle: .body)
-		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.7799999714, green: 0.7799999714, blue: 0.7799999714, alpha: 1) ]
-		let valueAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) ]
+		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor(named: "Text")! ]
+		let valueAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.white ]
 
 		var x: CGFloat
 		var y: CGFloat
@@ -195,7 +195,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			context.saveGState()
 
-			#colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1).setFill()
+			UIColor.white.setFill()
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(withAttributes: valueAttributes)
@@ -213,7 +213,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let path = UIBezierPath()
 
 			path.lineWidth = gridTextHeight - 1
-			#colorLiteral(red: 0.2235294118, green: 0.2235294118, blue: 0.2235294118, alpha: 1).setStroke()
+			UIColor(named: "GridBackground")?.setStroke()
 
 			context.saveGState()
 
@@ -232,7 +232,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			context.restoreGState()
 
-			#colorLiteral(red: 0.4499999881, green: 0.4499999881, blue: 0.4499999881, alpha: 0.5).setStroke()
+			UIColor(named: "GridLine")?.setStroke()
 
 			// Horizontal grid lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
@@ -274,7 +274,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Textual information
 			context.saveGState()
 
-			context.setShadow(offset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor)
+			context.setShadow(offset: CGSize(width: 0.0, height: -1.0), blur: 0.0, color: UIColor.black.cgColor)
 
             let nf = Formatters.fuelVolumeFormatter
             let cf = Formatters.currencyFormatter

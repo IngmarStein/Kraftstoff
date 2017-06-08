@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5062D133DCCD8E607F8BAF86CF2EAAD52EBAD063",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "DD33048954A745A3AE083C86E24E7F44C7CE1140" : 9223372036854775807,
+    "5062D133DCCD8E607F8BAF86CF2EAAD52EBAD063" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "42C25C78-757A-4F76-8A4F-22BB3EFB41A4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "DD33048954A745A3AE083C86E24E7F44C7CE1140" : "cloudkitsyncproofofconcept\/",
+    "5062D133DCCD8E607F8BAF86CF2EAAD52EBAD063" : "Kraftstoff\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Kraftstoff",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Kraftstoff.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/IngmarStein\/Kraftstoff.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5062D133DCCD8E607F8BAF86CF2EAAD52EBAD063"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/CliftonGarage\/cloudkitsyncproofofconcept.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "DD33048954A745A3AE083C86E24E7F44C7CE1140"
+    }
+  ]
+}
