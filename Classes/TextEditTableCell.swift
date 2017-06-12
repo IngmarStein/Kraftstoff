@@ -66,7 +66,8 @@ final class TextEditTableCell: EditablePageCell {
 
 	@objc(textField:shouldChangeCharactersInRange:replacementString:)
 	func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-		var newValue = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+		guard let editRange = Range(range, in: textField.text!) else { return false }
+		var newValue = textField.text!.replacingCharacters(in: editRange, with: string)
 
 		// Don't allow too large strings
 		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {

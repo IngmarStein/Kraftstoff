@@ -84,8 +84,9 @@ final class NumberEditTableCell: EditablePageCell {
 				value += digit / scale
 			} else {
 				// Normal insert otherwise
-				text  = (text as NSString).replacingCharacters(in: range, with: string)
-				text  = text.replacingOccurrences(of: self.numberFormatter.groupingSeparator, with: "")
+				guard let editRange = Range(range, in: text) else { return false }
+				text = text.replacingCharacters(in: editRange, with: string)
+				text = text.replacingOccurrences(of: self.numberFormatter.groupingSeparator, with: "")
 				guard let newValue = self.numberFormatter.number(from: text) as? NSDecimalNumber else { return false }
 				value = newValue
 			}
