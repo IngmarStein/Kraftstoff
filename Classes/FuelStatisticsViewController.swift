@@ -171,14 +171,14 @@ class FuelStatisticsViewController: UIViewController {
 																										dateMatches: true),
 													inManagedObjectContext: sampleContext)
 
-				// Compute statistics
-				let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-															forCar: sampleCar,
-													   withObjects: samplingObjects,
-											inManagedObjectContext: sampleContext)
-
 				// Schedule update of cache and display in main thread
 				DispatchQueue.main.async {
+					// Compute statistics
+					let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
+					                                                       forCar: sampleCar,
+					                                                       withObjects: samplingObjects,
+					                                                       inManagedObjectContext: sampleContext)
+
 					if self.invalidationCounter == self.expectedCounter {
 						self.contentCache[numberOfMonths] = sampleData
 
