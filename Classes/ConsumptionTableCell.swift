@@ -22,7 +22,7 @@ final class ConsumptionTableCell: PageCell {
 		self.coloredLabel.textAlignment             = .center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
 		self.coloredLabel.backgroundColor           = .clear
-		self.coloredLabel.highlightedTextColor      = UIColor(named: "HighlightedText")
+		self.coloredLabel.highlightedTextColor      = UIColor.highlightedText
 		self.coloredLabel.textColor                 = .black
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.coloredLabel.adjustsFontForContentSizeCategory = true

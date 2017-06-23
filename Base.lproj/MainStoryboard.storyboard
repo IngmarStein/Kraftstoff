@@ -45,7 +45,7 @@
                             <outlet property="delegate" destination="6xE-Uc-v14" id="ggT-ja-kNH"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="sMv-0l-PzQ"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="sMv-0l-PzQ"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nE8-Sk-w7G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -719,7 +719,7 @@
                 <navigationController storyboardIdentifier="CarNavigationController" title="Cars" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jIJ-Qn-vtb" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Cars" image="Cars" id="WJK-es-b4F"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ChZ-wf-TrE">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="ChZ-wf-TrE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

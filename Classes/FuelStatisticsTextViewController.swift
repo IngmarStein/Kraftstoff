@@ -173,7 +173,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 	private func drawBackground(_ context: CGContext) {
 		// Background colors
-		UIColor(named: "StatisticsBackground")?.setFill()
+		UIColor.statisticsBackground.setFill()
 		context.fill(self.view.bounds)
 
 		UIColor.black.setFill()
@@ -185,7 +185,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
 		let font = UIFont.preferredFont(forTextStyle: .body)
-		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor(named: "Text")! ]
+		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text ]
 		let valueAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.white ]
 
 		var x: CGFloat
@@ -213,7 +213,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let path = UIBezierPath()
 
 			path.lineWidth = gridTextHeight - 1
-			UIColor(named: "GridBackground")?.setStroke()
+			UIColor.gridBackground.setStroke()
 
 			context.saveGState()
 
@@ -232,7 +232,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			context.restoreGState()
 
-			UIColor(named: "GridLine")?.setStroke()
+			UIColor.gridLine.setStroke()
 
 			// Horizontal grid lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]

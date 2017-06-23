@@ -347,7 +347,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private func drawFlatStatisticsForState(_ state: FuelStatisticsSamplingData!, context: CGContext) {
 		// Background colors
-		UIColor(named: "StatisticsBackground")?.setFill()
+		UIColor.statisticsBackground.setFill()
 		context.fill(self.view.bounds)
 
 		UIColor.black.setFill()
@@ -378,7 +378,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		} else {
 
 			// Color for coordinate-axes
-			UIColor(named: "CoordinateAxes")?.setStroke()
+			UIColor.coordinateAxes.setStroke()
 
 			// Horizontal marker lines
 			let dashDotPattern: [CGFloat] = [ 0.5, 0.5 ]
@@ -451,7 +451,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
         // Axis description for vertical marker lines
 		context.saveGState()
 
-		let vMarkAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor(named: "Text")! ]
+		let vMarkAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text ]
 
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
@@ -512,7 +512,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		context.restoreGState()
 
 		// Top and bottom lines
-		UIColor(named: "Text")?.setStroke()
+		UIColor.text.setStroke()
 		path.lineWidth = 0.5
 
 		path.removeAllPoints()
