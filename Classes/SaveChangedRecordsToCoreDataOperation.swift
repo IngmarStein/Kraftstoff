@@ -122,6 +122,6 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
 			fatalError("ERROR - RecordID.recordName does not contain an entity prefix")
 		}
 
-		return recordName.substring(to: index)
+		return String(recordName[..<index])
     }
 }

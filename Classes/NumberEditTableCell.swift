@@ -146,7 +146,7 @@ final class NumberEditTableCell: EditablePageCell {
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		if let suffix = self.textFieldSuffix {
 			if textField.text!.hasSuffix(suffix) {
-				textField.text = textField.text!.substring(to: textField.text!.index(textField.text!.endIndex, offsetBy: -suffix.characters.count))
+				textField.text = String(textField.text![..<textField.text!.index(textField.text!.endIndex, offsetBy: -suffix.characters.count)])
 			}
 		}
 
