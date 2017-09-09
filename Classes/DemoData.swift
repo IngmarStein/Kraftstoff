@@ -137,19 +137,19 @@ final class DemoData {
 			for item in demoData {
 				let newEvent = FuelEvent(context: context)
 
-				let distance = NSDecimalNumber(mantissa: item.distance, exponent: -1, isNegative: false)
-				let fuelVolume = NSDecimalNumber(mantissa: item.fuelVolume, exponent: -2, isNegative: false)
-				let price = NSDecimalNumber(mantissa: item.price, exponent: -3, isNegative: false)
+				let distance = NSDecimalNumber(mantissa: item.distance, exponent: -1, isNegative: false) as Decimal
+				let fuelVolume = NSDecimalNumber(mantissa: item.fuelVolume, exponent: -2, isNegative: false) as Decimal
+				let price = NSDecimalNumber(mantissa: item.price, exponent: -3, isNegative: false) as Decimal
 
 				newEvent.lastUpdate = Date()
 				newEvent.ksTimestamp = df.date(from: item.date)!
 				newEvent.car = car
-				newEvent.distance = distance
-				newEvent.price = price
-				newEvent.fuelVolume = fuelVolume
+				newEvent.ksDistance = distance
+				newEvent.ksPrice = price
+				newEvent.ksFuelVolume = fuelVolume
 
-				car.distanceTotalSum = car.ksDistanceTotalSum + distance
-				car.fuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
+				car.ksDistanceTotalSum = car.ksDistanceTotalSum + distance
+				car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
 			}
 
 			car.odometer = car.distanceTotalSum

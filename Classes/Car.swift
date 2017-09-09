@@ -25,16 +25,31 @@ final class Car: NSManagedObject, CloudKitManagedObject {
 		}
 	}
 
-	var ksDistanceTotalSum: NSDecimalNumber {
-		return distanceTotalSum!
+	var ksDistanceTotalSum: Decimal {
+		get {
+			return distanceTotalSum! as Decimal
+		}
+		set {
+			distanceTotalSum = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksFuelVolumeTotalSum: NSDecimalNumber {
-		return fuelVolumeTotalSum!
+	var ksFuelVolumeTotalSum: Decimal {
+		get {
+			return fuelVolumeTotalSum! as Decimal
+		}
+		set {
+			fuelVolumeTotalSum = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksOdometer: NSDecimalNumber {
-		return odometer!
+	var ksOdometer: Decimal {
+		get {
+			return odometer! as Decimal
+		}
+		set {
+			odometer = newValue as NSDecimalNumber
+		}
 	}
 
 	var ksName: String {

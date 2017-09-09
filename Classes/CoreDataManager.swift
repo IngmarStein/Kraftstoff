@@ -222,7 +222,7 @@ final class CoreDataManager {
 
 	// MARK: - Core Data Updates
 
-	@discardableResult static func addToArchive(car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
+	@discardableResult static func addToArchive(car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, filledUp: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext, comment: String?, forceOdometerUpdate odometerUpdate: Bool) -> FuelEvent {
 		// Convert distance and fuelvolume to SI units
 		let fuelUnit     = car.ksFuelUnit
 		let odometerUnit = car.ksOdometerUnit
@@ -231,9 +231,9 @@ final class CoreDataManager {
 		let kilometers    = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let pricePerLiter = Units.pricePerLiter(price, withUnit: fuelUnit)
 
-		var inheritedCost: NSDecimalNumber       = .zero
-		var inheritedDistance: NSDecimalNumber   = .zero
-		var inheritedFuelVolume: NSDecimalNumber = .zero
+		var inheritedCost = Decimal(0)
+		var inheritedDistance = Decimal(0)
+		var inheritedFuelVolume = Decimal(0)
 
 		var forceOdometerUpdate = odometerUpdate
 
@@ -279,9 +279,9 @@ final class CoreDataManager {
 				: liters
 
 			for youngerEvent in youngerEvents.reversed() {
-				youngerEvent.inheritedCost = max(youngerEvent.ksInheritedCost + deltaCost, .zero)
-				youngerEvent.inheritedDistance = max(youngerEvent.ksInheritedDistance + deltaDistance, .zero)
-				youngerEvent.inheritedFuelVolume = max(youngerEvent.ksInheritedFuelVolume + deltaFuelVolume, .zero)
+				youngerEvent.ksInheritedCost = max(youngerEvent.ksInheritedCost + deltaCost, 0)
+				youngerEvent.ksInheritedDistance = max(youngerEvent.ksInheritedDistance + deltaDistance, 0)
+				youngerEvent.ksInheritedFuelVolume = max(youngerEvent.ksInheritedFuelVolume + deltaFuelVolume, 0)
 
 				if youngerEvent.filledUp {
 					break
@@ -298,25 +298,25 @@ final class CoreDataManager {
 		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.ksTimestamp = date
-		newEvent.distance = kilometers
-		newEvent.price = pricePerLiter
-		newEvent.fuelVolume = liters
+		newEvent.ksDistance = kilometers
+		newEvent.ksPrice = pricePerLiter
+		newEvent.ksFuelVolume = liters
 		newEvent.comment = comment
 
 		if !filledUp {
 			newEvent.filledUp = filledUp
 		}
 
-		if inheritedCost != .zero {
-			newEvent.inheritedCost = inheritedCost
+		if !inheritedCost.isZero {
+			newEvent.ksInheritedCost = inheritedCost
 		}
 
-		if inheritedDistance != .zero {
-			newEvent.inheritedDistance = inheritedDistance
+		if !inheritedDistance.isZero {
+			newEvent.ksInheritedDistance = inheritedDistance
 		}
 
-		if inheritedFuelVolume != .zero {
-			newEvent.inheritedFuelVolume = inheritedFuelVolume
+		if !inheritedFuelVolume.isZero {
+			newEvent.ksInheritedFuelVolume = inheritedFuelVolume
 		}
 
 		// Conditions for update of global odometer:
@@ -330,12 +330,12 @@ final class CoreDataManager {
 		}
 
 		// Update total car statistics
-		car.distanceTotalSum = car.ksDistanceTotalSum + kilometers
-		car.fuelVolumeTotalSum = car.ksFuelVolumeTotalSum + liters
+		car.ksDistanceTotalSum = car.ksDistanceTotalSum + kilometers
+		car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + liters
 
 		if forceOdometerUpdate {
 			// Update global odometer
-			car.odometer = max(car.ksOdometer + kilometers, car.ksDistanceTotalSum)
+			car.ksOdometer = max(car.ksOdometer + kilometers, car.ksDistanceTotalSum)
 		}
 
 		return newEvent
@@ -366,14 +366,14 @@ final class CoreDataManager {
 				let inheritedDistance   = event.ksInheritedDistance
 				let inheritedFuelVolume = event.ksInheritedFuelVolume
 
-				if inheritedCost > .zero || inheritedDistance > .zero || inheritedFuelVolume > .zero {
+				if inheritedCost > 0 || inheritedDistance > 0 || inheritedFuelVolume > 0 {
 					while row > 0 {
 						row -= 1
 						let youngerEvent = youngerEvents[row]
 
-						youngerEvent.inheritedCost = youngerEvent.ksInheritedCost + inheritedCost
-						youngerEvent.inheritedDistance = youngerEvent.ksInheritedDistance + inheritedDistance
-						youngerEvent.inheritedFuelVolume = youngerEvent.ksInheritedFuelVolume + inheritedFuelVolume
+						youngerEvent.ksInheritedCost = youngerEvent.ksInheritedCost + inheritedCost
+						youngerEvent.ksInheritedDistance = youngerEvent.ksInheritedDistance + inheritedDistance
+						youngerEvent.ksInheritedFuelVolume = youngerEvent.ksInheritedFuelVolume + inheritedFuelVolume
 
 						if youngerEvent.filledUp {
 							break
@@ -388,9 +388,9 @@ final class CoreDataManager {
 					let youngerEvent = youngerEvents[row]
 					let cost = event.ksPrice
 
-					youngerEvent.inheritedCost = max(youngerEvent.ksInheritedCost - cost, .zero)
-					youngerEvent.inheritedDistance = max(youngerEvent.ksInheritedDistance - distance, .zero)
-					youngerEvent.inheritedFuelVolume = max(youngerEvent.ksInheritedFuelVolume - fuelVolume, .zero)
+					youngerEvent.ksInheritedCost = max(youngerEvent.ksInheritedCost - cost, 0)
+					youngerEvent.ksInheritedDistance = max(youngerEvent.ksInheritedDistance - distance, 0)
+					youngerEvent.ksInheritedFuelVolume = max(youngerEvent.ksInheritedFuelVolume - fuelVolume, 0)
 
 					if youngerEvent.filledUp {
 						break
@@ -412,12 +412,12 @@ final class CoreDataManager {
 		}
 
 		// Update total car statistics
-		car.distanceTotalSum = max(car.ksDistanceTotalSum - distance, .zero)
-		car.fuelVolumeTotalSum = max(car.ksFuelVolumeTotalSum - fuelVolume, .zero)
+		car.ksDistanceTotalSum = max(car.ksDistanceTotalSum - distance, 0)
+		car.ksFuelVolumeTotalSum = max(car.ksFuelVolumeTotalSum - fuelVolume, 0)
 
 		// Update global odometer
 		if forceOdometerUpdate {
-			car.odometer = max(car.ksOdometer - distance, .zero)
+			car.ksOdometer = max(car.ksOdometer - distance, 0)
 		}
 
 		// Delete the managed event object

@@ -31,9 +31,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	}
 	var car: Car!
 	var date: Date!
-	var distance: NSDecimalNumber!
-	var price: NSDecimalNumber!
-	var fuelVolume: NSDecimalNumber!
+	var distance: Decimal!
+	var price: Decimal!
+	var fuelVolume: Decimal!
 	var filledUp = false
 	var comment: String?
 
@@ -122,9 +122,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		dataChanged            = coder.decodeBool(forKey: SRFuelEventDataChanged)
 		restoredSelectionIndex = coder.decodeObject(of: NSIndexPath.self, forKey: SRFuelEventSelectionIndex) as IndexPath?
 		date                   = coder.decodeObject(of: NSDate.self, forKey: SRFuelEventDate) as Date?
-		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventDistance)
-		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventPrice)
-		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventVolume)
+		distance               = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventDistance) as Decimal?
+		price                  = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventPrice) as Decimal?
+		fuelVolume             = coder.decodeObject(of: NSDecimalNumber.self, forKey: SRFuelEventVolume) as Decimal?
 		filledUp               = coder.decodeBool(forKey: SRFuelEventFilledUp)
 		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as String?
 
@@ -293,7 +293,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
 		// Don't add the section when no value can be computed
-		if distance <= .zero || fuelVolume <= .zero {
+		if distance.isSignMinus || distance.isZero || fuelVolume.isSignMinus || fuelVolume.isZero {
 			return
 		}
 
@@ -309,7 +309,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		let kilometers  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
 
-		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost as NSNumber)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption as NSNumber)!) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
@@ -463,7 +463,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 					dataChanged = true
 				}
 			}
-		} else if let newNumber = newValue as? NSDecimalNumber {
+		} else if let newNumber = newValue as? Decimal {
 			if valueIdentifier == "distance" {
 				if distance != newNumber {
 					distance = newNumber
@@ -499,7 +499,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Validation of Done button
 		var canBeSaved = true
 
-		if !(distance > .zero && fuelVolume > .zero) {
+		if distance.isSignMinus || distance.isZero || fuelVolume.isSignMinus || fuelVolume.isZero {
 			canBeSaved = false
 		} else if date != event.ksTimestamp {
 			if CoreDataManager.containsEventWithCar(car, andDate: date) {
@@ -525,9 +525,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 
 		// DecimalNumbers <= 0.0 are invalid
-		if let decimalNumber = newValue as? NSDecimalNumber {
+		if let decimalNumber = newValue as? Decimal {
 			if valueIdentifier != "price" {
-				if decimalNumber <= .zero {
+				if decimalNumber.isSignMinus || decimalNumber.isZero {
 					return false
 				}
 			}

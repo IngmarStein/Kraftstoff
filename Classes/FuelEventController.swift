@@ -439,7 +439,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		tableCell.topLeftAccessibilityLabel = nil
 
 		// Distance
-		let convertedDistance: NSDecimalNumber
+		let convertedDistance: Decimal
 
 		if odometerUnit == UnitLength.kilometers {
 			convertedDistance = distance
@@ -447,11 +447,11 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			convertedDistance = distance / Units.kilometersPerStatuteMile
 		}
 
-		tableCell.botLeftLabel.text = "\(Formatters.distanceFormatter.string(from: convertedDistance)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
+		tableCell.botLeftLabel.text = "\(Formatters.distanceFormatter.string(from: convertedDistance as NSNumber)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 		tableCell.botLeftAccessibilityLabel = nil
 
 		// Price
-		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: fuelEvent.cost)
+		tableCell.topRightLabel.text = Formatters.currencyFormatter.string(from: fuelEvent.cost as NSNumber)
 		tableCell.topRightAccessibilityLabel = tableCell.topRightLabel.text
 
 		// Consumption combined with inherited data from earlier events
@@ -462,7 +462,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 
-			consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg)!
+			consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg as NSNumber)!
 
 			tableCell.botRightAccessibilityLabel = ", \(consumptionDescription) \(Formatters.mediumMeasurementFormatter.string(from: consumptionUnit))"
 

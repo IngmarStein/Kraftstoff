@@ -65,14 +65,14 @@ final class CSVExporter {
 
 		for fuelEvent in fuelEvents {
 			let timestamp = dateFormatter.string(from: fuelEvent.ksTimestamp)
-			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.ksDistance, withUnit: odometerUnit))!
-			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.ksFuelVolume, withUnit: fuelUnit))!
+			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.ksDistance, withUnit: odometerUnit) as NSNumber)!
+			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.ksFuelVolume, withUnit: fuelUnit) as NSNumber)!
 			let filledUp = fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: "")
-			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.ksPrice, withUnit: fuelUnit))!
+			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.ksPrice, withUnit: fuelUnit) as NSNumber)!
 			let consumption = fuelEvent.filledUp ? numberFormatter.string(from:
 				Units.consumptionForKilometers(fuelEvent.ksDistance + fuelEvent.ksInheritedDistance,
 				                               liters: fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume,
-				                               inUnit: consumptionUnit))!
+				                               inUnit: consumptionUnit) as NSNumber)!
 				: " "
 			let comment = fuelEvent.comment ?? ""
 

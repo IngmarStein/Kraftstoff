@@ -177,9 +177,9 @@ final class Units {
 
 	// MARK: - Conversion Constants
 
-	static let litersPerUSGallon = NSDecimalNumber(mantissa: (3785411784 as UInt64), exponent: -9, isNegative: false)
-	static let litersPerImperialGallon = NSDecimalNumber(mantissa: (454609 as UInt64), exponent: -5, isNegative: false)
-	static let kilometersPerStatuteMile = NSDecimalNumber(mantissa: (1609344 as UInt64), exponent: -6, isNegative: false)
+	static let litersPerUSGallon = NSDecimalNumber(mantissa: (3785411784 as UInt64), exponent: -9, isNegative: false) as Decimal
+	static let litersPerImperialGallon = NSDecimalNumber(mantissa: (454609 as UInt64), exponent: -5, isNegative: false) as Decimal
+	static let kilometersPerStatuteMile = NSDecimalNumber(mantissa: (1609344 as UInt64), exponent: -6, isNegative: false) as Decimal
 	static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa: (2352145833 as UInt64), exponent: -9, isNegative: false)
 	static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa: (2737067636 as UInt64), exponent: -9, isNegative: false)
 	static let litersPer100KilometersToMilesPer10KUSGallon = NSDecimalNumber(mantissa: (425170068027 as UInt64), exponent: -10, isNegative: false)
@@ -187,25 +187,25 @@ final class Units {
 
 	// MARK: - Conversion to/from Internal Data Format
 
-	static func litersForVolume(_ volume: NSDecimalNumber, withUnit unit: UnitVolume) -> NSDecimalNumber {
+	static func litersForVolume(_ volume: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
         case .gallons: return volume * litersPerUSGallon
         case .imperialGallons: return volume * litersPerImperialGallon
         case .liters: return volume
-		default: return .zero
+		default: return 0
 		}
 	}
 
-	static func volumeForLiters(_ liters: NSDecimalNumber, withUnit unit: UnitVolume) -> NSDecimalNumber {
+	static func volumeForLiters(_ liters: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
         case .gallons: return liters / litersPerUSGallon
         case .imperialGallons: return liters / litersPerImperialGallon
         case .liters: return liters
-		default: return .zero
+		default: return 0
 		}
 	}
 
-	static func kilometersForDistance(_ distance: NSDecimalNumber, withUnit unit: UnitLength) -> NSDecimalNumber {
+	static func kilometersForDistance(_ distance: Decimal, withUnit unit: UnitLength) -> Decimal {
 		if unit == .miles {
 			return distance * kilometersPerStatuteMile
 		} else {
@@ -213,7 +213,7 @@ final class Units {
 		}
 	}
 
-	static func distanceForKilometers(_ kilometers: NSDecimalNumber, withUnit unit: UnitLength) -> NSDecimalNumber {
+	static func distanceForKilometers(_ kilometers: Decimal, withUnit unit: UnitLength) -> Decimal {
 		if unit == .miles {
 			return kilometers / kilometersPerStatuteMile
 		} else {
@@ -221,67 +221,60 @@ final class Units {
 		}
 	}
 
-	static func pricePerLiter(_ price: NSDecimalNumber, withUnit unit: UnitVolume) -> NSDecimalNumber {
+	static func pricePerLiter(_ price: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
         case .gallons: return price / litersPerUSGallon
         case .imperialGallons: return price / litersPerImperialGallon
         case .liters: return price
-		default: return .zero
+		default: return 0
 		}
 	}
 
-	static func pricePerUnit(_ literPrice: NSDecimalNumber, withUnit unit: UnitVolume) -> NSDecimalNumber {
+	static func pricePerUnit(_ literPrice: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
         case .gallons: return literPrice * litersPerUSGallon
         case .imperialGallons: return literPrice * litersPerImperialGallon
         case .liters: return literPrice
-		default: return .zero
+		default: return 0
 		}
 	}
 
 	// MARK: - Consumption/Efficiency Computation
 
-	static func consumptionForKilometers(_ kilometers: NSDecimalNumber, liters: NSDecimalNumber, inUnit unit: UnitFuelEfficiency) -> NSDecimalNumber {
+	static func consumptionForKilometers(_ kilometers: Decimal, liters: Decimal, inUnit unit: UnitFuelEfficiency) -> Decimal {
 		let handler = Formatters.consumptionRoundingHandler
 
-		if kilometers <= .zero {
-			return .notANumber
+		if kilometers.isSignMinus || kilometers.isZero {
+			return .nan
 		}
 
-		if liters <= .zero {
-			return .notANumber
+		if liters.isSignMinus || liters.isZero {
+			return .nan
 		}
 
 		if unit.isEfficiency {
-			let kmPerLiter = kilometers / liters
+			let kmPerLiter = (kilometers / liters) as NSDecimalNumber
 
 			switch unit {
-
             case .kilometersPerLiter:
-                return kmPerLiter.rounding(accordingToBehavior: handler)
-
+				return kmPerLiter.rounding(accordingToBehavior: handler) as Decimal
             case .milesPerGallon:
-                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler)
-
+                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler) as Decimal
             default: // .milesPerImperialGallonUK:
-                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler)
-
+                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler) as Decimal
 			}
 
 		} else {
 
-			let literPer100km = (liters << 2) / kilometers
+			let literPer100km = ((liters << 2) / kilometers) as NSDecimalNumber
 
 			switch unit {
-
 			case .litersPer100Kilometers:
-				return literPer100km.rounding(accordingToBehavior: handler)
-
+				return literPer100km.rounding(accordingToBehavior: handler) as Decimal
             case .gallonsPer10000Miles:
-                return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior: handler)
-
+                return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior: handler) as Decimal
             default: // .imperialGallonsPer10000Miles:
-				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KImperialGallon, withBehavior: handler)
+				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KImperialGallon, withBehavior: handler) as Decimal
 			}
 		}
 	}

@@ -16,24 +16,49 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		return "FuelEvent"
 	}
 
-	var ksInheritedCost: NSDecimalNumber {
-		return inheritedCost!
+	var ksInheritedCost: Decimal {
+		get {
+			return inheritedCost! as Decimal
+		}
+		set {
+			inheritedCost = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksDistance: NSDecimalNumber {
-		return distance!
+	var ksDistance: Decimal {
+		get {
+			return distance! as Decimal
+		}
+		set {
+			distance = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksPrice: NSDecimalNumber {
-		return price!
+	var ksPrice: Decimal {
+		get {
+			return price! as Decimal
+		}
+		set {
+			price = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksInheritedDistance: NSDecimalNumber {
-		return inheritedDistance!
+	var ksInheritedDistance: Decimal {
+		get {
+			return inheritedDistance! as Decimal
+		}
+		set {
+			inheritedDistance = newValue as NSDecimalNumber
+		}
 	}
 
-	var ksInheritedFuelVolume: NSDecimalNumber {
-		return inheritedFuelVolume!
+	var ksInheritedFuelVolume: Decimal {
+		get {
+			return inheritedFuelVolume! as Decimal
+		}
+		set {
+			inheritedFuelVolume = newValue as NSDecimalNumber
+		}
 	}
 
 	var ksTimestamp: Date {
@@ -45,11 +70,16 @@ final class FuelEvent: NSManagedObject, CloudKitManagedObject {
 		}
 	}
 
-	var ksFuelVolume: NSDecimalNumber {
-		return fuelVolume!
+	var ksFuelVolume: Decimal {
+		get {
+			return fuelVolume! as Decimal
+		}
+		set {
+			fuelVolume = newValue as NSDecimalNumber
+		}
 	}
 
-	var cost: NSDecimalNumber {
+	var cost: Decimal {
 		return ksFuelVolume * ksPrice
 	}
 

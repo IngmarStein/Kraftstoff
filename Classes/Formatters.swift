@@ -143,27 +143,21 @@ final class Formatters {
     }()
 
 	// Rounding handler for computation of average consumption
-	static let consumptionRoundingHandler: NSDecimalNumberHandler = {
-        let fractionDigits = fuelVolumeFormatter.maximumFractionDigits
-        return NSDecimalNumberHandler(
-			roundingMode: .plain,
-			scale: Int16(fractionDigits),
-			raiseOnExactness: false,
-			raiseOnOverflow: false,
-			raiseOnUnderflow: false,
-			raiseOnDivideByZero: false)
-    }()
+	static let consumptionRoundingHandler = NSDecimalNumberHandler(
+		roundingMode: .plain,
+		scale: Int16(fuelVolumeFormatter.maximumFractionDigits),
+		raiseOnExactness: false,
+		raiseOnOverflow: false,
+		raiseOnUnderflow: false,
+		raiseOnDivideByZero: false)
 
 	// Rounding handler for precise price computations
-	static let priceRoundingHandler: NSDecimalNumberHandler = {
-        let fractionDigits = editPreciseCurrencyFormatter.maximumFractionDigits
-		return NSDecimalNumberHandler(
-			roundingMode: .up,
-			scale: Int16(fractionDigits),
-			raiseOnExactness: false,
-			raiseOnOverflow: false,
-			raiseOnUnderflow: false,
-			raiseOnDivideByZero: false)
-    }()
+	static let priceRoundingHandler = NSDecimalNumberHandler(
+		roundingMode: .up,
+		scale: Int16(editPreciseCurrencyFormatter.maximumFractionDigits),
+		raiseOnExactness: false,
+		raiseOnOverflow: false,
+		raiseOnUnderflow: false,
+		raiseOnDivideByZero: false)
 
 }

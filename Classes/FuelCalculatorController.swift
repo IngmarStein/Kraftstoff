@@ -34,9 +34,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	var car: Car?
 	var date: Date?
 	var lastChangeDate: Date?
-	var distance: NSDecimalNumber?
-	var price: NSDecimalNumber?
-	var fuelVolume: NSDecimalNumber?
+	var distance: Decimal?
+	var price: Decimal?
+	var fuelVolume: Decimal?
 	var filledUp: Bool?
 	var comment: String?
 
@@ -172,7 +172,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return
 		}
 
-		if (distance == nil || distance! == .zero) && (fuelVolume == nil || fuelVolume! == .zero) && (price == nil || price! == .zero) {
+		if (distance == nil || distance!.isZero) && (fuelVolume == nil || fuelVolume!.isZero) && (price == nil || price!.isZero) {
 			return
 		}
 
@@ -184,9 +184,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
                          self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
                          self.valueChanged(now, identifier: "lastChangeDate")
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "distance")
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "price")
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "fuelVolume")
+                         self.valueChanged(Decimal(0), identifier: "distance")
+                         self.valueChanged(Decimal(0), identifier: "price")
+                         self.valueChanged(Decimal(0), identifier: "fuelVolume")
                          self.valueChanged(true, identifier: "filledUp")
 						 self.valueChanged("", identifier: "comment")
 
@@ -206,7 +206,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 			return false
 		}
 
-		if (distance == nil || distance! <= .zero) || (fuelVolume == nil || fuelVolume! <= .zero) {
+		if (distance == nil || distance! <= 0) || (fuelVolume == nil || fuelVolume! <= 0) {
 			return false
 		}
 
@@ -237,7 +237,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let consumption = Units.consumptionForKilometers(kilometers, liters: liters, inUnit: consumptionUnit)
 		let consumptionUnitSymbol = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 
-		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption)!) \(consumptionUnitSymbol)"
+		let consumptionString = "\(Formatters.currencyFormatter.string(from: cost as NSNumber)!) \(NSLocalizedString("/", comment: "")) \(Formatters.fuelVolumeFormatter.string(from: consumption as NSNumber)!) \(consumptionUnitSymbol)"
 
 		// Substrings for highlighting
 		let highlightStrings = [Formatters.currencyFormatter.currencySymbol!,
@@ -270,7 +270,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if rowMask.contains(.distance) {
 			if self.distance == nil {
 				if let recentDistance = UserDefaults.standard.object(forKey: "recentDistance") as? NSNumber {
-					self.distance = NSDecimalNumber(decimal: recentDistance.decimalValue)
+					self.distance = recentDistance.decimalValue
 				}
 			}
 
@@ -287,7 +287,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if rowMask.contains(.price) {
 			if self.price == nil {
 				if let recentPrice = UserDefaults.standard.object(forKey: "recentPrice") as? NSNumber {
-					self.price = NSDecimalNumber(decimal: recentPrice.decimalValue)
+					self.price = recentPrice.decimalValue
 				}
 			}
 
@@ -304,7 +304,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		if rowMask.contains(.amount) {
 			if self.fuelVolume == nil {
 				if let recentFuelVolume = UserDefaults.standard.object(forKey: "recentFuelVolume") as? NSNumber {
-					self.fuelVolume = NSDecimalNumber(decimal: recentFuelVolume.decimalValue)
+					self.fuelVolume = recentFuelVolume.decimalValue
 				}
 			}
 
@@ -573,9 +573,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 						                             forceOdometerUpdate: false)
 
                          // Reset calculator table
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "distance")
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "price")
-                         self.valueChanged(NSDecimalNumber.zero, identifier: "fuelVolume")
+                         self.valueChanged(Decimal(0), identifier: "distance")
+                         self.valueChanged(Decimal(0), identifier: "price")
+                         self.valueChanged(Decimal(0), identifier: "fuelVolume")
                          self.valueChanged(true, identifier: "filledUp")
 						 self.valueChanged("", identifier: "comment")
 
@@ -588,7 +588,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		if self.car == nil {
 			saveValid = false
-		} else if (distance == nil || distance! == .zero) || (fuelVolume == nil || fuelVolume! == .zero) {
+		} else if (distance == nil || distance!.isZero) || (fuelVolume == nil || fuelVolume!.isZero) {
 			saveValid = false
 		} else if date == nil || CoreDataManager.containsEventWithCar(self.car!, andDate: self.date!) {
 			saveValid = false
@@ -612,14 +612,14 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		let rawDistance  = Units.kilometersForDistance(distance, withUnit: odometerUnit)
 		let convDistance = rawDistance - car.ksOdometer
 
-		if convDistance <= .zero {
+		if convDistance <= 0 {
 			return false
 		}
 
 		// 2.) consumption with converted distances is more 'logical'
 		let liters = Units.litersForVolume(fuelVolume!, withUnit: car.ksFuelUnit)
 
-		if liters <= .zero {
+		if liters <= 0 {
 			return false
 		}
 
@@ -627,7 +627,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100Kilometers)
 
-		if rawConsumption == .notANumber {
+		if rawConsumption.isNaN {
 			return false
 		}
 
@@ -635,7 +635,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                       liters: liters,
                                                                       inUnit: .litersPer100Kilometers)
 
-		if convConsumption == .notANumber {
+		if convConsumption.isNaN {
 			return false
 		}
 
@@ -643,15 +643,15 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
                                                                      liters: car.ksFuelVolumeTotalSum,
                                                                      inUnit: .litersPer100Kilometers)
 
-		let loBound: NSDecimalNumber
-		let hiBound: NSDecimalNumber
+		let loBound: Decimal
+		let hiBound: Decimal
 
-		if avgConsumption == .notANumber {
-			loBound = NSDecimalNumber(mantissa: 2, exponent: 0, isNegative: false)
-			hiBound = NSDecimalNumber(mantissa: 20, exponent: 0, isNegative: false)
+		if avgConsumption.isNaN {
+			loBound = Decimal(2)
+			hiBound = Decimal(20)
 		} else {
-			loBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: -1, isNegative: false)
-			hiBound = avgConsumption * NSDecimalNumber(mantissa: 5, exponent: 0, isNegative: false)
+			loBound = avgConsumption * Decimal.fromLiteral(mantissa: 5, exponent: -1, isNegative: false)
+			hiBound = avgConsumption * Decimal(5)
 		}
 
 		// conversion only when rawConsumption <= lowerBound
@@ -684,9 +684,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 
 		let distanceFormatter = Formatters.distanceFormatter
 
-		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
+		let rawButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(rawDistance, withUnit: odometerUnit) as NSNumber)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
-		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit))!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
+		let convButton = "\(distanceFormatter.string(from: Units.distanceForKilometers(convDistance, withUnit: odometerUnit) as NSNumber)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
 
 		let alertController = UIAlertController(title: NSLocalizedString("Convert from odometer reading into distance? Please choose the distance driven:", comment: ""),
 																			 message: nil,
@@ -756,7 +756,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 				self.lastChangeDate = date
 			}
 
-		} else if let decimalNumber = newValue as? NSDecimalNumber {
+		} else if let decimalNumber = newValue as? Decimal {
 			let recentKey: String?
 
 			if valueIdentifier == "distance" {
@@ -835,9 +835,9 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		}
 
 		// DecimalNumbers <= 0.0 are invalid
-		if let decimalNumber = newValue as? NSDecimalNumber {
+		if let decimalNumber = newValue as? Decimal {
 			if valueIdentifier != "price" {
-				if decimalNumber <= .zero {
+				if decimalNumber.isSignMinus || decimalNumber.isZero {
 					return false
 				}
 			}

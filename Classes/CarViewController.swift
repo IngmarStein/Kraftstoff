@@ -253,7 +253,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			newCar.numberPlate = controller.plate!
 			newCar.odometerUnit = controller.odometerUnit!.int32Value
 
-			newCar.odometer = Units.kilometersForDistance(controller.odometer!,
+			newCar.ksOdometer = Units.kilometersForDistance(controller.odometer!,
 														withUnit: .fromPersistentId(controller.odometerUnit!.int32Value))
 
 			newCar.fuelUnit = controller.fuelUnit!.int32Value
@@ -276,7 +276,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			let odometer = max(Units.kilometersForDistance(controller.odometer!,
 			                                               withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.ksDistanceTotalSum)
 
-			editedObject.odometer = odometer
+			editedObject.ksOdometer = odometer
 			editedObject.fuelUnit = controller.fuelUnit!.int32Value
 			editedObject.fuelConsumptionUnit = controller.fuelConsumptionUnit!.int32Value
 
@@ -495,8 +495,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let distance   = car.ksDistanceTotalSum
 		let fuelVolume = car.ksFuelVolumeTotalSum
 
-		if distance > .zero && fuelVolume > .zero {
-			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit))!
+		if distance > 0 && fuelVolume > 0 {
+			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit) as NSNumber)!
 			tableCell.topRightAccessibilityLabel = avgConsumption
 			tableCell.botRightAccessibilityLabel = Formatters.mediumMeasurementFormatter.string(from: consumptionUnit)
 		} else {

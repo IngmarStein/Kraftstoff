@@ -805,7 +805,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
 		let fuelVolume = fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume
 
-		return CGFloat(Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit).floatValue)
+		return CGFloat((Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit) as NSDecimalNumber).floatValue)
 	}
 
 }
@@ -838,11 +838,11 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
 		let price = fuelEvent.ksPrice
 
-		if price == .zero {
+		if price.isZero {
 			return .nan
 		}
 
-		return CGFloat(Units.pricePerUnit(price, withUnit: car.ksFuelUnit).floatValue)
+		return CGFloat((Units.pricePerUnit(price, withUnit: car.ksFuelUnit) as NSDecimalNumber).floatValue)
 	}
 
 }
@@ -899,14 +899,14 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
 		let cost = fuelEvent.cost + fuelEvent.ksInheritedCost
 
-		if cost == .zero {
+		if cost.isZero {
 			return .nan
 		}
 
 		if distanceUnit == UnitLength.kilometers {
-			return CGFloat((cost << 2).dividing(by: distance, withBehavior: handler).floatValue)
+			return CGFloat(((cost << 2) as NSDecimalNumber).dividing(by: distance as NSDecimalNumber, withBehavior: handler).floatValue)
 		} else {
-			return CGFloat(distance.dividing(by: Units.kilometersPerStatuteMile).dividing(by: cost, withBehavior: handler).floatValue)
+			return CGFloat((distance as NSDecimalNumber).dividing(by: Units.kilometersPerStatuteMile as NSDecimalNumber).dividing(by: cost as NSDecimalNumber, withBehavior: handler).floatValue)
 		}
 	}
 

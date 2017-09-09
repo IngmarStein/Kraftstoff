@@ -39,7 +39,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	var name: String?
 	var plate: String?
 	var odometerUnit: NSNumber?
-	var odometer: NSDecimalNumber?
+	var odometer: Decimal?
 	var fuelUnit: NSNumber?
 	var fuelConsumptionUnit: NSNumber?
 
@@ -143,7 +143,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let suffix = " ".appending(Formatters.shortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
-			self.odometer = .zero
+			self.odometer = 0
 		}
 
 		addRowAtIndex(rowIndex: 3,
@@ -332,7 +332,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		if !self.editingExistingObject
 			&& self.name == ""
 			&& self.plate == ""
-			&& self.odometer! == .zero {
+			&& self.odometer!.isZero {
 			showCancelSheet = false
 		}
 
@@ -404,7 +404,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			} else if valueIdentifier == "plate" {
 				self.plate = stringValue
 			}
-		} else if let decimalNumberValue = newValue as? NSDecimalNumber {
+		} else if let decimalNumberValue = newValue as? Decimal {
 			if valueIdentifier == "odometer" {
 				self.odometer = decimalNumberValue
 			}

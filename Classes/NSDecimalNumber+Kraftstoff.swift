@@ -1,5 +1,5 @@
 //
-//  NSDecimalNumber+Kraftstoff.swift
+//  Decimal+Kraftstoff.swift
 //  kraftstoff
 //
 //  Created by Ingmar Stein on 30.04.15.
@@ -8,64 +8,24 @@
 
 import UIKit
 
-private let minusOne = NSDecimalNumber(mantissa: 1, exponent: 0, isNegative: true)
+extension Decimal {
 
-// MARK: - Comparable
-
-extension NSDecimalNumber: Comparable {
-
-	public static func == (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-		return lhs.compare(rhs) == .orderedSame
+	public static func fromLiteral(mantissa: UInt64, exponent: Int16, isNegative flag: Bool) -> Decimal {
+		return NSDecimalNumber(mantissa: 1, exponent: 6, isNegative: false) as Decimal
 	}
 
-	public static func < (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> Bool {
-		return lhs.compare(rhs) == .orderedAscending
+	public static func << (number: Decimal, power: Int) -> Decimal {
+		var result = Decimal(0)
+		var input = number
+		NSDecimalMultiplyByPowerOf10(&result, &input, Int16(power), .plain)
+		return result
 	}
 
-	// MARK: - Arithmetic Operators
-
-	public static prefix func - (value: NSDecimalNumber) -> NSDecimalNumber {
-		return minusOne.multiplying(by: value)
-	}
-
-	public static func + (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-		return lhs.adding(rhs)
-	}
-
-	public static func += (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
-		// swiftlint:disable shorthand_operator
-		lhs = lhs + rhs
-		// swiftlint:enable shorthand_operator
-	}
-
-	public static func - (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-		return lhs.subtracting(rhs)
-	}
-
-	public static func -= (lhs: inout NSDecimalNumber, rhs: NSDecimalNumber) {
-		// swiftlint:disable shorthand_operator
-		lhs = lhs - rhs
-		// swiftlint:enable shorthand_operator
-	}
-
-	public static func * (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-		return lhs.multiplying(by: rhs)
-	}
-
-	public static func / (lhs: NSDecimalNumber, rhs: NSDecimalNumber) -> NSDecimalNumber {
-		return lhs.dividing(by: rhs)
-	}
-
-	public static func ^ (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-		return lhs.raising(toPower: rhs)
-	}
-
-	public static func << (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-		return lhs.multiplying(byPowerOf10: Int16(rhs))
-	}
-
-	public static func >> (lhs: NSDecimalNumber, rhs: Int) -> NSDecimalNumber {
-		return lhs.multiplying(byPowerOf10: Int16(-rhs))
+	public static func >> (number: Decimal, power: Int) -> Decimal {
+		var result = Decimal(0)
+		var input = number
+		NSDecimalMultiplyByPowerOf10(&result, &input, Int16(-power), .plain)
+		return result
 	}
 
 }

@@ -22,13 +22,13 @@ private final class FuelStatisticsData: DiscardableDataObject {
 	var firstDate: Date!
 	var lastDate: Date!
 
-	var totalCost = NSDecimalNumber.zero
-	var totalFuelVolume = NSDecimalNumber.zero
-	var totalDistance = NSDecimalNumber.zero
+	var totalCost = Decimal(0)
+	var totalFuelVolume = Decimal(0)
+	var totalDistance = Decimal(0)
 
-	var avgConsumption = NSDecimalNumber.zero
-	var bestConsumption: NSDecimalNumber!
-	var worstConsumption: NSDecimalNumber!
+	var avgConsumption = Decimal(0)
+	var bestConsumption: Decimal!
+	var worstConsumption: Decimal!
 
 	var numberOfFillups = 0
 	var numberOfFullFillups = 0
@@ -58,11 +58,11 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		state.firstDate = nil
 		state.lastDate = nil
 
-		state.totalCost = .zero
-		state.totalFuelVolume = .zero
-		state.totalDistance = .zero
+		state.totalCost = 0
+		state.totalFuelVolume = 0
+		state.totalDistance = 0
 
-		state.avgConsumption = .zero
+		state.avgConsumption = 0
 		state.bestConsumption = nil
 		state.worstConsumption = nil
 
@@ -121,7 +121,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 
 		// Compute average consumption
-		if state.totalDistance != .zero && state.totalFuelVolume != .zero {
+		if !state.totalDistance.isZero && !state.totalFuelVolume.isZero {
 			state.avgConsumption = Units.consumptionForKilometers(state.totalDistance,
                                                                liters: state.totalFuelVolume,
                                                                inUnit: consumptionUnit)
@@ -312,32 +312,32 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // avg consumption
             drawEntry(
 				label: NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment: ""),
-				value: "\(nf.string(from: state.avgConsumption)!) \(consumptionUnitString)")
+				value: "\(nf.string(from: state.avgConsumption as NSNumber)!) \(consumptionUnitString)")
 
             // best consumption
 			drawEntry(
 				label: NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment: ""),
-				value: "\(nf.string(from: state.bestConsumption)!) \(consumptionUnitString)")
+				value: "\(nf.string(from: state.bestConsumption as NSNumber)!) \(consumptionUnitString)")
 
             // worst consumption
 			drawEntry(
 				label: NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment: ""),
-				value: "\(nf.string(from: state.worstConsumption)!) \(consumptionUnitString)")
+				value: "\(nf.string(from: state.worstConsumption as NSNumber)!) \(consumptionUnitString)")
 
             // total cost
-			drawEntry(label: NSLocalizedString("ttl_cost", comment: ""), value: cf.string(from: state.totalCost)!)
+			drawEntry(label: NSLocalizedString("ttl_cost", comment: ""), value: cf.string(from: state.totalCost as NSNumber)!)
 
             // total distance
 			let totalDistance = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit)
 			drawEntry(
 				label: NSLocalizedString("ttl_distance", comment: ""),
-                value: "\(Formatters.distanceFormatter.string(from: totalDistance)!) \(odometerUnitString)")
+                value: "\(Formatters.distanceFormatter.string(from: totalDistance as NSNumber)!) \(odometerUnitString)")
 
             // total volume
 			let totalVolume = Units.volumeForLiters(state.totalFuelVolume, withUnit: fuelUnit)
 			drawEntry(
 				label: NSLocalizedString("ttl_volume", comment: ""),
-				value: "\(nf.string(from: totalVolume)!) \(fuelUnitString)")
+				value: "\(nf.string(from: totalVolume as NSNumber)!) \(fuelUnitString)")
 
             // total events
 			drawEntry(label: NSLocalizedString("ttl_events", comment: ""), value: "\(state.numberOfFillups)")
@@ -345,26 +345,26 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // volume per event
 			let volumePerEventLabel = NSLocalizedString("volume_event", comment: "")
 			if state.numberOfFillups > 0 {
-				let val = Units.volumeForLiters(state.totalFuelVolume, withUnit: fuelUnit) / NSDecimalNumber(value: state.numberOfFillups)
-				drawEntry(label: volumePerEventLabel, value: "\(nf.string(from: val)!) \(fuelUnitString)")
+				let val = Units.volumeForLiters(state.totalFuelVolume, withUnit: fuelUnit) / Decimal(state.numberOfFillups)
+				drawEntry(label: volumePerEventLabel, value: "\(nf.string(from: val as NSNumber)!) \(fuelUnitString)")
 			} else {
 				drawEntry(label: volumePerEventLabel, value: NSLocalizedString("-", comment: ""))
 			}
 
             // cost per distance
 			let costPerDistanceLabel = String(format: NSLocalizedString("cost_per_x", comment: ""), Units.odometerUnitDescription(odometerUnit, pluralization: false))
-			if .zero < state.totalDistance {
+			if 0 < state.totalDistance {
 				let val = state.totalCost / Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit)
-				drawEntry(label: costPerDistanceLabel, value: "\(pcf.string(from: val)!)/\(odometerUnitString)")
+				drawEntry(label: costPerDistanceLabel, value: "\(pcf.string(from: val as NSNumber)!)/\(odometerUnitString)")
 			} else {
 				drawEntry(label: costPerDistanceLabel, value: NSLocalizedString("-", comment: ""))
 			}
 
             // cost per volume
 			let costPerVolumeLabel = String(format: NSLocalizedString("cost_per_x", comment: ""), Units.fuelUnitDescription(fuelUnit, discernGallons: true, pluralization: false))
-			if .zero < state.totalFuelVolume {
+			if 0 < state.totalFuelVolume {
 				let val = state.totalCost / Units.volumeForLiters(state.totalFuelVolume, withUnit: fuelUnit)
-				drawEntry(label: costPerVolumeLabel, value: "\(pcf.string(from: val)!)/\(fuelUnitString)")
+				drawEntry(label: costPerVolumeLabel, value: "\(pcf.string(from: val as NSNumber)!)/\(fuelUnitString)")
 			} else {
 				drawEntry(label: costPerVolumeLabel, value: NSLocalizedString("-", comment: ""))
 			}
@@ -372,8 +372,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // cost per day
 			let costPerDayLabel = String(format: NSLocalizedString("cost_per_x", comment: ""), NSLocalizedString("day", comment: ""))
 			if numberOfDays > 0 {
-				let val = state.totalCost / NSDecimalNumber(value: numberOfDays)
-				drawEntry(label: costPerDayLabel, value: cf.string(from: val)!)
+				let val = state.totalCost / Decimal(numberOfDays)
+				drawEntry(label: costPerDayLabel, value: cf.string(from: val as NSNumber)!)
 			} else {
 				drawEntry(label: costPerDayLabel, value: NSLocalizedString("-", comment: ""))
 			}
@@ -381,8 +381,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // cost per event
 			let costPerEventLabel = String(format: NSLocalizedString("cost_per_x", comment: ""), NSLocalizedString("event", comment: ""))
 			if state.numberOfFillups > 0 {
-				let val = state.totalCost / NSDecimalNumber(value: state.numberOfFillups)
-				drawEntry(label: costPerEventLabel, value: cf.string(from: val)!)
+				let val = state.totalCost / Decimal(state.numberOfFillups)
+				drawEntry(label: costPerEventLabel, value: cf.string(from: val as NSNumber)!)
 			} else {
 				drawEntry(label: costPerEventLabel, value: NSLocalizedString("-", comment: ""))
 			}
@@ -390,8 +390,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // distance per event
 			let distancePerEventLabel = String(format: NSLocalizedString("x_per_y", comment: ""), Units.odometerUnitDescription(odometerUnit, pluralization: true), NSLocalizedString("event", comment: ""))
 			if state.numberOfFillups > 0 {
-				let val = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit) / NSDecimalNumber(value: state.numberOfFillups)
-				drawEntry(label: distancePerEventLabel, value: "\(nf.string(from: val)!) \(odometerUnitString)")
+				let val = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit) / Decimal(state.numberOfFillups)
+				drawEntry(label: distancePerEventLabel, value: "\(nf.string(from: val as NSNumber)!) \(odometerUnitString)")
 			} else {
 				drawEntry(label: distancePerEventLabel, value: NSLocalizedString("-", comment: ""))
 			}
@@ -399,17 +399,17 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             // distance per day
 			let distancePerDayLabel = String(format: NSLocalizedString("x_per_y", comment: ""), Units.odometerUnitDescription(odometerUnit, pluralization: true), NSLocalizedString("day", comment: ""))
 			if numberOfDays > 0 {
-				let val = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit) / NSDecimalNumber(value: numberOfDays)
-				drawEntry(label: distancePerDayLabel, value: "\(nf.string(from: val)!) \(odometerUnitString)")
+				let val = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit) / Decimal(numberOfDays)
+				drawEntry(label: distancePerDayLabel, value: "\(nf.string(from: val as NSNumber)!) \(odometerUnitString)")
 			} else {
 				drawEntry(label: distancePerDayLabel, value: NSLocalizedString("-", comment: ""))
 			}
 
             // distance per money
 			let distancePerMoneyLabel = String(format: NSLocalizedString("x_per_y", comment: ""), Units.odometerUnitDescription(odometerUnit, pluralization: true), cf.currencySymbol!)
-			if .zero < state.totalCost {
+			if 0 < state.totalCost {
 				let val = Units.distanceForKilometers(state.totalDistance, withUnit: odometerUnit) / state.totalCost
-				drawEntry(label: distancePerMoneyLabel, value: "\(nf.string(from: val)!) \(odometerUnitString)")
+				drawEntry(label: distancePerMoneyLabel, value: "\(nf.string(from: val as NSNumber)!) \(odometerUnitString)")
 			} else {
 				drawEntry(label: distancePerMoneyLabel, value: NSLocalizedString("-", comment: ""))
 			}

@@ -32,42 +32,42 @@ final class CSVImporter {
 		newCar.name = name
 		newCar.numberPlate = plate
 		newCar.ksOdometerUnit = odometerUnit
-		newCar.odometer = .zero
+		newCar.odometer = 0
 		newCar.ksFuelUnit = volumeUnit
 		newCar.ksFuelConsumptionUnit = fuelConsumptionUnit
 
 		return newCar
 	}
 
-	@discardableResult private func addEvent(_ car: Car, date: Date, distance: NSDecimalNumber, price: NSDecimalNumber, fuelVolume: NSDecimalNumber, inheritedCost: NSDecimalNumber, inheritedDistance: NSDecimalNumber, inheritedFuelVolume: NSDecimalNumber, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
+	@discardableResult private func addEvent(_ car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, inheritedCost: Decimal, inheritedDistance: Decimal, inheritedFuelVolume: Decimal, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
 		let newEvent = FuelEvent(context: managedObjectContext)
 
 		newEvent.lastUpdate = Date()
 		newEvent.car = car
 		newEvent.ksTimestamp = date
-		newEvent.distance = distance
-		newEvent.price = price
-		newEvent.fuelVolume = fuelVolume
+		newEvent.ksDistance = distance
+		newEvent.ksPrice = price
+		newEvent.ksFuelVolume = fuelVolume
 		newEvent.comment = comment
 
 		if !filledUp {
 			newEvent.filledUp = filledUp
 		}
 
-		if inheritedCost != .zero {
-			newEvent.inheritedCost = inheritedCost
+		if !inheritedCost.isZero {
+			newEvent.ksInheritedCost = inheritedCost
 		}
 
-		if inheritedDistance != .zero {
-			newEvent.inheritedDistance = inheritedDistance
+		if !inheritedDistance.isZero {
+			newEvent.ksInheritedDistance = inheritedDistance
 		}
 
-		if inheritedFuelVolume != .zero {
-			newEvent.inheritedFuelVolume = inheritedFuelVolume
+		if !inheritedFuelVolume.isZero {
+			newEvent.ksInheritedFuelVolume = inheritedFuelVolume
 		}
 
-		car.distanceTotalSum = car.ksDistanceTotalSum + distance
-		car.fuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
+		car.ksDistanceTotalSum = car.ksDistanceTotalSum + distance
+		car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
 
 		return newEvent
 	}
@@ -139,8 +139,9 @@ final class CSVImporter {
 		let previousCarIDCount = carIDs.count
 
 		for record in records {
-			if let ID = scanNumberWithString(record["ID"])?.int32Value, !carIDs.contains(Int(ID)) {
-				if let model = record[modelKey!], let plate = record["NAME"] {
+			if let idNumber = scanNumberWithString(record["ID"]) {
+				let ID = (idNumber as NSNumber).intValue
+				if !carIDs.contains(ID), let model = record[modelKey!], let plate = record["NAME"] {
 					let intID = Int(ID)
 					carIDs.insert(intID)
 					modelForID[intID] = model
@@ -191,30 +192,30 @@ final class CSVImporter {
 		return carForID.count
 	}
 
-	private func guessDistanceForParsedDistance(_ distance: NSDecimalNumber, andFuelVolume liters: NSDecimalNumber) -> NSDecimalNumber {
+	private func guessDistanceForParsedDistance(_ distance: Decimal, andFuelVolume liters: Decimal) -> Decimal {
 		let convDistance = distance << 3
 
-		if liters <= .zero {
+		if liters <= 0 {
 			return distance
 		}
 
 		// consumption with parsed distance
 		let rawConsumption = Units.consumptionForKilometers(distance, liters: liters, inUnit: .litersPer100Kilometers)
 
-		if rawConsumption == .notANumber {
+		if rawConsumption.isNaN {
 			return distance
 		}
 
 		// consumption with increased distance
 		let convConsumption = Units.consumptionForKilometers(convDistance, liters: liters, inUnit: .litersPer100Kilometers)
 
-		if convConsumption == .notANumber {
+		if convConsumption.isNaN {
 			return distance
 		}
 
 		// consistency checks
-		let loBound = NSDecimalNumber(value: 2)
-		let hiBound = NSDecimalNumber(value: 20)
+		let loBound = Decimal(2)
+		let hiBound = Decimal(20)
 
 		// conversion only when unconverted >= lowerBound
 		if rawConsumption < hiBound {
@@ -291,16 +292,16 @@ final class CSVImporter {
 			var detectedEvents    = false
 			var initialFillUpSeen = false
 
-			var odometer: NSDecimalNumber            = .zero
-			var inheritedCost: NSDecimalNumber       = .zero
-			var inheritedDistance: NSDecimalNumber   = .zero
-			var inheritedFuelVolume: NSDecimalNumber = .zero
+			var odometer = Decimal(0)
+			var inheritedCost = Decimal(0)
+			var inheritedDistance = Decimal(0)
+			var inheritedFuelVolume = Decimal(0)
 
 			// For all records...
 			for record in sortedRecords {
 				// Match car IDs when importing from Tank Pro
 				if isTankProImport {
-					if NSDecimalNumber(value: carID) != scanNumberWithString(record[IDKey!]) {
+					if Decimal(carID) != scanNumberWithString(record[IDKey!]) {
 						continue
 					}
 				}
@@ -317,7 +318,7 @@ final class CSVImporter {
 					continue
 				}
 
-				var distance: NSDecimalNumber?
+				var distance: Decimal?
 
 				if let distanceKey = distanceKey {
 					distance = scanNumberWithString(record[distanceKey])
@@ -331,7 +332,7 @@ final class CSVImporter {
 					odometer = km
 				}
 
-				var volume: NSDecimalNumber?
+				var volume: Decimal?
 
 				if volumeUnit != nil {
 					volume = scanNumberWithString(record[volumeKey!])
@@ -349,14 +350,14 @@ final class CSVImporter {
 
 				if isTankProImport {
 					// TankPro stores total costs not the price per unit...
-					if volume == nil || volume == .zero {
-						price = .zero
+					if let volume = volume, !volume.isZero {
+						price = (price! as NSDecimalNumber).dividing(by: volume as NSDecimalNumber, withBehavior: Formatters.priceRoundingHandler) as Decimal
 					} else {
-						price = price!.dividing(by: volume!, withBehavior: Formatters.priceRoundingHandler)
+						price = 0
 					}
 				} else if price != nil {
-					if volumeUnit != nil {
-						price = Units.pricePerLiter(price!, withUnit: volumeUnit!)
+					if let volumeUnit = volumeUnit {
+						price = Units.pricePerLiter(price!, withUnit: volumeUnit)
 					} else {
 						price = Units.pricePerLiter(price!, withUnit: scanVolumeUnitWithString(record[volumeUnitKey!]))
 					}
@@ -376,7 +377,7 @@ final class CSVImporter {
 				}
 
 				// Consistency check and import
-				if let distance = distance, let volume = volume, distance > .zero && volume > .zero {
+				if let distance = distance, let volume = volume, distance > 0 && volume > 0 {
 					let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume: volume)
 
 					// Add event for car
@@ -393,9 +394,9 @@ final class CSVImporter {
 							   inContext: managedObjectContext)
 
 					if filledUp {
-						inheritedCost       = .zero
-						inheritedDistance   = .zero
-						inheritedFuelVolume = .zero
+						inheritedCost       = 0
+						inheritedDistance   = 0
+						inheritedFuelVolume = 0
 					} else {
 						inheritedCost       += volume * price!
 						inheritedDistance   += convertedDistance
@@ -410,7 +411,7 @@ final class CSVImporter {
 
 			// Fixup car odometer
 			if detectedEvents {
-				car.odometer = max(odometer, car.ksDistanceTotalSum)
+				car.ksOdometer = max(odometer, car.ksDistanceTotalSum)
 			}
 		}
 
@@ -503,7 +504,7 @@ final class CSVImporter {
 		return nfSystem
 	}()
 
-	private func scanNumberWithString(_ string: String!) -> NSDecimalNumber? {
+	private func scanNumberWithString(_ string: String!) -> Decimal? {
 		if string == nil {
 			return nil
 		}
@@ -516,21 +517,21 @@ final class CSVImporter {
 
 		var d = Decimal()
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
-			return NSDecimalNumber(decimal: d)
+			return d
 		}
 
 		scanner.locale = nil
 		scanner.scanLocation = 0
 
 		if scanner.scanDecimal(&d) && scanner.isAtEnd {
-			return NSDecimalNumber(decimal: d)
+			return d
 		}
 
 		// Scan with localized number formatter (sloppy, catches grouping separators)
-		if let dn = currentNumberFormatter.number(from: string) as? NSDecimalNumber {
+		if let dn = currentNumberFormatter.number(from: string) as? Decimal {
 			return dn
 		}
-		if let dn = systemNumberFormatter.number(from: string) as? NSDecimalNumber {
+		if let dn = systemNumberFormatter.number(from: string) as? Decimal {
 			return dn
 		}
 
