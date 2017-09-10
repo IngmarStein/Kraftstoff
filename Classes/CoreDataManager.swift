@@ -330,8 +330,8 @@ final class CoreDataManager {
 		}
 
 		// Update total car statistics
-		car.ksDistanceTotalSum = car.ksDistanceTotalSum + kilometers
-		car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + liters
+		car.ksDistanceTotalSum += kilometers
+		car.ksFuelVolumeTotalSum += liters
 
 		if forceOdometerUpdate {
 			// Update global odometer
@@ -371,9 +371,9 @@ final class CoreDataManager {
 						row -= 1
 						let youngerEvent = youngerEvents[row]
 
-						youngerEvent.ksInheritedCost = youngerEvent.ksInheritedCost + inheritedCost
-						youngerEvent.ksInheritedDistance = youngerEvent.ksInheritedDistance + inheritedDistance
-						youngerEvent.ksInheritedFuelVolume = youngerEvent.ksInheritedFuelVolume + inheritedFuelVolume
+						youngerEvent.ksInheritedCost += inheritedCost
+						youngerEvent.ksInheritedDistance += inheritedDistance
+						youngerEvent.ksInheritedFuelVolume += inheritedFuelVolume
 
 						if youngerEvent.filledUp {
 							break

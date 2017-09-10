@@ -148,8 +148,8 @@ final class DemoData {
 				newEvent.ksPrice = price
 				newEvent.ksFuelVolume = fuelVolume
 
-				car.ksDistanceTotalSum = car.ksDistanceTotalSum + distance
-				car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
+				car.ksDistanceTotalSum += distance
+				car.ksFuelVolumeTotalSum += fuelVolume
 			}
 
 			car.odometer = car.distanceTotalSum

@@ -66,8 +66,8 @@ final class CSVImporter {
 			newEvent.ksInheritedFuelVolume = inheritedFuelVolume
 		}
 
-		car.ksDistanceTotalSum = car.ksDistanceTotalSum + distance
-		car.ksFuelVolumeTotalSum = car.ksFuelVolumeTotalSum + fuelVolume
+		car.ksDistanceTotalSum += distance
+		car.ksFuelVolumeTotalSum += fuelVolume
 
 		return newEvent
 	}
