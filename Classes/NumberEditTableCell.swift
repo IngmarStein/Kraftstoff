@@ -71,7 +71,7 @@ final class NumberEditTableCell: EditablePageCell {
 		let scale = NSDecimalNumber(mantissa: 1, exponent: Int16(self.numberFormatter.maximumFractionDigits), isNegative: false) as Decimal
 
 		if range.length == 0 {
-			if range.location == text.characters.count && string.characters.count == 1 {
+			if range.location == text.count && string.count == 1 {
 				// New character must be a digit
 				guard let digit = Decimal(string: string) else { return false }
 
@@ -99,7 +99,7 @@ final class NumberEditTableCell: EditablePageCell {
 			if value.isSignMinus {
 				return false
 			}
-		} else if range.location >= text.characters.count - 1 {
+		} else if range.location >= text.count - 1 {
 			let handler = NSDecimalNumberHandler(roundingMode: .down,
 												 scale: Int16(self.numberFormatter.maximumFractionDigits),
                                                  raiseOnExactness: false,
@@ -145,7 +145,7 @@ final class NumberEditTableCell: EditablePageCell {
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		if let suffix = self.textFieldSuffix {
 			if textField.text!.hasSuffix(suffix) {
-				textField.text = String(textField.text![..<textField.text!.index(textField.text!.endIndex, offsetBy: -suffix.characters.count)])
+				textField.text = String(textField.text![..<textField.text!.index(textField.text!.endIndex, offsetBy: -suffix.count)])
 			}
 		}
 

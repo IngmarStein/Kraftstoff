@@ -118,7 +118,7 @@ class SaveChangedRecordsToCoreDataOperation: Operation {
     }
 
     private func entityNameFromRecordName(_ recordName: String) -> String {
-		guard let index = recordName.characters.index(of: ".") else {
+		guard let index = recordName.index(of: ".") else {
 			fatalError("ERROR - RecordID.recordName does not contain an entity prefix")
 		}
 

@@ -70,7 +70,7 @@ final class TextEditTableCell: EditablePageCell {
 		var newValue = textField.text!.replacingCharacters(in: editRange, with: string)
 
 		// Don't allow too large strings
-		if maximumTextFieldLength > 0 && newValue.characters.count > maximumTextFieldLength {
+		if maximumTextFieldLength > 0 && newValue.count > maximumTextFieldLength {
 			return false
 		}
 

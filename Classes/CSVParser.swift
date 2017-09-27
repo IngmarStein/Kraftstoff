@@ -13,7 +13,7 @@ final class CSVParser {
 
 	private var separator: String! {
 		didSet {
-			assert(separator.characters.count == 1)
+			assert(separator.count == 1)
 			endTextCharacterSet = CharacterSet.newlines.union(CharacterSet(charactersIn: "\"" + separator))
 		}
 	}

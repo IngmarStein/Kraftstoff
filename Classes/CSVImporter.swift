@@ -82,7 +82,7 @@ final class CSVImporter {
 				let part = nameComponents[0]
 
 				if !part.isEmpty {
-					if part.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
+					if part.count > TextEditTableCell.DefaultMaximumTextFieldLength {
 						return String(part[..<part.index(part.startIndex, offsetBy: TextEditTableCell.DefaultMaximumTextFieldLength)])
 					} else {
 						return part
@@ -103,7 +103,7 @@ final class CSVImporter {
 				let part = nameComponents.last!
 
 				if !part.isEmpty {
-					if part.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
+					if part.count > TextEditTableCell.DefaultMaximumTextFieldLength {
 						return String(part[..<part.index(part.startIndex, offsetBy: TextEditTableCell.DefaultMaximumTextFieldLength)])
 					} else {
 						return part
@@ -154,7 +154,7 @@ final class CSVImporter {
 	}
 
 	private func truncateLongString(_ str: String) -> String {
-		if str.characters.count > TextEditTableCell.DefaultMaximumTextFieldLength {
+		if str.count > TextEditTableCell.DefaultMaximumTextFieldLength {
 			return String(str[..<str.index(str.startIndex, offsetBy: TextEditTableCell.DefaultMaximumTextFieldLength)])
 		} else {
 			return str

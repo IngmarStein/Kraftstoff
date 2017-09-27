@@ -129,7 +129,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		let attributedText = NSMutableAttributedString(string: "\(name)  \(info)", attributes: suffixAttributes)
 		attributedText.beginEditing()
-		attributedText.setAttributes(prefixAttributes, range: NSRange(location: 0, length: name.characters.count))
+		attributedText.setAttributes(prefixAttributes, range: NSRange(location: 0, length: name.count))
 		attributedText.endEditing()
 		label.attributedText = attributedText
 
