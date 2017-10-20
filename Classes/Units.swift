@@ -189,18 +189,18 @@ final class Units {
 
 	static func litersForVolume(_ volume: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
-        case .gallons: return volume * litersPerUSGallon
-        case .imperialGallons: return volume * litersPerImperialGallon
-        case .liters: return volume
+		case .gallons: return volume * litersPerUSGallon
+		case .imperialGallons: return volume * litersPerImperialGallon
+		case .liters: return volume
 		default: return 0
 		}
 	}
 
 	static func volumeForLiters(_ liters: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
-        case .gallons: return liters / litersPerUSGallon
-        case .imperialGallons: return liters / litersPerImperialGallon
-        case .liters: return liters
+		case .gallons: return liters / litersPerUSGallon
+		case .imperialGallons: return liters / litersPerImperialGallon
+		case .liters: return liters
 		default: return 0
 		}
 	}
@@ -223,18 +223,18 @@ final class Units {
 
 	static func pricePerLiter(_ price: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
-        case .gallons: return price / litersPerUSGallon
-        case .imperialGallons: return price / litersPerImperialGallon
-        case .liters: return price
+		case .gallons: return price / litersPerUSGallon
+		case .imperialGallons: return price / litersPerImperialGallon
+		case .liters: return price
 		default: return 0
 		}
 	}
 
 	static func pricePerUnit(_ literPrice: Decimal, withUnit unit: UnitVolume) -> Decimal {
 		switch unit {
-        case .gallons: return literPrice * litersPerUSGallon
-        case .imperialGallons: return literPrice * litersPerImperialGallon
-        case .liters: return literPrice
+		case .gallons: return literPrice * litersPerUSGallon
+		case .imperialGallons: return literPrice * litersPerImperialGallon
+		case .liters: return literPrice
 		default: return 0
 		}
 	}
@@ -256,12 +256,12 @@ final class Units {
 			let kmPerLiter = (kilometers / liters) as NSDecimalNumber
 
 			switch unit {
-            case .kilometersPerLiter:
+			case .kilometersPerLiter:
 				return kmPerLiter.rounding(accordingToBehavior: handler) as Decimal
-            case .milesPerGallon:
-                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler) as Decimal
-            default: // .milesPerImperialGallonUK:
-                return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler) as Decimal
+			case .milesPerGallon:
+				return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler) as Decimal
+			default: // .milesPerImperialGallonUK:
+				return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler) as Decimal
 			}
 
 		} else {
@@ -271,9 +271,9 @@ final class Units {
 			switch unit {
 			case .litersPer100Kilometers:
 				return literPer100km.rounding(accordingToBehavior: handler) as Decimal
-            case .gallonsPer10000Miles:
-                return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior: handler) as Decimal
-            default: // .imperialGallonsPer10000Miles:
+			case .gallonsPer10000Miles:
+				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior: handler) as Decimal
+			default: // .imperialGallonsPer10000Miles:
 				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KImperialGallon, withBehavior: handler) as Decimal
 			}
 		}
@@ -285,15 +285,15 @@ final class Units {
 		if plural {
 			switch unit {
 			case .liters: return NSLocalizedString("Liters", bundle: bundle, comment: "")
-            case .gallons: return discernGallons ? NSLocalizedString("Gallons (US)", bundle: bundle, comment: "") : NSLocalizedString("Gallons", comment: "")
-            case .imperialGallons: return discernGallons ? NSLocalizedString("Gallons (UK)", bundle: bundle, comment: "") : NSLocalizedString("Gallons", comment: "")
+			case .gallons: return discernGallons ? NSLocalizedString("Gallons (US)", bundle: bundle, comment: "") : NSLocalizedString("Gallons", comment: "")
+			case .imperialGallons: return discernGallons ? NSLocalizedString("Gallons (UK)", bundle: bundle, comment: "") : NSLocalizedString("Gallons", comment: "")
 			default: return ""
 			}
 		} else {
 			switch unit {
-            case .liters: return NSLocalizedString("Liter", bundle: bundle, comment: "")
-            case .gallons: return discernGallons ? NSLocalizedString("Gallon (US)", bundle: bundle, comment: "") : NSLocalizedString("Gallon", comment: "")
-            case .imperialGallons: return discernGallons ? NSLocalizedString("Gallon (UK)", bundle: bundle, comment: "") : NSLocalizedString("Gallon", comment: "")
+			case .liters: return NSLocalizedString("Liter", bundle: bundle, comment: "")
+			case .gallons: return discernGallons ? NSLocalizedString("Gallon (US)", bundle: bundle, comment: "") : NSLocalizedString("Gallon", comment: "")
+			case .imperialGallons: return discernGallons ? NSLocalizedString("Gallon (UK)", bundle: bundle, comment: "") : NSLocalizedString("Gallon", comment: "")
 			default: return ""
 			}
 		}

@@ -11,7 +11,7 @@ import CoreData
 
 class FetchRecordsForModifiedObjectsOperation: CKFetchRecordsOperation {
 
-    var fetchedRecords: [CKRecordID : CKRecord]?
+	var fetchedRecords: [CKRecordID: CKRecord]?
     var preFetchModifiedRecords: [CKRecord]?
     private let modifiedManagedObjectIDs: [NSManagedObjectID]?
 
@@ -47,12 +47,12 @@ class FetchRecordsForModifiedObjectsOperation: CKFetchRecordsOperation {
     }
 
     private func setOperationBlocks() {
-        fetchRecordsCompletionBlock = {
-            [unowned self]
-            (fetchedRecords: [CKRecordID : CKRecord]?, error: Error?) -> Void in
+		fetchRecordsCompletionBlock = {
+			[unowned self]
+			(fetchedRecords: [CKRecordID: CKRecord]?, error: Error?) -> Void in
 
-            self.fetchedRecords = fetchedRecords
-            print("FetchRecordsForModifiedObjectsOperation.fetchRecordsCompletionBlock - fetched \(fetchedRecords?.count ?? 0) records")
+			self.fetchedRecords = fetchedRecords
+			print("FetchRecordsForModifiedObjectsOperation.fetchRecordsCompletionBlock - fetched \(fetchedRecords?.count ?? 0) records")
         }
     }
 

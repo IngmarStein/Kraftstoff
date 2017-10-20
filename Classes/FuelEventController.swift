@@ -533,10 +533,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
-        case .insert:
-            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-        case .delete:
-            self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .insert:
+			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .delete:
+			self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
 		case .move, .update:
 			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
 		}
@@ -544,15 +544,15 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		switch type {
-        case .insert:
+		case .insert:
 			tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .delete:
+		case .delete:
 			tableView.deleteRows(at: [indexPath!], with: .fade)
-        case .move:
+		case .move:
             tableView.deleteRows(at: [indexPath!], with: .fade)
             tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .update:
-            tableView.reloadRows(at: [indexPath!], with: .automatic)
+		case .update:
+			tableView.reloadRows(at: [indexPath!], with: .automatic)
 		}
 	}
 

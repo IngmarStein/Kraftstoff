@@ -11,9 +11,9 @@ import CoreData
 
 class ModifyRecordsFromManagedObjectsOperation: CKModifyRecordsOperation {
 
-    var fetchedRecordsToModify: [CKRecordID : CKRecord]?
-    var preModifiedRecords: [CKRecord]?
-    private let modifiedManagedObjectIDs: [NSManagedObjectID]?
+	var fetchedRecordsToModify: [CKRecordID: CKRecord]?
+	var preModifiedRecords: [CKRecord]?
+	private let modifiedManagedObjectIDs: [NSManagedObjectID]?
 
     override init() {
         self.modifiedManagedObjectIDs = nil

@@ -442,14 +442,14 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	func valueForIdentifier(_ valueIdentifier: String) -> Any? {
 		switch valueIdentifier {
-			case "date": return date
-			case "distance": return distance
-			case "price": return price
-			case "fuelVolume": return fuelVolume
-			case "filledUp": return filledUp
-			case "comment": return comment
-			case "showValueLabel": return !self.isEditing
-			default: return nil
+		case "date": return date
+		case "distance": return distance
+		case "price": return price
+		case "fuelVolume": return fuelVolume
+		case "filledUp": return filledUp
+		case "comment": return comment
+		case "showValueLabel": return !self.isEditing
+		default: return nil
 		}
 	}
 
