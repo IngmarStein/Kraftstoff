@@ -7,7 +7,6 @@
 //  Textual Statistics View Controller
 
 import UIKit
-import CoreData
 
 private let gridLines = 16
 private let gridMargin: CGFloat = 16.0
@@ -53,7 +52,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 	// MARK: - Graph Computation
 
-	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsData, inManagedObjectContext moc: NSManagedObjectContext) {
+	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsData) {
 		state.car = car
 		state.firstDate = nil
 		state.lastDate = nil
@@ -69,17 +68,15 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		state.numberOfFillups = 0
 		state.numberOfFullFillups = 0
 
-		let consumptionUnit = car.ksFuelConsumptionUnit
+		let consumptionUnit = car.fuelConsumptionUnit
 
-		for fetchedObject in fetchedObjects.lazy.reversed() {
-			guard let fuelEvent = CoreDataManager.existingObject(fetchedObject, inManagedObjectContext: moc) as? FuelEvent else { continue }
-
-			let distance = fuelEvent.ksDistance
-			let fuelVolume = fuelEvent.ksFuelVolume
+		for fuelEvent in fetchedObjects.lazy.reversed() {
+			let distance = fuelEvent.distance
+			let fuelVolume = fuelEvent.fuelVolume
 			let cost = fuelEvent.cost
 
 			// Collect dates of events
-			let timestamp = fuelEvent.ksTimestamp
+			let timestamp = fuelEvent.timestamp
 
 			if state.firstDate == nil || timestamp <= state.firstDate! {
 				state.firstDate = timestamp
@@ -97,8 +94,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			// Track consumption
 			if fuelEvent.filledUp {
 
-				let inheritedDistance = fuelEvent.ksInheritedDistance
-				let inheritedFuelVolume = fuelEvent.ksInheritedFuelVolume
+				let inheritedDistance = fuelEvent.inheritedDistance
+				let inheritedFuelVolume = fuelEvent.inheritedFuelVolume
 
 				let consumption = Units.consumptionForKilometers(distance + inheritedDistance,
                                                                           liters: fuelVolume + inheritedFuelVolume,
@@ -128,14 +125,14 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		}
 	}
 
-	override func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+	override func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent]) -> DiscardableDataObject {
 
 		// No cache cell exists => resample data and compute average value
 		var state: FuelStatisticsData! = self.contentCache[numberOfMonths] as? FuelStatisticsData
 
 		if state == nil {
 			state = FuelStatisticsData()
-			resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc)
+			resampleFetchedObjects(fetchedObjects, forCar: car, andState: state)
 		}
 
 		// Create image data from resampled data
@@ -280,13 +277,13 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
             let cf = Formatters.currencyFormatter
             let pcf = Formatters.preciseCurrencyFormatter
 
-            let consumptionUnit = state.car.ksFuelConsumptionUnit
+            let consumptionUnit = state.car.fuelConsumptionUnit
             let consumptionUnitString = Formatters.shortMeasurementFormatter.string(from: consumptionUnit)
 
-            let odometerUnit = state.car.ksOdometerUnit
+            let odometerUnit = state.car.odometerUnit
             let odometerUnitString = Formatters.shortMeasurementFormatter.string(from: odometerUnit)
 
-			let fuelUnit = state.car.ksFuelUnit
+			let fuelUnit = state.car.fuelUnit
             let fuelUnitString = Formatters.shortMeasurementFormatter.string(from: fuelUnit)
 
             let numberOfDays = Date.numberOfCalendarDaysFrom(state.firstDate, to: state.lastDate)
@@ -314,15 +311,19 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 				label: NSLocalizedString(consumptionUnit.isEfficiency ? "avg_efficiency" : "avg_consumption", comment: ""),
 				value: "\(nf.string(from: state.avgConsumption as NSNumber)!) \(consumptionUnitString)")
 
-            // best consumption
-			drawEntry(
-				label: NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment: ""),
-				value: "\(nf.string(from: state.bestConsumption as NSNumber)!) \(consumptionUnitString)")
+			if state.bestConsumption != nil {
+				// best consumption
+				drawEntry(
+					label: NSLocalizedString(consumptionUnit.isEfficiency ? "max_efficiency" : "min_consumption", comment: ""),
+					value: "\(nf.string(from: state.bestConsumption as NSNumber)!) \(consumptionUnitString)")
+			}
 
-            // worst consumption
-			drawEntry(
-				label: NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment: ""),
-				value: "\(nf.string(from: state.worstConsumption as NSNumber)!) \(consumptionUnitString)")
+			if state.worstConsumption != nil {
+				// worst consumption
+				drawEntry(
+					label: NSLocalizedString(consumptionUnit.isEfficiency ? "min_efficiency" : "max_consumption", comment: ""),
+					value: "\(nf.string(from: state.worstConsumption as NSNumber)!) \(consumptionUnitString)")
+			}
 
             // total cost
 			drawEntry(label: NSLocalizedString("ttl_cost", comment: ""), value: cf.string(from: state.totalCost as NSNumber)!)

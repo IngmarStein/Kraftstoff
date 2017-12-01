@@ -7,11 +7,12 @@
 //
 
 import UIKit
-import CoreData
 import CoreSpotlight
 import MobileCoreServices
 import StoreKit
 import CloudKit
+import RealmSwift
+import IceCream
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -20,21 +21,29 @@ extension UIApplication {
 	}
 }
 
+// Read file contents from given URL, guess file encoding
+private func contentsOfURL(_ url: URL) -> String? {
+	var enc: String.Encoding = String.Encoding.utf8
+	if let contents = try? String(contentsOf: url, usedEncoding: &enc) {
+		return contents
+	}
+	if let contents = try? String(contentsOf: url, encoding: String.Encoding.macOSRoman) {
+		return contents
+	}
+	return nil
+}
+
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
+	private var notificationToken: NotificationToken? = nil
+	private let realm = try! Realm()
 
 	private var importAlert: UIAlertController?
-
-	private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
-		let fetchedResultsController = CoreDataManager.fetchedResultsControllerForCars()
-		fetchedResultsController.delegate = self
-		return fetchedResultsController
-	}()
 
 	// MARK: - Application Lifecycle
 
@@ -69,14 +78,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 
-			CoreDataManager.load()
-
-			CloudKitManager.initialize()
+			// TODO: initialize Realm
+			let realm = try! Realm()
 
 			UIApplication.shared.registerForRemoteNotifications()
 
 			if ProcessInfo.processInfo.arguments.index(of: "-STARTFRESH") != nil {
-				CoreDataManager.deleteAllObjects()
+				try! realm.write {
+					realm.deleteAll()
+				}
+
 				let userDefaults = UserDefaults.standard
 				for key in ["statisticTimeSpan",
 				            "preferredStatisticsPage",
@@ -92,7 +103,23 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 
-			updateShortcutItems()
+			let cars = realm.objects(Car.self)
+			notificationToken = cars.observe { _ in
+				UIApplication.shared.shortcutItems = cars.map { car in
+					let userInfo = ["objectId": car.id]
+					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
+				}
+
+				if CSSearchableIndex.isIndexingAvailable() {
+					let searchableItems = cars.map { car -> CSSearchableItem in
+						let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+						attributeset.title = car.name
+						attributeset.contentDescription = car.numberPlate
+						return CSSearchableItem(uniqueIdentifier: car.id, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
+					}
+					CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
+				}
+			}
 
 			// Switch once to the car view for new users
 			if launchOptions?[.url] == nil {
@@ -111,24 +138,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	private func updateShortcutItems() {
-		if let cars = self.carsFetchedResultsController.fetchedObjects {
-			UIApplication.shared.shortcutItems = cars.map { car in
-				let userInfo = CoreDataManager.modelIdentifierForManagedObject(car).flatMap { ["objectId": $0] }
-				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.ksName, localizedSubtitle: car.ksNumberPlate, icon: nil, userInfo: userInfo)
-			}
-
-			if CSSearchableIndex.isIndexingAvailable() {
-				let searchableItems = cars.map { car -> CSSearchableItem in
-					let carIdentifier = CoreDataManager.modelIdentifierForManagedObject(car)
-					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
-					attributeset.title = car.name
-					attributeset.contentDescription = car.numberPlate
-					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
-				}
-				CSSearchableIndex.default().indexSearchableItems(searchableItems, completionHandler: nil)
-			}
-		}
+	deinit {
+		notificationToken?.invalidate()
 	}
 
 	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
@@ -160,7 +171,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// switch to cars tab and show the fuel history
 				if let tabBarController = self.window?.rootViewController as? UITabBarController {
 					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, CoreDataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
+					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, realm.object(ofType: Car.self, forPrimaryKey: carIdentifier) != nil {
 						if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
 							fuelEventController.selectedCarId = carIdentifier
 							if let navigationController = tabBarController.selectedViewController as? UINavigationController {
@@ -187,18 +198,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		return true
 	}
 
-	func applicationDidEnterBackground(_ application: UIApplication) {
-		CoreDataManager.saveContext()
-	}
-
-	func applicationWillTerminate(_ application: UIApplication) {
-		CoreDataManager.saveContext()
-	}
-
 	// MARK: - Notifications
 
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		CloudKitManager.handlePush(userInfo, completionHandler: completionHandler)
+		if let dict = userInfo as? [String: NSObject] {
+			let notification = CKNotification(fromRemoteNotificationDictionary: dict)
+
+			if notification.subscriptionID == IceCreamConstants.cloudSubscriptionID {
+				NotificationCenter.default.post(name: .databaseDidChangeRemotely, object: nil, userInfo: userInfo)
+			}
+		}
+		completionHandler(.newData)
 	}
 
 	// MARK: - State Restoration
@@ -241,18 +251,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		self.importAlert = nil
 	}
 
-	// Read file contents from given URL, guess file encoding
-	private static func contentsOfURL(_ url: URL) -> String? {
-		var enc: String.Encoding = String.Encoding.utf8
-		if let contents = try? String(contentsOf: url, usedEncoding: &enc) {
-			return contents
-		}
-		if let contents = try? String(contentsOf: url, encoding: String.Encoding.macOSRoman) {
-			return contents
-		}
-		return nil
-	}
-
 	// Removes files from the inbox
 	private func removeFileItem(at url: URL) {
 		if url.isFileURL {
@@ -268,58 +266,48 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		// Show modal activity indicator while importing
 		showImportAlert()
 
-		// Import in context with private queue
-		let parentContext = CoreDataManager.managedObjectContext
-		let importContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		importContext.parent = parentContext
+		DispatchQueue(label: "import").async {
+			autoreleasepool {
+				// Read file contents from given URL, guess file encoding
+				let CSVString = contentsOfURL(url)
+				self.removeFileItem(at: url)
 
-		importContext.perform {
-			// Read file contents from given URL, guess file encoding
-			let CSVString = AppDelegate.contentsOfURL(url)
-			self.removeFileItem(at: url)
+				if let CSVString = CSVString {
+					// Try to import data from CSV file
+					let importer = CSVImporter()
 
-			if let CSVString = CSVString {
-				// Try to import data from CSV file
-				let importer = CSVImporter()
+					var numCars   = 0
+					var numEvents = 0
 
-				var numCars   = 0
-				var numEvents = 0
+					let success = importer.`import`(CSVString,
+													detectedCars: &numCars,
+													detectedEvents: &numEvents,
+													sourceURL: url)
 
-				let success = importer.`import`(CSVString,
-				                                detectedCars: &numCars,
-				                                detectedEvents: &numEvents,
-				                                sourceURL: url,
-				                                inContext: importContext)
+					DispatchQueue.main.async {
+						self.hideImportAlert {
+							let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
 
-				// On success propagate changes to parent context
-				if success {
-					CoreDataManager.saveContext(importContext)
-					parentContext.perform { CoreDataManager.saveContext(parentContext) }
-				}
+							let message = success
+								? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
+								: NSLocalizedString("No valid CSV data could be found.", comment: "")
 
-				DispatchQueue.main.async {
-					self.hideImportAlert {
-						let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
-
-						let message = success
-							? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
-							: NSLocalizedString("No valid CSV data could be found.", comment: "")
-
-						let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
-						alertController.addAction(defaultAction)
-						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+							let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+							let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
+							alertController.addAction(defaultAction)
+							self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+						}
 					}
-				}
-			} else {
-				DispatchQueue.main.async {
-					self.hideImportAlert {
-						let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
-						                                        message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
-						                                        preferredStyle: .alert)
-						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
-						alertController.addAction(defaultAction)
-						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+				} else {
+					DispatchQueue.main.async {
+						self.hideImportAlert {
+							let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
+																	message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
+																	preferredStyle: .alert)
+							let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+							alertController.addAction(defaultAction)
+							self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
+						}
 					}
 				}
 			}
@@ -343,12 +331,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		// Treat imports as successful first startups
 		UserDefaults.standard.set(false, forKey: "firstStartup")
 		return true
-	}
-
-	// MARK: - NSFetchedResultsControllerDelegate
-
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		updateShortcutItems()
 	}
 
 	// MARK: - SKRequestDelegate

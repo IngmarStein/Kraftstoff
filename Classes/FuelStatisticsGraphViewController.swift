@@ -7,7 +7,7 @@
 //  Graphical Statistics View Controller
 
 import UIKit
-import CoreData
+import RealmSwift
 
 protocol FuelStatisticsViewControllerDataSource: class {
 	var curveGradient: CGGradient { get }
@@ -17,7 +17,7 @@ protocol FuelStatisticsViewControllerDataSource: class {
 	func noAverageStringForCar(_ car: Car) -> String
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter
-	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar: Car) -> CGFloat
+	func valueForFuelEvent(_ fuelEvent: FuelEvent) -> CGFloat
 }
 
 protocol FuelStatisticsViewControllerDelegate: class {
@@ -142,7 +142,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	// MARK: - Graph Computation
 
-	private func resampleFetchedObjects(_ fetchedObjects: [FuelEvent], forCar car: Car, andState state: FuelStatisticsSamplingData, inManagedObjectContext moc: NSManagedObjectContext) -> CGFloat {
+	private func resampleFetchedObjects(_ fuelEvents: [FuelEvent], forCar car: Car, andState state: FuelStatisticsSamplingData) -> CGFloat {
 		var firstDate: Date? = nil
 		var midDate: Date? = nil
 		var lastDate: Date? = nil
@@ -159,29 +159,28 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var valRange: CGFloat
 		var valStretchFactorForDisplay: CGFloat
 
-		for i in (0..<fetchedObjects.count).reversed() {
-			if let fuelEvent = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
-				let value = self.dataSource!.valueForFuelEvent(fuelEvent, forCar: car)
+		for i in (0..<fuelEvents.count).reversed() {
+			let fuelEvent = fuelEvents[i]
+			let value = self.dataSource!.valueForFuelEvent(fuelEvent)
 
-				if !value.isNaN {
-					valCount   += 1
-					valAverage += value
+			if !value.isNaN {
+				valCount   += 1
+				valAverage += value
 
-					if valMin > value {
-						valMin = value
-					}
+				if valMin > value {
+					valMin = value
+				}
 
-					if valMax < value {
-						valMax = value
-					}
+				if valMax < value {
+					valMax = value
+				}
 
-					if valLastIndex < 0 {
-						valLastIndex = i
-						lastDate = fuelEvent.ksTimestamp
-					} else {
-						valFirstIndex = i
-						firstDate = fuelEvent.ksTimestamp
-					}
+				if valLastIndex < 0 {
+					valLastIndex = i
+					lastDate = fuelEvent.timestamp
+				} else {
+					valFirstIndex = i
+					firstDate = fuelEvent.timestamp
 				}
 			}
 		}
@@ -237,26 +236,25 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let rangeInterval = firstDate!.timeIntervalSince(lastDate!)
 
 		for i in (valFirstIndex...valLastIndex).reversed() {
-			if let fuelEvent = CoreDataManager.existingObject(fetchedObjects[i], inManagedObjectContext: moc) as? FuelEvent {
-				let value = self.dataSource!.valueForFuelEvent(fuelEvent, forCar: car)
+			let fuelEvent = fuelEvents[i]
+			let value = self.dataSource!.valueForFuelEvent(fuelEvent)
 
-				if !value.isNaN {
-					// Collect sample data
-					let sampleInterval = firstDate!.timeIntervalSince(fuelEvent.ksTimestamp)
-					let sampleIndex = Int(rint (CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
+			if !value.isNaN {
+				// Collect sample data
+				let sampleInterval = firstDate!.timeIntervalSince(fuelEvent.timestamp)
+				let sampleIndex = Int(rint (CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
 
-					if valRange < 0.0001 {
-						samples[sampleIndex] += 0.5
-					} else {
-						samples[sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay
-					}
-
-					// Collect lens data
-					state.lensDate [sampleIndex][(samplesCount[sampleIndex] != 0) ? 1 : 0] = fuelEvent.ksTimestamp.timeIntervalSinceReferenceDate
-					state.lensValue[sampleIndex] += value
-
-					samplesCount[sampleIndex] += 1
+				if valRange < 0.0001 {
+					samples[sampleIndex] += 0.5
+				} else {
+					samples[sampleIndex] += (value - valMin) / valRange * valStretchFactorForDisplay
 				}
+
+				// Collect lens data
+				state.lensDate [sampleIndex][(samplesCount[sampleIndex] != 0) ? 1 : 0] = fuelEvent.timestamp.timeIntervalSinceReferenceDate
+				state.lensValue[sampleIndex] += value
+
+				samplesCount[sampleIndex] += 1
 			}
 		}
 
@@ -321,13 +319,13 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		return valAverage
 	}
 
-	override func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+	override func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent]) -> DiscardableDataObject {
 		// No cache cell exists => resample data and compute average value
 		var state: FuelStatisticsSamplingData! = self.contentCache[numberOfMonths] as? FuelStatisticsSamplingData
 
 		if state == nil {
 			state = FuelStatisticsSamplingData()
-			state.contentAverage = NSNumber(value: resampleFetchedObjects(fetchedObjects, forCar: car, andState: state, inManagedObjectContext: moc))
+			state.contentAverage = NSNumber(value: resampleFetchedObjects(fetchedObjects, forCar: car, andState: state))
 		}
 
 		// Create image data from resampled data
@@ -763,12 +761,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewControllerDataSource, FuelStatisticsViewControllerDelegate {
 
 	func graphRightBorder(_ rightBorder: CGFloat, forCar car: Car) -> CGFloat {
-		let consumptionUnit = car.ksFuelConsumptionUnit
+		let consumptionUnit = car.fuelConsumptionUnit
 		return rightBorder - (consumptionUnit.isGP10K ? 16.0 : 0.0)
 	}
 
 	func graphWidth(_ graphWidth: CGFloat, forCar car: Car) -> CGFloat {
-		let consumptionUnit = car.ksFuelConsumptionUnit
+		let consumptionUnit = car.fuelConsumptionUnit
 		return graphWidth - (consumptionUnit.isGP10K ? 16.0 : 0.0)
 	}
 
@@ -782,27 +780,27 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit)
+		let unit = Formatters.shortMeasurementFormatter.string(from: car.fuelConsumptionUnit)
 
 		return "\(prefix)%@ \(unit)"
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		return Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit)
+		return Formatters.shortMeasurementFormatter.string(from: car.fuelConsumptionUnit)
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		return Formatters.fuelVolumeFormatter
 	}
 
-	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
+	func valueForFuelEvent(_ fuelEvent: FuelEvent) -> CGFloat {
 		if !fuelEvent.filledUp {
 			return .nan
 		}
 
-		let consumptionUnit = car.ksFuelConsumptionUnit
-		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
-		let fuelVolume = fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume
+		let consumptionUnit = fuelEvent.car!.fuelConsumptionUnit
+		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
+		let fuelVolume = fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume
 
 		return CGFloat((Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit) as NSDecimalNumber).floatValue)
 	}
@@ -821,27 +819,27 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		let unit = Formatters.shortMeasurementFormatter.string(from: car.ksFuelUnit)
+		let unit = Formatters.shortMeasurementFormatter.string(from: car.fuelUnit)
 
 		return "\(prefix)%@/\(unit)"
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		return "\(Formatters.currencyFormatter.currencySymbol!)/\(Formatters.shortMeasurementFormatter.string(from: car.ksFuelUnit))"
+		return "\(Formatters.currencyFormatter.currencySymbol!)/\(Formatters.shortMeasurementFormatter.string(from: car.fuelUnit))"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
 		return Formatters.axisCurrencyFormatter
 	}
 
-	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
-		let price = fuelEvent.ksPrice
+	func valueForFuelEvent(_ fuelEvent: FuelEvent) -> CGFloat {
+		let price = fuelEvent.price
 
 		if price.isZero {
 			return .nan
 		}
 
-		return CGFloat((Units.pricePerUnit(price, withUnit: car.ksFuelUnit) as NSDecimalNumber).floatValue)
+		return CGFloat((Units.pricePerUnit(price, withUnit: fuelEvent.car!.fuelUnit) as NSDecimalNumber).floatValue)
 	}
 
 }
@@ -852,7 +850,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	}
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
-		let distanceUnit = car.ksOdometerUnit
+		let distanceUnit = car.odometerUnit
 
 		if distanceUnit == UnitLength.kilometers {
 			return Formatters.currencyFormatter
@@ -863,7 +861,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 
 	func averageFormatString(_ avgPrefix: Bool, forCar car: Car) -> String {
 		let prefix = avgPrefix ? "∅ " : ""
-		if car.ksOdometerUnit == UnitLength.kilometers {
+		if car.odometerUnit == UnitLength.kilometers {
 			return "\(prefix)%@/100km"
 		} else {
 			let currencySymbol = Formatters.currencyFormatter.currencySymbol!
@@ -872,13 +870,13 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 	}
 
 	func noAverageStringForCar(_ car: Car) -> String {
-		let distanceUnit = car.ksOdometerUnit
+		let distanceUnit = car.odometerUnit
 
 		return distanceUnit == UnitLength.kilometers ? "\(Formatters.currencyFormatter.currencySymbol!)/100km" : "mi/\(Formatters.currencyFormatter.currencySymbol!)"
 	}
 
 	func axisFormatterForCar(_ car: Car) -> NumberFormatter {
-		let distanceUnit = car.ksOdometerUnit
+		let distanceUnit = car.odometerUnit
 
 		if distanceUnit == UnitLength.kilometers {
 			return Formatters.axisCurrencyFormatter
@@ -887,16 +885,16 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		}
 	}
 
-	func valueForFuelEvent(_ fuelEvent: FuelEvent, forCar car: Car) -> CGFloat {
+	func valueForFuelEvent(_ fuelEvent: FuelEvent) -> CGFloat {
 		if !fuelEvent.filledUp {
 			return .nan
 		}
 
 		let handler = Formatters.consumptionRoundingHandler
-		let distanceUnit = car.ksOdometerUnit
+		let distanceUnit = fuelEvent.car!.odometerUnit
 
-		let distance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
-		let cost = fuelEvent.cost + fuelEvent.ksInheritedCost
+		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
+		let cost = fuelEvent.cost + fuelEvent.inheritedCost
 
 		if cost.isZero {
 			return .nan

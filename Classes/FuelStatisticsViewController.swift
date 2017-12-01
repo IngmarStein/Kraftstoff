@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 // Protocol for objects containing computed statistics data
 protocol DiscardableDataObject {
@@ -141,49 +141,46 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		// Compute and draw new contents
-		let selectedCarID = self.selectedCar.objectID
+		let selectedCarID = self.selectedCar.id
 
-		let parentContext = self.selectedCar.managedObjectContext
-		let sampleContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-		sampleContext.parent = parentContext
-		sampleContext.perform {
-			// Get the selected car
-			if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
+		DispatchQueue(label: "sample").async {
+			autoreleasepool {
+				let realm = try! Realm()
 
-				// Fetch some young events to get the most recent fillup date
-				let recentEvents = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
-																									  beforeDate: Date(),
-																									 dateMatches: true),
-												 inManagedObjectContext: sampleContext)
+				// Get the selected car
+				if let sampleCar = realm.object(ofType: Car.self, forPrimaryKey: selectedCarID) {
 
-				var recentFillupDate = Date()
+					// Fetch some young events to get the most recent fillup date
+					let recentEvents = DataManager.fuelEventsForCar(car: sampleCar,
+																	beforeDate: Date(),
+																	dateMatches: true)
 
-				if recentEvents.count > 0 {
-					if let recentEvent = CoreDataManager.existingObject(recentEvents[0], inManagedObjectContext: sampleContext) as? FuelEvent {
-						recentFillupDate = recentEvent.ksTimestamp
+					var recentFillupDate = Date()
+
+					if recentEvents.count > 0 {
+						recentFillupDate = recentEvents[0].timestamp
 					}
-				}
 
-				// Fetch events for the selected time period
-				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
-				let samplingObjects = CoreDataManager.objectsForFetchRequest(CoreDataManager.fetchRequestForEvents(car: sampleCar,
-																										  afterDate: samplingStart,
-																										dateMatches: true),
-													inManagedObjectContext: sampleContext)
+					// Fetch events for the selected time period
+					let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
 
-				// Schedule update of cache and display in main thread
-				DispatchQueue.main.async {
-					// Compute statistics
-					let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-					                                                       forCar: sampleCar,
-					                                                       withObjects: samplingObjects,
-					                                                       inManagedObjectContext: sampleContext)
+					// Schedule update of cache and display in main thread
+					DispatchQueue.main.async {
+						let samplingObjects = DataManager.fuelEventsForCar(car: self.selectedCar,
+																		   afterDate: samplingStart,
+																		   dateMatches: true)
 
-					if self.invalidationCounter == self.expectedCounter {
-						self.contentCache[numberOfMonths] = sampleData
+						// Compute statistics
+						let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
+																			   forCar: self.selectedCar,
+																			   withObjects: Array(samplingObjects))
 
-						if self.displayedNumberOfMonths == numberOfMonths {
-							self.displayCachedStatisticsForRecentMonths(numberOfMonths)
+						if self.invalidationCounter == self.expectedCounter {
+							self.contentCache[numberOfMonths] = sampleData
+
+							if self.displayedNumberOfMonths == numberOfMonths {
+								self.displayCachedStatisticsForRecentMonths(numberOfMonths)
+							}
 						}
 					}
 				}
@@ -196,7 +193,7 @@ class FuelStatisticsViewController: UIViewController {
 		return false
 	}
 
-	func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+	func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent]) -> DiscardableDataObject {
 		fatalError("computeStatisticsForRecentMonths not implemented")
 	}
 

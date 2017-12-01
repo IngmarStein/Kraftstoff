@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import CoreData
+import RealmSwift
 
 typealias CSVRecord = [String: String]
 
@@ -18,36 +18,38 @@ final class CSVImporter {
 	private var modelForID = [Int: String]()
 	private var plateForID = [Int: String]()
 
+	private let realm = try! Realm()
+
 	init() {}
 
-	// MARK: - Core Data Support
+	// MARK: - Data Persistence
 
-	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: UnitFuelEfficiency, inContext managedObjectContext: NSManagedObjectContext) -> Car {
+	private func addCar(_ name: String, order: Int, plate: String, odometerUnit: UnitLength, volumeUnit: UnitVolume, fuelConsumptionUnit: UnitFuelEfficiency) -> Car {
 		// Create and configure new car object
-		let newCar = Car(context: managedObjectContext)
+		let newCar = Car()
 
-		newCar.lastUpdate = Date()
-		newCar.order = Int32(order)
+		newCar.order = order
 		newCar.timestamp = Date()
 		newCar.name = name
 		newCar.numberPlate = plate
-		newCar.ksOdometerUnit = odometerUnit
+		newCar.odometerUnit = odometerUnit
 		newCar.odometer = 0
-		newCar.ksFuelUnit = volumeUnit
-		newCar.ksFuelConsumptionUnit = fuelConsumptionUnit
+		newCar.fuelUnit = volumeUnit
+		newCar.fuelConsumptionUnit = fuelConsumptionUnit
+
+		realm.add(newCar)
 
 		return newCar
 	}
 
-	@discardableResult private func addEvent(_ car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, inheritedCost: Decimal, inheritedDistance: Decimal, inheritedFuelVolume: Decimal, filledUp: Bool, comment: String?, inContext managedObjectContext: NSManagedObjectContext) -> FuelEvent {
-		let newEvent = FuelEvent(context: managedObjectContext)
+	@discardableResult private func addEvent(_ car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, inheritedCost: Decimal, inheritedDistance: Decimal, inheritedFuelVolume: Decimal, filledUp: Bool, comment: String?) -> FuelEvent {
+		let newEvent = FuelEvent()
 
-		newEvent.lastUpdate = Date()
 		newEvent.car = car
-		newEvent.ksTimestamp = date
-		newEvent.ksDistance = distance
-		newEvent.ksPrice = price
-		newEvent.ksFuelVolume = fuelVolume
+		newEvent.timestamp = date
+		newEvent.distance = distance
+		newEvent.price = price
+		newEvent.fuelVolume = fuelVolume
 		newEvent.comment = comment
 
 		if !filledUp {
@@ -55,19 +57,21 @@ final class CSVImporter {
 		}
 
 		if !inheritedCost.isZero {
-			newEvent.ksInheritedCost = inheritedCost
+			newEvent.inheritedCost = inheritedCost
 		}
 
 		if !inheritedDistance.isZero {
-			newEvent.ksInheritedDistance = inheritedDistance
+			newEvent.inheritedDistance = inheritedDistance
 		}
 
 		if !inheritedFuelVolume.isZero {
-			newEvent.ksInheritedFuelVolume = inheritedFuelVolume
+			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
-		car.ksDistanceTotalSum += distance
-		car.ksFuelVolumeTotalSum += fuelVolume
+		car.distanceTotalSum += distance
+		car.fuelVolumeTotalSum += fuelVolume
+
+		realm.add(newEvent)
 
 		return newEvent
 	}
@@ -161,10 +165,9 @@ final class CSVImporter {
 		}
 	}
 
-	private func createCarObjectsInContext(_ managedObjectContext: NSManagedObjectContext) -> Int {
+	private func createCarObjects() -> Int {
 		// Fetch already existing cars for later update of order attribute
-		let carRequest = CoreDataManager.fetchRequestForCars()
-		let fetchedCarObjects = CoreDataManager.objectsForFetchRequest(carRequest, inManagedObjectContext: managedObjectContext)
+		let cars = DataManager.cars()
 
 		// Create car objects
 		carForID.removeAll()
@@ -178,15 +181,14 @@ final class CSVImporter {
 							   plate: plate,
 						odometerUnit: Units.distanceUnitFromLocale,
 						  volumeUnit: Units.volumeUnitFromLocale,
-				 fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale,
-						   inContext: managedObjectContext)
+				 fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale)
 
 			carForID[carID] = newCar
 		}
 
 		// Now update order attribute of old car objects
-		for oldCar in fetchedCarObjects {
-			oldCar.order += Int32(carForID.count)
+		for oldCar in cars {
+			oldCar.order += carForID.count
 		}
 
 		return carForID.count
@@ -231,7 +233,7 @@ final class CSVImporter {
 		return convDistance
 	}
 
-	@discardableResult private func importRecords(_ records: [CSVRecord], formatIsTankPro isTankProImport: Bool, detectedEvents numEvents: inout Int, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	@discardableResult private func importRecords(_ records: [CSVRecord], formatIsTankPro isTankProImport: Bool, detectedEvents numEvents: inout Int) -> Bool {
 		// Analyse record headers
 		let first = records.first!
 
@@ -390,8 +392,7 @@ final class CSVImporter {
 					   inheritedDistance: inheritedDistance,
 					 inheritedFuelVolume: inheritedFuelVolume,
 								filledUp: filledUp,
-								 comment: comment,
-							   inContext: managedObjectContext)
+								 comment: comment)
 
 					if filledUp {
 						inheritedCost       = 0
@@ -411,7 +412,7 @@ final class CSVImporter {
 
 			// Fixup car odometer
 			if detectedEvents {
-				car.ksOdometer = max(odometer, car.ksDistanceTotalSum)
+				car.odometer = max(odometer, car.distanceTotalSum)
 			}
 		}
 
@@ -420,7 +421,7 @@ final class CSVImporter {
 
 	// MARK: - Data Import
 
-	func `import`(_ csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: URL, inContext managedObjectContext: NSManagedObjectContext) -> Bool {
+	func `import`(_ csv: String, detectedCars numCars: inout Int, detectedEvents numEvents: inout Int, sourceURL: URL) -> Bool {
 		let parser = CSVParser(inputCSVString: csv)
 
 		// Check for TankPro import: search for tables containing car definitions
@@ -452,7 +453,7 @@ final class CSVImporter {
 		}
 
 		// Create objects for detected cars
-		numCars = createCarObjectsInContext(managedObjectContext)
+		numCars = createCarObjects()
 
 		if numCars == 0 {
 			return false
@@ -463,15 +464,17 @@ final class CSVImporter {
 
 		numEvents = 0
 
-		while true {
-			if let CSVTable = parser.parseTable() {
-				if CSVTable.isEmpty {
-					continue
-				}
+		try! realm.write {
+			while true {
+				if let CSVTable = parser.parseTable() {
+					if CSVTable.isEmpty {
+						continue
+					}
 
-				importRecords(CSVTable, formatIsTankPro: importFromTankPro, detectedEvents: &numEvents, inContext: managedObjectContext)
-			} else {
-				break
+					importRecords(CSVTable, formatIsTankPro: importFromTankPro, detectedEvents: &numEvents)
+				} else {
+					break
+				}
 			}
 		}
 

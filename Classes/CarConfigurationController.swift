@@ -139,7 +139,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
-		let unit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+		let unit = UnitLength.fromPersistentId(self.odometerUnit!.intValue)
 		let suffix = " ".appending(Formatters.shortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
@@ -410,8 +410,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
-				let newUnit = UnitLength.fromPersistentId(numberValue.int32Value)
+				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.intValue)
+				let newUnit = UnitLength.fromPersistentId(numberValue.intValue)
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue

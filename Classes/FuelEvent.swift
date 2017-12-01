@@ -6,133 +6,79 @@
 //
 //
 
-import Foundation
-import CoreData
-import CloudKit
+import RealmSwift
+import IceCream
 
-final class FuelEvent: NSManagedObject, CloudKitManagedObject {
+final class FuelEvent: Object {
 
-	var cloudKitRecordType: String? {
-		return "FuelEvent"
-	}
-
-	var ksInheritedCost: Decimal {
-		get {
-			return inheritedCost! as Decimal
-		}
-		set {
-			inheritedCost = newValue as NSDecimalNumber
-		}
-	}
-
-	var ksDistance: Decimal {
-		get {
-			return distance! as Decimal
-		}
-		set {
-			distance = newValue as NSDecimalNumber
-		}
-	}
-
-	var ksPrice: Decimal {
-		get {
-			return price! as Decimal
-		}
-		set {
-			price = newValue as NSDecimalNumber
-		}
-	}
-
-	var ksInheritedDistance: Decimal {
-		get {
-			return inheritedDistance! as Decimal
-		}
-		set {
-			inheritedDistance = newValue as NSDecimalNumber
-		}
-	}
-
-	var ksInheritedFuelVolume: Decimal {
-		get {
-			return inheritedFuelVolume! as Decimal
-		}
-		set {
-			inheritedFuelVolume = newValue as NSDecimalNumber
-		}
-	}
-
-	var ksTimestamp: Date {
-		get {
-			return timestamp!
-		}
-		set {
-			timestamp = newValue
-		}
-	}
-
-	var ksFuelVolume: Decimal {
-		get {
-			return fuelVolume! as Decimal
-		}
-		set {
-			fuelVolume = newValue as NSDecimalNumber
-		}
-	}
+	@objc dynamic var id = UUID().uuidString
+	@objc dynamic var isDeleted = false
+	@objc dynamic var comment: String?
+	@objc private dynamic var _distance = "0.0"
+	@objc dynamic var filledUp = false
+	@objc private dynamic var _fuelVolume = "0.0"
+	@objc private dynamic var _inheritedCost = "0.0"
+	@objc private dynamic var _inheritedDistance = "0.0"
+	@objc private dynamic var _inheritedFuelVolume = "0.0"
+	@objc private dynamic var _price = "0.0"
+	@objc dynamic var timestamp = Date()
+	@objc dynamic var car: Car?
 
 	var cost: Decimal {
-		return ksFuelVolume * ksPrice
+		return fuelVolume * price
 	}
 
-	func asCloudKitRecord() -> CKRecord {
-		guard let lastUpdate = lastUpdate else {
-			fatalError("Required properties for record not set")
-		}
-
-		let record = CKRecord(recordType: cloudKitRecordType!, recordID: cloudKitRecordID)
-
-		record["lastUpdate"] = lastUpdate as NSDate
-		record["inheritedCost"] = inheritedCost
-		record["distance"] = distance
-		record["price"] = price
-		record["inheritedDistance"] = inheritedDistance
-		record["inheritedFuelVolume"] = inheritedFuelVolume
-		record["timestamp"] = timestamp as NSDate?
-		record["filledUp"] = NSNumber(value: filledUp)
-		record["comment"] = comment as NSString?
-		record["fuelVolume"] = fuelVolume
-		if let car = car {
-			record.parent = CKReference(recordID: car.cloudKitRecordID, action: .none)
-		}
-
-		return record
+	var distance: Decimal {
+		get { return Decimal(string: _distance)! }
+		set { _distance = String(describing: newValue) }
 	}
 
-	func updateFromRecord(_ record: CKRecord) {
-		cloudKitRecordName = record.recordID.recordName
-		lastUpdate = record["lastUpdate"] as? Date
-		// swiftlint:disable force_cast
-		inheritedCost = record["inheritedCost"] as? NSDecimalNumber
-		distance = record["distance"] as? NSDecimalNumber
-		price = record["price"] as? NSDecimalNumber
-		inheritedDistance = record["inheritedDistance"] as? NSDecimalNumber
-		inheritedFuelVolume = record["inheritedFuelVolume"] as? NSDecimalNumber
-		timestamp = record["timestamp"] as? Date
-		filledUp = record["filledUp"] as! Bool
-		comment = record["comment"] as? String
-		fuelVolume = record["fuelVolume"] as? NSDecimalNumber
-		// swiftlint:enable force_cast
-
-		if let parent = record.parent {
-			let fetchRequest: NSFetchRequest<Car> = Car.fetchRequest()
-			fetchRequest.predicate = NSPredicate(format: "cloudKitRecordName LIKE[c] %@", parent.recordID.recordName)
-
-			let fetchResults = CoreDataManager.objectsForFetchRequest(fetchRequest)
-			if fetchResults.count == 1 {
-				car = fetchResults[0]
-			} else {
-				print("Unexpected number of cars: \(fetchResults)")
-			}
-		}
+	var fuelVolume: Decimal {
+		get { return Decimal(string: _fuelVolume)! }
+		set { _fuelVolume = String(describing: newValue) }
 	}
 
+	var inheritedCost: Decimal {
+		get { return Decimal(string: _inheritedCost)! }
+		set { _inheritedCost = String(describing: newValue) }
+	}
+
+	var inheritedDistance: Decimal {
+		get { return Decimal(string: _inheritedDistance)! }
+		set { _inheritedDistance = String(describing: newValue) }
+	}
+
+	var inheritedFuelVolume: Decimal {
+		get { return Decimal(string: _inheritedFuelVolume)! }
+		set { _inheritedFuelVolume = String(describing: newValue) }
+	}
+
+	var price: Decimal {
+		get { return Decimal(string: _price)! }
+		set { _price = String(describing: newValue) }
+	}
+
+	override class func primaryKey() -> String? {
+		return #keyPath(FuelEvent.id)
+	}
+
+	public override class func ignoredProperties() -> [String] {
+		return [
+			"cost",
+			"distance",
+			"fuelVolume",
+			"inheritedCost",
+			"inheritedDistance",
+			"inheritedFuelVolume",
+			"private",
+		]
+	}
+
+}
+
+extension FuelEvent: CKRecordConvertible {
+}
+
+extension FuelEvent: CKRecordRecoverable {
+	typealias O = FuelEvent
 }

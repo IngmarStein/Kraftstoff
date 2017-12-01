@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 import MessageUI
 
 private let fuelEventSelectedCarID = "FuelEventSelectedCarID"
@@ -15,33 +15,24 @@ private let fuelEventExportSheet   = "FuelEventExportSheet"
 private let fuelEventShowOpenIn    = "FuelEventShowOpenIn"
 private let fuelEventShowComposer  = "FuelEventShowMailComposer"
 
-final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate {
+final class FuelEventController: UITableViewController, UIDataSourceModelAssociation, UIViewControllerRestoration, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate, UIDocumentPickerDelegate {
 
 	var selectedCarId: String?
 	var selectedCar: Car!
 
-	private lazy var fetchRequest: NSFetchRequest<FuelEvent> = {
-		return CoreDataManager.fetchRequestForEvents(car: self.selectedCar,
+	private let realm = try! Realm()
+	private var notificationToken: NotificationToken? = nil
+
+	private lazy var fuelEvents: Results<FuelEvent> = {
+		let results = DataManager.fuelEventsForCar(car: self.selectedCar,
 			afterDate: nil,
 			dateMatches: true)
-	}()
-
-	private lazy var fetchedResultsController: NSFetchedResultsController<FuelEvent> = {
-		let fetchController = NSFetchedResultsController(fetchRequest: self.fetchRequest,
-			managedObjectContext: CoreDataManager.managedObjectContext,
-			sectionNameKeyPath: nil,
-			cacheName: nil)
-
-		fetchController.delegate = self
-
-		// Perform the data fetch
-		do {
-			try fetchController.performFetch()
-		} catch let error {
-			fatalError(error.localizedDescription)
+		self.notificationToken = results.observe { (changes) in
+			self.tableView.applyChanges(changes: changes, with: .fade)
+			self.validateExport()
+			self.statisticsController.invalidateCaches()
 		}
-
-		return fetchController
+		return results
 	}()
 
 	private var statisticsController: FuelStatisticsPageController!
@@ -68,7 +59,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		super.viewDidLoad()
 
 		if let selectedCarId = selectedCarId, selectedCar == nil {
-			selectedCar = CoreDataManager.managedObjectForModelIdentifier(selectedCarId)
+			selectedCar = realm.object(ofType: Car.self, forPrimaryKey: selectedCarId)
 		}
 
 		// swiftlint:disable:next force_cast
@@ -135,7 +126,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: fuelEventSelectedCarID) as String? {
-			controller.selectedCar = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
+			let realm = try! Realm()
+
+			controller.selectedCar = realm.object(ofType: Car.self, forPrimaryKey: modelIdentifier)
 
 			if controller.selectedCar == nil {
 				return nil
@@ -147,7 +140,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func encodeRestorableState(with coder: NSCoder) {
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(selectedCar) as NSString?, forKey: fuelEventSelectedCarID)
+		coder.encode(selectedCar.id, forKey: fuelEventSelectedCarID)
 		coder.encode(restoreExportSheet || isShowingExportSheet, forKey: fuelEventExportSheet)
 		coder.encode(restoreOpenIn || (openInController != nil), forKey: fuelEventShowOpenIn)
 		coder.encode(restoreMailComposer || (mailComposeController != nil), forKey: fuelEventShowComposer)
@@ -205,11 +198,11 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - Export Support
 
 	func validateExport() {
-		self.navigationItem.rightBarButtonItem?.isEnabled = ((self.fetchedResultsController.fetchedObjects?.count ?? 0) > 0)
+		self.navigationItem.rightBarButtonItem?.isEnabled = (fuelEvents.count > 0)
 	}
 
 	private var exportFilename: String {
-		let rawFilename = "\(selectedCar.ksName)__\(selectedCar.ksNumberPlate).csv"
+		let rawFilename = "\(selectedCar.name)__\(selectedCar.numberPlate).csv"
 		let illegalCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>")
 
 		return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
@@ -220,8 +213,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	func exportTextData() -> Data {
-		let fetchedObjects = self.fetchedResultsController.fetchedObjects!
-		let csvString = CSVExporter.exportFuelEvents(fetchedObjects, forCar: selectedCar)
+		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: selectedCar)
 		return csvString.data(using: String.Encoding.utf8, allowLossyConversion: true)!
 	}
 
@@ -231,24 +223,22 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		outputFormatter.dateStyle = .medium
 		outputFormatter.timeStyle = .none
 
-		let fetchedObjects = self.fetchedResultsController.fetchedObjects!
-		let fetchCount = fetchedObjects.count
-
-		let last = fetchedObjects.last
-		let first = fetchedObjects.first
+		let eventCount = fuelEvents.count
+		let last = fuelEvents.last
+		let first = fuelEvents.first
 
 		let period: String
-		switch fetchCount {
+		switch eventCount {
 		case 0: period = NSLocalizedString("", comment: "")
-		case 1: period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp))
-		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp), outputFormatter.string(from: first!.ksTimestamp))
+		case 1: period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.timestamp))
+		default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.timestamp), outputFormatter.string(from: first!.timestamp))
 		}
 
-		let count = String(format: NSLocalizedString(((fetchCount == 1) ? "%d item" : "%d items"), comment: ""), fetchCount)
+		let count = String(format: NSLocalizedString(((eventCount == 1) ? "%d item" : "%d items"), comment: ""), eventCount)
 
 		return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
-            selectedCar.ksName,
-            selectedCar.ksNumberPlate,
+            selectedCar.name,
+            selectedCar.numberPlate,
             period,
             count)
 	}
@@ -360,7 +350,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 			// Setup the message
 			mailComposeController.mailComposeDelegate = self
-			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.ksNumberPlate))
+			mailComposeController.setSubject(String(format: NSLocalizedString("Your fuel data for %@", comment: ""), selectedCar.numberPlate))
 			mailComposeController.setMessageBody(exportTextDescription(), isHTML: false)
 			mailComposeController.addAttachmentData(exportTextData(), mimeType: "text/csv", fileName: exportFilename)
 
@@ -425,14 +415,14 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	// MARK: - UITableViewDataSource
 
 	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: IndexPath) {
-		let fuelEvent = self.fetchedResultsController.object(at: indexPath)
+		let fuelEvent = fuelEvents[indexPath.row]
 
 		let car = fuelEvent.car!
-		let distance = fuelEvent.ksDistance
-		let fuelVolume = fuelEvent.ksFuelVolume
+		let distance = fuelEvent.distance
+		let fuelVolume = fuelEvent.fuelVolume
 
-		let odometerUnit = car.ksOdometerUnit
-		let consumptionUnit = car.ksFuelConsumptionUnit
+		let odometerUnit = car.odometerUnit
+		let consumptionUnit = car.fuelConsumptionUnit
 
 		// Timestamp
 		tableCell.topLeftLabel.text = Formatters.dateFormatter.string(for: fuelEvent.timestamp)
@@ -457,8 +447,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		// Consumption combined with inherited data from earlier events
 		let consumptionDescription: String
 		if fuelEvent.filledUp {
-			let totalDistance = distance + fuelEvent.ksInheritedDistance
-			let totalFuelVolume = fuelVolume + fuelEvent.ksInheritedFuelVolume
+			let totalDistance = distance + fuelEvent.inheritedDistance
+			let totalFuelVolume = fuelVolume + fuelEvent.inheritedFuelVolume
 
 			let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
 
@@ -475,12 +465,11 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return self.fetchedResultsController.sections?.count ?? 0
+		return 1
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let sectionInfo = self.fetchedResultsController.sections?[section]
-		return sectionInfo?.numberOfObjects ?? 0
+		return fuelEvents.count
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -495,77 +484,37 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			let fuelEvent = self.fetchedResultsController.object(at: indexPath)
-			CoreDataManager.removeEventFromArchive(fuelEvent, forceOdometerUpdate: false)
-			CoreDataManager.saveContext()
+			let fuelEvent = fuelEvents[indexPath.row]
+			DataManager.removeEvent(fuelEvent, forceOdometerUpdate: false)
 		}
 	}
 
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		if let fuelEvent: FuelEvent = CoreDataManager.managedObjectForModelIdentifier(identifier) {
-			return self.fetchedResultsController.indexPath(forObject: fuelEvent)
+		if let fuelEvent = realm.object(ofType: FuelEvent.self, forPrimaryKey: identifier), let row = fuelEvents.index(of: fuelEvent) {
+			return IndexPath(row: row, section: 0)
 		}
 		return nil
 	}
 
 	func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
-		let object = self.fetchedResultsController.object(at: idx)
-
-		return CoreDataManager.modelIdentifierForManagedObject(object)
+		return fuelEvents[idx.row].id
 	}
 
 	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		if let editController = self.storyboard!.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController {
-			editController.event = self.fetchedResultsController.object(at: indexPath)
+			editController.event = fuelEvents[indexPath.row]
 			self.navigationController?.pushViewController(editController, animated: true)
 		}
-	}
-
-	// MARK: - NSFetchedResultsControllerDelegate
-
-	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		self.tableView.beginUpdates()
-	}
-
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-		switch type {
-		case .insert:
-			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-		case .delete:
-			self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-		case .move, .update:
-			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
-		}
-	}
-
-	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-		switch type {
-		case .insert:
-			tableView.insertRows(at: [newIndexPath!], with: .fade)
-		case .delete:
-			tableView.deleteRows(at: [indexPath!], with: .fade)
-		case .move:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-		case .update:
-			tableView.reloadRows(at: [indexPath!], with: .automatic)
-		}
-	}
-
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		self.tableView.endUpdates()
-
-		validateExport()
-		statisticsController.invalidateCaches()
 	}
 
 	// MARK: - Memory Management
 
 	deinit {
+		notificationToken?.invalidate()
 		NotificationCenter.default.removeObserver(self)
 	}
 }

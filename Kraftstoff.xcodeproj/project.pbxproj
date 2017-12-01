@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		063596AB92EAAD3F710A69BA /* Pods_Kraftstoff.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */; };
 		4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B06D114339BB70069B20A /* InfoPlist.strings */; };
-		4D2CF10E15D69B33003962B7 /* Fuel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4D2CF10C15D69B33003962B7 /* Fuel.xcdatamodeld */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
+		5F97DB917318F13D17EDBCBD /* Pods_Kraftstoff_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */; };
 		950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */; };
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
 		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
@@ -20,14 +21,7 @@
 		955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */; };
 		95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */; };
 		95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */; };
-		956E44B81EB9228A006317CE /* FetchRecordChangesForCloudKitZoneOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */; };
-		956E44B91EB92290006317CE /* ClearDeletedCloudKitObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */; };
-		956E44BA1EB92290006317CE /* FetchOfflineChangesFromCoreDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */; };
-		956E44BB1EB92290006317CE /* ProcessSyncChangesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */; };
-		956E44BD1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */; };
-		956E44BF1EBF34F5006317CE /* DeletedCloudKitObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */; };
-		956E44C11EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */; };
-		956E44C41EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */; };
+		956935381FD480E0005D44E4 /* UITableView+Realm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956935371FD480E0005D44E4 /* UITableView+Realm.swift */; };
 		957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957F24B21E2E673C007AC96A /* StyleKit.swift */; };
 		9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
@@ -56,7 +50,7 @@
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 		95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CBD4241D1702A8009637A4 /* CloudKit.framework */; };
 		95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CBD4281D171C90009637A4 /* StoreKit.framework */; };
-		95CE70CE1B0DF23000370781 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CE70CD1B0DF23000370781 /* CoreDataManager.swift */; };
+		95CE70CE1B0DF23000370781 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CE70CD1B0DF23000370781 /* DataManager.swift */; };
 		95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7B1AF69B00003FF205 /* PageViewController.swift */; };
 		95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */; };
 		95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95D3502F1AFB8B5400E04685 /* LaunchScreen.storyboard */; };
@@ -65,9 +59,8 @@
 		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
 		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
+		9B3539791E0CA2248667D44B /* Pods_Kraftstoff_UI_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */; };
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
-		9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */; };
-		9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */; };
 		9EB2B04E1DE6DD060027281E /* LocalizedMeasurementFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */; };
 /* End PBXBuildFile section */
 
@@ -89,20 +82,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1BFDFD0814D1CB8C8271B2F1 /* Pods-Kraftstoff Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests.release.xcconfig"; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D1B06D014339BB70069B20A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D1B06D214339BBD0069B20A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kraftstoff-Info.plist"; sourceTree = "<group>"; };
 		4D3F199B176B2B5F003FE2C7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = kraftstoff/Media.xcassets; sourceTree = "<group>"; };
 		4DCFE36B138EE2930051FEC9 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DCFE36D138EE2AB0051FEC9 /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
+		4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff_UI_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C634FA4A734FD5F50578953 /* Pods-Kraftstoff.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff.release.xcconfig"; sourceTree = "<group>"; };
+		7CD2EFE54E7B34C8B079D7BE /* Pods-Kraftstoff.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff.debug.xcconfig"; sourceTree = "<group>"; };
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
-		953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProcessSyncChangesOperation.swift; sourceTree = "<group>"; };
-		953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearDeletedCloudKitObjectsOperation.swift; sourceTree = "<group>"; };
-		953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchOfflineChangesFromCoreDataOperation.swift; sourceTree = "<group>"; };
-		953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRecordChangesForCloudKitZoneOperation.swift; sourceTree = "<group>"; };
 		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -110,10 +105,7 @@
 		955B461B1AF2251F00A62D3B /* ConsumptionLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionLabel.swift; sourceTree = "<group>"; };
 		95655B8A1AF770E00045F9F7 /* CarConfigurationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarConfigurationController.swift; sourceTree = "<group>"; };
 		95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEventEditorController.swift; sourceTree = "<group>"; };
-		956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRecordsForModifiedObjectsOperation.swift; sourceTree = "<group>"; };
-		956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletedCloudKitObject.swift; sourceTree = "<group>"; };
-		956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyRecordsFromManagedObjectsOperation.swift; sourceTree = "<group>"; };
-		956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveChangedRecordsToCoreDataOperation.swift; sourceTree = "<group>"; };
+		956935371FD480E0005D44E4 /* UITableView+Realm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Realm.swift"; sourceTree = "<group>"; };
 		957F24B21E2E673C007AC96A /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleKit.swift; path = Classes/StyleKit.swift; sourceTree = "<group>"; };
 		9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Kraftstoff.swift"; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
@@ -142,7 +134,7 @@
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		95CBD4241D1702A8009637A4 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		95CBD4281D171C90009637A4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		95CE70CD1B0DF23000370781 /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = Classes/CoreDataManager.swift; sourceTree = "<group>"; };
+		95CE70CD1B0DF23000370781 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = Classes/DataManager.swift; sourceTree = "<group>"; };
 		95D2AE7B1AF69B00003FF205 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelCalculatorController.swift; sourceTree = "<group>"; };
 		95D350301AFB8B5400E04685 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -150,7 +142,6 @@
 		95DA86291AFB426D001E1375 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_Tests.swift; sourceTree = "<group>"; };
 		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
-		95DF625E1E37981200294E0B /* Fuel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Fuel.xcdatamodel; sourceTree = "<group>"; };
 		95DF625F1E37998A00294E0B /* kraftstoff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = kraftstoff.entitlements; path = Kraftstoff/kraftstoff.entitlements; sourceTree = "<group>"; };
 		95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_UI_Tests.swift; sourceTree = "<group>"; };
@@ -160,8 +151,6 @@
 		9E228BA91C6CB193000EDD88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
-		9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
-		9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManagedObject.swift; sourceTree = "<group>"; };
 		9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizedMeasurementFormatter.swift; path = Classes/LocalizedMeasurementFormatter.swift; sourceTree = "<group>"; };
 		9EB2B04F1DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		9EB2B0501DE716AC0027281E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -171,6 +160,9 @@
 		9EF18DD31BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AC34BA2A73E07B1BCC7A3FAA /* Pods-Kraftstoff UI Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff UI Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests.release.xcconfig"; sourceTree = "<group>"; };
+		EE83FC1D4F61C6E2D9572011 /* Pods-Kraftstoff UI Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff UI Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		F9A500991179F84B1B72353A /* Pods-Kraftstoff Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +172,7 @@
 			files = (
 				95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */,
 				95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */,
+				063596AB92EAAD3F710A69BA /* Pods_Kraftstoff.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F97DB917318F13D17EDBCBD /* Pods_Kraftstoff_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -194,6 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B3539791E0CA2248667D44B /* Pods_Kraftstoff_UI_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +201,6 @@
 				4D630C3E12EEF83500134FD7 /* Calculator */,
 				4D630C0812EEEE3400134FD7 /* Car Configurator */,
 				4D8079DB12A59FBE0082C40A /* Car View */,
-				953E099E1E4CCB4500B3BDFA /* CloudKit */,
 				4D8329E31401295600E4F22F /* CSV */,
 				4D1899B714328AEF001434BD /* Extensions */,
 				4DDC18771429EC4400383F92 /* FuelEvent Editor */,
@@ -240,6 +234,7 @@
 				95E685431C4C1BC800C6D5F8 /* Kraftstoff UI Tests */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				95CBD4231D1702A8009637A4 /* Frameworks */,
+				F83099EA81B09B83DD67DE48 /* Pods */,
 			);
 			comments = "-D__IPHONE_OS_VERSION_MIN_REQUIRED=040000 in Other C Flags wegen Bug in SDK. Alternativ: System Default statt LLVM Compiler";
 			name = CustomTemplate;
@@ -249,7 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D941AF8A4B5006A56D6 /* AppDelegate.swift */,
-				95CE70CD1B0DF23000370781 /* CoreDataManager.swift */,
+				95CE70CD1B0DF23000370781 /* DataManager.swift */,
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */,
 				957F24B21E2E673C007AC96A /* StyleKit.swift */,
@@ -261,7 +256,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4D2CF10C15D69B33003962B7 /* Fuel.xcdatamodeld */,
 				4D1B06D114339BB70069B20A /* InfoPlist.strings */,
 				4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */,
 				95DF625F1E37998A00294E0B /* kraftstoff.entitlements */,
@@ -347,6 +341,7 @@
 				955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */,
 				955B46191AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift */,
 				9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */,
+				956935371FD480E0005D44E4 /* UITableView+Realm.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -447,35 +442,10 @@
 			name = "FuelEvent Statistics";
 			sourceTree = "<group>";
 		};
-		953E099E1E4CCB4500B3BDFA /* CloudKit */ = {
-			isa = PBXGroup;
-			children = (
-				9E2B263F1D1ACBD10064FF1B /* CloudKitManager.swift */,
-				956E44C21EBF4518006317CE /* Operations */,
-			);
-			name = CloudKit;
-			sourceTree = "<group>";
-		};
-		956E44C21EBF4518006317CE /* Operations */ = {
-			isa = PBXGroup;
-			children = (
-				953E09A31E4CCBE900B3BDFA /* ClearDeletedCloudKitObjectsOperation.swift */,
-				953E09A41E4CCBE900B3BDFA /* FetchOfflineChangesFromCoreDataOperation.swift */,
-				953E09A71E4CCC0800B3BDFA /* FetchRecordChangesForCloudKitZoneOperation.swift */,
-				956E44BC1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift */,
-				956E44C01EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift */,
-				953E09A11E4CCB9900B3BDFA /* ProcessSyncChangesOperation.swift */,
-				956E44C31EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift */,
-			);
-			name = Operations;
-			sourceTree = "<group>";
-		};
 		95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */ = {
 			isa = PBXGroup;
 			children = (
 				95AE6D8E1AF7BDCC006A56D6 /* Car.swift */,
-				9E2B26411D1BD57A0064FF1B /* CloudKitManagedObject.swift */,
-				956E44BE1EBF34F5006317CE /* DeletedCloudKitObject.swift */,
 				95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */,
 			);
 			name = "Managed Objects";
@@ -486,6 +456,9 @@
 			children = (
 				95CBD4281D171C90009637A4 /* StoreKit.framework */,
 				95CBD4241D1702A8009637A4 /* CloudKit.framework */,
+				4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */,
+				37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */,
+				5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -525,6 +498,19 @@
 			name = Store;
 			sourceTree = "<group>";
 		};
+		F83099EA81B09B83DD67DE48 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7CD2EFE54E7B34C8B079D7BE /* Pods-Kraftstoff.debug.xcconfig */,
+				7C634FA4A734FD5F50578953 /* Pods-Kraftstoff.release.xcconfig */,
+				F9A500991179F84B1B72353A /* Pods-Kraftstoff Tests.debug.xcconfig */,
+				1BFDFD0814D1CB8C8271B2F1 /* Pods-Kraftstoff Tests.release.xcconfig */,
+				EE83FC1D4F61C6E2D9572011 /* Pods-Kraftstoff UI Tests.debug.xcconfig */,
+				AC34BA2A73E07B1BCC7A3FAA /* Pods-Kraftstoff UI Tests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -532,9 +518,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Kraftstoff" */;
 			buildPhases = (
+				949419E524A426E37BE72174 /* [CP] Check Pods Manifest.lock */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				5BB77EEBBCBB8C810E84B2AC /* [CP] Embed Pods Frameworks */,
+				F763BF301A1003F209C1B94E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -549,9 +538,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95DA86301AFB426D001E1375 /* Build configuration list for PBXNativeTarget "Kraftstoff Tests" */;
 			buildPhases = (
+				0972CC6B3518F82FA5CC0C79 /* [CP] Check Pods Manifest.lock */,
 				95DA86221AFB426D001E1375 /* Sources */,
 				95DA86231AFB426D001E1375 /* Frameworks */,
 				95DA86241AFB426D001E1375 /* Resources */,
+				F22780F10F7D4FABCFCB92F1 /* [CP] Embed Pods Frameworks */,
+				31FE4EB26C09A79337A7C319 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -567,9 +559,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95E685491C4C1BC800C6D5F8 /* Build configuration list for PBXNativeTarget "Kraftstoff UI Tests" */;
 			buildPhases = (
+				B41A6C225A057CDC6D5DDF83 /* [CP] Check Pods Manifest.lock */,
 				95E6853E1C4C1BC800C6D5F8 /* Sources */,
 				95E6853F1C4C1BC800C6D5F8 /* Frameworks */,
 				95E685401C4C1BC800C6D5F8 /* Resources */,
+				E8DE29A0A49E70089B393F22 /* [CP] Embed Pods Frameworks */,
+				B73B2AA9DB74BF020FC450C6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -634,6 +629,7 @@
 				ja,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -674,6 +670,164 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0972CC6B3518F82FA5CC0C79 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Kraftstoff Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		31FE4EB26C09A79337A7C319 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5BB77EEBBCBB8C810E84B2AC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/IceCream/IceCream.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RxRealm/RxRealm.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IceCream.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRealm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		949419E524A426E37BE72174 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Kraftstoff-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B41A6C225A057CDC6D5DDF83 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Kraftstoff UI Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B73B2AA9DB74BF020FC450C6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E8DE29A0A49E70089B393F22 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F22780F10F7D4FABCFCB92F1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F763BF301A1003F209C1B94E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -682,7 +836,6 @@
 				957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */,
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
-				956E44BA1EB92290006317CE /* FetchOfflineChangesFromCoreDataOperation.swift in Sources */,
 				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,
 				95F196301B961D90000E4D0C /* StoreManager.swift in Sources */,
 				95C071731AF62AC800DF261C /* TextEditTableCell.swift in Sources */,
@@ -696,40 +849,31 @@
 				95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */,
 				955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */,
 				952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */,
-				956E44C11EBF450E006317CE /* ModifyRecordsFromManagedObjectsOperation.swift in Sources */,
 				95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */,
 				95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
-				9E2B26421D1BD57A0064FF1B /* CloudKitManagedObject.swift in Sources */,
-				956E44BD1EBA796D006317CE /* FetchRecordsForModifiedObjectsOperation.swift in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
-				956E44BB1EB92290006317CE /* ProcessSyncChangesOperation.swift in Sources */,
 				95AE6D9D1AF9D8A9006A56D6 /* FuelStatisticsViewController.swift in Sources */,
 				95C071751AF6308300DF261C /* PickerTableCell.swift in Sources */,
 				95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */,
 				95C0717F1AF65A0100DF261C /* EditableProxyPageCell.swift in Sources */,
 				955B461C1AF2251F00A62D3B /* ConsumptionLabel.swift in Sources */,
-				956E44B81EB9228A006317CE /* FetchRecordChangesForCloudKitZoneOperation.swift in Sources */,
 				95AE6D971AF8CDAF006A56D6 /* CarViewController.swift in Sources */,
 				959A61B81AF4159600BDF116 /* Units.swift in Sources */,
 				95C071711AF6269400DF261C /* SwitchTableCell.swift in Sources */,
 				95AE6D9B1AF92EE7006A56D6 /* FuelStatisticsGraphViewController.swift in Sources */,
 				95C071771AF638EF00DF261C /* EditablePageCellTextField.swift in Sources */,
-				956E44BF1EBF34F5006317CE /* DeletedCloudKitObject.swift in Sources */,
 				95C0716F1AF623AC00DF261C /* PageCellDescription.swift in Sources */,
-				956E44B91EB92290006317CE /* ClearDeletedCloudKitObjectsOperation.swift in Sources */,
 				95D2AE7C1AF69B00003FF205 /* PageViewController.swift in Sources */,
 				953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */,
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
-				956E44C41EBFA8E5006317CE /* SaveChangedRecordsToCoreDataOperation.swift in Sources */,
-				9E2B26401D1ACBD10064FF1B /* CloudKitManager.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */,
 				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,
-				95CE70CE1B0DF23000370781 /* CoreDataManager.swift in Sources */,
+				95CE70CE1B0DF23000370781 /* DataManager.swift in Sources */,
+				956935381FD480E0005D44E4 /* UITableView+Realm.swift in Sources */,
 				9EB2B04E1DE6DD060027281E /* LocalizedMeasurementFormatter.swift in Sources */,
-				4D2CF10E15D69B33003962B7 /* Fuel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -824,6 +968,7 @@
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7CD2EFE54E7B34C8B079D7BE /* Pods-Kraftstoff.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -847,6 +992,7 @@
 		};
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C634FA4A734FD5F50578953 /* Pods-Kraftstoff.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -869,6 +1015,7 @@
 		};
 		95DA862E1AFB426D001E1375 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F9A500991179F84B1B72353A /* Pods-Kraftstoff Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -907,6 +1054,7 @@
 		};
 		95DA862F1AFB426D001E1375 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1BFDFD0814D1CB8C8271B2F1 /* Pods-Kraftstoff Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -940,6 +1088,7 @@
 		};
 		95E6854A1C4C1BC800C6D5F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EE83FC1D4F61C6E2D9572011 /* Pods-Kraftstoff UI Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -978,6 +1127,7 @@
 		};
 		95E6854B1C4C1BC800C6D5F8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC34BA2A73E07B1BCC7A3FAA /* Pods-Kraftstoff UI Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1152,19 +1302,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		4D2CF10C15D69B33003962B7 /* Fuel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				95DF625E1E37981200294E0B /* Fuel.xcdatamodel */,
-			);
-			currentVersion = 95DF625E1E37981200294E0B /* Fuel.xcdatamodel */;
-			path = Fuel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }

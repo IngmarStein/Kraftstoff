@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 private let SRFuelEventCancelSheet     = "FuelEventCancelSheet"
 private let SRFuelEventDataChanged     = "FuelEventDataChanged"
@@ -22,7 +22,7 @@ private let SRFuelEventFilledUp        = "FuelEventFilledUp"
 private let SRFuelEventEditing         = "FuelEventEditing"
 private let SRFuelEventComment         = "FuelEventComment"
 
-final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
+final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var event: FuelEvent! {
 		didSet {
@@ -45,6 +45,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private var dataChanged = false
 	private var restoredSelectionIndex: IndexPath?
 
+	private let realm = try! Realm()
+
 	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
@@ -65,7 +67,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.doneButton.accessibilityIdentifier = "done"
 		self.cancelButton.accessibilityIdentifier = "cancel"
 
-		self.title = Formatters.dateFormatter.string(from: self.event.ksTimestamp)
+		self.title = Formatters.dateFormatter.string(from: self.event.timestamp)
 		self.navigationItem.rightBarButtonItem = self.editButton
 
 		// Remove tint from navigation bar
@@ -85,8 +87,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
-			let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
-			controller.event = CoreDataManager.managedObjectForModelIdentifier(modelIdentifier)
+				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
+			let realm = try! Realm()
+			controller.event = realm.object(ofType: FuelEvent.self, forPrimaryKey: modelIdentifier)
 
 			if controller.event == nil {
 				return nil
@@ -104,8 +107,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		coder.encode(isShowingCancelSheet, forKey: SRFuelEventCancelSheet)
 		coder.encode(dataChanged, forKey: SRFuelEventDataChanged)
 		coder.encode(indexPath, forKey: SRFuelEventSelectionIndex)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(event) as NSString?, forKey: SRFuelEventEventID)
-		coder.encode(CoreDataManager.modelIdentifierForManagedObject(car) as NSString?, forKey: SRFuelEventCarID)
+		coder.encode(event.id, forKey: SRFuelEventEventID)
+		coder.encode(car.id, forKey: SRFuelEventCarID)
 		coder.encode(date, forKey: SRFuelEventDate)
 		coder.encode(distance, forKey: SRFuelEventDistance)
 		coder.encode(price, forKey: SRFuelEventPrice)
@@ -129,7 +132,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as String?
 
 		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as String? {
-			car = CoreDataManager.managedObjectForModelIdentifier(carId)
+			car = realm.object(ofType: Car.self, forPrimaryKey: carId)
 		}
 
 		if coder.decodeBool(forKey: SRFuelEventEditing) {
@@ -153,33 +156,31 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			dataChanged = false
 
 			// Remove event from database
-			CoreDataManager.removeEventFromArchive(event, forceOdometerUpdate: true)
+			DataManager.removeEvent(event, forceOdometerUpdate: true)
 
 			// Reinsert new version of event
-			event = CoreDataManager.addToArchive(car: car,
-                                                date: date,
-                                            distance: distance,
-                                               price: price,
-                                          fuelVolume: fuelVolume,
-                                            filledUp: filledUp,
-									   	     comment: comment,
-							     forceOdometerUpdate: true)
-
-			CoreDataManager.saveContext()
+			event = DataManager.addToArchive(car: car,
+											 date: date,
+											 distance: distance,
+											 price: price,
+											 fuelVolume: fuelVolume,
+											 filledUp: filledUp,
+											 comment: comment,
+											 forceOdometerUpdate: true)
 		}
 	}
 
 	private func restoreStateFromEvent() {
 		car = event.car
 
-		let odometerUnit = car.ksOdometerUnit
-		let fuelUnit     = car.ksFuelUnit
+		let odometerUnit = car.odometerUnit
+		let fuelUnit     = car.fuelUnit
 
-		self.title = Formatters.dateFormatter.string(from: event.ksTimestamp)
-		date       = event.ksTimestamp
-		distance   = Units.distanceForKilometers(event.ksDistance, withUnit: odometerUnit)
-		price      = Units.pricePerUnit(event.ksPrice, withUnit: fuelUnit)
-		fuelVolume = Units.volumeForLiters(event.ksFuelVolume, withUnit: fuelUnit)
+		self.title = Formatters.dateFormatter.string(from: event.timestamp)
+		date       = event.timestamp
+		distance   = Units.distanceForKilometers(event.distance, withUnit: odometerUnit)
+		price      = Units.pricePerUnit(event.price, withUnit: fuelUnit)
+		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit: fuelUnit)
 		filledUp   = event.filledUp
 		comment    = event.comment
 
@@ -298,9 +299,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 
 		// Conversion units
-		let odometerUnit    = car.ksOdometerUnit
-		let fuelUnit        = car.ksFuelUnit
-		let consumptionUnit = car.ksFuelConsumptionUnit
+		let odometerUnit    = car.odometerUnit
+		let fuelUnit        = car.fuelUnit
+		let consumptionUnit = car.fuelConsumptionUnit
 
 		// Compute the average consumption
 		let cost = fuelVolume * price
@@ -336,7 +337,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
                           "valueIdentifier": "date"],
           withAnimation: animation)
 
-		let odometerUnit = car.ksOdometerUnit
+		let odometerUnit = car.odometerUnit
 
 		addRowAtIndex(rowIndex: 1,
               inSection: 0,
@@ -347,7 +348,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
                           "valueIdentifier": "distance"],
           withAnimation: animation)
 
-		let fuelUnit = car.ksFuelUnit
+		let fuelUnit = car.fuelUnit
 
 		addRowAtIndex(rowIndex: 2,
               inSection: 0,
@@ -501,8 +502,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 		if distance.isSignMinus || distance.isZero || fuelVolume.isSignMinus || fuelVolume.isZero {
 			canBeSaved = false
-		} else if date != event.ksTimestamp {
-			if CoreDataManager.containsEventWithCar(car, andDate: date) {
+		} else if date != event.timestamp {
+			if DataManager.containsEventWithCar(car, andDate: date) {
 				canBeSaved = false
 			}
 		}
@@ -516,8 +517,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		// Date must be collision free
 		if let date = newValue as? Date {
 			if valueIdentifier == "date" {
-				if date != event.ksTimestamp {
-					if CoreDataManager.containsEventWithCar(car, andDate: date) {
+				if date != event.timestamp {
+					if DataManager.containsEventWithCar(car, andDate: date) {
 						return false
 					}
 				}

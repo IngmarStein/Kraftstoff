@@ -1,8 +1,10 @@
 .DS_Store
 Contrib
 DerivedData
+Pods
 kraftstoff.xcodeproj/xcuserdata
 kraftstoff.xcodeproj/project.xcworkspace/xcuserdata
+kraftstoff.xcworkspace/xcuserdata
 
 # fastlane specific
 fastlane/report.xml

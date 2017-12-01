@@ -28,13 +28,8 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func checkCarCount() -> Bool {
-		let carsFetchRequest = CoreDataManager.fetchRequestForCars()
-		do {
-			let count = try CoreDataManager.managedObjectContext.count(for: carsFetchRequest)
-			return count == NSNotFound || unlimitedCars || count < maxCarCount
-		} catch {
-			return true
-		}
+		let cars = DataManager.cars()
+		return unlimitedCars || cars.count < maxCarCount
 	}
 
 	func showBuyOptions(_ parent: UIViewController) {

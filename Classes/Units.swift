@@ -10,7 +10,7 @@ import UIKit
 
 extension UnitLength {
 
-	var persistentId: Int32 {
+	var persistentId: Int {
 		switch self {
 		case .kilometers:
 			return 0
@@ -21,7 +21,7 @@ extension UnitLength {
 		}
 	}
 
-	class func fromPersistentId(_ id: Int32) -> UnitLength {
+	class func fromPersistentId(_ id: Int) -> UnitLength {
 		switch id {
 		case 0:
 			return .kilometers
@@ -36,7 +36,7 @@ extension UnitLength {
 
 extension UnitVolume {
 
-	var persistentId: Int32 {
+	var persistentId: Int {
 		switch self {
 		case .liters:
 			return 0
@@ -49,7 +49,7 @@ extension UnitVolume {
 		}
 	}
 
-	class func fromPersistentId(_ id: Int32) -> UnitVolume {
+	class func fromPersistentId(_ id: Int) -> UnitVolume {
 		switch id {
 		case 0:
 			return .liters
@@ -103,7 +103,7 @@ extension UnitFuelEfficiency {
 	@nonobjc static let gallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_us", converter: UnitConverterLinear(coefficient: 42.5170068027))
 	@nonobjc static let imperialGallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_uk", converter: UnitConverterLinear(coefficient: 35.3982300885))
 
-	var persistentId: Int32 {
+	var persistentId: Int {
 		switch self {
 		case .litersPer100Kilometers:
 			return 0
@@ -120,7 +120,7 @@ extension UnitFuelEfficiency {
 		}
 	}
 
-	class func fromPersistentId(_ id: Int32) -> UnitFuelEfficiency {
+	class func fromPersistentId(_ id: Int) -> UnitFuelEfficiency {
 		switch id {
 		case 0:
 			return .litersPer100Kilometers

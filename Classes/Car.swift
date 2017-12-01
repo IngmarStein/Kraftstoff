@@ -6,133 +6,74 @@
 //
 //
 
-import Foundation
-import CoreData
-import CloudKit
+import RealmSwift
+import IceCream
 
-final class Car: NSManagedObject, CloudKitManagedObject {
+final class Car: Object {
 
-	var cloudKitRecordType: String? {
-		return "Car"
+	@objc dynamic var id = UUID().uuidString
+	@objc dynamic var isDeleted = false
+	@objc private dynamic var _distanceTotalSum = "0.0"
+	@objc private dynamic var _fuelConsumptionUnit = 0
+	@objc private dynamic var _fuelUnit = 0
+	@objc private dynamic var _fuelVolumeTotalSum = "0.0"
+	@objc dynamic var name = ""
+	@objc dynamic var numberPlate = ""
+	@objc private dynamic var _odometer = "0.0"
+	@objc private dynamic var _odometerUnit = 0
+	@objc dynamic var order = 0
+	@objc dynamic var timestamp = Date()
+
+	override class func primaryKey() -> String? {
+		return #keyPath(Car.id)
 	}
 
-	var ksTimestamp: Date {
-		get {
-			return timestamp!
-		}
-		set {
-			timestamp = newValue
-		}
+	public override class func ignoredProperties() -> [String] {
+		return [
+			"distanceTotalSum",
+			"fuelConsumptionUnit",
+			"fuelUnit",
+			"fuelVolumeTotalSum",
+			"odometer",
+			"odometerUnit",
+		]
 	}
 
-	var ksDistanceTotalSum: Decimal {
-		get {
-			return distanceTotalSum! as Decimal
-		}
-		set {
-			distanceTotalSum = newValue as NSDecimalNumber
-		}
+	var distanceTotalSum: Decimal {
+		get { return Decimal(string: _distanceTotalSum)! }
+		set { _distanceTotalSum = String(describing: newValue) }
 	}
 
-	var ksFuelVolumeTotalSum: Decimal {
-		get {
-			return fuelVolumeTotalSum! as Decimal
-		}
-		set {
-			fuelVolumeTotalSum = newValue as NSDecimalNumber
-		}
+	var fuelVolumeTotalSum: Decimal {
+		get { return Decimal(string: _fuelVolumeTotalSum)! }
+		set { _fuelVolumeTotalSum = String(describing: newValue) }
 	}
 
-	var ksOdometer: Decimal {
-		get {
-			return odometer! as Decimal
-		}
-		set {
-			odometer = newValue as NSDecimalNumber
-		}
+	var odometer: Decimal {
+		get { return Decimal(string: _odometer)! }
+		set { _odometer = String(describing: newValue) }
 	}
 
-	var ksName: String {
-		return name!
+	var fuelUnit: UnitVolume {
+		get { return .fromPersistentId(_fuelUnit) }
+		set { _fuelUnit = newValue.persistentId }
 	}
 
-	var ksNumberPlate: String {
-		return numberPlate!
+	var fuelConsumptionUnit: UnitFuelEfficiency {
+		get { return .fromPersistentId(_fuelConsumptionUnit) }
+		set { _fuelConsumptionUnit = newValue.persistentId }
 	}
 
-	var ksFuelEvents: Set<FuelEvent> {
-		get {
-			return fuelEvents as! Set<FuelEvent>
-		}
-		set {
-			fuelEvents = newValue as NSSet
-		}
+	var odometerUnit: UnitLength {
+		get { return .fromPersistentId(_odometerUnit) }
+		set { _odometerUnit = newValue.persistentId	}
 	}
 
-	var ksFuelUnit: UnitVolume {
-		get {
-			return .fromPersistentId(fuelUnit)
-		}
-		set {
-			fuelUnit = newValue.persistentId
-		}
-	}
+}
 
-	var ksFuelConsumptionUnit: UnitFuelEfficiency {
-		get {
-			return .fromPersistentId(fuelConsumptionUnit)
-		}
-		set {
-			fuelConsumptionUnit = newValue.persistentId
-		}
-	}
+extension Car: CKRecordConvertible {
+}
 
-	var ksOdometerUnit: UnitLength {
-		get {
-			return .fromPersistentId(odometerUnit)
-		}
-		set {
-			odometerUnit = newValue.persistentId
-		}
-	}
-
-	func asCloudKitRecord() -> CKRecord {
-		guard let lastUpdate = lastUpdate else {
-			fatalError("Required properties for record not set")
-		}
-
-		let record = CKRecord(recordType: cloudKitRecordType!, recordID: cloudKitRecordID)
-
-		record["lastUpdate"] = lastUpdate as NSDate?
-		record["timestamp"] = timestamp as NSDate?
-		record["distanceTotalSum"] = distanceTotalSum
-		record["fuelUnit"] = NSNumber(value: fuelUnit)
-		record["order"] = NSNumber(value: order)
-		record["fuelVolumeTotalSum"] = fuelVolumeTotalSum
-		record["odometer"] = odometer
-		record["fuelConsumptionUnit"] = NSNumber(value: fuelConsumptionUnit)
-		record["odometerUnit"] = NSNumber(value: odometerUnit)
-		record["name"] = name as NSString?
-		record["numberPlate"] = numberPlate as NSString?
-
-		return record
-	}
-
-	func updateFromRecord(_ record: CKRecord) {
-		cloudKitRecordName = record.recordID.recordName
-		lastUpdate = record["lastUpdate"] as? Date
-		// swiftlint:disable force_cast
-		timestamp = record["timestamp"] as? Date
-		distanceTotalSum = record["distanceTotalSum"] as? NSDecimalNumber
-		fuelUnit = record["fuelUnit"] as! Int32
-		order = record["order"] as! Int32
-		fuelVolumeTotalSum = record["fuelVolumeTotalSum"] as? NSDecimalNumber
-		odometer = record["odometer"] as? NSDecimalNumber
-		fuelConsumptionUnit = record["fuelConsumptionUnit"] as! Int32
-		odometerUnit = record["odometerUnit"] as! Int32
-		name = record["name"] as? String
-		numberPlate = record["numberPlate"] as? String
-		// swiftlint:enable force_cast
-	}
-
+extension Car: CKRecordRecoverable {
+	typealias O = Car
 }
