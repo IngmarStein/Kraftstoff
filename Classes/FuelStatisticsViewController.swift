@@ -30,12 +30,13 @@ class FuelStatisticsViewController: UIViewController {
 	@IBOutlet weak var rightLabel: UILabel!
 	@IBOutlet weak var centerLabel: UILabel!
 	@IBOutlet weak var scrollView: UIScrollView!
+	@IBOutlet weak var stackView: UIStackView!
 
 	var contentCache = [Int: DiscardableDataObject]()
 	var displayedNumberOfMonths = 0 {
 		didSet {
 			// Update selection status of all buttons
-			for view in self.view.subviews {
+			for view in stackView.subviews {
 				if let button = view as? UIButton {
 					button.isSelected = button.tag == displayedNumberOfMonths
 				}
@@ -60,7 +61,7 @@ class FuelStatisticsViewController: UIViewController {
 		self.rightLabel.shadowColor = nil
 
 		// Update selection status of all buttons
-		for view in self.view.subviews {
+		for view in stackView.subviews {
 			if let button = view as? UIButton {
 				button.showsTouchWhenHighlighted = false
 			}
@@ -85,7 +86,7 @@ class FuelStatisticsViewController: UIViewController {
 
 		let labelAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text]
 		let labelSelectedAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: fontSelected, NSAttributedStringKey.foregroundColor: UIColor.white]
-		for view in self.view.subviews {
+		for view in stackView.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
 				let label = NSAttributedString(string: text, attributes: labelAttributes)
