@@ -204,25 +204,44 @@ final class DataManager {
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
 		let youngerEvents = fuelEventsForCar(car: car,
-												  afterDate: event.timestamp,
-		                                          dateMatches: false)
+											 afterDate: event.timestamp,
+		                                     dateMatches: false)
 
-		var row = youngerEvents.count
-		if row > 0 {
-			// Fill-up event deleted => propagate its inherited distance/volume
-			if event.filledUp {
-				let inheritedCost       = event.inheritedCost
-				let inheritedDistance   = event.inheritedDistance
-				let inheritedFuelVolume = event.inheritedFuelVolume
+		let realm = try! Realm()
+		try! realm.write {
+			var row = youngerEvents.count
+			if row > 0 {
+				// Fill-up event deleted => propagate its inherited distance/volume
+				if event.filledUp {
+					let inheritedCost       = event.inheritedCost
+					let inheritedDistance   = event.inheritedDistance
+					let inheritedFuelVolume = event.inheritedFuelVolume
 
-				if inheritedCost > 0 || inheritedDistance > 0 || inheritedFuelVolume > 0 {
+					if inheritedCost > 0 || inheritedDistance > 0 || inheritedFuelVolume > 0 {
+						while row > 0 {
+							row -= 1
+							let youngerEvent = youngerEvents[row]
+
+							youngerEvent.inheritedCost += inheritedCost
+							youngerEvent.inheritedDistance += inheritedDistance
+							youngerEvent.inheritedFuelVolume += inheritedFuelVolume
+
+							if youngerEvent.filledUp {
+								break
+							}
+						}
+					}
+				} else {
+					// Intermediate event deleted => remove distance/volume from inherited data
+
 					while row > 0 {
 						row -= 1
 						let youngerEvent = youngerEvents[row]
+						let cost = event.price
 
-						youngerEvent.inheritedCost += inheritedCost
-						youngerEvent.inheritedDistance += inheritedDistance
-						youngerEvent.inheritedFuelVolume += inheritedFuelVolume
+						youngerEvent.inheritedCost = max(youngerEvent.inheritedCost - cost, 0)
+						youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance - distance, 0)
+						youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume - fuelVolume, 0)
 
 						if youngerEvent.filledUp {
 							break
@@ -230,38 +249,19 @@ final class DataManager {
 					}
 				}
 			} else {
-				// Intermediate event deleted => remove distance/volume from inherited data
-
-				while row > 0 {
-					row -= 1
-					let youngerEvent = youngerEvents[row]
-					let cost = event.price
-
-					youngerEvent.inheritedCost = max(youngerEvent.inheritedCost - cost, 0)
-					youngerEvent.inheritedDistance = max(youngerEvent.inheritedDistance - distance, 0)
-					youngerEvent.inheritedFuelVolume = max(youngerEvent.inheritedFuelVolume - fuelVolume, 0)
-
-					if youngerEvent.filledUp {
-						break
-					}
-				}
-			}
-		} else {
-			forceOdometerUpdate = true
-		}
-
-		// Conditions for update of global odometer:
-		// - when youngest element gets deleted
-		// - when sum of all events equals the odometer value
-		// - when forced to do so
-		if !forceOdometerUpdate {
-			if car.odometer <= car.distanceTotalSum {
 				forceOdometerUpdate = true
 			}
-		}
 
-		let realm = try! Realm()
-		try! realm.write {
+			// Conditions for update of global odometer:
+			// - when youngest element gets deleted
+			// - when sum of all events equals the odometer value
+			// - when forced to do so
+			if !forceOdometerUpdate {
+				if car.odometer <= car.distanceTotalSum {
+					forceOdometerUpdate = true
+				}
+			}
+
 			// Update total car statistics
 			car.distanceTotalSum = max(car.distanceTotalSum - distance, 0)
 			car.fuelVolumeTotalSum = max(car.fuelVolumeTotalSum - fuelVolume, 0)
