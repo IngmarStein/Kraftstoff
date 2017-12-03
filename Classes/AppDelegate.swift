@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
 	private var notificationToken: NotificationToken? = nil
 	private let realm = try! Realm()
+	private var carSyncEngine: SyncEngine<Car>?
+	private var fuelEventSyncEngine: SyncEngine<FuelEvent>?
 
 	private var importAlert: UIAlertController?
 
@@ -78,8 +80,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			// TODO: initialize Realm
 			let realm = try! Realm()
+
+			carSyncEngine = SyncEngine<Car>()
+			fuelEventSyncEngine = SyncEngine<FuelEvent>()
 
 			UIApplication.shared.registerForRemoteNotifications()
 
