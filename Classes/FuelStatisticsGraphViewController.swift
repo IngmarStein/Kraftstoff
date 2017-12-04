@@ -73,7 +73,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 	private var zooming = false {
 		didSet {
-			for subview in self.view.subviews where subview.tag > 0 {
+			for subview in self.stackView.subviews where subview.tag > 0 {
 				if subview.tag < 1000 {
 					subview.isHidden = zooming
 				} else {
