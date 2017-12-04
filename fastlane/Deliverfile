@@ -18,4 +18,4 @@ automatic_release true
 # Feel free to remove the following line if you use fastlane (which you should)
 
 app_identifier "com.github.ingmarstein.kraftstoff" # The bundle identifier of your app
-username "IngmarStein@gmx.net" # your Apple ID user
+username "IngmarStein@icloud.com" # your Apple ID user

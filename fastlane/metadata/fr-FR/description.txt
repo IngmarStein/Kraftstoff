@@ -15,6 +15,5 @@ Autres caractéristiques:
 ○ Exportation de vos données courriel (pièce jointe CSV)
 ○ Réimportation de données CSV via 'Ouvrez dans', par exemple à partir de Mail
 ○ Pas de publicité
-○ Support 64 bits
-○ Optimisé pour iOS 9
-○ Les données sont synchronisées sur tous vos appareils avec iCloud
+○ Optimisé pour iPhone X et iOS 11
+○ Les données sont synchronisées sur tous vos appareils avec iCloud (CloudKit)

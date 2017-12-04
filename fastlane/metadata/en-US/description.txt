@@ -1,7 +1,7 @@
 'Kraftstoff' (Fuel) offers an uncluttered and elegant way to track your fuel economy.
 
 Cars:
-○ Supports multiple vehicles (available as in-app purchase)
+○ Supports multiple vehicles (available as an in-app purchase)
 
 Fill-up:
 ○ On each refuel simply enter distance driven, fuel unit price and amount of fuel
@@ -12,9 +12,8 @@ Graphical display:
 ○ Select a car and turn your iPhone into landscape mode to get interactive history charts for milage and fuel costs as well as a table with interesting statistical values.
 
 Further features:
-○ Export of your data as email (CSV attachment) 
-○ Reimport of CSV data via 'Open in', e.g. from Mail
+○ Export your data to iCloud Drive or send as email (CSV attachment)
+○ Import CSV data via 'Open in', e.g. from Mail or iCloud Drive
 ○ No Ads
-○ 64 bit support
-○ Optimized for iOS 9
-○ Data is synchronized on all your devices with iCloud
+○ Optimized for iPhone X und iOS 11
+○ Data is synchronized on all your devices with iCloud (CloudKit)

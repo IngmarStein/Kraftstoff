@@ -1,1 +1,1 @@
-économiser,carburant,efficacité,consommation,énergie,kilométrage,gallons,diesel,essence,MPG,KPL,GP10
+économiser, carburant, efficacité, consommation, énergie, kilométrage, gallons, diesel, essence, MPG

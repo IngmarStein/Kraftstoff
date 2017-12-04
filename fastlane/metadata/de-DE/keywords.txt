@@ -1,1 +1,1 @@
-spritsparen,sparen,tanken,spritrechner,benzinverbrauch,verbrauchsrechner,sprit,benzin,diesel,kml
+spritsparen, sparen, tanken, spritrechner, benzinverbrauch, verbrauchsrechner, sprit, benzin, diesel
