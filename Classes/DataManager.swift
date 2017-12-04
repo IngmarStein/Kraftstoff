@@ -43,7 +43,7 @@ final class DataManager {
 
 		return realm.objects(FuelEvent.self)
 			.filter(compoundPredicate)
-			.sorted(byKeyPath: "timestamp", ascending: true)
+			.sorted(byKeyPath: "timestamp", ascending: false)
 	}
 
 	static func fuelEventsForCar(car: Car,

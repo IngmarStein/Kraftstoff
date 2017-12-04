@@ -15,7 +15,7 @@ final class FuelEvent: Object {
 	@objc dynamic var isDeleted = false
 	@objc dynamic var comment: String?
 	@objc private dynamic var _distance = "0.0"
-	@objc dynamic var filledUp = false
+	@objc dynamic var filledUp = true
 	@objc private dynamic var _fuelVolume = "0.0"
 	@objc private dynamic var _inheritedCost = "0.0"
 	@objc private dynamic var _inheritedDistance = "0.0"
