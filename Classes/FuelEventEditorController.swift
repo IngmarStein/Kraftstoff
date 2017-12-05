@@ -37,9 +37,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	var filledUp = false
 	var comment: String?
 
-	var editButton: UIBarButtonItem!
 	var cancelButton: UIBarButtonItem!
-	var doneButton: UIBarButtonItem!
 
 	private var isShowingCancelSheet = false
 	private var dataChanged = false
@@ -59,16 +57,11 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		super.viewDidLoad()
 
 		// Title bar
-		self.editButton   = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(FuelEventEditorController.enterEditingMode(_:)))
-		self.doneButton   = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(FuelEventEditorController.endEditingModeAndSave(_:)))
-		self.cancelButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
-
-		self.editButton.accessibilityIdentifier = "edit"
-		self.doneButton.accessibilityIdentifier = "done"
-		self.cancelButton.accessibilityIdentifier = "cancel"
+		self.cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
+		self.editButtonItem.action = #selector(FuelEventEditorController.toggleEditingMode(_:))
 
 		self.title = Formatters.dateFormatter.string(from: self.event.timestamp)
-		self.navigationItem.rightBarButtonItem = self.editButton
+		self.navigationItem.rightBarButtonItem = self.editButtonItem
 
 		// Remove tint from navigation bar
 		self.navigationController?.navigationBar.tintColor = nil
@@ -207,13 +200,11 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			super.setEditing(enabled, animated: animated)
 
 			if enabled {
-				self.navigationItem.leftBarButtonItem  = self.doneButton
-				self.navigationItem.rightBarButtonItem = self.cancelButton
+				self.navigationItem.leftBarButtonItem  = self.cancelButton
 
 				removeSectionAtIndex(1, withAnimation: animation)
 			} else {
 				self.navigationItem.leftBarButtonItem  = nil
-				self.navigationItem.rightBarButtonItem = self.editButton
 
 				createConsumptionRowWithAnimation(animation)
 			}
@@ -232,17 +223,15 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - Entering Editing Mode
 
-	@IBAction func enterEditingMode(_ sender: AnyObject) {
-		setEditing(true, animated: true)
-		selectRowAtIndexPath(IndexPath(row: 0, section: 0))
-	}
-
-	// MARK: - Saving Edited Data
-
-	@IBAction func endEditingModeAndSave(_ sender: AnyObject) {
-		dismissKeyboardWithCompletion {
-			self.saveStateToEvent()
-			self.setEditing(false, animated: true)
+	@IBAction func toggleEditingMode(_ sender: AnyObject) {
+		if isEditing {
+			dismissKeyboardWithCompletion {
+				self.saveStateToEvent()
+				self.setEditing(false, animated: true)
+			}
+		} else {
+			setEditing(true, animated: true)
+			selectRowAtIndexPath(IndexPath(row: 0, section: 0))
 		}
 	}
 
@@ -508,7 +497,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 			}
 		}
 
-		self.doneButton.isEnabled = canBeSaved
+		self.editButtonItem.isEnabled = canBeSaved
 	}
 
 	// MARK: - EditablePageCellValidator
