@@ -1,0 +1,14 @@
+To fill the app with some demonstration data do the following:
+
+- select the "Cars"-tab
+- hit the "+" button on the upper right to add a new car
+- enter "Apple" (without the quotes) as name for the car
+- enter "DEMO" (without the quotes) as number plate
+- hit "Done" on the top right
+
+=> a new car (Toyota iQ+ with 52 data sets) is generated
+
+To see the graphical statistics:
+
+- select this newly created car
+- rotate the device into landscape mode
