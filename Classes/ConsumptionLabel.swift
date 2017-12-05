@@ -10,6 +10,9 @@ import UIKit
 
 final class ConsumptionLabel: UILabel {
 
+	// Can't use UILabel.textColor because that property is linked to the attributed text.
+	var baseColor = UIColor.black
+
 	var highlightStrings: [String]? {
 		didSet {
 			computeHighlights()
@@ -28,7 +31,7 @@ final class ConsumptionLabel: UILabel {
 
 			let attributedString = NSMutableAttributedString(string: text)
 			attributedString.beginEditing()
-			attributedString.addAttribute(NSAttributedStringKey.foregroundColor, value: textColor, range: NSRange(location: 0, length: text.count))
+			attributedString.addAttribute(NSAttributedStringKey.foregroundColor, value: baseColor, range: NSRange(location: 0, length: text.count))
 			for subString in highlightStrings {
 				let range = (text as NSString).range(of: subString)
 
@@ -39,7 +42,7 @@ final class ConsumptionLabel: UILabel {
 			}
 			attributedString.endEditing()
 
-			self.attributedText = attributedString
+			self.attributedText = attributedString // setting this changes textColor
 		}
 	}
 
