@@ -11,13 +11,10 @@ import RealmSwift
 
 final class DataManager {
 
-	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
-
-	static let sharedInstance = DataManager()
-
 	// MARK: - Preconfigured Data Fetches
 
 	static func cars() -> Results<Car> {
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
 		let isNotDeletedPredicate = NSPredicate(format: "isDeleted == false")
 		return realm.objects(Car.self)
@@ -28,6 +25,7 @@ final class DataManager {
 	static func fuelEventsForCar(car: Car,
 	                             andDate date: Date?,
 	                             dateComparator dateCompare: String) -> Results<FuelEvent> {
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
 		let parentPredicate = NSPredicate(format: "car == %@", car)
 		let isNotDeletedPredicate = NSPredicate(format: "isDeleted == false")
@@ -63,6 +61,7 @@ final class DataManager {
 	}
 
 	static func containsEventWithCar(_ car: Car, andDate date: Date) -> Bool {
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
 		// Predicates
 		let parentPredicate = NSPredicate(format: "car == %@", car)
@@ -174,7 +173,9 @@ final class DataManager {
 			}
 		}
 
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			// Update total car statistics
 			car.distanceTotalSum += kilometers
@@ -207,7 +208,9 @@ final class DataManager {
 											 afterDate: event.timestamp,
 		                                     dateMatches: false)
 
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			var row = youngerEvents.count
 			if row > 0 {

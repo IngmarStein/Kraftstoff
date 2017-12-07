@@ -20,6 +20,7 @@ class KraftstoffTests: XCTestCase {
 	}
 
 	private func roundtrip(_ language: String) {
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
 
 		let car = Car()
@@ -32,6 +33,7 @@ class KraftstoffTests: XCTestCase {
 		car.fuelUnit = .liters
 		car.fuelConsumptionUnit = .litersPer100Kilometers
 
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			realm.add(car)
 
@@ -66,6 +68,7 @@ class KraftstoffTests: XCTestCase {
 	}
 
     func testCSVExport() {
+		// swiftlint:disable:next force_try
 		let realm = try! Realm()
 
 		let car = Car()
@@ -79,16 +82,19 @@ class KraftstoffTests: XCTestCase {
 		car.fuelUnit = .liters
 		car.fuelConsumptionUnit = .litersPer100Kilometers
 
-		DemoData.addDemoEvents(car, realm)
+		try! realm.write {
+			realm.add(car)
+
+			DemoData.addDemoEvents(car, realm)
+		}
 
 		let fuelEvents = DataManager.fuelEventsForCar(car: car,
 			beforeDate: nil,
 			dateMatches: true)
-		
-		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car)
-		print(csvString)
 
-		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters Per 100 Kilometers;Comment\n2013-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
+		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car)
+
+		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters Per 100 Kilometers;Comment\n2017-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
 		XCTAssert(csvString.count == 5473, "CSV data should have the expected size")
     }
 

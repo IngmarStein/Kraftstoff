@@ -40,7 +40,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
-	private var notificationToken: NotificationToken? = nil
+	private var notificationToken: NotificationToken?
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
 	private var carSyncEngine: SyncEngine<Car>?
 	private var fuelEventSyncEngine: SyncEngine<FuelEvent>?
@@ -80,14 +81,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			let realm = try! Realm()
-
 			carSyncEngine = SyncEngine<Car>()
 			fuelEventSyncEngine = SyncEngine<FuelEvent>()
 
 			UIApplication.shared.registerForRemoteNotifications()
 
 			if ProcessInfo.processInfo.arguments.index(of: "-STARTFRESH") != nil {
+				// swiftlint:disable:next force_try
 				try! realm.write {
 					realm.deleteAll()
 				}

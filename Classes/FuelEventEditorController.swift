@@ -43,6 +43,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private var dataChanged = false
 	private var restoredSelectionIndex: IndexPath?
 
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
 
 	// MARK: - View Lifecycle
@@ -81,6 +82,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
+			// swiftlint:disable:next force_try
 			let realm = try! Realm()
 			controller.event = realm.object(ofType: FuelEvent.self, forPrimaryKey: modelIdentifier)
 

@@ -17,8 +17,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	var editedObject: Car!
 
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
-	private var notificationToken: NotificationToken? = nil
+	private var notificationToken: NotificationToken?
 
 	private lazy var cars: Results<Car> = {
 		let results = DataManager.cars()
@@ -231,6 +232,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			var addDemoContents = false
 
 			// Update order of existing objects
+			// swiftlint:disable:next force_try
 			try! realm.write {
 				for car in cars {
 					car.order += 1
@@ -269,6 +271,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		} else if result == .editSucceeded {
 
+			// swiftlint:disable:next force_try
 			try! realm.write {
 				editedObject.name = controller.name!
 				editedObject.numberPlate = controller.plate!
@@ -445,6 +448,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		// Delete the managed object for the given index path
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			deletedCar.isDeleted = true
 		}
@@ -452,6 +456,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [deletedCarID], completionHandler: nil)
 
 		// Update order of existing objects
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			for car in cars where car.order > deletedCarOrder {
 				car.order -= 1
@@ -547,6 +552,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			return
 		}
 
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			for i in from...to {
 				let car = cars[i]

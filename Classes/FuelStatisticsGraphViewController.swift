@@ -143,9 +143,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 	// MARK: - Graph Computation
 
 	private func resampleFetchedObjects(_ fuelEvents: [FuelEvent], forCar car: Car, andState state: FuelStatisticsSamplingData) -> CGFloat {
-		var firstDate: Date? = nil
-		var midDate: Date? = nil
-		var lastDate: Date? = nil
+		var firstDate: Date?
+		var midDate: Date?
+		var lastDate: Date?
 
 		// Compute vertical range of curve
 		var valCount = 0

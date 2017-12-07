@@ -146,6 +146,7 @@ class FuelStatisticsViewController: UIViewController {
 
 		DispatchQueue(label: "sample").async {
 			autoreleasepool {
+				// swiftlint:disable:next force_try
 				let realm = try! Realm()
 
 				// Get the selected car

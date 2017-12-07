@@ -20,8 +20,9 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	var selectedCarId: String?
 	var selectedCar: Car!
 
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
-	private var notificationToken: NotificationToken? = nil
+	private var notificationToken: NotificationToken?
 
 	private lazy var fuelEvents: Results<FuelEvent> = {
 		let results = DataManager.fuelEventsForCar(car: self.selectedCar,
@@ -126,6 +127,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: fuelEventSelectedCarID) as String? {
+			// swiftlint:disable:next force_try
 			let realm = try! Realm()
 
 			controller.selectedCar = realm.object(ofType: Car.self, forPrimaryKey: modelIdentifier)

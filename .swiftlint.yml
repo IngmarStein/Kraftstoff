@@ -16,3 +16,4 @@ force_cast: warning
 force_try: warning
 excluded:
   - Classes/StyleKit.swift
+  - Pods

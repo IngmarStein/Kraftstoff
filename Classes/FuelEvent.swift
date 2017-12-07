@@ -70,7 +70,7 @@ final class FuelEvent: Object {
 			"inheritedCost",
 			"inheritedDistance",
 			"inheritedFuelVolume",
-			"private",
+			"private"
 		]
 	}
 
@@ -80,5 +80,6 @@ extension FuelEvent: CKRecordConvertible {
 }
 
 extension FuelEvent: CKRecordRecoverable {
+	// swiftlint:disable:next type_name
 	typealias O = FuelEvent
 }

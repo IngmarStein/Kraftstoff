@@ -18,6 +18,7 @@ final class CSVImporter {
 	private var modelForID = [Int: String]()
 	private var plateForID = [Int: String]()
 
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
 
 	init() {}
@@ -172,6 +173,7 @@ final class CSVImporter {
 		// Create car objects
 		carForID.removeAll()
 
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			for carID in carIDs {
 				let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment: ""))
@@ -466,6 +468,7 @@ final class CSVImporter {
 
 		numEvents = 0
 
+		// swiftlint:disable:next force_try
 		try! realm.write {
 			while true {
 				if let CSVTable = parser.parseTable() {

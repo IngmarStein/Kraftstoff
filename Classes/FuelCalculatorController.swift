@@ -23,17 +23,18 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
 	var selectedCarId: String?
+	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
-	private var notificationToken: NotificationToken? = nil
+	private var notificationToken: NotificationToken?
 
 	private lazy var cars: Results<Car> = {
 		let cars = DataManager.cars()
-		notificationToken = cars.observe({ change in
+		notificationToken = cars.observe { _ in
 			self.recreateTableContentsWithAnimation(self.changeIsUserDriven ? .right : .none)
 			self.updateSaveButtonState()
 
 			self.changeIsUserDriven = false
-		})
+		}
 		return cars
 	}()
 
