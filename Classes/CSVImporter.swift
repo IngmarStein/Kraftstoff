@@ -172,23 +172,25 @@ final class CSVImporter {
 		// Create car objects
 		carForID.removeAll()
 
-		for carID in carIDs {
-			let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment: ""))
-			let plate = truncateLongString(plateForID[carID] ?? "")
+		try! realm.write {
+			for carID in carIDs {
+				let model = truncateLongString(modelForID[carID] ?? NSLocalizedString("Imported Car", comment: ""))
+				let plate = truncateLongString(plateForID[carID] ?? "")
 
-			let newCar = addCar(model,
-							   order: carForID.count,
-							   plate: plate,
-						odometerUnit: Units.distanceUnitFromLocale,
-						  volumeUnit: Units.volumeUnitFromLocale,
-				 fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale)
+				let newCar = addCar(model,
+								   order: carForID.count,
+								   plate: plate,
+							odometerUnit: Units.distanceUnitFromLocale,
+							  volumeUnit: Units.volumeUnitFromLocale,
+					 fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale)
 
-			carForID[carID] = newCar
-		}
+				carForID[carID] = newCar
+			}
 
-		// Now update order attribute of old car objects
-		for oldCar in cars {
-			oldCar.order += carForID.count
+			// Now update order attribute of old car objects
+			for oldCar in cars {
+				oldCar.order += carForID.count
+			}
 		}
 
 		return carForID.count

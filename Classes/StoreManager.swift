@@ -28,8 +28,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func checkCarCount() -> Bool {
-		let cars = DataManager.cars()
-		return unlimitedCars || cars.count < maxCarCount
+		return unlimitedCars || DataManager.cars().count < maxCarCount
 	}
 
 	func showBuyOptions(_ parent: UIViewController) {
