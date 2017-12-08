@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,7 +16,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="CarViewController" title="Cars" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6xE-Uc-v14" customClass="CarViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="CarViewTable" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="91" sectionHeaderHeight="22" sectionFooterHeight="22" id="smf-IM-aXr">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="JZM-eB-b8k" userLabel="Dummy footer view to hide separators">
@@ -29,7 +29,7 @@
                                 <rect key="frame" x="0.0" y="22" width="375" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aHw-nG-RRP" id="4Xb-tm-IrS">
-                                    <rect key="frame" x="0.0" y="0.0" width="341" height="90.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="341" height="90.666666666666671"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
@@ -56,7 +56,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="FuelEventController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MNb-cq-XuY" customClass="FuelEventController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="FuelEventTable" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="91" sectionHeaderHeight="22" sectionFooterHeight="22" id="R93-OI-fZ1">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableFooterView" contentMode="scaleToFill" misplaced="YES" id="jYw-R2-YTQ" userLabel="Dummy footer view to hide separators">
@@ -69,7 +69,7 @@
                                 <rect key="frame" x="0.0" y="22" width="375" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t4g-nN-sO0" id="6B9-Qk-KV9">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="90.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="90.666666666666671"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -90,7 +90,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="FuelEventEditor" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lex-OJ-iPL" customClass="FuelEventEditorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="nob-ca-3BE">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <connections>
@@ -116,36 +116,36 @@
             <objects>
                 <viewController storyboardIdentifier="FuelStatisticsGraphViewController" id="9BC-sJ-APF" customClass="FuelStatisticsGraphViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="Cpb-38-EcT" customClass="UIImageView">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" showsHorizontalScrollIndicator="NO" indicatorStyle="white" translatesAutoresizingMaskIntoConstraints="NO" id="XRv-Sx-Hpu">
-                                <rect key="frame" x="0.0" y="65" width="375" height="602"/>
+                                <rect key="frame" x="0.0" y="65" width="375" height="747"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </scrollView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="CarName" lineBreakMode="tailTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kej-pI-VdQ" userLabel="Name Label (Toyota IQ+)">
-                                <rect key="frame" x="10" y="5" width="49" height="14.5"/>
+                                <rect key="frame" x="10" y="5.0000000000000009" width="49" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rk6-Nm-3ol" userLabel="Statistics Label (∅ 4.1 l/100km)">
-                                <rect key="frame" x="316" y="5" width="49" height="14.5"/>
+                                <rect key="frame" x="316" y="5.0000000000000009" width="49" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1000" contentMode="left" text="Center" textAlignment="center" lineBreakMode="headTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qcD-yX-Req" userLabel="Center Label">
-                                <rect key="frame" x="10" y="5" width="355" height="14.5"/>
+                                <rect key="frame" x="10" y="5.0000000000000009" width="355" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="gp7-uE-gUI" userLabel="Activity Indicator">
-                                <rect key="frame" x="169" y="347.5" width="37" height="37"/>
+                                <rect key="frame" x="169.33333333333334" y="420.33333333333331" width="37" height="37"/>
                             </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zOH-cY-0Cv">
-                                <rect key="frame" x="37.5" y="25" width="300" height="32"/>
+                                <rect key="frame" x="37.666666666666657" y="25" width="300" height="32"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hu3-U7-ETq" userLabel="Button (1M)">
                                         <rect key="frame" x="0.0" y="0.0" width="36" height="32"/>
@@ -172,7 +172,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TKR-tx-YNP" userLabel="Button (3M)">
-                                        <rect key="frame" x="44" y="0.0" width="36" height="32"/>
+                                        <rect key="frame" x="44.000000000000007" y="0.0" width="35.999999999999993" height="32"/>
                                         <accessibility key="accessibilityConfiguration" identifier="3M"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <size key="titleShadowOffset" width="0.0" height="-1"/>
@@ -268,7 +268,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="60" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9fS-rb-iex" userLabel="Button (5Y)">
-                                        <rect key="frame" x="220" y="0.0" width="36" height="32"/>
+                                        <rect key="frame" x="220.00000000000003" y="0.0" width="35.999999999999972" height="32"/>
                                         <accessibility key="accessibilityConfiguration" identifier="5Y"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <size key="titleShadowOffset" width="0.0" height="-1"/>
@@ -376,33 +376,33 @@
             <objects>
                 <viewController storyboardIdentifier="FuelStatisticsTextViewController" id="Tv5-C1-vuB" customClass="FuelStatisticsTextViewController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="NpQ-P4-qh8" customClass="UIImageView">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" showsHorizontalScrollIndicator="NO" indicatorStyle="white" translatesAutoresizingMaskIntoConstraints="NO" id="HWZ-YL-dU2">
-                                <rect key="frame" x="0.0" y="65" width="375" height="602"/>
+                                <rect key="frame" x="0.0" y="65" width="375" height="747"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </scrollView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="CarName" lineBreakMode="tailTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dTb-Bs-XAf" userLabel="Name Label (Toyota IQ+)">
-                                <rect key="frame" x="10" y="5" width="49" height="14.5"/>
+                                <rect key="frame" x="10" y="5.0000000000000009" width="49" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="999" contentMode="left" text="Statistics" textAlignment="right" lineBreakMode="headTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b5U-MO-Tva" userLabel="Statistics Label (∅ 4.1 l/100km)">
-                                <rect key="frame" x="316" y="5" width="49" height="14.5"/>
+                                <rect key="frame" x="316" y="5.0000000000000009" width="49" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="1000" contentMode="left" text="Center" textAlignment="center" lineBreakMode="headTruncation" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nfj-pE-xBI" userLabel="Center Label">
-                                <rect key="frame" x="10" y="5" width="355" height="14.5"/>
+                                <rect key="frame" x="10" y="5.0000000000000009" width="355" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="UWl-GG-XTi">
-                                <rect key="frame" x="37.5" y="25" width="300" height="32"/>
+                                <rect key="frame" x="37.666666666666657" y="25" width="300" height="32"/>
                                 <subviews>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="riI-TO-95z" userLabel="Button (1M)">
                                         <rect key="frame" x="0.0" y="0.0" width="36" height="32"/>
@@ -429,7 +429,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Mv-HC-8AF" userLabel="Button (3M)">
-                                        <rect key="frame" x="44" y="0.0" width="36" height="32"/>
+                                        <rect key="frame" x="44.000000000000007" y="0.0" width="35.999999999999993" height="32"/>
                                         <accessibility key="accessibilityConfiguration" identifier="3M"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <size key="titleShadowOffset" width="0.0" height="-1"/>
@@ -525,7 +525,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="60" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="In6-Ky-kf1" userLabel="Button (5Y)">
-                                        <rect key="frame" x="220" y="0.0" width="36" height="32"/>
+                                        <rect key="frame" x="220.00000000000003" y="0.0" width="35.999999999999972" height="32"/>
                                         <accessibility key="accessibilityConfiguration" identifier="5Y"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                         <size key="titleShadowOffset" width="0.0" height="-1"/>
@@ -593,7 +593,7 @@
                                 </constraints>
                             </stackView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="EY4-r2-UgV" userLabel="Activity Indicator">
-                                <rect key="frame" x="169" y="347.5" width="37" height="37"/>
+                                <rect key="frame" x="169.33333333333334" y="420.33333333333331" width="37" height="37"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -635,7 +635,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="CarConfigurationController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="IpX-il-ip5" customClass="CarConfigurationController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="qzE-oL-oJq">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <connections>
@@ -653,7 +653,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="FuelCalculatorController" title="Fill-Up" useStoryboardIdentifierAsRestorationIdentifier="YES" id="9ok-pF-7av" customClass="FuelCalculatorController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" tag="1" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="3yL-yW-mOq">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <connections>
@@ -691,7 +691,7 @@
                     <tabBarItem key="tabBarItem" title="Fill-Up" image="Zapfhahn" id="tX0-HD-RL4"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jlo-VV-7m7">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -710,7 +710,7 @@
                     <tabBarItem key="tabBarItem" title="Cars" image="Cars" id="WJK-es-b4F"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="ChZ-wf-TrE">
-                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

@@ -139,7 +139,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		if state.contentImage == nil {
 			let height = (state.numberOfFillups == 0) ? statisticsHeight : gridTextHeight*CGFloat(gridLines) + 10.0
 
-			let renderer = UIGraphicsImageRenderer(size: CGSize(width: self.view.bounds.size.width, height: height))
+			let renderer = UIGraphicsImageRenderer(size: CGSize(width: self.scrollView.bounds.size.width, height: height))
 			state.contentImage = renderer.image { context in
 				drawStatisticsForState(state, withHeight: height, context: context.cgContext)
 			}
