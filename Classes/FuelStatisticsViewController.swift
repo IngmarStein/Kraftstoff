@@ -16,6 +16,8 @@ protocol DiscardableDataObject {
 }
 
 class FuelStatisticsViewController: UIViewController {
+	let layoutCondition = NSCondition()
+	var didLayout = false
 
 	// Set by presenting view controller
 	var selectedCar: Car!
@@ -108,6 +110,15 @@ class FuelStatisticsViewController: UIViewController {
 		displayedNumberOfMonths = UserDefaults.standard.integer(forKey: "statisticTimeSpan")
 	}
 
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+
+		layoutCondition.lock()
+		didLayout = true
+		layoutCondition.signal()
+		layoutCondition.unlock()
+	}
+
 	// MARK: - View Rotation
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -150,6 +161,18 @@ class FuelStatisticsViewController: UIViewController {
 				let realm = try! Realm()
 
 				// Get the selected car
+				// TODO: UBsan detects null pointer usage in the following call:
+//				#0	0x000000010dd046e0 in __ubsan_on_report ()
+//				#1	0x000000010dcfeaad in __ubsan::Diag::~Diag() ()
+//				#2	0x000000010dd00424 in handleTypeMismatchImpl(__ubsan::TypeMismatchData*, unsigned long, __ubsan::ReportOptions) ()
+//				#3	0x000000010dd0016b in __ubsan_handle_type_mismatch_v1 ()
+//				#4	0x000000010a68c32b in RLMAccessorContext::is_null(objc_object*) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/RLMAccessor.hpp:83
+//				#5	0x000000010a75e9f7 in unsigned long realm::Object::get_for_primary_key_impl<objc_object* __strong, RLMAccessorContext>(RLMAccessorContext&, realm::Table const&, realm::Property const&, objc_object* __strong) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/object_accessor.hpp:318
+//				#6	0x000000010a75e131 in realm::Object realm::Object::get_for_primary_key<objc_object* __strong, RLMAccessorContext>(RLMAccessorContext&, std::__1::shared_ptr<realm::Realm> const&, realm::ObjectSchema const&, objc_object* __strong) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/object_accessor.hpp:309
+//				#7	0x000000010a75d6ae in ::RLMGetObject(RLMRealm *, NSString *, id) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/Realm/RLMObjectStore.mm:238
+//				#8	0x000000010c6d9c77 in Realm.object<A, B>(ofType:forPrimaryKey:) at /Users/ingmar/Devel/Kraftstoff/Pods/RealmSwift/RealmSwift/Realm.swift:510
+//				#9	0x0000000109b363a9 in closure #1 in closure #1 in FuelStatisticsViewController.displayStatisticsForRecentMonths(_:) at /Users/ingmar/Devel/Kraftstoff/Classes/FuelStatisticsViewController.swift:153
+
 				if let sampleCar = realm.object(ofType: Car.self, forPrimaryKey: selectedCarID) {
 
 					// Fetch some young events to get the most recent fillup date
@@ -165,6 +188,12 @@ class FuelStatisticsViewController: UIViewController {
 
 					// Fetch events for the selected time period
 					let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
+
+					self.layoutCondition.lock()
+					while !self.didLayout {
+						self.layoutCondition.wait()
+					}
+					self.layoutCondition.unlock()
 
 					// Schedule update of cache and display in main thread
 					DispatchQueue.main.async {
@@ -201,6 +230,7 @@ class FuelStatisticsViewController: UIViewController {
 
 	func noteStatisticsPageBecomesVisible() {
 	}
+
 
 	// MARK: - Button Handling
 

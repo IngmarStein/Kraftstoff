@@ -61,7 +61,7 @@ private final class FuelStatisticsSamplingData: DiscardableDataObject {
 	var vMarkCount = 0
 
 	var contentImage: UIImage!
-	var contentAverage: NSNumber!
+	var contentAverage: CGFloat?
 
 	func discardContent() {
 		self.contentImage = nil
@@ -325,7 +325,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		if state == nil {
 			state = FuelStatisticsSamplingData()
-			state.contentAverage = NSNumber(value: resampleFetchedObjects(fetchedObjects, forCar: car, andState: state))
+			state.contentAverage = resampleFetchedObjects(fetchedObjects, forCar: car, andState: state)
 		}
 
 		// Create image data from resampled data
@@ -551,8 +551,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		let image = cell?.contentImage
 
 		// Update summary in top right of view
-		if let average = average, !average.floatValue.isNaN {
-			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average)!)
+		if let average = average {
+			self.rightLabel.text = String(format: self.dataSource!.averageFormatString(true, forCar: self.selectedCar), self.dataSource!.averageFormatter(false, forCar: self.selectedCar).string(from: average as NSNumber)!)
 		} else {
 			self.rightLabel.text = self.dataSource!.noAverageStringForCar(self.selectedCar)
 		}
