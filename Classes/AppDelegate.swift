@@ -208,8 +208,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		if let dict = userInfo as? [String: NSObject] {
 			let notification = CKNotification(fromRemoteNotificationDictionary: dict)
 
-			if notification.subscriptionID == IceCreamConstants.cloudSubscriptionID {
-				NotificationCenter.default.post(name: .databaseDidChangeRemotely, object: nil, userInfo: userInfo)
+			if notification.subscriptionID == IceCreamConstant.cloudKitSubscriptionID {
+				NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
 			}
 		}
 		completionHandler(.newData)
