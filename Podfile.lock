@@ -1,27 +1,20 @@
 PODS:
-  - IceCream (0.2.0):
+  - IceCream (1.0.1):
     - RealmSwift
-    - RxRealm
   - Realm (3.0.2):
     - Realm/Headers (= 3.0.2)
   - Realm/Headers (3.0.2)
   - RealmSwift (3.0.2):
     - Realm (= 3.0.2)
-  - RxRealm (0.7.5):
-    - RealmSwift (~> 3.0)
-    - RxSwift (~> 4.0)
-  - RxSwift (4.0.0)
 
 DEPENDENCIES:
   - IceCream
   - RealmSwift
 
 SPEC CHECKSUMS:
-  IceCream: 952c52c3148e6a80b3b67ab5cfdfec3893fa5ea8
+  IceCream: ced08116351479bb6925c686e1e9436332ed62ca
   Realm: 6f23fd1f178a09342eac21bfa7c2bf4312a7a180
   RealmSwift: 695393add1b8f9d5fa75dd16e6355cf3935f71e2
-  RxRealm: a6c6c0a07cb61f34209969ca6657734edfdfff30
-  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
 
 PODFILE CHECKSUM: 3ee386129a745f1490397bc59c1ce627bbecf76d
 
