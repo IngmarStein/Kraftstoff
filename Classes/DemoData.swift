@@ -125,9 +125,9 @@ private let demoData = [
 	DemoDataItem(date: "2017-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389)
 ]
 
-final class DemoData {
+extension Car {
 
-	static func addDemoEvents(_ car: Car, _ realm: Realm) {
+	func addDemoEvents() {
 		let df = DateFormatter()
 
 		df.locale = nil
@@ -145,14 +145,14 @@ final class DemoData {
 				newEvent.distance = distance
 				newEvent.price = price
 				newEvent.fuelVolume = fuelVolume
-				realm.add(newEvent)
+				self.realm?.add(newEvent)
 
-				car.fuelEvents.append(newEvent)
-				car.distanceTotalSum += distance
-				car.fuelVolumeTotalSum += fuelVolume
+				self.fuelEvents.append(newEvent)
+				self.distanceTotalSum += distance
+				self.fuelVolumeTotalSum += fuelVolume
 			}
 
-			car.odometer = car.distanceTotalSum
+			self.odometer = self.distanceTotalSum
 		}
 	}
 

@@ -37,7 +37,7 @@ class KraftstoffTests: XCTestCase {
 		try! realm.write {
 			realm.add(car)
 
-			DemoData.addDemoEvents(car, realm)
+			car.addDemoEvents()
 		}
 
 		let fuelEvents = DataManager.fuelEventsForCar(car: car,
@@ -85,7 +85,7 @@ class KraftstoffTests: XCTestCase {
 		try! realm.write {
 			realm.add(car)
 
-			DemoData.addDemoEvents(car, realm)
+			car.addDemoEvents()
 		}
 
 		let fuelEvents = DataManager.fuelEventsForCar(car: car,

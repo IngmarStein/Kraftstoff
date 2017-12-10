@@ -229,6 +229,31 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
 		if result == .createSucceeded {
+			// Create new car
+			let newCar = Car()
+			newCar.order = 0
+			newCar.timestamp = Date()
+			newCar.odometerUnit = .fromPersistentId(controller.odometerUnit!.intValue)
+
+			newCar.odometer = Units.kilometersForDistance(controller.odometer!,
+														  withUnit: .fromPersistentId(controller.odometerUnit!.intValue))
+
+			newCar.fuelUnit = .fromPersistentId(controller.fuelUnit!.intValue)
+			newCar.fuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.intValue)
+
+			let addDemoEvents: Bool
+			let enteredName = controller.name!
+			let enteredPlate = controller.plate!
+			if enteredName.lowercased() == "apple" && enteredPlate.lowercased() == "demo" {
+				addDemoEvents = true
+				newCar.name = "Toyota IQ+"
+				newCar.numberPlate = "SLS IOIOI"
+			} else {
+				addDemoEvents = false
+				newCar.name = enteredName
+				newCar.numberPlate = enteredPlate
+			}
+
 			// swiftlint:disable:next force_try
 			try! realm.write {
 				// Update order of existing cars
@@ -236,29 +261,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 					car.order += 1
 				}
 
-				// Create new car
-				let newCar = Car()
-				newCar.order = 0
-				newCar.timestamp = Date()
-				newCar.odometerUnit = .fromPersistentId(controller.odometerUnit!.intValue)
-
-				newCar.odometer = Units.kilometersForDistance(controller.odometer!,
-															  withUnit: .fromPersistentId(controller.odometerUnit!.intValue))
-
-				newCar.fuelUnit = .fromPersistentId(controller.fuelUnit!.intValue)
-				newCar.fuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.intValue)
-
-				if controller.name!.lowercased() == "apple" && controller.plate!.lowercased() == "demo" {
-					// add demo data
-					newCar.name  = "Toyota IQ+"
-					newCar.numberPlate = "SLS IOIOI"
-					DemoData.addDemoEvents(newCar, realm)
-				} else {
-					newCar.name = controller.name!
-					newCar.numberPlate = controller.plate!
-				}
-
 				realm.add(newCar)
+
+				if addDemoEvents {
+					// add demo data
+					newCar.addDemoEvents()
+				}
 			}
 
 		} else if result == .editSucceeded {
