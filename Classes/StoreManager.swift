@@ -28,6 +28,9 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func checkCarCount() -> Bool {
+		if ProcessInfo.processInfo.arguments.index(of: "-UNLIMITED") != nil {
+			return true
+		}
 		return unlimitedCars || DataManager.cars().count < maxCarCount
 	}
 

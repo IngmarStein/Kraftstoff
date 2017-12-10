@@ -166,7 +166,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	}
 
 	private func restoreStateFromEvent() {
-		car = event.car
+		car = event.cars[0]
 
 		let odometerUnit = car.odometerUnit
 		let fuelUnit     = car.fuelUnit

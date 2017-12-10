@@ -46,7 +46,6 @@ final class CSVImporter {
 	@discardableResult private func addEvent(_ car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, inheritedCost: Decimal, inheritedDistance: Decimal, inheritedFuelVolume: Decimal, filledUp: Bool, comment: String?) -> FuelEvent {
 		let newEvent = FuelEvent()
 
-		newEvent.car = car
 		newEvent.timestamp = date
 		newEvent.distance = distance
 		newEvent.price = price
@@ -69,6 +68,7 @@ final class CSVImporter {
 			newEvent.inheritedFuelVolume = inheritedFuelVolume
 		}
 
+		car.fuelEvents.append(newEvent)
 		car.distanceTotalSum += distance
 		car.fuelVolumeTotalSum += fuelVolume
 

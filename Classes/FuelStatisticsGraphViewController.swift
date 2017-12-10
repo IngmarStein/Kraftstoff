@@ -798,7 +798,7 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 			return .nan
 		}
 
-		let consumptionUnit = fuelEvent.car!.fuelConsumptionUnit
+		let consumptionUnit = fuelEvent.cars[0].fuelConsumptionUnit
 		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
 		let fuelVolume = fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume
 
@@ -839,7 +839,7 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 			return .nan
 		}
 
-		return CGFloat((Units.pricePerUnit(price, withUnit: fuelEvent.car!.fuelUnit) as NSDecimalNumber).floatValue)
+		return CGFloat((Units.pricePerUnit(price, withUnit: fuelEvent.cars[0].fuelUnit) as NSDecimalNumber).floatValue)
 	}
 
 }
@@ -891,7 +891,7 @@ class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewCon
 		}
 
 		let handler = Formatters.consumptionRoundingHandler
-		let distanceUnit = fuelEvent.car!.odometerUnit
+		let distanceUnit = fuelEvent.cars[0].odometerUnit
 
 		let distance = fuelEvent.distance + fuelEvent.inheritedDistance
 		let cost = fuelEvent.cost + fuelEvent.inheritedCost

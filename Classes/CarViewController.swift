@@ -229,30 +229,17 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
 		if result == .createSucceeded {
-			var addDemoContents = false
-
-			// Update order of existing objects
 			// swiftlint:disable:next force_try
 			try! realm.write {
+				// Update order of existing cars
 				for car in cars {
 					car.order += 1
 				}
 
-				// Detect demo data request
-				if controller.name!.lowercased() == "apple" && controller.plate!.lowercased() == "demo" {
-					addDemoContents = true
-
-					controller.name  = "Toyota IQ+"
-					controller.plate = "SLS IOIOI"
-				}
-
-				// Create a new instance of the entity managed by the fetched results controller.
+				// Create new car
 				let newCar = Car()
-
 				newCar.order = 0
 				newCar.timestamp = Date()
-				newCar.name = controller.name!
-				newCar.numberPlate = controller.plate!
 				newCar.odometerUnit = .fromPersistentId(controller.odometerUnit!.intValue)
 
 				newCar.odometer = Units.kilometersForDistance(controller.odometer!,
@@ -261,9 +248,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				newCar.fuelUnit = .fromPersistentId(controller.fuelUnit!.intValue)
 				newCar.fuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.intValue)
 
-				// Add demo contents
-				if addDemoContents {
+				if controller.name!.lowercased() == "apple" && controller.plate!.lowercased() == "demo" {
+					// add demo data
+					newCar.name  = "Toyota IQ+"
+					newCar.numberPlate = "SLS IOIOI"
 					DemoData.addDemoEvents(newCar, realm)
+				} else {
+					newCar.name = controller.name!
+					newCar.numberPlate = controller.plate!
 				}
 
 				realm.add(newCar)
@@ -447,17 +439,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			UserDefaults.standard.set("", forKey: "preferredCarID")
 		}
 
-		// Delete the managed object for the given index path
-		// swiftlint:disable:next force_try
-		try! realm.write {
-			deletedCar.isDeleted = true
-		}
-
 		CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [deletedCarID], completionHandler: nil)
 
-		// Update order of existing objects
 		// swiftlint:disable:next force_try
 		try! realm.write {
+			// Delete the managed object for the given index path
+			deletedCar.isDeleted = true
+
+			// Update order of existing objects
 			for car in cars where car.order > deletedCarOrder {
 				car.order -= 1
 			}

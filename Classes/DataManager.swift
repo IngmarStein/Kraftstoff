@@ -25,22 +25,18 @@ final class DataManager {
 	static func fuelEventsForCar(car: Car,
 	                             andDate date: Date?,
 	                             dateComparator dateCompare: String) -> Results<FuelEvent> {
-		// swiftlint:disable:next force_try
-		let realm = try! Realm()
-		let parentPredicate = NSPredicate(format: "car == %@", car)
 		let isNotDeletedPredicate = NSPredicate(format: "isDeleted == false")
 
-		let subpredicates: [NSPredicate]
+		let predicate: NSPredicate
 		if let date = date {
 			let datePredicate = NSPredicate(format: "timestamp \(dateCompare) %@", date as NSDate)
-			subpredicates = [parentPredicate, isNotDeletedPredicate, datePredicate]
+			predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [isNotDeletedPredicate, datePredicate])
 		} else {
-			subpredicates = [parentPredicate, isNotDeletedPredicate]
+			predicate = isNotDeletedPredicate
 		}
-		let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
 
-		return realm.objects(FuelEvent.self)
-			.filter(compoundPredicate)
+		return car.fuelEvents
+			.filter(predicate)
 			.sorted(byKeyPath: "timestamp", ascending: false)
 	}
 
@@ -61,14 +57,8 @@ final class DataManager {
 	}
 
 	static func containsEventWithCar(_ car: Car, andDate date: Date) -> Bool {
-		// swiftlint:disable:next force_try
-		let realm = try! Realm()
-		// Predicates
-		let parentPredicate = NSPredicate(format: "car == %@", car)
 		let datePredicate = NSPredicate(format: "timestamp == %@", date as NSDate)
-
-		let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [parentPredicate, datePredicate])
-		return realm.objects(FuelEvent.self).filter(compoundPredicate).count > 0
+		return car.fuelEvents.filter(datePredicate).count > 0
 	}
 
 	// MARK: - Data Updates
@@ -140,7 +130,6 @@ final class DataManager {
 		// Create new managed object for this event
 		let newEvent = FuelEvent()
 
-		newEvent.car = car
 		newEvent.timestamp = date
 		newEvent.distance = kilometers
 		newEvent.price = pricePerLiter
@@ -177,6 +166,9 @@ final class DataManager {
 		let realm = try! Realm()
 		// swiftlint:disable:next force_try
 		try! realm.write {
+			realm.add(newEvent)
+
+			car.fuelEvents.append(newEvent)
 			// Update total car statistics
 			car.distanceTotalSum += kilometers
 			car.fuelVolumeTotalSum += liters
@@ -185,8 +177,6 @@ final class DataManager {
 				// Update global odometer
 				car.odometer = max(car.odometer + kilometers, car.distanceTotalSum)
 			}
-
-			realm.add(newEvent)
 		}
 
 		return newEvent
@@ -199,7 +189,7 @@ final class DataManager {
 		}
 
 		var forceOdometerUpdate = odometerUpdate
-		let car = event.car!
+		let car = event.cars[0]
 		let distance = event.distance
 		let fuelVolume = event.fuelVolume
 

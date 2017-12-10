@@ -23,6 +23,7 @@ final class Car: Object {
 	@objc private dynamic var _odometerUnit = 0
 	@objc dynamic var order = 0
 	@objc dynamic var timestamp = Date()
+	let fuelEvents = List<FuelEvent>()
 
 	override class func primaryKey() -> String? {
 		return #keyPath(Car.id)

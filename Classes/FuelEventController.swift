@@ -419,7 +419,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	func configureCell(_ tableCell: QuadInfoCell, atIndexPath indexPath: IndexPath) {
 		let fuelEvent = fuelEvents[indexPath.row]
 
-		let car = fuelEvent.car!
+		let car = fuelEvent.cars[0]
 		let distance = fuelEvent.distance
 		let fuelVolume = fuelEvent.fuelVolume
 

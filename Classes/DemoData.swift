@@ -142,13 +142,12 @@ final class DemoData {
 				let price = NSDecimalNumber(mantissa: item.price, exponent: -3, isNegative: false) as Decimal
 
 				newEvent.timestamp = df.date(from: item.date)!
-				newEvent.car = car
 				newEvent.distance = distance
 				newEvent.price = price
 				newEvent.fuelVolume = fuelVolume
-
 				realm.add(newEvent)
 
+				car.fuelEvents.append(newEvent)
 				car.distanceTotalSum += distance
 				car.fuelVolumeTotalSum += fuelVolume
 			}
