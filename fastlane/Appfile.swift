@@ -1,0 +1,8 @@
+var appIdentifier: String { return "com.github.ingmarstein.kraftstoff" } // The bundle identifier of your app
+var appleID: String { return "ingmarstein@icloud.com" } // Your Apple email address
+
+var teamID: String { return "ADVP2P7SJK" } // Developer Portal Team ID
+var itcTeam: String? { return nil } // iTunes Connect Team ID (may be nil if no team)
+
+// you can even provide different app identifiers, Apple IDs and team names per lane:
+// More information: https://docs.fastlane.tools/advanced/#appfile
