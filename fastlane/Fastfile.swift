@@ -18,7 +18,7 @@ class Fastfile: LaneFile {
 
     func beforeAll() {
         // environmentVariables["SLACK_URL"] = "https://hooks.slack.com/services/..."
-        cocoapods()
+        cocoapods(repoUpdate: true)
         // carthage()
     }
 
