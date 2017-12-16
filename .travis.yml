@@ -8,6 +8,7 @@ cache:
 - cocoapods
 #before_script:
 #- "./scripts/install-swift.sh"
+install: true
 script:
 - fastlane test
 #env:
