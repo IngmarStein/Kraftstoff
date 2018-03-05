@@ -174,9 +174,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		if helpImage == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
-				UIView.animate(withDuration: 0.33, delay: 0.0, options: .curveEaseOut,
-				               animations: { helpView?.alpha = 0.0 },
-				               completion: { _ in helpView?.removeFromSuperview() })
+				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0, options: [.curveEaseOut], animations: {
+					helpView?.alpha = 0.0
+				}) { _ in
+					helpView?.removeFromSuperview()
+				}
 			} else {
 				helpView?.removeFromSuperview()
 			}
@@ -197,11 +199,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				self.view.addSubview(helpView!)
 
 				if animated {
-					UIView.animate(withDuration: 0.33,
-					               delay: 0.8,
-					               options: .curveEaseOut,
-					               animations: { helpView!.alpha = 1.0 },
-					               completion: nil)
+					UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [.curveEaseOut], animations: {
+						helpView?.alpha = 1.0
+					})
 				}
 			}
 		}
@@ -214,11 +214,11 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	private func hideHelp(_ animated: Bool) {
 		if let helpView = self.view.viewWithTag(100) as? UIImageView {
 			if animated {
-				UIView.animate(withDuration: 0.33,
-				               delay: 0.0,
-				               options: .curveEaseOut,
-				               animations: { helpView.alpha = 0.0 },
-				               completion: { _ in helpView.removeFromSuperview() })
+				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [.curveEaseOut], animations: {
+					helpView.alpha = 0.0
+				}, completion: { _ in
+					helpView.removeFromSuperview()
+				})
 			} else {
 				helpView.removeFromSuperview()
 			}

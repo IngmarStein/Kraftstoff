@@ -456,30 +456,30 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 
 			self.scrollView.contentSize = imageView.image!.size
 
-			UIView.animate(withDuration: statisticTransitionDuration,
-                         animations: { self.scrollView.alpha = 1.0 },
-                         completion: { finished in
-							if finished {
-								self.scrollView.flashScrollIndicators()
-							}
-                         })
+			UIViewPropertyAnimator.runningPropertyAnimator(withDuration: statisticTransitionDuration, delay: 0, options: [], animations: {
+				self.scrollView.alpha = 1.0
+			}, completion: { position in
+				if position == .end {
+					self.scrollView.flashScrollIndicators()
+				}
+			})
 
 			return true
 		} else {
 			// Cache Miss => draw preliminary contents
 
-			UIView.animate(withDuration: statisticTransitionDuration,
-			               animations: { self.scrollView.alpha = 0.0 },
-			               completion: { finished in
-							if finished {
-								self.activityView.startAnimating()
-								let imageView: UIImageView! = self.scrollView.viewWithTag(1) as? UIImageView
-								if imageView != nil {
-									imageView.image = nil
-									imageView.frame = .zero
-									self.scrollView.contentSize = .zero
-								}
-							}
+			UIViewPropertyAnimator.runningPropertyAnimator(withDuration: statisticTransitionDuration, delay: 0, options: [], animations: {
+				self.scrollView.alpha = 0.0
+			}, completion: { position in
+				if position == .end {
+					self.activityView.startAnimating()
+					let imageView: UIImageView! = self.scrollView.viewWithTag(1) as? UIImageView
+					if imageView != nil {
+						imageView.image = nil
+						imageView.frame = .zero
+						self.scrollView.contentSize = .zero
+					}
+				}
 			})
 
 			return false

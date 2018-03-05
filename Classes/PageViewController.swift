@@ -32,7 +32,7 @@ class PageViewController: UITableViewController {
 	func dismissKeyboardWithCompletion(_ completion: @escaping () -> Void) {
 		let scrollToTop = self.tableView.contentOffset.y > 0.0
 
-		UIView.animate(withDuration: scrollToTop ? 0.25 : 0.15, animations: {
+		UIViewPropertyAnimator.runningPropertyAnimator(withDuration: scrollToTop ? 0.25 : 0.15, delay: 0, options: [], animations: {
 			if let indexPath = self.tableView.indexPathForSelectedRow {
 				self.tableView.deselectRow(at: indexPath, animated: false)
 				self.tableView.delegate?.tableView?(self.tableView, didDeselectRowAt: indexPath)
@@ -40,13 +40,13 @@ class PageViewController: UITableViewController {
 
 			if scrollToTop {
 				self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
-					at: .top,
-					animated: false)
+										   at: .top,
+										   animated: false)
 			}
-		}, completion: { _ in
+		}) { _ in
 			self.view.endEditing(true)
 			completion()
-		})
+		}
 	}
 
 	// MARK: - Access to Table Cells

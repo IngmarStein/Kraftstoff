@@ -140,11 +140,11 @@ final class QuadInfoCell: UITableViewCell {
 		super.layoutSubviews()
 
 		// hide right labels in editing modes
-		UIView.animate(withDuration: 0.5) {
+		UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0, options: [], animations: {
 			let newAlpha: CGFloat = self.cellState.contains(.showingEditControlMask) ? 0.0 : 1.0
 			self.topRightLabel.alpha = newAlpha
 			self.botRightLabel.alpha = newAlpha
-		}
+		})
 	}
 
 }

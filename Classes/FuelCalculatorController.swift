@@ -184,23 +184,22 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 			return
 		}
 
-		UIView.animate(withDuration: 0.3,
-                     animations: {
-                         self.removeSectionAtIndex(1, withAnimation: .fade)
-                     }, completion: { _ in
-                         let now = Date()
+		UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3, delay: 0, options: [], animations: {
+			self.removeSectionAtIndex(1, withAnimation: .fade)
+		}, completion: { _ in
+			let now = Date()
 
-                         self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
-                         self.valueChanged(now, identifier: "lastChangeDate")
-                         self.valueChanged(Decimal(0), identifier: "distance")
-                         self.valueChanged(Decimal(0), identifier: "price")
-                         self.valueChanged(Decimal(0), identifier: "fuelVolume")
-                         self.valueChanged(true, identifier: "filledUp")
-						 self.valueChanged("", identifier: "comment")
+			self.valueChanged(Date.dateWithoutSeconds(now), identifier: "date")
+			self.valueChanged(now, identifier: "lastChangeDate")
+			self.valueChanged(Decimal(0), identifier: "distance")
+			self.valueChanged(Decimal(0), identifier: "price")
+			self.valueChanged(Decimal(0), identifier: "fuelVolume")
+			self.valueChanged(true, identifier: "filledUp")
+			self.valueChanged("", identifier: "comment")
 
-                         self.recreateTableContentsWithAnimation(.left)
-                         self.updateSaveButtonState()
-                     })
+			self.recreateTableContentsWithAnimation(.left)
+			self.updateSaveButtonState()
+		})
 	}
 
 	// MARK: - Creating the Table Rows
@@ -562,31 +561,29 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 	@objc func saveAction(_ sender: AnyObject) {
 		self.navigationItem.rightBarButtonItem = nil
 
-		UIView.animate(withDuration: 0.3,
-                     animations: {
-                         // Remove consumption row
-                         self.removeSectionAtIndex(1, withAnimation: .fade)
-                     },
-                     completion: { _ in
-						// Add new event object
-						self.changeIsUserDriven = true
+		UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3, delay: 0, options: [], animations: {
+			// Remove consumption row
+			self.removeSectionAtIndex(1, withAnimation: .fade)
+		}, completion: { _ in
+			// Add new event object
+			self.changeIsUserDriven = true
 
-						DataManager.addToArchive(car: self.car!,
-						                         date: self.date!,
-						                         distance: self.distance!,
-						                         price: self.price!,
-						                         fuelVolume: self.fuelVolume!,
-						                         filledUp: self.filledUp ?? false,
-						                         comment: self.comment,
-						                         forceOdometerUpdate: false)
+			DataManager.addToArchive(car: self.car!,
+									 date: self.date!,
+									 distance: self.distance!,
+									 price: self.price!,
+									 fuelVolume: self.fuelVolume!,
+									 filledUp: self.filledUp ?? false,
+									 comment: self.comment,
+									 forceOdometerUpdate: false)
 
-                         // Reset calculator table
-                         self.valueChanged(Decimal(0), identifier: "distance")
-                         self.valueChanged(Decimal(0), identifier: "price")
-                         self.valueChanged(Decimal(0), identifier: "fuelVolume")
-                         self.valueChanged(true, identifier: "filledUp")
-						 self.valueChanged("", identifier: "comment")
-                     })
+			// Reset calculator table
+			self.valueChanged(Decimal(0), identifier: "distance")
+			self.valueChanged(Decimal(0), identifier: "price")
+			self.valueChanged(Decimal(0), identifier: "fuelVolume")
+			self.valueChanged(true, identifier: "filledUp")
+			self.valueChanged("", identifier: "comment")
+		})
 	}
 
 	private func updateSaveButtonState() {
