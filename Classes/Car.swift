@@ -76,6 +76,4 @@ extension Car: CKRecordConvertible {
 }
 
 extension Car: CKRecordRecoverable {
-	// swiftlint:disable:next type_name
-	typealias O = Car
 }

@@ -1,5 +1,5 @@
 PODS:
-  - IceCream (1.3.0):
+  - IceCream (1.3.2):
     - RealmSwift
   - Realm (3.3.0):
     - Realm/Headers (= 3.3.0)
@@ -18,7 +18,7 @@ SPEC REPOS:
     - RealmSwift
 
 SPEC CHECKSUMS:
-  IceCream: 5fa70827f8a08cb64deece40f7290d7b53885f7f
+  IceCream: 1649af2b9e8237e8e07b651f31838a903da948f0
   Realm: 7d74ad6c5020432f58fe5e1df90bb6d97b2c7fef
   RealmSwift: b2fa31a09c22e246026766557405505eeaad2b01
 

@@ -17,9 +17,8 @@ class Fastfile: LaneFile {
     var fastlaneVersion = "2.69.3"
 
     func beforeAll() {
-        // environmentVariables["SLACK_URL"] = "https://hooks.slack.com/services/..."
         cocoapods(repoUpdate: true)
-        // carthage()
+        swiftlint(mode: "lint", configFile: ".swiftlint.yml", strict: false, ignoreExitStatus: false, quiet: false)
     }
 
     func testLane() {

@@ -91,6 +91,4 @@ extension FuelEvent: CKRecordConvertible {
 }
 
 extension FuelEvent: CKRecordRecoverable {
-	// swiftlint:disable:next type_name
-	typealias O = FuelEvent
 }
