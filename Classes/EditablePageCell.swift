@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol EditablePageCellDelegate: class {
+protocol EditablePageCellDelegate: AnyObject {
 	func valueForIdentifier(_ valueIdentifier: String) -> Any?
 	func valueChanged(_ newValue: Any?, identifier: String)
 }

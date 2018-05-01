@@ -15,7 +15,7 @@ enum CarConfigurationResult: Int {
 	case aborted
 }
 
-protocol CarConfigurationControllerDelegate: class {
+protocol CarConfigurationControllerDelegate: AnyObject {
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult: CarConfigurationResult)
 }
 

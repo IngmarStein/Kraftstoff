@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-protocol FuelStatisticsViewControllerDataSource: class {
+protocol FuelStatisticsViewControllerDataSource: AnyObject {
 	var curveGradient: CGGradient { get }
 
 	func averageFormatter(_ precise: Bool, forCar: Car) -> NumberFormatter
@@ -20,7 +20,7 @@ protocol FuelStatisticsViewControllerDataSource: class {
 	func valueForFuelEvent(_ fuelEvent: FuelEvent) -> CGFloat
 }
 
-protocol FuelStatisticsViewControllerDelegate: class {
+protocol FuelStatisticsViewControllerDelegate: AnyObject {
 	func graphRightBorder(_ rightBorder: CGFloat, forCar: Car) -> CGFloat
 	func graphWidth(_ graphWidth: CGFloat, forCar: Car) -> CGFloat
 }
