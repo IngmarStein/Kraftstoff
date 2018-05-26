@@ -43,8 +43,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var notificationToken: NotificationToken?
 	// swiftlint:disable:next force_try
 	private let realm = try! Realm()
-	private var carSyncEngine: SyncEngine<Car>?
-	private var fuelEventSyncEngine: SyncEngine<FuelEvent>?
+	private var syncEngine: SyncEngine?
 
 	private var importAlert: UIAlertController?
 
@@ -81,8 +80,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			carSyncEngine = SyncEngine<Car>()
-			fuelEventSyncEngine = SyncEngine<FuelEvent>()
+			syncEngine = SyncEngine(syncObjects: [SyncObject<Car>(), SyncObject<FuelEvent>()])
 
 			UIApplication.shared.registerForRemoteNotifications()
 
