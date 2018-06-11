@@ -65,7 +65,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		super.init()
 	}
 
-	private func commonLaunchInitialization(_ launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) {
+	private func commonLaunchInitialization(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) {
 		if !initialized {
 			initialized = true
 
@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			notificationToken = cars.observe { _ in
 				UIApplication.shared.shortcutItems = cars.map { car in
 					let userInfo = ["objectId": car.id]
-					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo)
+					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String : NSSecureCoding])
 				}
 
 				if CSSearchableIndex.isIndexingAvailable() {
@@ -124,7 +124,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			}
 
 			// Switch once to the car view for new users
-			if launchOptions?[.url] == nil {
+			if launchOptions?[UIApplication.LaunchOptionsKey.url] == nil {
 				let defaults = UserDefaults.standard
 
 				if defaults.bool(forKey: "firstStartup") {
@@ -160,7 +160,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		}
 	}
 
-	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
 		if userActivity.activityType == "com.github.ingmarstein.kraftstoff.fillup" {
 			// switch to fill-up tab
 			if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -190,12 +190,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		return false
 	}
 
-	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		commonLaunchInitialization(launchOptions)
 		return true
 	}
@@ -221,7 +221,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
-		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplicationStateRestorationBundleVersionKey) as String? ?? "") ?? 0
+		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplication.stateRestorationBundleVersionKey) as String? ?? "") ?? 0
 
 		// we don't restore from future versions of the app
 		return stateVersion <= bundleVersion
@@ -234,7 +234,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			self.importAlert = UIAlertController(title: NSLocalizedString("Importing", comment: "") + "\n\n", message: "", preferredStyle: .alert)
 
 			let progress = UIActivityIndicatorView(frame: self.importAlert!.view.bounds)
-			progress.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			progress.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
 			progress.isUserInteractionEnabled = false
 			progress.activityIndicatorViewStyle = .whiteLarge
 			progress.color = .black

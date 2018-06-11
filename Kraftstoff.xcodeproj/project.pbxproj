@@ -582,7 +582,7 @@
 				ORGANIZATIONNAME = "Ingmar Stein";
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -601,13 +601,13 @@
 					};
 					95DA86251AFB426D001E1375 = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
 					95E685411C4C1BC800C6D5F8 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 1D6058900D05DD3D006BFB54;
 					};
@@ -902,6 +902,7 @@
 				PRODUCT_NAME = kraftstoff;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_EXPORT_DECL = "\n#pragma clang diagnostic ignored \"-Wmissing-variable-declarations\"\n";
@@ -927,6 +928,7 @@
 				PRODUCT_NAME = kraftstoff;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -974,6 +976,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.ingmarstein.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kraftstoff.app/kraftstoff";
 			};
 			name = Debug;
@@ -1012,6 +1015,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.ingmarstein.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/kraftstoff.app/kraftstoff";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1056,6 +1060,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.ingmarstein.Kraftstoff-UI-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_TARGET_NAME = Kraftstoff;
 				USES_XCTRUNNER = YES;
 			};
@@ -1095,6 +1100,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.ingmarstein.Kraftstoff-UI-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
 				TEST_TARGET_NAME = Kraftstoff;
 				USES_XCTRUNNER = YES;
 				VALIDATE_PRODUCT = YES;

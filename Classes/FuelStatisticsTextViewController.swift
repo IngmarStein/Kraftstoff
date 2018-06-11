@@ -181,9 +181,9 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 		UIColor.clear.setFill()
 		context.fill(CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: height))
 
-		let font = UIFont.preferredFont(forTextStyle: .body)
-		let labelAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text ]
-		let valueAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.white ]
+		let font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
+		let labelAttributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: UIColor.text ]
+		let valueAttributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: UIColor.white ]
 
 		var x: CGFloat
 		var y: CGFloat
@@ -446,7 +446,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			} else {
 				UIView.transition(with: imageView,
                               duration: statisticTransitionDuration,
-                               options: .transitionCrossDissolve,
+                               options: UIView.AnimationOptions.transitionCrossDissolve,
                             animations: {
                                 imageView.image = contentImage
                                 imageView.frame = imageFrame

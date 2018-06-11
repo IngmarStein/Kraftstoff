@@ -58,6 +58,9 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		userActivity?.title = NSLocalizedString("Fill-Up", comment: "")
 		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
 		userActivity?.isEligibleForSearch = true
+		if #available(iOS 12.0, *) {
+			userActivity?.isEligibleForPrediction = true
+		}
 
 		// Title bar
 		self.doneButton.target = self
@@ -81,7 +84,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		updateSaveButtonState()
 
 		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.localeChanged(_:)), name: NSLocale.currentLocaleDidChangeNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.willEnterForeground(_:)), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelCalculatorController.willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
 	}
 
 	// MARK: - State Restoration
@@ -124,7 +127,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 	override func setEditing(_ enabled: Bool, animated: Bool) {
 		if self.isEditing != enabled {
 
-			let animation: UITableViewRowAnimation = animated ? .fade : .none
+			let animation: UITableView.RowAnimation = animated ? .fade : .none
 
 			super.setEditing(enabled, animated: animated)
 
@@ -155,7 +158,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		return true
 	}
 
-	override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
 			handleShake()
 		} else {
@@ -220,7 +223,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		return true
 	}
 
-	func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
+	func createConsumptionRowWithAnimation(_ animation: UITableView.RowAnimation) {
 		// Conversion units
 		let odometerUnit: UnitLength
 		let fuelUnit: UnitVolume
@@ -260,7 +263,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
           withAnimation: animation)
 	}
 
-	private func createDataRows(_ rowMask: FuelCalculatorDataRow, withAnimation animation: UITableViewRowAnimation) {
+	private func createDataRows(_ rowMask: FuelCalculatorDataRow, withAnimation animation: UITableView.RowAnimation) {
 		let odometerUnit: UnitLength
 		let fuelUnit: UnitVolume
 
@@ -328,7 +331,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		}
 	}
 
-	private func createTableContentsWithAnimation(_ animation: UITableViewRowAnimation) {
+	private func createTableContentsWithAnimation(_ animation: UITableView.RowAnimation) {
 		addSectionAtIndex(0, withAnimation: animation)
 
 		// Car selector (optional)
@@ -410,9 +413,9 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 
 	// MARK: - Updating the Table Rows
 
-	func recreateTableContentsWithAnimation(_ anim: UITableViewRowAnimation) {
+	func recreateTableContentsWithAnimation(_ anim: UITableView.RowAnimation) {
 		// Update model contents
-		let animation: UITableViewRowAnimation
+		let animation: UITableView.RowAnimation
 		if tableSections.isEmpty {
 			animation = .none
 		} else {
@@ -447,7 +450,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		var count = 0
 
 		for row in 2...4 {
-			let animation: UITableViewRowAnimation
+			let animation: UITableView.RowAnimation
 			if (row == 2 && odoChanged) || (row != 2 && fuelChanged) {
 				animation = (count % 2) == 0 ? .right : .left
 				count += 1
@@ -462,7 +465,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
 	}
 
-	private func recreateDistanceRowWithAnimation(_ animation: UITableViewRowAnimation) {
+	private func recreateDistanceRowWithAnimation(_ animation: UITableView.RowAnimation) {
 		let rowOffset = (cars.count < 2) ? 1 : 2
 
 		// Replace distance row in the internal data model
@@ -792,9 +795,9 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 
 			if !self.isEditing {
 				if consumptionRowNeeded() {
-					createConsumptionRowWithAnimation(UITableViewRowAnimation.fade)
+					createConsumptionRowWithAnimation(.fade)
 				} else {
-					removeSectionAtIndex(1, withAnimation: UITableViewRowAnimation.fade)
+					removeSectionAtIndex(1, withAnimation: .fade)
 				}
 			}
 

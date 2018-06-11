@@ -17,7 +17,7 @@ class PageViewController: UITableViewController {
 
 		tableView.allowsSelectionDuringEditing = true
 		tableView.estimatedRowHeight = 44.0
-		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.rowHeight = UITableView.automaticDimension
 	}
 
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -84,7 +84,7 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Access to Table Sections
 
-	func addSectionAtIndex(_ idx: Int, withAnimation animation: UITableViewRowAnimation) {
+	func addSectionAtIndex(_ idx: Int, withAnimation animation: UITableView.RowAnimation) {
 		let sectionIndex: Int
 		if idx > tableSections.count {
 			sectionIndex = tableSections.count
@@ -99,7 +99,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeSectionAtIndex(_ sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeSectionAtIndex(_ sectionIndex: Int, withAnimation animation: UITableView.RowAnimation) {
 		if sectionIndex < tableSections.count {
 			tableSections.remove(at: sectionIndex)
 
@@ -109,7 +109,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeAllSectionsWithAnimation(_ animation: UITableViewRowAnimation) {
+	func removeAllSectionsWithAnimation(_ animation: UITableView.RowAnimation) {
 		tableSections.removeAll(keepingCapacity: false)
 
 		if animation != .none {
@@ -120,7 +120,7 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Access to Table Rows
 
-	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [String: Any], withAnimation animation: UITableViewRowAnimation) {
+	func addRowAtIndex(rowIndex rowIdx: Int, inSection sectionIdx: Int, cellClass: PageCell.Type, cellData: [String: Any], withAnimation animation: UITableView.RowAnimation) {
 		// Get valid section index and section
 		if tableSections.isEmpty {
 			addSectionAtIndex(0, withAnimation: animation)
@@ -162,7 +162,7 @@ class PageViewController: UITableViewController {
 		}
 	}
 
-	func removeRow(at rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableViewRowAnimation) {
+	func removeRow(at rowIndex: Int, inSection sectionIndex: Int, withAnimation animation: UITableView.RowAnimation) {
 		if sectionIndex < tableSections.count {
 			if rowIndex < tableSections[sectionIndex].count {
 				tableSections[sectionIndex].remove(at: rowIndex)
@@ -193,7 +193,7 @@ class PageViewController: UITableViewController {
 		return false
 	}
 
-	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+	override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .none
 	}
 

@@ -38,7 +38,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 
 		NotificationCenter.default.addObserver(self,
 												selector: #selector(DateEditTableCell.significantTimeChange(_:)),
-													name: Notification.Name.UIApplicationSignificantTimeChange,
+												name: UIApplication.significantTimeChangeNotification,
 												object: nil)
 	}
 

@@ -64,7 +64,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		}
 
 		// swiftlint:disable:next force_cast
-		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as! FuelStatisticsPageController
+		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as? FuelStatisticsPageController
 
 		// Configure root view
 		self.title = selectedCar.name
@@ -90,7 +90,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
-		self.tableView.rowHeight = UITableViewAutomaticDimension
+		self.tableView.rowHeight = UITableView.automaticDimension
 
 		NotificationCenter.default.addObserver(self,
 		                                       selector: #selector(FuelEventController.localeChanged(_:)),
@@ -123,8 +123,8 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	// MARK: - State Restoration
 
-	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
+	static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIApplication.stateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: fuelEventSelectedCarID) as String? {
 			// swiftlint:disable:next force_try
@@ -182,7 +182,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			// Switch view controllers according rotation state
 			let interfaceOrientation = UIApplication.shared.statusBarOrientation
 
-			if UIInterfaceOrientationIsLandscape(interfaceOrientation) && self.presentedViewController == nil {
+			if interfaceOrientation.isLandscape && self.presentedViewController == nil {
 				self.statisticsController.selectedCar = self.selectedCar
 				self.present(self.statisticsController, animated: true, completion: nil)
 			}
@@ -484,7 +484,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 		return cell
 	}
 
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
 			let fuelEvent = fuelEvents[indexPath.row]
 			DataManager.removeEvent(fuelEvent, forceOdometerUpdate: false)

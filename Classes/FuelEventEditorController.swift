@@ -78,8 +78,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - State Restoration
 
-	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard,
+	static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIApplication.stateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
 			// swiftlint:disable:next force_try
@@ -197,7 +197,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	override func setEditing(_ enabled: Bool, animated: Bool) {
 		if self.isEditing != enabled {
-			let animation: UITableViewRowAnimation = animated ? .fade : .none
+			let animation: UITableView.RowAnimation = animated ? .fade : .none
 
 			super.setEditing(enabled, animated: animated)
 
@@ -283,7 +283,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 
 	// MARK: - Creating the Table Rows
 
-	private func createConsumptionRowWithAnimation(_ animation: UITableViewRowAnimation) {
+	private func createConsumptionRowWithAnimation(_ animation: UITableView.RowAnimation) {
 		// Don't add the section when no value can be computed
 		if distance.isSignMinus || distance.isZero || fuelVolume.isSignMinus || fuelVolume.isZero {
 			return
@@ -317,7 +317,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
           withAnimation: animation)
 	}
 
-	private func createTableContentsWithAnimation(_ animation: UITableViewRowAnimation) {
+	private func createTableContentsWithAnimation(_ animation: UITableView.RowAnimation) {
 		addSectionAtIndex(0, withAnimation: animation)
 
 		addRowAtIndex(rowIndex: 0,

@@ -83,8 +83,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - State Restoration
 
-	static func viewController(withRestorationIdentifierPath identifierComponents: [Any], coder: NSCoder) -> UIViewController? {
-		if let storyboard = coder.decodeObject(forKey: UIStateRestorationViewControllerStoryboardKey) as? UIStoryboard {
+	static func viewController(withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
+		if let storyboard = coder.decodeObject(forKey: UIApplication.stateRestorationViewControllerStoryboardKey) as? UIStoryboard {
 			if let controller = storyboard.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController {
 				controller.editingExistingObject = coder.decodeBool(forKey: SRConfiguratorEditMode)
 
@@ -138,7 +138,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 	// MARK: - Creating the Table Rows
 
-	func createOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+	func createOdometerRowWithAnimation(_ animation: UITableView.RowAnimation) {
 		let unit = UnitLength.fromPersistentId(self.odometerUnit!.intValue)
 		let suffix = " ".appending(Formatters.shortMeasurementFormatter.string(from: unit))
 
@@ -253,7 +253,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		self.tableView.reloadData()
 	}
 
-	func recreateOdometerRowWithAnimation(_ animation: UITableViewRowAnimation) {
+	func recreateOdometerRowWithAnimation(_ animation: UITableView.RowAnimation) {
 		removeRow(at: 3, inSection: 0, withAnimation: .none)
 		createOdometerRowWithAnimation(.none)
 

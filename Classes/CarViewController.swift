@@ -80,7 +80,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		self.tableView.backgroundView = backgroundView
 
 		self.tableView.estimatedRowHeight = self.tableView.rowHeight
-		self.tableView.rowHeight = UITableViewAutomaticDimension
+		self.tableView.rowHeight = UITableView.automaticDimension
 
 		NotificationCenter.default.addObserver(self,
 		                                       selector: #selector(CarViewController.localeChanged(_:)),
@@ -139,7 +139,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		// Number of cars determines the help badge
 		let helpViewFrame: CGRect
-		let helpViewContentMode: UIViewContentMode
+		let helpViewContentMode: UIView.ContentMode
 		let helpImage: UIImage?
 
 		let carCount = cars.count
@@ -174,7 +174,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		if helpImage == nil || (helpView != nil && helpView!.frame != helpViewFrame) {
 			if animated {
-				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0, options: [.curveEaseOut], animations: {
+				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0, options: [UIView.AnimationOptions.curveEaseOut], animations: {
 					helpView?.alpha = 0.0
 				}) { _ in
 					helpView?.removeFromSuperview()
@@ -199,7 +199,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				self.view.addSubview(helpView!)
 
 				if animated {
-					UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [.curveEaseOut], animations: {
+					UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [UIView.AnimationOptions.curveEaseOut], animations: {
 						helpView?.alpha = 1.0
 					})
 				}
@@ -214,7 +214,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	private func hideHelp(_ animated: Bool) {
 		if let helpView = self.view.viewWithTag(100) as? UIImageView {
 			if animated {
-				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [.curveEaseOut], animations: {
+				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0.8, options: [UIView.AnimationOptions.curveEaseOut], animations: {
 					helpView.alpha = 0.0
 				}, completion: { _ in
 					helpView.removeFromSuperview()
@@ -521,7 +521,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return cell
 	}
 
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
 			removeExistingObject(at: indexPath)
 		}

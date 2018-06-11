@@ -29,7 +29,7 @@ final class SwitchTableCell: PageCell {
 		self.selectionStyle = .none
 
 		// Create switch
-		valueSwitch.addTarget(self, action: #selector(SwitchTableCell.switchToggledAction(_:)), for: .valueChanged)
+		valueSwitch.addTarget(self, action: #selector(SwitchTableCell.switchToggledAction(_:)), for: UIControl.Event.valueChanged)
 		valueSwitch.translatesAutoresizingMaskIntoConstraints = false
 
 		self.contentView.addSubview(self.valueSwitch)
@@ -43,7 +43,7 @@ final class SwitchTableCell: PageCell {
 		valueLabel.isUserInteractionEnabled = false
 		valueLabel.translatesAutoresizingMaskIntoConstraints = false
 		valueLabel.adjustsFontForContentSizeCategory = true
-		valueLabel.font = UIFont.preferredFont(forTextStyle: .body)
+		valueLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 
 		self.contentView.addSubview(self.valueLabel)
 
@@ -53,7 +53,7 @@ final class SwitchTableCell: PageCell {
 		keyLabel.textColor            = .black
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 		keyLabel.adjustsFontForContentSizeCategory = true
-		keyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 
 		self.contentView.addSubview(keyLabel)
 

@@ -356,14 +356,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			return
 		}
 
-		let font = UIFont.preferredFont(forTextStyle: .footnote)
+		let font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.footnote)
 		let path = UIBezierPath()
 
 		context.saveGState()
 
 		if state.dataCount == 0 {
 
-			let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.white ]
+			let attributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: UIColor.white ]
 
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(withAttributes: attributes)
@@ -409,7 +409,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// Axis description for horizontal marker lines markers
 		context.saveGState()
 
-		let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.white ]
+		let attributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: UIColor.white ]
 
 		for i in 0..<state.hMarkCount {
 			if let mark = state.hMarkNames [i] {
@@ -449,7 +449,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		// Axis description for vertical marker lines
 		context.saveGState()
 
-		let vMarkAttributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text ]
+		let vMarkAttributes: [NSAttributedString.Key: Any] = [ .font: font, .foregroundColor: UIColor.text ]
 
 		for i in 0..<state.vMarkCount {
 			if let mark = state.vMarkNames [i] {
@@ -564,7 +564,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			UIView.transition(with: imageView,
                   	  	  duration: statisticTransitionDuration,
-                           options: .transitionCrossDissolve,
+                           options: UIView.AnimationOptions.transitionCrossDissolve,
                         animations: { imageView.image = image },
                         completion: nil)
 
@@ -584,7 +584,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 			UIView.transition(with: imageView,
                       	  duration: statisticTransitionDuration,
-                           options: .transitionCrossDissolve,
+                           options: UIView.AnimationOptions.transitionCrossDissolve,
                         animations: { imageView.image = image },
                         completion: { finished in
 							if finished {
@@ -724,8 +724,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		path.fill()
 
 		// Layout for info box
-		let attributes: [NSAttributedStringKey: Any] = [ NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption2),
-														 NSAttributedStringKey.foregroundColor: UIColor.white ]
+		let attributes: [NSAttributedString.Key: Any] = [ .font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.caption2),
+														 .foregroundColor: UIColor.white ]
 
 		var infoRect = CGRect()
 		infoRect.size = info.size(withAttributes: attributes)

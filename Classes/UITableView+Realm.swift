@@ -9,7 +9,7 @@ import UIKit
 import RealmSwift
 
 extension UITableView {
-	func applyChanges<T>(changes: RealmCollectionChange<T>, with animation: UITableViewRowAnimation) {
+	func applyChanges<T>(changes: RealmCollectionChange<T>, with animation: UITableView.RowAnimation) {
 		switch changes {
 		case .initial: reloadData()
 		case .update(_, let deletions, let insertions, let updates):

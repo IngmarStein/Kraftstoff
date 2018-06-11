@@ -46,7 +46,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.contentVerticalAlignment = .center
 		textField.isUserInteractionEnabled = false
 		textField.translatesAutoresizingMaskIntoConstraints = false
-		textField.font = UIFont.preferredFont(forTextStyle: .body)
+		textField.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 		textField.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(textField)
@@ -57,7 +57,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		keyLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
-		keyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 		keyLabel.adjustsFontForContentSizeCategory = true
 
 		self.contentView.addSubview(keyLabel)

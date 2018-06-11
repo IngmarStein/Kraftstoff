@@ -70,7 +70,7 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		setupFonts()
-		NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: Notification.Name.UIContentSizeCategoryDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategory.didChangeNotification, object: nil)
 	}
 
 	deinit {
@@ -86,8 +86,8 @@ class FuelStatisticsViewController: UIViewController {
 		let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)!
 		let fontSelected = UIFont(descriptor: fontDescriptor, size: fontDescriptor.pointSize)
 
-		let labelAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: UIColor.text]
-		let labelSelectedAttributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: fontSelected, NSAttributedStringKey.foregroundColor: UIColor.white]
+		let labelAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.text]
+		let labelSelectedAttributes: [NSAttributedString.Key: Any] = [.font: fontSelected, .foregroundColor: UIColor.white]
 		for view in stackView.subviews {
 			if let button = view as? UIButton {
 				let text = button.titleLabel!.text!
@@ -235,7 +235,7 @@ class FuelStatisticsViewController: UIViewController {
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {
-		NotificationCenter.default.post(name: Notification.Name("numberOfMonthsSelected"), object: self, userInfo: ["span": sender.tag])
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "numberOfMonthsSelected"), object: self, userInfo: ["span": sender.tag])
 	}
 
 	// MARK: - Memory Management

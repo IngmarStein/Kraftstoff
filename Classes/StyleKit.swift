@@ -36,7 +36,7 @@ public class StyleKit : NSObject {
 			.font: UIFont.systemFont(ofSize: 20),
 			.foregroundColor: UIColor.black,
 			.paragraphStyle: labelStyle,
-			] as [NSAttributedStringKey: Any]
+			] as [NSAttributedString.Key: Any]
 
 		let labelTextHeight: CGFloat = text.boundingRect(with: CGSize(width: labelRect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: labelFontAttributes, context: nil).height
 		context.saveGState()
@@ -85,7 +85,7 @@ public class StyleKit : NSObject {
 			.font: UIFont.systemFont(ofSize: 20),
 			.foregroundColor: textForeground,
 			.paragraphStyle: labelStyle,
-			] as [NSAttributedStringKey: Any]
+			] as [NSAttributedString.Key: Any]
 
 		let labelTextHeight: CGFloat = line1.boundingRect(with: CGSize(width: labelRect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: labelFontAttributes, context: nil).height
 		context.saveGState()
@@ -102,7 +102,7 @@ public class StyleKit : NSObject {
 			.font: UIFont.systemFont(ofSize: 20),
 			.foregroundColor: textForeground,
 			.paragraphStyle: label2Style,
-			] as [NSAttributedStringKey: Any]
+			] as [NSAttributedString.Key: Any]
 
 		let label2TextHeight: CGFloat = line2.boundingRect(with: CGSize(width: label2Rect.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, attributes: label2FontAttributes, context: nil).height
 		context.saveGState()

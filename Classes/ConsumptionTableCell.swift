@@ -26,7 +26,7 @@ final class ConsumptionTableCell: PageCell {
 		self.coloredLabel.baseColor                 = .black
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.coloredLabel.adjustsFontForContentSizeCategory = true
-		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: .title3)
+		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title3)
 
 		self.contentView.addSubview(self.coloredLabel)
 

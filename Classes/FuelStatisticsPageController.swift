@@ -71,17 +71,17 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelStatisticsPageController.didEnterBackground(_:)),
-               name: Notification.Name.UIApplicationDidEnterBackground,
+               name: UIApplication.didEnterBackgroundNotification,
              object: nil)
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelStatisticsPageController.didBecomeActive(_:)),
-               name: Notification.Name.UIApplicationDidBecomeActive,
+               name: UIApplication.didBecomeActiveNotification,
              object: nil)
 
 		NotificationCenter.default.addObserver(self,
            selector: #selector(FuelStatisticsPageController.numberOfMonthsSelected(_:)),
-               name: NSNotification.Name("numberOfMonthsSelected"),
+		   name: NSNotification.Name(rawValue: "numberOfMonthsSelected"),
              object: nil)
 	}
 
@@ -104,7 +104,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 			// Switch view controllers according rotation state
 			let interfaceOrientation = UIApplication.shared.statusBarOrientation
 
-			if UIInterfaceOrientationIsPortrait(interfaceOrientation) && self.presentingViewController != nil {
+			if interfaceOrientation.isPortrait && self.presentingViewController != nil {
 				self.dismiss(animated: true, completion: nil)
 			}
 		}, completion: nil)
@@ -119,7 +119,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 	// MARK: - Cache Handling
 
 	func invalidateCaches() {
-		for controller in self.childViewControllers {
+		for controller in self.children {
 			if let fuelStatisticsViewController = controller as? FuelStatisticsViewController {
 				fuelStatisticsViewController.invalidateCaches()
 			}
@@ -161,7 +161,7 @@ final class FuelStatisticsPageController: UIPageViewController {
 			UserDefaults.standard.set(numberOfMonths, forKey: "statisticTimeSpan")
 
 			// Update all statistics controllers
-			for controller in self.childViewControllers {
+			for controller in self.children {
 				if let fuelStatisticsViewController = controller as? FuelStatisticsViewController {
 					fuelStatisticsViewController.displayedNumberOfMonths = numberOfMonths
 				}

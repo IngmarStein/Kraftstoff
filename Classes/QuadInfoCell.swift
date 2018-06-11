@@ -20,10 +20,10 @@ final class QuadInfoCell: UITableViewCell {
 	var topRightAccessibilityLabel: String?
 	var botRightAccessibilityLabel: String?
 
-	private var cellState: UITableViewCellStateMask
+	private var cellState: UITableViewCell.StateMask
 	var large = false {
 		didSet {
-			topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? .title1 : .title2)
+			topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? UIFont.TextStyle.title1 : UIFont.TextStyle.title2)
 		}
 	}
 
@@ -33,7 +33,7 @@ final class QuadInfoCell: UITableViewCell {
 		topLeftLabel.adjustsFontSizeToFitWidth  = true
 		topLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		topLeftLabel.adjustsFontForContentSizeCategory = true
-		topLeftLabel.font = UIFont.preferredFont(forTextStyle: .title1)
+		topLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title1)
 		contentView.addSubview(topLeftLabel)
 
 		botLeftLabel.backgroundColor            = .clear
@@ -41,7 +41,7 @@ final class QuadInfoCell: UITableViewCell {
 		botLeftLabel.adjustsFontSizeToFitWidth  = true
 		botLeftLabel.translatesAutoresizingMaskIntoConstraints = false
 		botLeftLabel.adjustsFontForContentSizeCategory = true
-		botLeftLabel.font = UIFont.preferredFont(forTextStyle: .body)
+		botLeftLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 		contentView.addSubview(botLeftLabel)
 
 		topRightLabel.backgroundColor           = .clear
@@ -50,7 +50,7 @@ final class QuadInfoCell: UITableViewCell {
 		topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false
 		topRightLabel.adjustsFontForContentSizeCategory = true
-		topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? .title1 : .title2)
+		topRightLabel.font = UIFont.preferredFont(forTextStyle: large ? UIFont.TextStyle.title1 : UIFont.TextStyle.title2)
 		contentView.addSubview(topRightLabel)
 
 		botRightLabel.backgroundColor           = .clear
@@ -59,7 +59,7 @@ final class QuadInfoCell: UITableViewCell {
 		botRightLabel.textAlignment             = .right
 		botRightLabel.translatesAutoresizingMaskIntoConstraints = false
 		botRightLabel.adjustsFontForContentSizeCategory = true
-		botRightLabel.font = UIFont.preferredFont(forTextStyle: .body)
+		botRightLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
 		contentView.addSubview(botRightLabel)
 
 		// setup constraints
@@ -79,7 +79,7 @@ final class QuadInfoCell: UITableViewCell {
 		self.accessoryType = .disclosureIndicator
 	}
 
-	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		cellState     = []
 		botLeftLabel  = UILabel(frame: .zero)
 		topLeftLabel  = UILabel(frame: .zero)
@@ -125,7 +125,7 @@ final class QuadInfoCell: UITableViewCell {
 	}
 
 	// Remember target state for transition
-	override func willTransition(to state: UITableViewCellStateMask) {
+	override func willTransition(to state: UITableViewCell.StateMask) {
 		super.willTransition(to: state)
 		cellState = state
 	}
@@ -141,7 +141,7 @@ final class QuadInfoCell: UITableViewCell {
 
 		// hide right labels in editing modes
 		UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0, options: [], animations: {
-			let newAlpha: CGFloat = self.cellState.contains(.showingEditControlMask) ? 0.0 : 1.0
+			let newAlpha: CGFloat = self.cellState.contains(UITableViewCell.StateMask.showingEditControlMask) ? 0.0 : 1.0
 			self.topRightLabel.alpha = newAlpha
 			self.botRightLabel.alpha = newAlpha
 		})
