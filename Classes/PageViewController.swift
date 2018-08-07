@@ -43,10 +43,10 @@ class PageViewController: UITableViewController {
 										   at: .top,
 										   animated: false)
 			}
-		}) { _ in
+		}, completion: { _ in
 			self.view.endEditing(true)
 			completion()
-		}
+		})
 	}
 
 	// MARK: - Access to Table Cells

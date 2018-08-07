@@ -176,9 +176,9 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			if animated {
 				UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.33, delay: 0, options: [UIView.AnimationOptions.curveEaseOut], animations: {
 					helpView?.alpha = 0.0
-				}) { _ in
+				}, completion: { _ in
 					helpView?.removeFromSuperview()
-				}
+				})
 			} else {
 				helpView?.removeFromSuperview()
 			}

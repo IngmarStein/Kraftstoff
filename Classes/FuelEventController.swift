@@ -63,7 +63,6 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 			selectedCar = realm.object(ofType: Car.self, forPrimaryKey: selectedCarId)
 		}
 
-		// swiftlint:disable:next force_cast
 		statisticsController = self.storyboard!.instantiateViewController(withIdentifier: "FuelStatisticsPageController") as? FuelStatisticsPageController
 
 		// Configure root view

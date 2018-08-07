@@ -231,7 +231,6 @@ class FuelStatisticsViewController: UIViewController {
 	func noteStatisticsPageBecomesVisible() {
 	}
 
-
 	// MARK: - Button Handling
 
 	@IBAction func buttonAction(_ sender: UIButton) {

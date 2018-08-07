@@ -109,7 +109,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			notificationToken = cars.observe { _ in
 				UIApplication.shared.shortcutItems = cars.map { car in
 					let userInfo = ["objectId": car.id]
-					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String : NSSecureCoding])
+					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
 				}
 
 				if CSSearchableIndex.isIndexingAvailable() {
