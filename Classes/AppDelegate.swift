@@ -80,7 +80,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			syncEngine = SyncEngine(syncObjects: [SyncObject<Car>(), SyncObject<FuelEvent>()])
+			syncEngine = SyncEngine(objects: [SyncObject<Car>(), SyncObject<FuelEvent>()])
 
 			UIApplication.shared.registerForRemoteNotifications()
 
@@ -236,7 +236,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			let progress = UIActivityIndicatorView(frame: self.importAlert!.view.bounds)
 			progress.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
 			progress.isUserInteractionEnabled = false
-			progress.activityIndicatorViewStyle = .whiteLarge
+			progress.style = .whiteLarge
 			progress.color = .black
 			let center = self.importAlert!.view.center
 			progress.center = CGPoint(x: center.x, y: center.y + 30.0)

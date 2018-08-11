@@ -655,7 +655,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					}
 				}
 
-				let minIndex = (fabs (cell.data [lb].x - lensLocation.x) < fabs (cell.data [ub].x - lensLocation.x)) ? lb : ub
+				let minIndex = (abs(cell.data [lb].x - lensLocation.x) < abs(cell.data [ub].x - lensLocation.x)) ? lb : ub
 
 				// Update screen contents
 				if minIndex >= 0 && minIndex != zoomIndex {
