@@ -6,5 +6,7 @@ steps:
   displayName: 'Install gems'
 - script: brew bundle
   displayName: 'Install homebrew dependencies'
+- script: ls -ld /Applications/Xcode*
+  displayName: 'List Xcode versions'
 - script: bundle exec fastlane test
   displayName: 'Build and test with fastlane'

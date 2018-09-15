@@ -18,3 +18,4 @@ excluded:
   - Classes/StyleKit.swift
   - Pods
   - fastlane
+  - vendor
