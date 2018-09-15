@@ -6,7 +6,7 @@ steps:
   displayName: 'Install gems'
 - script: brew bundle
   displayName: 'Install homebrew dependencies'
-- script: xcode-select -s /Applications/Xcode_10_beta.app
+- script: sudo xcode-select -s /Applications/Xcode_10_beta.app
   displayName: 'Select Xcode version'
 - script: bundle exec fastlane test
   displayName: 'Build and test with fastlane'
