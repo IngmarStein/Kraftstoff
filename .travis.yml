@@ -11,6 +11,3 @@ cache:
 install: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
 script:
 - fastlane test
-#env:
-#  global:
-#    - TOOLCHAINS=swift

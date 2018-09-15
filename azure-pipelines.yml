@@ -4,5 +4,7 @@ pool:
 steps:
 - script: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
   displayName: 'Install gems'
+- script: brew bundle
+  displayName: 'Install homebrew dependencies'
 - script: bundle exec fastlane test
   displayName: 'Build and test with fastlane'
