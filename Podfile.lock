@@ -1,36 +1,27 @@
 PODS:
-  - IceCream (1.6.0):
+  - IceCream (1.7.0):
     - RealmSwift
-  - Realm (3.9.0):
-    - Realm/Headers (= 3.9.0)
-  - Realm/Headers (3.9.0)
-  - RealmSwift (3.9.0):
-    - Realm (= 3.9.0)
+  - Realm (3.10.0):
+    - Realm/Headers (= 3.10.0)
+  - Realm/Headers (3.10.0)
+  - RealmSwift (3.10.0):
+    - Realm (= 3.10.0)
 
 DEPENDENCIES:
-  - IceCream (from `https://github.com/caiyue1993/IceCream.git`, branch `swift-4.2`)
+  - IceCream
   - RealmSwift
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - IceCream
     - Realm
     - RealmSwift
 
-EXTERNAL SOURCES:
-  IceCream:
-    :branch: swift-4.2
-    :git: https://github.com/caiyue1993/IceCream.git
-
-CHECKOUT OPTIONS:
-  IceCream:
-    :commit: 5a4cd70ff90e579a88501cbcebb1f14f6129e265
-    :git: https://github.com/caiyue1993/IceCream.git
-
 SPEC CHECKSUMS:
-  IceCream: e1fc8ecfd19c7480018ead3c809d5f94f2291096
-  Realm: 3d36f208bf3aff8335dc3298742140182bde4edb
-  RealmSwift: aa4d11917bfcfaa3ed51f219102a487ecd895447
+  IceCream: 2d882e4a7776fae9b8fa1dc49120dc386bf84aff
+  Realm: 85ab9e4f779d66f6e9ffeb118dc25b7f130c96ac
+  RealmSwift: 69121c8b86d0ae005fb779efdb10e606732e1c74
 
-PODFILE CHECKSUM: cb7dc2acfbdfdaaf5727a8b00d8533f7de7357c5
+PODFILE CHECKSUM: f87eb5a17e9bd511807a2ad02a5574858a2bd89a
 
 COCOAPODS: 1.6.0.beta.1
