@@ -45,7 +45,7 @@ class Fastfile: LaneFile {
         // syncCodeSigning(gitUrl: "gitUrl", type: "appstore", appIdentifier: [appIdentifier], username: appleID)
         captureScreenshots()
 		buildApp(scheme: "Kraftstoff", configuration: "Release")
-        uploadToAppStore(username: appleID, app: appIdentifier, force: true)
+        uploadToAppStore(username: appleID, force: true, app: appIdentifier)
         frameScreenshots()
 
 		//addGitTag(buildNumber: getVersionNumber())
