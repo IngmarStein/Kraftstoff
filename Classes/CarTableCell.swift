@@ -70,7 +70,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
 		// Look for index of selected car
 		guard let car = self.delegate.valueForIdentifier(self.valueIdentifier) as? Car else { return }
-		let initialIndex = self.cars.index(of: car) ?? 0
+		let initialIndex = self.cars.firstIndex(of: car) ?? 0
 
 		// (Re-)configure car picker and select the initial item
 		self.carPicker.reloadAllComponents()

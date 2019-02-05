@@ -84,7 +84,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 			UIApplication.shared.registerForRemoteNotifications()
 
-			if ProcessInfo.processInfo.arguments.index(of: "-STARTFRESH") != nil {
+			if ProcessInfo.processInfo.arguments.firstIndex(of: "-STARTFRESH") != nil {
 				// swiftlint:disable:next force_try
 				try! realm.write {
 					realm.deleteAll()
