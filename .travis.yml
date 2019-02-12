@@ -2,7 +2,7 @@ language: objective-c
 xcode_project: Kraftstoff.xcworkspace
 xcode_scheme: Kraftstoff
 xcode_sdk: iphonesimulator
-osx_image: xcode10.1
+osx_image: xcode10.2
 cache:
 - bundler
 - cocoapods
