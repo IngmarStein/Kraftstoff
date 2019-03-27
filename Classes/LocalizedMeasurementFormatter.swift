@@ -20,6 +20,8 @@ class LocalizedMeasurementFormatter: MeasurementFormatter {
 				return NSLocalizedString(unit.symbol + "_medium", comment: "")
 			case .long:
 				return NSLocalizedString(unit.symbol + "_long", comment: "")
+			@unknown default:
+				return NSLocalizedString(unit.symbol + "_long", comment: "")
 			}
 		} else {
 			return super.string(from: unit)

@@ -695,6 +695,9 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			if ProcessInfo.processInfo.arguments.firstIndex(of: "-KEEPLENS") == nil {
 				self.zooming = false
 			}
+
+		@unknown default:
+			break
 		}
 	}
 
