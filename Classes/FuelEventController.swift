@@ -210,7 +210,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 	}
 
 	private var exportURL: URL {
-		return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFilename)
+		return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(exportFilename)
 	}
 
 	func exportTextData() -> Data {

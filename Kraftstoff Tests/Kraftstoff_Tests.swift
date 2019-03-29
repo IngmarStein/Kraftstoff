@@ -48,7 +48,7 @@ class KraftstoffTests: XCTestCase {
 
 		var numCars   = 0
 		var numEvents = 0
-		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv", isDirectory: false)
 
 		let importer = CSVImporter()
 		let success = importer.`import`(csvString,
@@ -102,7 +102,7 @@ class KraftstoffTests: XCTestCase {
 		let importer = CSVImporter()
 		var numCars   = 0
 		var numEvents = 0
-		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv")
+		let url = URL(fileURLWithPath: "LightningMcQueen__95.csv", isDirectory: false)
 
 		let CSVString = "yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters per 100 Kilometers\n2013-07-16;18:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\"\n"
 		let success = importer.`import`(CSVString,
