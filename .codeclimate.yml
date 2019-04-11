@@ -10,4 +10,5 @@ ratings:
   paths:
   - Gemfile.lock
   - "**.swift"
-exclude_paths: []
+exclude_paths:
+  - "fastlane/"
