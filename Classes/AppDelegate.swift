@@ -204,7 +204,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		if let dict = userInfo as? [String: NSObject], let notification = CKNotification(fromRemoteNotificationDictionary: dict) {
-			if notification.subscriptionID == IceCreamConstant.cloudKitSubscriptionID {
+			if let subscriptionID = notification.subscriptionID, IceCreamSubscription.allIDs.contains(subscriptionID) {
 				NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
 			}
 		}
