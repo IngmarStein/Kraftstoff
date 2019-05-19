@@ -208,4 +208,44 @@ class PageViewController: UITableViewController {
 		return cell
 	}
 
+	// MARK: - Programmatically Selecting Table Rows
+
+	func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
+		let cell = self.tableView.cellForRow(at: indexPath)!
+		let field: UITextField?
+
+		if let carCell = cell as? CarTableCell {
+			field = carCell.textField
+		} else if let dateCell = cell as? DateEditTableCell {
+			field = dateCell.textField
+		} else if let numberCell = cell as? NumberEditTableCell {
+			field = numberCell.textField
+		} else if let textCell = cell as? TextEditTableCell {
+			field = textCell.textField
+		} else if let pickerCell = cell as? PickerTableCell {
+			field = pickerCell.textField
+		} else {
+			field = nil
+		}
+		return field
+	}
+
+	func activateTextFieldAtIndexPath(_ indexPath: IndexPath) {
+		if let field = textFieldAtIndexPath(indexPath) {
+			field.isUserInteractionEnabled = true
+			field.becomeFirstResponder()
+			DispatchQueue.main.async {
+				self.tableView.beginUpdates()
+				self.tableView.endUpdates()
+			}
+		}
+	}
+
+	func selectRowAtIndexPath(_ indexPath: IndexPath?) {
+		if let path = indexPath {
+			self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
+			self.tableView(self.tableView, didSelectRowAt: path)
+		}
+	}
+
 }
