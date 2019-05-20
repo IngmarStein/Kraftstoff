@@ -1,14 +1,12 @@
 ---
-engines:
+version: "2"
+plugins:
   bundler-audit:
     enabled: true
   fixme:
     enabled: true
-  tailor:
+  swiftlint:
     enabled: true
-ratings:
-  paths:
-  - Gemfile.lock
-  - "**.swift"
-exclude_paths:
+exclude_patterns:
   - "fastlane/"
+  - "Pods/"
