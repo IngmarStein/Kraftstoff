@@ -1,9 +1,8 @@
 platform :ios, '11.0'
 inhibit_all_warnings!
+use_modular_headers!
 
 target 'Kraftstoff' do
-  use_frameworks!
-
   pod 'RealmSwift'
   pod 'IceCream'
 

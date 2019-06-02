@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		063596AB92EAAD3F710A69BA /* Pods_Kraftstoff.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */; };
+		3189165E9A89A68A7D49D186 /* libPods-Kraftstoff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 196CEC907C378EBED0D82E4A /* libPods-Kraftstoff.a */; };
 		4D1B06CF14339BB70069B20A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B06D114339BB70069B20A /* InfoPlist.strings */; };
 		4D3F199C176B2B5F003FE2C7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D3F199B176B2B5F003FE2C7 /* Media.xcassets */; };
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
-		5F97DB917318F13D17EDBCBD /* Pods_Kraftstoff_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */; };
+		82EE1A22A72077F3C4736C54 /* libPods-Kraftstoff Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 36B07FCFE35FBB939B94B09F /* libPods-Kraftstoff Tests.a */; };
 		950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */; };
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
 		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
@@ -59,9 +59,9 @@
 		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
 		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
-		9B3539791E0CA2248667D44B /* Pods_Kraftstoff_UI_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */; };
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
 		9EB2B04E1DE6DD060027281E /* LocalizedMeasurementFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB2B04D1DE6DD060027281E /* LocalizedMeasurementFormatter.swift */; };
+		B582CB27C51B8562584788DF /* libPods-Kraftstoff UI Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF20CE058511921FE58B362C /* libPods-Kraftstoff UI Tests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,17 +82,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		196CEC907C378EBED0D82E4A /* libPods-Kraftstoff.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kraftstoff.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BFDFD0814D1CB8C8271B2F1 /* Pods-Kraftstoff Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests.release.xcconfig"; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* kraftstoff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kraftstoff.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		36B07FCFE35FBB939B94B09F /* libPods-Kraftstoff Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kraftstoff Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D1B06D014339BB70069B20A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D1B06D214339BBD0069B20A /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "kraftstoff-Info.plist"; sourceTree = "<group>"; };
 		4D3F199B176B2B5F003FE2C7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = kraftstoff/Media.xcassets; sourceTree = "<group>"; };
 		4DCFE36B138EE2930051FEC9 /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4DCFE36D138EE2AB0051FEC9 /* de */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
-		4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Kraftstoff_UI_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C634FA4A734FD5F50578953 /* Pods-Kraftstoff.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff.release.xcconfig"; sourceTree = "<group>"; };
 		7CD2EFE54E7B34C8B079D7BE /* Pods-Kraftstoff.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff.debug.xcconfig"; sourceTree = "<group>"; };
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
@@ -161,6 +160,7 @@
 		9EF18DD41BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9EF18DD51BA864D700EDFFCD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AC34BA2A73E07B1BCC7A3FAA /* Pods-Kraftstoff UI Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff UI Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests.release.xcconfig"; sourceTree = "<group>"; };
+		CF20CE058511921FE58B362C /* libPods-Kraftstoff UI Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kraftstoff UI Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE83FC1D4F61C6E2D9572011 /* Pods-Kraftstoff UI Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff UI Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff UI Tests/Pods-Kraftstoff UI Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		F9A500991179F84B1B72353A /* Pods-Kraftstoff Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kraftstoff Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kraftstoff Tests/Pods-Kraftstoff Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,7 +172,7 @@
 			files = (
 				95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */,
 				95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */,
-				063596AB92EAAD3F710A69BA /* Pods_Kraftstoff.framework in Frameworks */,
+				3189165E9A89A68A7D49D186 /* libPods-Kraftstoff.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,7 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F97DB917318F13D17EDBCBD /* Pods_Kraftstoff_Tests.framework in Frameworks */,
+				82EE1A22A72077F3C4736C54 /* libPods-Kraftstoff Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,7 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B3539791E0CA2248667D44B /* Pods_Kraftstoff_UI_Tests.framework in Frameworks */,
+				B582CB27C51B8562584788DF /* libPods-Kraftstoff UI Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +224,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+		29B97314FDCFA39411CA2CEA = {
 			isa = PBXGroup;
 			children = (
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -456,9 +456,9 @@
 			children = (
 				95CBD4281D171C90009637A4 /* StoreKit.framework */,
 				95CBD4241D1702A8009637A4 /* CloudKit.framework */,
-				4E3D609B4613D712811ECDEC /* Pods_Kraftstoff.framework */,
-				37AB606B5DA5021BB3A94F2C /* Pods_Kraftstoff_Tests.framework */,
-				5102AD7263AA88C4F05BFBA2 /* Pods_Kraftstoff_UI_Tests.framework */,
+				196CEC907C378EBED0D82E4A /* libPods-Kraftstoff.a */,
+				36B07FCFE35FBB939B94B09F /* libPods-Kraftstoff Tests.a */,
+				CF20CE058511921FE58B362C /* libPods-Kraftstoff UI Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -522,7 +522,6 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				5BB77EEBBCBB8C810E84B2AC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -624,7 +623,7 @@
 				fr,
 				ja,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			mainGroup = 29B97314FDCFA39411CA2CEA;
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -683,23 +682,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5BB77EEBBCBB8C810E84B2AC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kraftstoff/Pods-Kraftstoff-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		949419E524A426E37BE72174 /* [CP] Check Pods Manifest.lock */ = {
