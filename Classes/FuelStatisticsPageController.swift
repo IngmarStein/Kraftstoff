@@ -99,17 +99,8 @@ final class FuelStatisticsPageController: UIPageViewController {
 
 	// MARK: - View Rotation
 
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-		coordinator.animate(alongsideTransition: { _ in
-			// Switch view controllers according rotation state
-			let interfaceOrientation = UIApplication.shared.statusBarOrientation
-
-			if interfaceOrientation.isPortrait && self.presentingViewController != nil {
-				self.dismiss(animated: true, completion: nil)
-			}
-		}, completion: nil)
-
-		super.viewWillTransition(to: size, with: coordinator)
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+		return .landscape
 	}
 
 	override var prefersStatusBarHidden: Bool {

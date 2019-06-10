@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RealmSwift
+import CoreData
 
 // Protocol for objects containing computed statistics data
 protocol DiscardableDataObject {
@@ -153,65 +153,55 @@ class FuelStatisticsViewController: UIViewController {
 		}
 
 		// Compute and draw new contents
-		let selectedCarID = self.selectedCar.id
+		let selectedCarID = self.selectedCar.objectID
 
-		DispatchQueue(label: "sample").async {
-			autoreleasepool {
-				// swiftlint:disable:next force_try
-				let realm = try! Realm()
+		let parentContext = self.selectedCar.managedObjectContext
+		let sampleContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		sampleContext.parent = parentContext
+		sampleContext.perform {
+			// Get the selected car
+			if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
 
-				// Get the selected car
-				// TODO: UBsan detects null pointer usage in the following call:
-//				#0	0x000000010dd046e0 in __ubsan_on_report ()
-//				#1	0x000000010dcfeaad in __ubsan::Diag::~Diag() ()
-//				#2	0x000000010dd00424 in handleTypeMismatchImpl(__ubsan::TypeMismatchData*, unsigned long, __ubsan::ReportOptions) ()
-//				#3	0x000000010dd0016b in __ubsan_handle_type_mismatch_v1 ()
-//				#4	0x000000010a68c32b in RLMAccessorContext::is_null(objc_object*) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/RLMAccessor.hpp:83
-//				#5	0x000000010a75e9f7 in unsigned long realm::Object::get_for_primary_key_impl<objc_object* __strong, RLMAccessorContext>(RLMAccessorContext&, realm::Table const&, realm::Property const&, objc_object* __strong) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/object_accessor.hpp:318
-//				#6	0x000000010a75e131 in realm::Object realm::Object::get_for_primary_key<objc_object* __strong, RLMAccessorContext>(RLMAccessorContext&, std::__1::shared_ptr<realm::Realm> const&, realm::ObjectSchema const&, objc_object* __strong) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/include/object_accessor.hpp:309
-//				#7	0x000000010a75d6ae in ::RLMGetObject(RLMRealm *, NSString *, id) at /Users/ingmar/Devel/Kraftstoff/Pods/Realm/Realm/RLMObjectStore.mm:238
-//				#8	0x000000010c6d9c77 in Realm.object<A, B>(ofType:forPrimaryKey:) at /Users/ingmar/Devel/Kraftstoff/Pods/RealmSwift/RealmSwift/Realm.swift:510
-//				#9	0x0000000109b363a9 in closure #1 in closure #1 in FuelStatisticsViewController.displayStatisticsForRecentMonths(_:) at /Users/ingmar/Devel/Kraftstoff/Classes/FuelStatisticsViewController.swift:153
+				// Fetch some young events to get the most recent fillup date
+				let recentEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: sampleCar,
+																									  beforeDate: Date(),
+																									 dateMatches: true),
+												 inManagedObjectContext: sampleContext)
 
-				if let sampleCar = realm.object(ofType: Car.self, forPrimaryKey: selectedCarID) {
+				var recentFillupDate = Date()
 
-					// Fetch some young events to get the most recent fillup date
-					let recentEvents = DataManager.fuelEventsForCar(car: sampleCar,
-																	beforeDate: Date(),
-																	dateMatches: true)
-
-					var recentFillupDate = Date()
-
-					if recentEvents.count > 0 {
-						recentFillupDate = recentEvents[0].timestamp
+				if recentEvents.count > 0 {
+					if let recentEvent = DataManager.existingObject(recentEvents[0], inManagedObjectContext: sampleContext) as? FuelEvent {
+						recentFillupDate = recentEvent.ksTimestamp
 					}
+				}
 
-					// Fetch events for the selected time period
-					let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
+				// Fetch events for the selected time period
+				let samplingStart = Date.dateWithOffsetInMonths(-numberOfMonths, fromDate: recentFillupDate)
 
-					self.layoutCondition.lock()
-					while !self.didLayout {
-						self.layoutCondition.wait()
-					}
-					self.layoutCondition.unlock()
+				self.layoutCondition.lock()
+				while !self.didLayout {
+					self.layoutCondition.wait()
+				}
+				self.layoutCondition.unlock()
 
-					// Schedule update of cache and display in main thread
-					DispatchQueue.main.async {
-						let samplingObjects = DataManager.fuelEventsForCar(car: self.selectedCar,
-																		   afterDate: samplingStart,
-																		   dateMatches: true)
+				// Schedule update of cache and display in main thread
+				DispatchQueue.main.async {
+					let samplingObjects = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: sampleCar,
+																											 afterDate: samplingStart,
+																										   dateMatches: true),
+																				 inManagedObjectContext: sampleContext)
+					// Compute statistics
+					let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
+																		   forCar: self.selectedCar,
+																		   withObjects: samplingObjects,
+																		   inManagedObjectContext: sampleContext)
 
-						// Compute statistics
-						let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-																			   forCar: self.selectedCar,
-																			   withObjects: Array(samplingObjects))
+					if self.invalidationCounter == self.expectedCounter {
+						self.contentCache[numberOfMonths] = sampleData
 
-						if self.invalidationCounter == self.expectedCounter {
-							self.contentCache[numberOfMonths] = sampleData
-
-							if self.displayedNumberOfMonths == numberOfMonths {
-								self.displayCachedStatisticsForRecentMonths(numberOfMonths)
-							}
+						if self.displayedNumberOfMonths == numberOfMonths {
+							self.displayCachedStatisticsForRecentMonths(numberOfMonths)
 						}
 					}
 				}
@@ -224,7 +214,7 @@ class FuelStatisticsViewController: UIViewController {
 		return false
 	}
 
-	func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent]) -> DiscardableDataObject {
+	func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
 		fatalError("computeStatisticsForRecentMonths not implemented")
 	}
 

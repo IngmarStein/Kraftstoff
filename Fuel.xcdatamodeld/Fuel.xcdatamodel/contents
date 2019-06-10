@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14838.16" systemVersion="19A471t" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="1.0">
+    <entity name="Car" representedClassName="Car" syncable="YES" codeGenerationType="category">
+        <attribute name="distanceTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="fuelConsumptionUnit" attributeType="Integer 32" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fuelUnit" attributeType="Integer 32" minValueString="0" maxValueString="2" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fuelVolumeTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="numberPlate" attributeType="String" defaultValueString=""/>
+        <attribute name="odometer" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="odometerUnit" attributeType="Integer 32" minValueString="0" maxValueString="1" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="timestamp" attributeType="Date" defaultDateTimeInterval="581550840" usesScalarValueType="NO"/>
+        <relationship name="fuelEvents" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FuelEvent" inverseName="car" inverseEntity="FuelEvent"/>
+        <fetchIndex name="byOrderIndex">
+            <fetchIndexElement property="order" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byFuelEventsIndex">
+            <fetchIndexElement property="fuelEvents" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="FuelEvent" representedClassName="FuelEvent" syncable="YES" codeGenerationType="category">
+        <attribute name="comment" attributeType="String" defaultValueString=""/>
+        <attribute name="distance" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="filledUp" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="fuelVolume" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="inheritedCost" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="inheritedDistance" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="inheritedFuelVolume" optional="YES" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="price" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
+        <attribute name="timestamp" attributeType="Date" defaultDateTimeInterval="581550840" usesScalarValueType="NO"/>
+        <relationship name="car" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Car" inverseName="fuelEvents" inverseEntity="Car"/>
+        <fetchIndex name="byTimestampIndex">
+            <fetchIndexElement property="timestamp" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byCarIndex">
+            <fetchIndexElement property="car" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <elements>
+        <element name="Car" positionX="70" positionY="63" width="146" height="208"/>
+        <element name="FuelEvent" positionX="376" positionY="93" width="128" height="193"/>
+    </elements>
+</model>

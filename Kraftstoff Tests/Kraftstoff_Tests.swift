@@ -7,42 +7,52 @@
 //
 
 import XCTest
-import UIKit
-import RealmSwift
+import CoreData
 @testable import kraftstoff
 
 class KraftstoffTests: XCTestCase {
 
+	private var managedObjectContext: NSManagedObjectContext!
+
+	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
+		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main])!
+
+		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+		do {
+			try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
+		} catch _ {
+		}
+
+		let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
+
+		return managedObjectContext
+	}
+
 	override func setUp() {
 		super.setUp()
 
-		Realm.Configuration.defaultConfiguration = Realm.Configuration(inMemoryIdentifier: "KraftstoffTests")
+		managedObjectContext = setUpInMemoryManagedObjectContext()
 	}
 
 	private func roundtrip(_ language: String) {
-		// swiftlint:disable:next force_try
-		let realm = try! Realm()
+		let car = Car(context: managedObjectContext)
 
-		let car = Car()
 		car.order = 0
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.odometerUnit = .kilometers
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.fuelUnit = .liters
-		car.fuelConsumptionUnit = .litersPer100Kilometers
+		car.ksFuelUnit = .liters
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
-		// swiftlint:disable:next force_try
-		try! realm.write {
-			realm.add(car)
+		car.addDemoEvents(inContext: managedObjectContext)
 
-			car.addDemoEvents()
-		}
-
-		let fuelEvents = DataManager.fuelEventsForCar(car: car,
+		let fuelEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
-			dateMatches: true)
+			dateMatches: true),
+			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car, language: language)
 
@@ -54,7 +64,8 @@ class KraftstoffTests: XCTestCase {
 		let success = importer.`import`(csvString,
 			detectedCars: &numCars,
 			detectedEvents: &numEvents,
-			sourceURL: url)
+			sourceURL: url,
+			inContext: managedObjectContext)
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")
@@ -68,29 +79,23 @@ class KraftstoffTests: XCTestCase {
 	}
 
     func testCSVExport() {
-		// swiftlint:disable:next force_try
-		let realm = try! Realm()
-
-		let car = Car()
+		let car = Car(context: managedObjectContext)
 
 		car.order = 0
 		car.timestamp = Date()
 		car.name = "Lightning McQueen"
 		car.numberPlate = "95"
-		car.odometerUnit = .kilometers
+		car.ksOdometerUnit = .kilometers
 		car.odometer = 1000
-		car.fuelUnit = .liters
-		car.fuelConsumptionUnit = .litersPer100Kilometers
+		car.ksFuelUnit = .liters
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
 
-		try! realm.write {
-			realm.add(car)
+		car.addDemoEvents(inContext: managedObjectContext)
 
-			car.addDemoEvents()
-		}
-
-		let fuelEvents = DataManager.fuelEventsForCar(car: car,
+		let fuelEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: car,
 			beforeDate: nil,
-			dateMatches: true)
+			dateMatches: true),
+			inManagedObjectContext: managedObjectContext)
 
 		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car)
 
@@ -108,7 +113,8 @@ class KraftstoffTests: XCTestCase {
 		let success = importer.`import`(CSVString,
 			detectedCars: &numCars,
 			detectedEvents: &numEvents,
-			sourceURL: url)
+			sourceURL: url,
+			inContext: managedObjectContext)
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")

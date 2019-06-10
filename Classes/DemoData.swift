@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RealmSwift
+import CoreData
 
 private struct DemoDataItem {
 	var date: String
@@ -127,7 +127,7 @@ private let demoData = [
 
 extension Car {
 
-	func addDemoEvents() {
+	func addDemoEvents(inContext context: NSManagedObjectContext) {
 		let df = DateFormatter()
 
 		df.locale = nil
@@ -135,21 +135,20 @@ extension Car {
 
 		autoreleasepool {
 			for item in demoData {
-				let newEvent = FuelEvent()
+				let newEvent = FuelEvent(context: context)
 
 				let distance = NSDecimalNumber(mantissa: item.distance, exponent: -1, isNegative: false) as Decimal
 				let fuelVolume = NSDecimalNumber(mantissa: item.fuelVolume, exponent: -2, isNegative: false) as Decimal
 				let price = NSDecimalNumber(mantissa: item.price, exponent: -3, isNegative: false) as Decimal
 
 				newEvent.timestamp = df.date(from: item.date)!
-				newEvent.distance = distance
-				newEvent.price = price
-				newEvent.fuelVolume = fuelVolume
-				self.realm?.add(newEvent)
+				newEvent.car = self
+				newEvent.ksDistance = distance
+				newEvent.ksPrice = price
+				newEvent.ksFuelVolume = fuelVolume
 
-				self.fuelEvents.append(newEvent)
-				self.distanceTotalSum += distance
-				self.fuelVolumeTotalSum += fuelVolume
+				self.ksDistanceTotalSum += distance
+				self.ksFuelVolumeTotalSum += fuelVolume
 			}
 
 			self.odometer = self.distanceTotalSum

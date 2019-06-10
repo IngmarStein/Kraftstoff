@@ -22,8 +22,8 @@ final class ConsumptionTableCell: PageCell {
 		self.coloredLabel.textAlignment             = .center
 		self.coloredLabel.adjustsFontSizeToFitWidth = true
 		self.coloredLabel.backgroundColor           = .clear
-		self.coloredLabel.highlightedTextColor      = UIColor.highlightedText
-		self.coloredLabel.baseColor                 = .black
+		self.coloredLabel.highlightedTextColor      = .highlightedText
+		self.coloredLabel.baseColor                 = .text
 		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.coloredLabel.adjustsFontForContentSizeCategory = true
 		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title3)

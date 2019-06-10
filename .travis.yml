@@ -1,11 +1,10 @@
 language: objective-c
-xcode_project: Kraftstoff.xcworkspace
+xcode_project: Kraftstoff.xcodeproj
 xcode_scheme: Kraftstoff
 xcode_sdk: iphonesimulator
 osx_image: xcode10.2
 cache:
 - bundler
-- cocoapods
 #before_script:
 #- "./scripts/install-swift.sh"
 install: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}

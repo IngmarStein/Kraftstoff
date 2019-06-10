@@ -52,8 +52,8 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		self.contentView.addSubview(textField)
 
 		keyLabel.textAlignment        = .left
-		keyLabel.highlightedTextColor = .black
-		keyLabel.textColor            = .black
+		keyLabel.highlightedTextColor = .label
+		keyLabel.textColor            = .label
 		keyLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
 		keyLabel.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +99,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 	}
 
 	var invalidTextColor: UIColor? {
-		return UIApplication.kraftstoffAppDelegate.window?.tintColor
+		return self.contentView.tintColor
 	}
 
 	// MARK: - UITextFieldDelegate

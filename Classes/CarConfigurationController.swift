@@ -139,7 +139,7 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - Creating the Table Rows
 
 	func createOdometerRowWithAnimation(_ animation: UITableView.RowAnimation) {
-		let unit = UnitLength.fromPersistentId(self.odometerUnit!.intValue)
+		let unit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
 		let suffix = " ".appending(Formatters.shortMeasurementFormatter.string(from: unit))
 
 		if self.odometer == nil {
@@ -221,20 +221,14 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 
 		let fuelConsumptionUnitPickerLabels = [
 			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
-			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter).capitalized,
 			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
 			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
-			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles).capitalized,
-			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles).capitalized
 		]
 
 		let fuelConsumptionUnitPickerShortLabels = [
 			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
-			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.kilometersPerLiter),
 			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
 			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
-			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.gallonsPer10000Miles),
-			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.imperialGallonsPer10000Miles)
 		]
 
 		addRowAtIndex(rowIndex: 5,
@@ -373,8 +367,8 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 			}
 		} else if let numberValue = newValue as? NSNumber {
 			if valueIdentifier == "odometerUnit" {
-				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.intValue)
-				let newUnit = UnitLength.fromPersistentId(numberValue.intValue)
+				let oldUnit = UnitLength.fromPersistentId(self.odometerUnit!.int32Value)
+				let newUnit = UnitLength.fromPersistentId(numberValue.int32Value)
 
 				if oldUnit != newUnit {
 					self.odometerUnit = numberValue

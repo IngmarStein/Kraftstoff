@@ -38,7 +38,7 @@ final class SwitchTableCell: PageCell {
 
 		valueLabel.textAlignment            = .right
 		valueLabel.backgroundColor          = .clear
-		valueLabel.textColor                = .black
+		valueLabel.textColor                = .label
 		valueLabel.isHidden                 = true
 		valueLabel.isUserInteractionEnabled = false
 		valueLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -49,8 +49,8 @@ final class SwitchTableCell: PageCell {
 
 		// Configure the default textlabel
 		keyLabel.textAlignment        = .left
-		keyLabel.highlightedTextColor = .black
-		keyLabel.textColor            = .black
+		keyLabel.highlightedTextColor = .label
+		keyLabel.textColor            = .label
 		keyLabel.translatesAutoresizingMaskIntoConstraints = false
 		keyLabel.adjustsFontForContentSizeCategory = true
 		keyLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)

@@ -22,7 +22,6 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 
 		super.init()
 
-		pickerView.showsSelectionIndicator = true
 		pickerView.dataSource              = self
 		pickerView.delegate                = self
 		pickerView.translatesAutoresizingMaskIntoConstraints = false

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
-    <device id="retina5_9" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14810.11" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14766.13"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,16 +17,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableFooterView" contentMode="scaleToFill" id="JZM-eB-b8k" userLabel="Dummy footer view to hide separators">
-                            <rect key="frame" x="0.0" y="113" width="375" height="0.0"/>
+                            <rect key="frame" x="0.0" y="147" width="375" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="QuadInfoCell" id="aHw-nG-RRP" customClass="QuadInfoCell" customModule="kraftstoff" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="22" width="375" height="91"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aHw-nG-RRP" id="4Xb-tm-IrS">
-                                    <rect key="frame" x="0.0" y="0.0" width="341" height="90.666666666666671"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="347.66666666666669" height="91"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
@@ -59,17 +56,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                        <view key="tableFooterView" contentMode="scaleToFill" misplaced="YES" id="jYw-R2-YTQ" userLabel="Dummy footer view to hide separators">
-                            <rect key="frame" x="0.0" y="113" width="375" height="0.0"/>
+                        <view key="tableFooterView" contentMode="scaleToFill" id="jYw-R2-YTQ" userLabel="Dummy footer view to hide separators">
+                            <rect key="frame" x="0.0" y="147" width="375" height="0.0"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FuelCell" id="t4g-nN-sO0" customClass="QuadInfoCell" customModule="kraftstoff" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="22" width="375" height="91"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t4g-nN-sO0" id="6B9-Qk-KV9">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="90.666666666666671"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="91"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -79,7 +76,23 @@
                             <outlet property="delegate" destination="MNb-cq-XuY" id="0PG-5G-5dS"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="uBg-cQ-fwG"/>
+                    <navigationItem key="navigationItem" id="uBg-cQ-fwG">
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="action" id="8dO-W6-4u6">
+                                <connections>
+                                    <action selector="showExportSheet:" destination="MNb-cq-XuY" id="5kq-BM-AzK"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Chart" image="chart.bar" catalog="system" id="6lO-V7-YIT">
+                                <connections>
+                                    <segue destination="ryK-w1-KVA" kind="presentation" id="IuH-l4-xPN"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="actionBarButtonItem" destination="8dO-W6-4u6" id="hx1-e1-6BP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iqe-Xa-aCT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -106,7 +119,7 @@
         <!--Fuel Statistics Page Controller-->
         <scene sceneID="k5f-WZ-cZ8">
             <objects>
-                <pageViewController storyboardIdentifier="FuelStatisticsPageController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ryK-w1-KVA" customClass="FuelStatisticsPageController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="FuelStatisticsPageController" autoresizesArchivedViewToFullSize="NO" modalPresentationStyle="fullScreen" hidesBottomBarWhenPushed="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="ryK-w1-KVA" customClass="FuelStatisticsPageController" customModule="kraftstoff" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PXY-H6-CmD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3292" y="-431"/>
@@ -119,6 +132,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NRn-ON-A3B" userLabel="Dismiss">
+                                <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <color key="tintColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" image="xmark.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="96w-9C-axi" kind="unwind" unwindAction="unwindToFuelEvents:" id="B3y-Nm-ayC"/>
+                                </connections>
+                            </button>
                             <scrollView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" showsHorizontalScrollIndicator="NO" indicatorStyle="white" translatesAutoresizingMaskIntoConstraints="NO" id="XRv-Sx-Hpu">
                                 <rect key="frame" x="0.0" y="65" width="375" height="747"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -142,7 +163,7 @@
                                 <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="gp7-uE-gUI" userLabel="Activity Indicator">
-                                <rect key="frame" x="169.33333333333334" y="420.33333333333331" width="37" height="37"/>
+                                <rect key="frame" x="169" y="420" width="37" height="37"/>
                             </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="zOH-cY-0Cv">
                                 <rect key="frame" x="37.666666666666657" y="25" width="300" height="32"/>
@@ -344,6 +365,8 @@
                             <constraint firstItem="zOH-cY-0Cv" firstAttribute="top" secondItem="qcD-yX-Req" secondAttribute="bottom" constant="5.5" id="4OQ-Ni-jCX"/>
                             <constraint firstItem="AP8-cb-4aH" firstAttribute="trailing" secondItem="qcD-yX-Req" secondAttribute="trailing" constant="10" id="7Xq-67-Ycv"/>
                             <constraint firstItem="qcD-yX-Req" firstAttribute="leading" secondItem="AP8-cb-4aH" secondAttribute="leading" constant="10" id="9ee-zc-vN8"/>
+                            <constraint firstItem="AP8-cb-4aH" firstAttribute="trailing" secondItem="NRn-ON-A3B" secondAttribute="trailing" constant="10" id="BGa-rj-UkR"/>
+                            <constraint firstItem="NRn-ON-A3B" firstAttribute="firstBaseline" secondItem="IjA-lG-IAF" secondAttribute="firstBaseline" id="FmD-Qk-POa"/>
                             <constraint firstItem="kej-pI-VdQ" firstAttribute="leading" secondItem="AP8-cb-4aH" secondAttribute="leading" constant="10" id="HYp-Fr-yzC"/>
                             <constraint firstAttribute="bottom" secondItem="XRv-Sx-Hpu" secondAttribute="bottom" id="NxW-5z-ghj"/>
                             <constraint firstItem="XRv-Sx-Hpu" firstAttribute="leading" secondItem="AP8-cb-4aH" secondAttribute="leading" id="Qzj-oM-dSg"/>
@@ -353,6 +376,7 @@
                             <constraint firstItem="AP8-cb-4aH" firstAttribute="trailing" secondItem="XRv-Sx-Hpu" secondAttribute="trailing" id="X2m-4H-b7V"/>
                             <constraint firstItem="Rk6-Nm-3ol" firstAttribute="top" secondItem="Cpb-38-EcT" secondAttribute="top" constant="5" id="b2e-1j-4kt"/>
                             <constraint firstItem="XRv-Sx-Hpu" firstAttribute="top" secondItem="zOH-cY-0Cv" secondAttribute="bottom" constant="8" id="h8P-ea-3kz"/>
+                            <constraint firstItem="NRn-ON-A3B" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="AP8-cb-4aH" secondAttribute="leading" symbolic="YES" id="mEB-g7-wCW"/>
                             <constraint firstItem="kej-pI-VdQ" firstAttribute="top" secondItem="Cpb-38-EcT" secondAttribute="top" constant="5" id="ruv-nl-pxJ"/>
                             <constraint firstItem="qcD-yX-Req" firstAttribute="top" secondItem="Cpb-38-EcT" secondAttribute="top" constant="5" id="thf-Uh-9lb"/>
                         </constraints>
@@ -368,6 +392,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vIL-WG-cNd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="96w-9C-axi" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4025" y="-431"/>
         </scene>
@@ -593,8 +618,16 @@
                                 </constraints>
                             </stackView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="EY4-r2-UgV" userLabel="Activity Indicator">
-                                <rect key="frame" x="169.33333333333334" y="420.33333333333331" width="37" height="37"/>
+                                <rect key="frame" x="169" y="420" width="37" height="37"/>
                             </activityIndicatorView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cfh-Xy-CBf" userLabel="Dismiss">
+                                <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <color key="tintColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" image="xmark.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="uvo-an-IAO" kind="unwind" unwindAction="unwindToFuelEvents:" id="WFP-Yq-cuY"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -604,11 +637,14 @@
                             <constraint firstItem="HWZ-YL-dU2" firstAttribute="top" secondItem="UWl-GG-XTi" secondAttribute="bottom" constant="8" id="672-bY-FtI"/>
                             <constraint firstItem="dTb-Bs-XAf" firstAttribute="leading" secondItem="ePq-nf-sI9" secondAttribute="leading" constant="10" id="7wB-gr-RaM"/>
                             <constraint firstItem="Nfj-pE-xBI" firstAttribute="leading" secondItem="ePq-nf-sI9" secondAttribute="leading" constant="10" id="901-XE-kQo"/>
+                            <constraint firstItem="cfh-Xy-CBf" firstAttribute="firstBaseline" secondItem="rfY-4Y-wUF" secondAttribute="firstBaseline" id="AMI-Gl-dc6"/>
                             <constraint firstItem="ePq-nf-sI9" firstAttribute="trailing" secondItem="Nfj-pE-xBI" secondAttribute="trailing" constant="10" id="Sa0-2T-SmH"/>
+                            <constraint firstItem="cfh-Xy-CBf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ePq-nf-sI9" secondAttribute="leading" id="Vcw-x0-QRH"/>
                             <constraint firstItem="b5U-MO-Tva" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="dTb-Bs-XAf" secondAttribute="trailing" constant="8" id="ZhJ-Hv-guL"/>
                             <constraint firstItem="HWZ-YL-dU2" firstAttribute="leading" secondItem="ePq-nf-sI9" secondAttribute="leading" id="b0e-Y4-tpS"/>
                             <constraint firstItem="UWl-GG-XTi" firstAttribute="top" secondItem="Nfj-pE-xBI" secondAttribute="bottom" constant="5.5" id="eJE-Tf-fUn"/>
                             <constraint firstItem="ePq-nf-sI9" firstAttribute="trailing" secondItem="b5U-MO-Tva" secondAttribute="trailing" constant="10" id="evm-DB-9lV"/>
+                            <constraint firstItem="ePq-nf-sI9" firstAttribute="trailing" secondItem="cfh-Xy-CBf" secondAttribute="trailing" constant="10" id="hUi-zd-eHX"/>
                             <constraint firstAttribute="bottom" secondItem="HWZ-YL-dU2" secondAttribute="bottom" id="jZv-qB-Naw"/>
                             <constraint firstItem="dTb-Bs-XAf" firstAttribute="top" secondItem="NpQ-P4-qh8" secondAttribute="top" constant="5" id="jjx-cX-ME1"/>
                             <constraint firstItem="ePq-nf-sI9" firstAttribute="trailing" secondItem="HWZ-YL-dU2" secondAttribute="trailing" id="qPd-IF-4mQ"/>
@@ -627,6 +663,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PA2-Vc-t0W" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="uvo-an-IAO" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4691" y="-431"/>
         </scene>
@@ -726,6 +763,8 @@
     <resources>
         <image name="Cars" width="27" height="26"/>
         <image name="Zapfhahn" width="27" height="26"/>
+        <image name="chart.bar" catalog="system" width="64" height="44"/>
+        <image name="xmark.circle" catalog="system" width="64" height="62"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="fup-JW-VQO"/>

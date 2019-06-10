@@ -7,29 +7,20 @@
 //
 
 import UIKit
+import CoreData
 import CoreSpotlight
-import RealmSwift
 
 private let maxEditHelpCounter = 1
 private let carViewEditedObject = "CarViewEditedObject"
 
-final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, CarConfigurationControllerDelegate, UIDocumentPickerDelegate {
+final class CarViewController: UITableViewController, UIDataSourceModelAssociation, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate, CarConfigurationControllerDelegate, UIDocumentPickerDelegate {
 
 	var editedObject: Car!
 
-	// swiftlint:disable:next force_try
-	private let realm = try! Realm()
-	private var notificationToken: NotificationToken?
-
-	private lazy var cars: Results<Car> = {
-		let results = DataManager.cars()
-		self.notificationToken = results.observe { (changes) in
-			self.tableView.applyChanges(changes: changes, with: .fade)
-
-			self.updateHelp(true)
-			self.checkEnableEditButton()
-		}
-		return results
+	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
+		let fetchedResultsController = DataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
 	}()
 
 	private var documentPickerViewController: UIDocumentPickerViewController!
@@ -47,10 +38,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	var fuelEventController: FuelEventController!
 
+	private var changeIsUserDriven = false
+
 	// MARK: - View Lifecycle
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		changeIsUserDriven = false
 
 		// Navigation Bar
 		self.title = NSLocalizedString("Cars", comment: "")
@@ -105,7 +100,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	override func encodeRestorableState(with coder: NSCoder) {
 		if let editedObject = editedObject {
-			coder.encode(editedObject.id, forKey: carViewEditedObject)
+			coder.encode(DataManager.modelIdentifierForManagedObject(editedObject) as NSString?, forKey: carViewEditedObject)
 		}
 		super.encodeRestorableState(with: coder)
 	}
@@ -114,7 +109,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		super.decodeRestorableState(with: coder)
 
 		if let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: carViewEditedObject) as String? {
-			self.editedObject = realm.object(ofType: Car.self, forPrimaryKey: modelIdentifier)
+			self.editedObject = DataManager.managedObjectForModelIdentifier(modelIdentifier)
 		}
 
 		// -> openradar #13438788
@@ -142,7 +137,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		let helpViewContentMode: UIView.ContentMode
 		let helpImage: UIImage?
 
-		let carCount = cars.count
+		let carCount = fetchedResultsController.fetchedObjects!.count
 
 		if !self.isEditing && carCount == 0 {
 			helpImage = StyleKit.imageOfStartHelpCanvas(text: NSLocalizedString("StartHelp", comment: "")).withRenderingMode(.alwaysTemplate)
@@ -229,17 +224,18 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 	func carConfigurationController(_ controller: CarConfigurationController, didFinishWithResult result: CarConfigurationResult) {
 		if result == .createSucceeded {
+			changeIsUserDriven = false
 			// Create new car
-			let newCar = Car()
+			let newCar = Car(context: DataManager.managedObjectContext)
 			newCar.order = 0
 			newCar.timestamp = Date()
-			newCar.odometerUnit = .fromPersistentId(controller.odometerUnit!.intValue)
+			newCar.ksOdometerUnit = .fromPersistentId(controller.odometerUnit!.int32Value)
 
-			newCar.odometer = Units.kilometersForDistance(controller.odometer!,
-														  withUnit: .fromPersistentId(controller.odometerUnit!.intValue))
+			newCar.ksOdometer = Units.kilometersForDistance(controller.odometer!,
+														  withUnit: .fromPersistentId(controller.odometerUnit!.int32Value))
 
-			newCar.fuelUnit = .fromPersistentId(controller.fuelUnit!.intValue)
-			newCar.fuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.intValue)
+			newCar.ksFuelUnit = .fromPersistentId(controller.fuelUnit!.int32Value)
+			newCar.ksFuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.int32Value)
 
 			let addDemoEvents: Bool
 			let enteredName = controller.name!
@@ -254,36 +250,28 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				newCar.numberPlate = enteredPlate
 			}
 
-			// swiftlint:disable:next force_try
-			try! realm.write {
-				// Update order of existing cars
-				for car in cars {
-					car.order += 1
-				}
+			// Update order of existing cars
+			for car in self.fetchedResultsController.fetchedObjects! {
+				car.order += 1
+			}
 
-				realm.add(newCar)
-
-				if addDemoEvents {
-					// add demo data
-					newCar.addDemoEvents()
-				}
+			if addDemoEvents {
+				// add demo data
+				newCar.addDemoEvents(inContext: DataManager.managedObjectContext)
 			}
 
 		} else if result == .editSucceeded {
 
-			// swiftlint:disable:next force_try
-			try! realm.write {
-				editedObject.name = controller.name!
-				editedObject.numberPlate = controller.plate!
-				editedObject.odometerUnit = .fromPersistentId(controller.odometerUnit!.intValue)
+			editedObject.name = controller.name!
+			editedObject.numberPlate = controller.plate!
+			editedObject.ksOdometerUnit = .fromPersistentId(controller.odometerUnit!.int32Value)
 
-				let odometer = max(Units.kilometersForDistance(controller.odometer!,
-															   withUnit: .fromPersistentId(controller.odometerUnit!.intValue)), editedObject.distanceTotalSum)
+			let odometer = max(Units.kilometersForDistance(controller.odometer!,
+														   withUnit: .fromPersistentId(controller.odometerUnit!.int32Value)), editedObject.ksDistanceTotalSum)
 
-				editedObject.odometer = odometer
-				editedObject.fuelUnit = .fromPersistentId(controller.fuelUnit!.intValue)
-				editedObject.fuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.intValue)
-			}
+			editedObject.ksOdometer = odometer
+			editedObject.ksFuelUnit = .fromPersistentId(controller.fuelUnit!.int32Value)
+			editedObject.ksFuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.int32Value)
 
 			// Invalidate fuelEvent-controller and any precomputed statistics
 			fuelEventController = nil
@@ -312,7 +300,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	private func checkEnableEditButton() {
-		self.editButtonItem.isEnabled = cars.count > 0
+		self.editButtonItem.isEnabled = fetchedResultsController.fetchedObjects!.count > 0
 	}
 
 	@objc func insertNewObject(_ sender: UIBarButtonItem) {
@@ -361,7 +349,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
-		UIApplication.kraftstoffAppDelegate.importCSV(at: url)
+		UIApplication.kraftstoffAppDelegate.importCSV(at: url, parentViewController: self)
 
 		documentPickerViewController = nil
 	}
@@ -392,7 +380,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		if sender.state == .began {
 
 			if let indexPath = self.tableView.indexPathForRow(at: sender.location(in: self.tableView)) {
-				self.editedObject = cars[indexPath.row]
+				DataManager.saveContext()
+				self.editedObject = self.fetchedResultsController.object(at: indexPath)
 
 				// Present modal car configurator
 				guard let configurator = self.storyboard!.instantiateViewController(withIdentifier: "CarConfigurationController") as? CarConfigurationController else { return }
@@ -411,12 +400,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 					configurator.plate = ""
 				}
 
-				configurator.odometerUnit = NSNumber(value: editedObject.odometerUnit.persistentId)
-				configurator.odometer     = Units.distanceForKilometers(editedObject.odometer,
-                                                                  withUnit: editedObject.odometerUnit)
+				configurator.odometerUnit = NSNumber(value: editedObject.odometerUnit)
+				configurator.odometer     = Units.distanceForKilometers(editedObject.ksOdometer,
+                                                                  withUnit: editedObject.ksOdometerUnit)
 
-				configurator.fuelUnit            = NSNumber(value: editedObject.fuelUnit.persistentId)
-				configurator.fuelConsumptionUnit = NSNumber(value: editedObject.fuelConsumptionUnit.persistentId)
+				configurator.fuelUnit            = NSNumber(value: editedObject.fuelUnit)
+				configurator.fuelConsumptionUnit = NSNumber(value: editedObject.fuelConsumptionUnit)
 
 				let navController = UINavigationController(rootViewController: configurator)
 				navController.restorationIdentifier = "CarConfigurationNavigationController"
@@ -436,33 +425,39 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - Removing an Existing Object
 
 	func removeExistingObject(at indexPath: IndexPath) {
-		let deletedCar = cars[indexPath.row]
+		let deletedCar = self.fetchedResultsController.object(at: indexPath)
 		let deletedCarOrder = deletedCar.order
 
 		// Invalidate preference for deleted car
 		let preferredCarID = UserDefaults.standard.string(forKey: "preferredCarID")
-		let deletedCarID = deletedCar.id
+		let deletedCarID = DataManager.modelIdentifierForManagedObject(deletedCar)
 
 		if deletedCarID == preferredCarID {
 			UserDefaults.standard.set("", forKey: "preferredCarID")
 		}
 
-		CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [deletedCarID], completionHandler: nil)
+		if let itemID = deletedCarID {
+			CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
+		}
 
-		// swiftlint:disable:next force_try
-		try! realm.write {
-			// Delete the managed object for the given index path
-			deletedCar.isDeleted = true
+		// Delete the managed object for the given index path
+		DataManager.managedObjectContext.delete(deletedCar)
+		DataManager.saveContext()
 
-			// Update order of existing objects
-			for car in cars where car.order > deletedCarOrder {
-				car.order -= 1
-			}
+		// Update order of existing objects
+		changeIsUserDriven = true
+
+		for car in self.fetchedResultsController.fetchedObjects! where car.order > deletedCarOrder {
+			car.order -= 1
         }
+
+		DataManager.saveContext()
+
+		changeIsUserDriven = false
 
 		// Exit editing mode after last object is deleted
 		if self.isEditing {
-			if cars.count == 0 {
+			if self.fetchedResultsController.fetchedObjects!.count == 0 {
 				setEditing(false, animated: true)
 			}
 		}
@@ -473,7 +468,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
 
 		guard let tableCell = cell as? QuadInfoCell else { return }
-		let car = cars[indexPath.row]
+		let car = self.fetchedResultsController.object(at: indexPath)
 
 		tableCell.large = true
 
@@ -486,10 +481,10 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 
 		// Average consumption
 		let avgConsumption: String
-		let consumptionUnit = car.fuelConsumptionUnit
+		let consumptionUnit = car.ksFuelConsumptionUnit
 
-		let distance   = car.distanceTotalSum
-		let fuelVolume = car.fuelVolumeTotalSum
+		let distance   = car.ksDistanceTotalSum
+		let fuelVolume = car.ksFuelVolumeTotalSum
 
 		if distance > 0 && fuelVolume > 0 {
 			avgConsumption = Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: consumptionUnit) as NSNumber)!
@@ -506,11 +501,12 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 1
+		return self.fetchedResultsController.sections?.count ?? 0
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return cars.count
+		let sectionInfo = self.fetchedResultsController.sections![section]
+		return sectionInfo.numberOfObjects
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -549,20 +545,17 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			return
 		}
 
-		// swiftlint:disable:next force_try
-		try! realm.write {
-			for i in from...to {
-				let car = cars[i]
-				var order = car.order
+		for i in from...to {
+			let car = self.fetchedResultsController.object(at: basePath.appending(i))
+			var order = Int(car.order)
 
-				if cmpResult == .orderedAscending {
-					order = (i != from) ? order-1 : to
-				} else {
-					order = (i != to)   ? order+1 : from
-				}
-
-				car.order = order
+			if cmpResult == .orderedAscending {
+				order = (i != from) ? order-1 : to
+			} else {
+				order = (i != to)   ? order+1 : from
 			}
+
+			car.order = Int32(order)
 		}
 	}
 
@@ -573,14 +566,14 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {
-		guard let car = realm.object(ofType: Car.self, forPrimaryKey: identifier) else { return nil }
-		guard let row = cars.index(of: car) else { return nil }
+		guard let car: Car = DataManager.managedObjectForModelIdentifier(identifier) else { return nil }
 
-		return IndexPath(row: row, section: 0)
+		return self.fetchedResultsController.indexPath(forObject: car)
 	}
 
 	func modelIdentifierForElement(at idx: IndexPath, in view: UIView) -> String? {
-		return cars[idx.row].id
+		let object = self.fetchedResultsController.object(at: idx)
+		return DataManager.modelIdentifierForManagedObject(object)
 	}
 
 	// MARK: - UITableViewDelegate
@@ -607,6 +600,67 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		updateHelp(true)
 	}
 
+	// MARK: - NSFetchedResultsControllerDelegate
+
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		self.tableView.beginUpdates()
+	}
+
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+		switch type {
+		case .insert:
+			self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .delete:
+			self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+		case .move, .update:
+			self.tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
+		@unknown default:
+			fatalError()
+		}
+	}
+
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+		guard !changeIsUserDriven else { return }
+
+		switch type {
+		case .insert:
+			if let newIndexPath = newIndexPath {
+				tableView.insertRows(at: [newIndexPath], with: .fade)
+			}
+		case .delete:
+			if let indexPath = indexPath {
+				tableView.deleteRows(at: [indexPath], with: .fade)
+			}
+		case .move:
+			if let indexPath = indexPath, let newIndexPath = newIndexPath, indexPath != newIndexPath {
+				tableView.deleteRows(at: [indexPath], with: .fade)
+				tableView.insertRows(at: [newIndexPath], with: .fade)
+			}
+		case .update:
+			if let indexPath = indexPath {
+				tableView.reloadRows(at: [indexPath], with: .automatic)
+			}
+		@unknown default:
+			fatalError()
+		}
+	}
+
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		// FIXME: this seems to be necessary in iOS 10 (up to Beta 4)
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			// ignore
+		}
+
+		tableView.endUpdates()
+
+		updateHelp(true)
+		checkEnableEditButton()
+
+		changeIsUserDriven = false
+	}
+
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		let selection: IndexPath?
 		if let cell = sender as? UITableViewCell {
@@ -616,7 +670,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		}
 
 		if let fuelEventController = segue.destination as? FuelEventController, let selection = selection {
-			let selectedCar = cars[selection.row]
+			let selectedCar = self.fetchedResultsController.object(at: selection)
 			fuelEventController.selectedCar = selectedCar
 		}
 	}
@@ -632,7 +686,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	deinit {
-		notificationToken?.invalidate()
 		NotificationCenter.default.removeObserver(self)
 	}
 }

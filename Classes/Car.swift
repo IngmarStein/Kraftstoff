@@ -6,74 +6,90 @@
 //
 //
 
-import RealmSwift
-import IceCream
+import Foundation
+import CoreData
 
-final class Car: Object {
+@objc(Car)
+final class Car: NSManagedObject {
 
-	@objc dynamic var id = UUID().uuidString
-	@objc dynamic var isDeleted = false
-	@objc private dynamic var _distanceTotalSum = "0.0"
-	@objc private dynamic var _fuelConsumptionUnit = 0
-	@objc private dynamic var _fuelUnit = 0
-	@objc private dynamic var _fuelVolumeTotalSum = "0.0"
-	@objc dynamic var name = ""
-	@objc dynamic var numberPlate = ""
-	@objc private dynamic var _odometer = "0.0"
-	@objc private dynamic var _odometerUnit = 0
-	@objc dynamic var order = 0
-	@objc dynamic var timestamp = Date()
-	let fuelEvents = List<FuelEvent>()
-
-	override class func primaryKey() -> String? {
-		return #keyPath(Car.id)
+	var ksTimestamp: Date {
+		get {
+			return timestamp!
+		}
+		set {
+			timestamp = newValue
+		}
 	}
 
-	public override class func ignoredProperties() -> [String] {
-		return [
-			"distanceTotalSum",
-			"fuelConsumptionUnit",
-			"fuelUnit",
-			"fuelVolumeTotalSum",
-			"odometer",
-			"odometerUnit"
-		]
+	var ksDistanceTotalSum: Decimal {
+		get {
+			return distanceTotalSum! as Decimal
+		}
+		set {
+			distanceTotalSum = newValue as NSDecimalNumber
+		}
 	}
 
-	var distanceTotalSum: Decimal {
-		get { return Decimal(string: _distanceTotalSum)! }
-		set { _distanceTotalSum = String(describing: newValue) }
+	var ksFuelVolumeTotalSum: Decimal {
+		get {
+			return fuelVolumeTotalSum! as Decimal
+		}
+		set {
+			fuelVolumeTotalSum = newValue as NSDecimalNumber
+		}
 	}
 
-	var fuelVolumeTotalSum: Decimal {
-		get { return Decimal(string: _fuelVolumeTotalSum)! }
-		set { _fuelVolumeTotalSum = String(describing: newValue) }
+	var ksOdometer: Decimal {
+		get {
+			return odometer! as Decimal
+		}
+		set {
+			odometer = newValue as NSDecimalNumber
+		}
 	}
 
-	var odometer: Decimal {
-		get { return Decimal(string: _odometer)! }
-		set { _odometer = String(describing: newValue) }
+	var ksName: String {
+		return name!
 	}
 
-	var fuelUnit: UnitVolume {
-		get { return .fromPersistentId(_fuelUnit) }
-		set { _fuelUnit = newValue.persistentId }
+	var ksNumberPlate: String {
+		return numberPlate!
 	}
 
-	var fuelConsumptionUnit: UnitFuelEfficiency {
-		get { return .fromPersistentId(_fuelConsumptionUnit) }
-		set { _fuelConsumptionUnit = newValue.persistentId }
+	var ksFuelEvents: Set<FuelEvent> {
+		get {
+			return fuelEvents as! Set<FuelEvent>
+		}
+		set {
+			fuelEvents = newValue as NSSet
+		}
 	}
 
-	var odometerUnit: UnitLength {
-		get { return .fromPersistentId(_odometerUnit) }
-		set { _odometerUnit = newValue.persistentId	}
+	var ksFuelUnit: UnitVolume {
+		get {
+			return .fromPersistentId(fuelUnit)
+		}
+		set {
+			fuelUnit = newValue.persistentId
+		}
 	}
 
-}
+	var ksFuelConsumptionUnit: UnitFuelEfficiency {
+		get {
+			return .fromPersistentId(fuelConsumptionUnit)
+		}
+		set {
+			fuelConsumptionUnit = newValue.persistentId
+		}
+	}
 
-extension Car: CKRecordConvertible {
-}
+	var ksOdometerUnit: UnitLength {
+		get {
+			return .fromPersistentId(odometerUnit)
+		}
+		set {
+			odometerUnit = newValue.persistentId
+		}
+	}
 
-extension Car: CKRecordRecoverable {
 }

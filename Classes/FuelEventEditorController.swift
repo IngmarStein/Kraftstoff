@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RealmSwift
+import CoreData
 
 private let SRFuelEventCancelSheet     = "FuelEventCancelSheet"
 private let SRFuelEventDataChanged     = "FuelEventDataChanged"
@@ -22,7 +22,7 @@ private let SRFuelEventFilledUp        = "FuelEventFilledUp"
 private let SRFuelEventEditing         = "FuelEventEditing"
 private let SRFuelEventComment         = "FuelEventComment"
 
-final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, EditablePageCellDelegate, EditablePageCellValidator {
+final class FuelEventEditorController: PageViewController, UIViewControllerRestoration, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var event: FuelEvent! {
 		didSet {
@@ -43,9 +43,6 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 	private var dataChanged = false
 	private var restoredSelectionIndex: IndexPath?
 
-	// swiftlint:disable:next force_try
-	private let realm = try! Realm()
-
 	// MARK: - View Lifecycle
 
 	required init?(coder aDecoder: NSCoder) {
@@ -61,7 +58,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		self.cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(FuelEventEditorController.endEditingModeAndRevert(_:)))
 		self.editButtonItem.action = #selector(FuelEventEditorController.toggleEditingMode(_:))
 
-		self.title = Formatters.dateFormatter.string(from: self.event.timestamp)
+		self.title = Formatters.dateFormatter.string(from: self.event.ksTimestamp)
 		self.navigationItem.rightBarButtonItem = self.editButtonItem
 
 		// Remove tint from navigation bar
@@ -82,9 +79,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		if let storyboard = coder.decodeObject(forKey: UIApplication.stateRestorationViewControllerStoryboardKey) as? UIStoryboard,
 				let controller = storyboard.instantiateViewController(withIdentifier: "FuelEventEditor") as? FuelEventEditorController,
 				let modelIdentifier = coder.decodeObject(of: NSString.self, forKey: SRFuelEventEventID) as String? {
-			// swiftlint:disable:next force_try
-			let realm = try! Realm()
-			controller.event = realm.object(ofType: FuelEvent.self, forPrimaryKey: modelIdentifier)
+			controller.event = DataManager.managedObjectForModelIdentifier(modelIdentifier)
 
 			if controller.event == nil {
 				return nil
@@ -102,8 +97,8 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		coder.encode(isShowingCancelSheet, forKey: SRFuelEventCancelSheet)
 		coder.encode(dataChanged, forKey: SRFuelEventDataChanged)
 		coder.encode(indexPath, forKey: SRFuelEventSelectionIndex)
-		coder.encode(event.id, forKey: SRFuelEventEventID)
-		coder.encode(car.id, forKey: SRFuelEventCarID)
+		coder.encode(DataManager.modelIdentifierForManagedObject(event) as NSString?, forKey: SRFuelEventEventID)
+		coder.encode(DataManager.modelIdentifierForManagedObject(car) as NSString?, forKey: SRFuelEventCarID)
 		coder.encode(date, forKey: SRFuelEventDate)
 		coder.encode(distance, forKey: SRFuelEventDistance)
 		coder.encode(price, forKey: SRFuelEventPrice)
@@ -127,7 +122,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		comment                = coder.decodeObject(of: NSString.self, forKey: SRFuelEventComment) as String?
 
 		if let carId = coder.decodeObject(of: NSString.self, forKey: SRFuelEventCarID) as String? {
-			car = realm.object(ofType: Car.self, forPrimaryKey: carId)
+			car = DataManager.managedObjectForModelIdentifier(carId)
 		}
 
 		if coder.decodeBool(forKey: SRFuelEventEditing) {
@@ -162,20 +157,22 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 											 filledUp: filledUp,
 											 comment: comment,
 											 forceOdometerUpdate: true)
+
+			DataManager.saveContext()
 		}
 	}
 
 	private func restoreStateFromEvent() {
-		car = event.cars[0]
+		car = event.car!
 
-		let odometerUnit = car.odometerUnit
-		let fuelUnit     = car.fuelUnit
+		let odometerUnit = car.ksOdometerUnit
+		let fuelUnit     = car.ksFuelUnit
 
-		self.title = Formatters.dateFormatter.string(from: event.timestamp)
+		self.title = Formatters.dateFormatter.string(from: event.ksTimestamp)
 		date       = event.timestamp
-		distance   = Units.distanceForKilometers(event.distance, withUnit: odometerUnit)
-		price      = Units.pricePerUnit(event.price, withUnit: fuelUnit)
-		fuelVolume = Units.volumeForLiters(event.fuelVolume, withUnit: fuelUnit)
+		distance   = Units.distanceForKilometers(event.ksDistance, withUnit: odometerUnit)
+		price      = Units.pricePerUnit(event.ksPrice, withUnit: fuelUnit)
+		fuelVolume = Units.volumeForLiters(event.ksFuelVolume, withUnit: fuelUnit)
 		filledUp   = event.filledUp
 		comment    = event.comment
 
@@ -290,9 +287,9 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
 		}
 
 		// Conversion units
-		let odometerUnit    = car.odometerUnit
-		let fuelUnit        = car.fuelUnit
-		let consumptionUnit = car.fuelConsumptionUnit
+		let odometerUnit    = car.ksOdometerUnit
+		let fuelUnit        = car.ksFuelUnit
+		let consumptionUnit = car.ksFuelConsumptionUnit
 
 		// Compute the average consumption
 		let cost = fuelVolume * price
@@ -328,7 +325,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
                           "valueIdentifier": "date"],
           withAnimation: animation)
 
-		let odometerUnit = car.odometerUnit
+		let odometerUnit = car.ksOdometerUnit
 
 		addRowAtIndex(rowIndex: 1,
               inSection: 0,
@@ -339,7 +336,7 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
                           "valueIdentifier": "distance"],
           withAnimation: animation)
 
-		let fuelUnit = car.fuelUnit
+		let fuelUnit = car.ksFuelUnit
 
 		addRowAtIndex(rowIndex: 2,
               inSection: 0,

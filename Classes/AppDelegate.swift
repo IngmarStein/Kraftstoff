@@ -10,9 +10,7 @@ import UIKit
 import CoreSpotlight
 import MobileCoreServices
 import StoreKit
-import CloudKit
-import RealmSwift
-import IceCream
+import CoreData
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -34,18 +32,21 @@ private func contentsOfURL(_ url: URL) -> String? {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
-	private var notificationToken: NotificationToken?
-	// swiftlint:disable:next force_try
-	private let realm = try! Realm()
-	private var syncEngine: SyncEngine?
 
 	private var importAlert: UIAlertController?
+	private var importAlertParentViewController: UIViewController?
+
+	private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
+		let fetchedResultsController = DataManager.fetchedResultsControllerForCars()
+		fetchedResultsController.delegate = self
+		return fetchedResultsController
+	}()
 
 	// MARK: - Application Lifecycle
 
@@ -80,15 +81,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			syncEngine = SyncEngine(objects: [SyncObject<Car>(), SyncObject<FuelEvent>()])
+			DataManager.load()
 
-			UIApplication.shared.registerForRemoteNotifications()
+			//UIApplication.shared.registerForRemoteNotifications()
 
 			if ProcessInfo.processInfo.arguments.firstIndex(of: "-STARTFRESH") != nil {
-				// swiftlint:disable:next force_try
-				try! realm.write {
-					realm.deleteAll()
-				}
+				DataManager.deleteAllObjects()
 
 				let userDefaults = UserDefaults.standard
 				for key in ["statisticTimeSpan",
@@ -105,23 +103,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			let cars = realm.objects(Car.self)
-			notificationToken = cars.observe { _ in
-				UIApplication.shared.shortcutItems = cars.map { car in
-					let userInfo = ["objectId": car.id]
-					return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
-				}
-
-				if CSSearchableIndex.isIndexingAvailable() {
-					let searchableItems = cars.map { car -> CSSearchableItem in
-						let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
-						attributeset.title = car.name
-						attributeset.contentDescription = car.numberPlate
-						return CSSearchableItem(uniqueIdentifier: car.id, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
-					}
-					CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
-				}
-			}
+			updateShortcutItems()
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplication.LaunchOptionsKey.url] == nil {
@@ -140,54 +122,25 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		}
 	}
 
-	deinit {
-		notificationToken?.invalidate()
-	}
-
-	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-		if shortcutItem.type == "fillup" {
-			// switch to fill-up tab and select the car
-			if let tabBarController = self.window?.rootViewController as? UITabBarController {
-				tabBarController.selectedIndex = 0
-				if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-					navigationController.popToRootViewController(animated: false)
-					if let fuelCalculatorController = navigationController.viewControllers.first as? FuelCalculatorController {
-						fuelCalculatorController.selectedCarId = shortcutItem.userInfo?["objectId"] as? String
-						fuelCalculatorController.recreateTableContentsWithAnimation(.none)
-					}
-				}
-			}
-		}
-	}
-
-	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-		if userActivity.activityType == "com.github.ingmarstein.kraftstoff.fillup" {
-			// switch to fill-up tab
-			if let tabBarController = self.window?.rootViewController as? UITabBarController {
-				tabBarController.selectedIndex = 0
+	private func updateShortcutItems() {
+		if let cars = self.carsFetchedResultsController.fetchedObjects {
+			UIApplication.shared.shortcutItems = cars.compactMap { car in
+				guard let userInfo = DataManager.modelIdentifierForManagedObject(car).flatMap({ ["objectId": $0] }) else { return nil }
+				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.ksName, localizedSubtitle: car.ksNumberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
 			}
 
-			return true
-		} else {
-			if userActivity.activityType == CSSearchableItemActionType {
-				// switch to cars tab and show the fuel history
-				if let tabBarController = self.window?.rootViewController as? UITabBarController {
-					tabBarController.selectedIndex = 1
-					if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, realm.object(ofType: Car.self, forPrimaryKey: carIdentifier) != nil {
-						if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
-							fuelEventController.selectedCarId = carIdentifier
-							if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-								navigationController.popToRootViewController(animated: false)
-								navigationController.pushViewController(fuelEventController, animated: false)
-							}
-						}
-					}
+			if CSSearchableIndex.isIndexingAvailable() {
+				let searchableItems = cars.map { car -> CSSearchableItem in
+					let carIdentifier = DataManager.modelIdentifierForManagedObject(car)
+					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+					attributeset.title = car.name
+					attributeset.contentDescription = car.numberPlate
+					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
 				}
-				return true
+				CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
 			}
 		}
 
-		return false
 	}
 
 	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -200,15 +153,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		return true
 	}
 
-	// MARK: - Notifications
+	func applicationDidEnterBackground(_ application: UIApplication) {
+		DataManager.saveContext()
+	}
 
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		if let dict = userInfo as? [String: NSObject], let notification = CKNotification(fromRemoteNotificationDictionary: dict) {
-			if let subscriptionID = notification.subscriptionID, IceCreamSubscription.allIDs.contains(subscriptionID) {
-				NotificationCenter.default.post(name: Notifications.cloudKitDataDidChangeRemotely.name, object: nil, userInfo: userInfo)
-			}
-		}
-		completionHandler(.newData)
+	func applicationWillTerminate(_ application: UIApplication) {
+		DataManager.saveContext()
 	}
 
 	// MARK: - State Restoration
@@ -227,14 +177,15 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 	// MARK: - Data Import
 
-	private func showImportAlert() {
+	private func showImportAlert(parentViewController: UIViewController) {
 		if self.importAlert == nil {
 			self.importAlert = UIAlertController(title: NSLocalizedString("Importing", comment: "") + "\n\n", message: "", preferredStyle: .alert)
+			self.importAlertParentViewController = parentViewController
 
 			let progress = UIActivityIndicatorView(frame: self.importAlert!.view.bounds)
 			progress.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
 			progress.isUserInteractionEnabled = false
-			progress.style = .whiteLarge
+			progress.style = .large
 			progress.color = .black
 			let center = self.importAlert!.view.center
 			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
@@ -242,95 +193,80 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 			self.importAlert!.view.addSubview(progress)
 
-			self.window?.rootViewController?.present(self.importAlert!, animated: true, completion: nil)
+			parentViewController.present(self.importAlert!, animated: true, completion: nil)
 		}
 	}
 
 	private func hideImportAlert(completion: @escaping () -> Void) {
-		self.window?.rootViewController?.dismiss(animated: true, completion: completion)
+		self.importAlertParentViewController?.dismiss(animated: true, completion: completion)
 		self.importAlert = nil
 	}
 
-	// Removes files from the inbox
-	private func removeFileItem(at url: URL) {
-		if url.isFileURL {
-			do {
-				try FileManager.default.removeItem(at: url)
-			} catch let error {
-				print(error.localizedDescription)
-			}
-		}
-	}
-
-	func importCSV(at url: URL) {
+	func importCSV(at url: URL, parentViewController: UIViewController) {
 		// Show modal activity indicator while importing
-		showImportAlert()
+		showImportAlert(parentViewController: parentViewController)
 
-		DispatchQueue(label: "import").async {
-			autoreleasepool {
-				// Read file contents from given URL, guess file encoding
-				let CSVString = contentsOfURL(url)
-				self.removeFileItem(at: url)
+		// Import in context with private queue
+		let parentContext = DataManager.managedObjectContext
+		let importContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+		importContext.parent = parentContext
 
-				if let CSVString = CSVString {
-					// Try to import data from CSV file
-					let importer = CSVImporter()
+		importContext.perform {
+			// Read file contents from given URL, guess file encoding
+			let CSVString = contentsOfURL(url)
 
-					var numCars   = 0
-					var numEvents = 0
+			if let CSVString = CSVString {
+				// Try to import data from CSV file
+				let importer = CSVImporter()
 
-					let success = importer.`import`(CSVString,
-													detectedCars: &numCars,
-													detectedEvents: &numEvents,
-													sourceURL: url)
+				var numCars   = 0
+				var numEvents = 0
 
-					DispatchQueue.main.async {
-						self.hideImportAlert {
-							let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
+				let success = importer.`import`(CSVString,
+												detectedCars: &numCars,
+												detectedEvents: &numEvents,
+												sourceURL: url,
+												inContext: importContext)
 
-							let message = success
-								? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
-								: NSLocalizedString("No valid CSV data could be found.", comment: "")
+				// On success propagate changes to parent context
+				if success {
+					DataManager.saveContext(importContext)
+					parentContext.perform { DataManager.saveContext(parentContext) }
+				}
 
-							let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-							let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
-							alertController.addAction(defaultAction)
-							self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
-						}
+				DispatchQueue.main.async {
+					self.hideImportAlert {
+						let title = success ? NSLocalizedString("Import Finished", comment: "") : NSLocalizedString("Import Failed", comment: "")
+
+						let message = success
+							? String.localizedStringWithFormat(NSLocalizedString("Imported %d car(s) with %d fuel event(s).", comment: ""), numCars, numEvents)
+							: NSLocalizedString("No valid CSV data could be found.", comment: "")
+
+						let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
+						alertController.addAction(defaultAction)
+						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 					}
-				} else {
-					DispatchQueue.main.async {
-						self.hideImportAlert {
-							let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
-																	message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
-																	preferredStyle: .alert)
-							let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
-							alertController.addAction(defaultAction)
-							self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
-						}
+				}
+			} else {
+				DispatchQueue.main.async {
+					self.hideImportAlert {
+						let alertController = UIAlertController(title: NSLocalizedString("Import Failed", comment: ""),
+																message: NSLocalizedString("Can't detect file encoding. Please try to convert your CSV file to UTF8 encoding.", comment: ""),
+																preferredStyle: .alert)
+						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
+						alertController.addAction(defaultAction)
+						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 					}
 				}
 			}
 		}
 	}
 
-	func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-		// Ugly, but don't allow nested imports
-		if self.importAlert != nil {
-			removeFileItem(at: url)
-			return false
-		}
+	// MARK: - NSFetchedResultsControllerDelegate
 
-		if !StoreManager.sharedInstance.checkCarCount() {
-			StoreManager.sharedInstance.showBuyOptions(self.window!.rootViewController!)
-			return false
-		}
-
-		importCSV(at: url)
-
-		// Treat imports as successful first startups
-		UserDefaults.standard.set(false, forKey: "firstStartup")
-		return true
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		updateShortcutItems()
 	}
 
 	// MARK: - SKRequestDelegate
@@ -441,6 +377,22 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 			}
 		}
 		return false
+	}
+
+	// MARK: - Modal Alerts
+
+	var alertWindow: UIWindow {
+		get {
+			if let window = UIApplication.shared.keyWindow {
+				return window
+			} else {
+				let alertWindow = UIWindow(frame: UIScreen.main.bounds)
+				alertWindow.rootViewController = UIViewController()
+				alertWindow.windowLevel = .alert + 1
+				alertWindow.makeKeyAndVisible()
+				return alertWindow
+			}
+		}
 	}
 
 	// MARK: - Shared Color Gradients

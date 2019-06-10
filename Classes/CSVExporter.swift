@@ -11,9 +11,9 @@ import Foundation
 final class CSVExporter {
 
 	static func exportFuelEvents(_ fuelEvents: [FuelEvent], forCar car: Car, language: String? = nil) -> String {
-		let odometerUnit = car.odometerUnit
-		let fuelUnit = car.fuelUnit
-		let consumptionUnit = car.fuelConsumptionUnit
+		let odometerUnit = car.ksOdometerUnit
+		let fuelUnit = car.ksFuelUnit
+		let consumptionUnit = car.ksFuelConsumptionUnit
 		let measurementFormatter = MeasurementFormatter()
 		measurementFormatter.unitStyle = .long
 
@@ -64,14 +64,14 @@ final class CSVExporter {
 		numberFormatter.minimumFractionDigits = 2
 
 		for fuelEvent in fuelEvents {
-			let timestamp = dateFormatter.string(from: fuelEvent.timestamp)
-			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.distance, withUnit: odometerUnit) as NSNumber)!
-			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.fuelVolume, withUnit: fuelUnit) as NSNumber)!
+			let timestamp = dateFormatter.string(from: fuelEvent.ksTimestamp)
+			let distance = numberFormatter.string(from: Units.distanceForKilometers(fuelEvent.ksDistance, withUnit: odometerUnit) as NSNumber)!
+			let fuelVolume = numberFormatter.string(from: Units.volumeForLiters(fuelEvent.ksFuelVolume, withUnit: fuelUnit) as NSNumber)!
 			let filledUp = fuelEvent.filledUp ? NSLocalizedString("Yes", comment: "") : NSLocalizedString("No", comment: "")
-			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.price, withUnit: fuelUnit) as NSNumber)!
+			let price = numberFormatter.string(from: Units.pricePerUnit(fuelEvent.ksPrice, withUnit: fuelUnit) as NSNumber)!
 			let consumption = fuelEvent.filledUp ? numberFormatter.string(from:
-				Units.consumptionForKilometers(fuelEvent.distance + fuelEvent.inheritedDistance,
-				                               liters: fuelEvent.fuelVolume + fuelEvent.inheritedFuelVolume,
+				Units.consumptionForKilometers(fuelEvent.ksDistance + fuelEvent.ksInheritedDistance,
+				                               liters: fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume,
 				                               inUnit: consumptionUnit) as NSNumber)!
 				: " "
 			let comment = fuelEvent.comment ?? ""

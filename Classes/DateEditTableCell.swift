@@ -59,7 +59,7 @@ final class DateEditTableCell: EditableProxyPageCell {
 		} else {
 			valid = true
 		}
-		self.textFieldProxy.textColor = valid ? .black : invalidTextColor
+		self.textFieldProxy.textColor = valid ? .label : invalidTextColor
 	}
 
 	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {

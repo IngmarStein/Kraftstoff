@@ -10,7 +10,7 @@ import UIKit
 
 extension UnitLength {
 
-	var persistentId: Int {
+	var persistentId: Int32 {
 		switch self {
 		case .kilometers:
 			return 0
@@ -21,7 +21,7 @@ extension UnitLength {
 		}
 	}
 
-	class func fromPersistentId(_ id: Int) -> UnitLength {
+	class func fromPersistentId(_ id: Int32) -> UnitLength {
 		switch id {
 		case 0:
 			return .kilometers
@@ -36,7 +36,7 @@ extension UnitLength {
 
 extension UnitVolume {
 
-	var persistentId: Int {
+	var persistentId: Int32 {
 		switch self {
 		case .liters:
 			return 0
@@ -49,7 +49,7 @@ extension UnitVolume {
 		}
 	}
 
-	class func fromPersistentId(_ id: Int) -> UnitVolume {
+	class func fromPersistentId(_ id: Int32) -> UnitVolume {
 		switch id {
 		case 0:
 			return .liters
@@ -64,46 +64,10 @@ extension UnitVolume {
 
 }
 
-final class UnitConverterReciprocal: UnitConverter, NSSecureCoding {
-
-	var coefficient: Double
-
-	init(coefficient c: Double) {
-		coefficient = c
-
-		super.init()
-	}
-
-	init?(coder aDecoder: NSCoder) {
-		coefficient = aDecoder.decodeDouble(forKey: "coefficient")
-
-		super.init()
-	}
-
-	static var supportsSecureCoding: Bool { return true }
-
-	func encode(with aCoder: NSCoder) {
-		aCoder.encode(coefficient, forKey: "coefficient")
-	}
-
-	override func baseUnitValue(fromValue value: Double) -> Double {
-		return coefficient / value
-	}
-
-	override func value(fromBaseUnitValue baseUnitValue: Double) -> Double {
-		return coefficient / baseUnitValue
-	}
-
-}
-
 // Base unit = l / 100 km
 extension UnitFuelEfficiency {
 
-	@nonobjc static let kilometersPerLiter = UnitFuelEfficiency(symbol: "km/l", converter: UnitConverterReciprocal(coefficient: 100.0))
-	@nonobjc static let gallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_us", converter: UnitConverterLinear(coefficient: 42.5170068027))
-	@nonobjc static let imperialGallonsPer10000Miles = UnitFuelEfficiency(symbol: "gp10k_uk", converter: UnitConverterLinear(coefficient: 35.3982300885))
-
-	var persistentId: Int {
+	var persistentId: Int32 {
 		switch self {
 		case .litersPer100Kilometers:
 			return 0
@@ -111,16 +75,12 @@ extension UnitFuelEfficiency {
 			return 1
 		case .milesPerImperialGallon:
 			return 2
-		case .gallonsPer10000Miles:
-			return 3
-		case .imperialGallonsPer10000Miles:
-			return 4
 		default:
 			fatalError("Unknown fuel efficiency unit: \(self)")
 		}
 	}
 
-	class func fromPersistentId(_ id: Int) -> UnitFuelEfficiency {
+	class func fromPersistentId(_ id: Int32) -> UnitFuelEfficiency {
 		switch id {
 		case 0:
 			return .litersPer100Kilometers
@@ -128,21 +88,13 @@ extension UnitFuelEfficiency {
 			return .milesPerGallon
 		case 2:
 			return .milesPerImperialGallon
-		case 3:
-			return .gallonsPer10000Miles
-		case 4:
-			return .imperialGallonsPer10000Miles
 		default:
 			fatalError("Unknown fuel efficiency unit: \(id)")
 		}
 	}
 
-	var isGP10K: Bool {
-		return self == .gallonsPer10000Miles || self == .imperialGallonsPer10000Miles
-	}
-
 	var isEfficiency: Bool {
-		return self == .kilometersPerLiter || self == .milesPerGallon || self == .milesPerImperialGallon
+		return self == .milesPerGallon || self == .milesPerImperialGallon
 	}
 
 }
@@ -182,8 +134,6 @@ final class Units {
 	static let kilometersPerStatuteMile = NSDecimalNumber(mantissa: (1609344 as UInt64), exponent: -6, isNegative: false) as Decimal
 	static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa: (2352145833 as UInt64), exponent: -9, isNegative: false)
 	static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa: (2737067636 as UInt64), exponent: -9, isNegative: false)
-	static let litersPer100KilometersToMilesPer10KUSGallon = NSDecimalNumber(mantissa: (425170068027 as UInt64), exponent: -10, isNegative: false)
-	static let litersPer100KilometersToMilesPer10KImperialGallon = NSDecimalNumber(mantissa: (353982300885 as UInt64), exponent: -10, isNegative: false)
 
 	// MARK: - Conversion to/from Internal Data Format
 
@@ -252,30 +202,18 @@ final class Units {
 			return .nan
 		}
 
-		if unit.isEfficiency {
+		switch unit {
+		case .milesPerGallon:
 			let kmPerLiter = (kilometers / liters) as NSDecimalNumber
-
-			switch unit {
-			case .kilometersPerLiter:
-				return kmPerLiter.rounding(accordingToBehavior: handler) as Decimal
-			case .milesPerGallon:
-				return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler) as Decimal
-			default: // .milesPerImperialGallonUK:
-				return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler) as Decimal
-			}
-
-		} else {
-
+			return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerUSGallon, withBehavior: handler) as Decimal
+		case .milesPerImperialGallon:
+			let kmPerLiter = (kilometers / liters) as NSDecimalNumber
+			return kmPerLiter.multiplying(by: kilometersPerLiterToMilesPerImperialGallon, withBehavior: handler) as Decimal
+		case .litersPer100Kilometers:
 			let literPer100km = ((liters << 2) / kilometers) as NSDecimalNumber
-
-			switch unit {
-			case .litersPer100Kilometers:
-				return literPer100km.rounding(accordingToBehavior: handler) as Decimal
-			case .gallonsPer10000Miles:
-				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KUSGallon, withBehavior: handler) as Decimal
-			default: // .imperialGallonsPer10000Miles:
-				return literPer100km.multiplying(by: litersPer100KilometersToMilesPer10KImperialGallon, withBehavior: handler) as Decimal
-			}
+			return literPer100km.rounding(accordingToBehavior: handler) as Decimal
+		default:
+			fatalError("Unknown fuel efficiency unit")
 		}
 	}
 

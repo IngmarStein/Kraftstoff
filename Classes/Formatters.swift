@@ -11,19 +11,19 @@ import UIKit
 final class Formatters {
 
 	static let shortMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = LocalizedMeasurementFormatter()
+		let measurementFormatter = MeasurementFormatter()
 		measurementFormatter.unitStyle = .short
 		return measurementFormatter
 	}()
 
 	static let mediumMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = LocalizedMeasurementFormatter()
+		let measurementFormatter = MeasurementFormatter()
 		measurementFormatter.unitStyle = .medium
 		return measurementFormatter
 	}()
 
 	static let longMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = LocalizedMeasurementFormatter()
+		let measurementFormatter = MeasurementFormatter()
 		measurementFormatter.unitStyle = .long
 		return measurementFormatter
 	}()
