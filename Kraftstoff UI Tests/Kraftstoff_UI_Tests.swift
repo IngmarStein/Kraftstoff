@@ -20,7 +20,9 @@ class KraftstoffUITests: XCTestCase {
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
 		app.launch()
 
+		#if !targetEnvironment(UIKitForMac)
 		XCUIDevice.shared.orientation = .portrait
+		#endif
     }
 
     override func tearDown() {
@@ -55,7 +57,11 @@ class KraftstoffUITests: XCTestCase {
 
 		snapshot("03_fuelevents")
 
+		app.buttons["Chart"].tap()
+
+		#if !targetEnvironment(UIKitForMac)
 		XCUIDevice.shared.orientation = .landscapeLeft
+		#endif
 
 		let imagesQuery = app.images
 		let button = imagesQuery.buttons["5Y"]
@@ -69,7 +75,11 @@ class KraftstoffUITests: XCTestCase {
 
 		snapshot("05_chart_fuel")
 
+		app.buttons["close"].tap()
+
+		#if !targetEnvironment(UIKitForMac)
 		XCUIDevice.shared.orientation = .portrait
+		#endif
 
 		tabBarsQuery.buttons.element(boundBy: 0).tap() // Fill-Up
 

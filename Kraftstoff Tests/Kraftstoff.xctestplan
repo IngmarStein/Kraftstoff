@@ -1,0 +1,40 @@
+{
+  "configurations" : [
+    {
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "addressSanitizer" : {
+      "enabled" : true
+    },
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-UNLIMITED"
+      },
+      {
+        "argument" : "-UNITTEST"
+      }
+    ],
+    "language" : "en",
+    "region" : "US",
+    "testExecutionOrdering" : "random",
+    "uiTestingScreenshotsLifetime" : "keepNever",
+    "undefinedBehaviorSanitizerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Kraftstoff.xcodeproj",
+        "identifier" : "95DA86251AFB426D001E1375",
+        "name" : "Kraftstoff Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

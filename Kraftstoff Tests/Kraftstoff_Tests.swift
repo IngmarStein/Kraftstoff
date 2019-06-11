@@ -12,30 +12,8 @@ import CoreData
 
 class KraftstoffTests: XCTestCase {
 
-	private var managedObjectContext: NSManagedObjectContext!
-
-	private func setUpInMemoryManagedObjectContext() -> NSManagedObjectContext {
-		let managedObjectModel = NSManagedObjectModel.mergedModel(from: [Bundle.main])!
-
-		let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
-		do {
-			try persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: nil, options: nil)
-		} catch _ {
-		}
-
-		let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-		managedObjectContext.persistentStoreCoordinator = persistentStoreCoordinator
-
-		return managedObjectContext
-	}
-
-	override func setUp() {
-		super.setUp()
-
-		managedObjectContext = setUpInMemoryManagedObjectContext()
-	}
-
 	private func roundtrip(_ language: String) {
+		let managedObjectContext = DataManager.managedObjectContext
 		let car = Car(context: managedObjectContext)
 
 		car.order = 0
@@ -79,6 +57,7 @@ class KraftstoffTests: XCTestCase {
 	}
 
     func testCSVExport() {
+		let managedObjectContext = DataManager.managedObjectContext
 		let car = Car(context: managedObjectContext)
 
 		car.order = 0
@@ -114,7 +93,7 @@ class KraftstoffTests: XCTestCase {
 			detectedCars: &numCars,
 			detectedEvents: &numEvents,
 			sourceURL: url,
-			inContext: managedObjectContext)
+			inContext: DataManager.managedObjectContext)
 
 		XCTAssert(success, "import should finish successfully")
 		XCTAssert(numCars == 1, "should import one car")

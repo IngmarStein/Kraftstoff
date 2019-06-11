@@ -134,6 +134,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NRn-ON-A3B" userLabel="Dismiss">
                                 <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <accessibility key="accessibilityConfiguration" label="close"/>
                                 <color key="tintColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" image="xmark.circle" catalog="system"/>
                                 <connections>
@@ -622,6 +623,7 @@
                             </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cfh-Xy-CBf" userLabel="Dismiss">
                                 <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <accessibility key="accessibilityConfiguration" label="close"/>
                                 <color key="tintColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" image="xmark.circle" catalog="system"/>
                                 <connections>

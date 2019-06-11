@@ -89,6 +89,7 @@
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
+		953EF34622B057A0003C3F5C /* Kraftstoff.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = Kraftstoff.xctestplan; path = "Kraftstoff Tests/Kraftstoff.xctestplan"; sourceTree = SOURCE_ROOT; };
 		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -98,6 +99,7 @@
 		95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEventEditorController.swift; sourceTree = "<group>"; };
 		957F24B21E2E673C007AC96A /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleKit.swift; path = Classes/StyleKit.swift; sourceTree = "<group>"; };
 		9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Kraftstoff.swift"; sourceTree = "<group>"; };
+		95844D0822B055330076F80B /* UITestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITestPlan.xctestplan; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95AE6D8E1AF7BDCC006A56D6 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEvent.swift; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 		95DA86271AFB426D001E1375 /* Kraftstoff Tests */ = {
 			isa = PBXGroup;
 			children = (
+				953EF34622B057A0003C3F5C /* Kraftstoff.xctestplan */,
 				95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */,
 				95DA86281AFB426D001E1375 /* Supporting Files */,
 			);
@@ -464,6 +467,7 @@
 		95E685431C4C1BC800C6D5F8 /* Kraftstoff UI Tests */ = {
 			isa = PBXGroup;
 			children = (
+				95844D0822B055330076F80B /* UITestPlan.xctestplan */,
 				95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */,
 				95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */,
 				95E685461C4C1BC800C6D5F8 /* Info.plist */,

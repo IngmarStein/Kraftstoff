@@ -1,0 +1,55 @@
+{
+  "configurations" : [
+    {
+      "name" : "de-de",
+      "options" : {
+        "language" : "de",
+        "region" : "DE"
+      }
+    },
+    {
+      "name" : "en-US",
+      "options" : {
+        "language" : "en",
+        "region" : "US"
+      }
+    },
+    {
+      "name" : "ja-JP",
+      "options" : {
+        "language" : "ja",
+        "region" : "JP"
+      }
+    },
+    {
+      "name" : "fr-FR",
+      "options" : {
+        "language" : "fr",
+        "region" : "FR"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "areLocalizationScreenshotsEnabled" : true,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-STARTFRESH"
+      },
+      {
+        "argument" : "-KEEPLENS"
+      }
+    ],
+    "uiTestingScreenshotsLifetime" : "keepAlways"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Kraftstoff.xcodeproj",
+        "identifier" : "95E685411C4C1BC800C6D5F8",
+        "name" : "Kraftstoff UI Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

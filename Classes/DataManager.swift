@@ -19,6 +19,15 @@ final class DataManager {
 	}()
 
 	static let persistentContainer: NSPersistentContainer = {
+		if ProcessInfo.processInfo.arguments.firstIndex(of: "-UNITTEST") != nil {
+			let container = NSPersistentContainer(name: "Fuel")
+			guard let description = container.persistentStoreDescriptions.first else {
+				fatalError("Could not retrieve a persistent store description.")
+			}
+			description.type = NSInMemoryStoreType
+			return container
+		}
+
 		let container = NSPersistentCloudKitContainer(name: "Fuel")
 
 		// get the store description
