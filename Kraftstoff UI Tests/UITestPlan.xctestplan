@@ -30,16 +30,17 @@
     }
   ],
   "defaultOptions" : {
-    "areLocalizationScreenshotsEnabled" : true,
     "commandLineArgumentEntries" : [
       {
         "argument" : "-STARTFRESH"
       },
       {
+        "argument" : "-UNITTEST"
+      },
+      {
         "argument" : "-KEEPLENS"
       }
-    ],
-    "uiTestingScreenshotsLifetime" : "keepAlways"
+    ]
   },
   "testTargets" : [
     {

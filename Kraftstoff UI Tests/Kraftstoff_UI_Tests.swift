@@ -10,23 +10,25 @@ import XCTest
 
 class KraftstoffUITests: XCTestCase {
 
+	private func snapshot(_ name: String) {
+		let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+		attachment.lifetime = .keepAlways
+		attachment.name = name
+		add(attachment)
+	}
+
     override func setUp() {
         super.setUp()
 
 		continueAfterFailure = false
 
 		let app = XCUIApplication()
-		setupSnapshot(app)
-		app.launchArguments += ["-STARTFRESH", "-KEEPLENS"]
+		app.launchArguments += ["-STARTFRESH", "-KEEPLENS", "-UNITTEST"]
 		app.launch()
 
 		#if !targetEnvironment(UIKitForMac)
 		XCUIDevice.shared.orientation = .portrait
 		#endif
-    }
-
-    override func tearDown() {
-        super.tearDown()
     }
 
     func testSnapshots() {
@@ -70,8 +72,8 @@ class KraftstoffUITests: XCTestCase {
 		imagesQuery["graphImage"].coordinate(withNormalizedOffset: CGVector(dx: 0.536, dy: 0.5)).press(forDuration: 0.6)
 		snapshot("04_chart_cost")
 
-		app.pageIndicators.element(boundBy: 0).tap()
-		// app.scrollViews.element(boundBy: 0).swipeLeft()
+		// app.pageIndicators.element(boundBy: 0).tap()
+		app.scrollViews.element(boundBy: 0).swipeLeft()
 
 		snapshot("05_chart_fuel")
 

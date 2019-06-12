@@ -54,7 +54,6 @@
 		95DA862B1AFB426D001E1375 /* Kraftstoff_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA862A1AFB426D001E1375 /* Kraftstoff_Tests.swift */; };
 		95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA86311AFB45E2001E1375 /* CSVExporter.swift */; };
 		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
-		95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 		95FFA73122A7100800D42BC8 /* Fuel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 95FFA72F22A7100800D42BC8 /* Fuel.xcdatamodeld */; };
 		95FFA73322A8720F00D42BC8 /* WindowSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FFA73222A8720F00D42BC8 /* WindowSceneDelegate.swift */; };
@@ -138,7 +137,6 @@
 		95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_UI_Tests.swift; sourceTree = "<group>"; };
 		95E685461C4C1BC800C6D5F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		95F1962F1B961D90000E4D0C /* StoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		95FFA73022A7100800D42BC8 /* Fuel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Fuel.xcdatamodel; sourceTree = "<group>"; };
 		95FFA73222A8720F00D42BC8 /* WindowSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WindowSceneDelegate.swift; path = Classes/WindowSceneDelegate.swift; sourceTree = "<group>"; };
@@ -468,7 +466,6 @@
 			isa = PBXGroup;
 			children = (
 				95844D0822B055330076F80B /* UITestPlan.xctestplan */,
-				95E6854C1C4C1BD900C6D5F8 /* SnapshotHelper.swift */,
 				95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */,
 				95E685461C4C1BC800C6D5F8 /* Info.plist */,
 			);
@@ -696,7 +693,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */,
-				95E6854D1C4C1BD900C6D5F8 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

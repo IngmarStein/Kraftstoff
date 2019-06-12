@@ -431,6 +431,14 @@ final class DataManager {
 	}
 
 	static func deleteAllObjects() {
+		guard let description = persistentContainer.persistentStoreDescriptions.first else {
+			fatalError("Could not retrieve a persistent store description.")
+		}
+		if description.type == NSInMemoryStoreType {
+			// NSInMemoryStoreType does not support NSBatchDeleteRequest
+			return
+		}
+
 		for entity in persistentContainer.managedObjectModel.entitiesByName.keys {
 			let deleteRequest = NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: entity))
 
