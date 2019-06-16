@@ -32,6 +32,7 @@ class KraftstoffUITests: XCTestCase {
     }
 
     func testSnapshots() {
+		let deviceLanguage = Locale.current.languageCode!
 		let app = XCUIApplication()
 		let tabBarsQuery = app.tabBars
 

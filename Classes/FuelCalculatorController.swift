@@ -50,9 +50,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 		userActivity?.title = NSLocalizedString("Fill-Up", comment: "")
 		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
 		userActivity?.isEligibleForSearch = true
-		if #available(iOS 12.0, *) {
-			userActivity?.isEligibleForPrediction = true
-		}
+		userActivity?.isEligibleForPrediction = true
 
 		// Title bar
 		self.doneButton.target = self

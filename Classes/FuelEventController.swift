@@ -168,10 +168,10 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
 
 	// MARK: - Segues
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if let statisticsPageController = segue.destination as? FuelStatisticsPageController {
-			statisticsPageController.selectedCar = self.selectedCar
-		}
+	@IBSegueAction func showStatistics(_ coder: NSCoder) -> FuelStatisticsPageController? {
+		let statisticsPageController = FuelStatisticsPageController(coder: coder)
+		statisticsPageController?.selectedCar = self.selectedCar
+		return statisticsPageController
 	}
 
 	@IBAction func unwindToFuelEvents(_ unwindSegue: UIStoryboardSegue) {

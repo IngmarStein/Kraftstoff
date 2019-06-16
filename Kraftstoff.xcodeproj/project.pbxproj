@@ -12,6 +12,10 @@
 		4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4DCFE36C138EE2930051FEC9 /* Localizable.strings */; };
 		950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950C99541AF3696D00AC8749 /* MainStoryboard.storyboard */; };
 		952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952049BC1AF3EBB400EC9444 /* Formatters.swift */; };
+		952DBF9322B2D27C00C914D0 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952DBF9222B2D27C00C914D0 /* TabView.swift */; };
+		952DBF9522B2D31100C914D0 /* CarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952DBF9422B2D31100C914D0 /* CarsView.swift */; };
+		952DBF9722B2D3C400C914D0 /* CarRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952DBF9622B2D3C400C914D0 /* CarRowView.swift */; };
+		953EF35222B19512003C3F5C /* FuelCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953EF35122B19512003C3F5C /* FuelCalculatorView.swift */; };
 		953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */; };
 		953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */; };
 		955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */; };
@@ -88,7 +92,11 @@
 		950C99551AF3696D00AC8749 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		950C995A1AF37DFD00AC8749 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		952049BC1AF3EBB400EC9444 /* Formatters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formatters.swift; path = Classes/Formatters.swift; sourceTree = "<group>"; };
+		952DBF9222B2D27C00C914D0 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
+		952DBF9422B2D31100C914D0 /* CarsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarsView.swift; sourceTree = "<group>"; };
+		952DBF9622B2D3C400C914D0 /* CarRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarRowView.swift; sourceTree = "<group>"; };
 		953EF34622B057A0003C3F5C /* Kraftstoff.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = Kraftstoff.xctestplan; path = "Kraftstoff Tests/Kraftstoff.xctestplan"; sourceTree = SOURCE_ROOT; };
+		953EF35122B19512003C3F5C /* FuelCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelCalculatorView.swift; sourceTree = "<group>"; };
 		953F0E2F1AFA08970069DFF6 /* CSVImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
 		953F0E311AFA0E3B0069DFF6 /* CSVParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		955B46171AF20F2300A62D3B /* NSDate+Kraftstoff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Kraftstoff.swift"; sourceTree = "<group>"; };
@@ -195,6 +203,7 @@
 				95AE6D8D1AF7BDBE006A56D6 /* Managed Objects */,
 				4DAC56211303178D00D02BEC /* PageTables */,
 				95F1962E1B961D54000E4D0C /* Store */,
+				952DBF9222B2D27C00C914D0 /* TabView.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -343,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				95D2AE7D1AF748D1003FF205 /* FuelCalculatorController.swift */,
+				953EF35122B19512003C3F5C /* FuelCalculatorView.swift */,
 			);
 			name = Calculator;
 			sourceTree = "<group>";
@@ -351,6 +361,8 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D961AF8CDAF006A56D6 /* CarViewController.swift */,
+				952DBF9422B2D31100C914D0 /* CarsView.swift */,
+				952DBF9622B2D3C400C914D0 /* CarRowView.swift */,
 			);
 			name = "Car View";
 			sourceTree = "<group>";
@@ -646,8 +658,11 @@
 				95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */,
 				95AE6D951AF8A4B5006A56D6 /* AppDelegate.swift in Sources */,
 				95AE6D931AF88D13006A56D6 /* FuelStatisticsPageController.swift in Sources */,
+				953EF35222B19512003C3F5C /* FuelCalculatorView.swift in Sources */,
 				95C071871AF6751200DF261C /* PageCell.swift in Sources */,
 				95AE6D991AF8E9A7006A56D6 /* FuelStatisticsTextViewController.swift in Sources */,
+				952DBF9522B2D31100C914D0 /* CarsView.swift in Sources */,
+				952DBF9322B2D27C00C914D0 /* TabView.swift in Sources */,
 				95C071811AF65DE900DF261C /* NumberEditTableCell.swift in Sources */,
 				95C0717D1AF6551200DF261C /* DateEditTableCell.swift in Sources */,
 				955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */,
@@ -672,6 +687,7 @@
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
 				95FFA73322A8720F00D42BC8 /* WindowSceneDelegate.swift in Sources */,
+				952DBF9722B2D3C400C914D0 /* CarRowView.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */,
 				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,
@@ -1027,6 +1043,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_COMPILATION_MODE = singlefile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;

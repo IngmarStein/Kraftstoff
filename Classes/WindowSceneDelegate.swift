@@ -9,10 +9,10 @@
 import UIKit
 import CoreSpotlight
 
-class WindowSceneDelegate: NSObject, UIWindowSceneDelegate {
+class WindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
 
-	func sceneWillResignActive(_ scene: UIScene) {
+	func sceneDidEnterBackground(_ scene: UIScene) {
 		DataManager.saveContext()
 	}
 

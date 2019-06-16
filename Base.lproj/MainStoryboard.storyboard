@@ -30,7 +30,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="MNb-cq-XuY" kind="show" identifier="FuelEventSegue" id="fup-JW-VQO">
+                                    <segue destination="MNb-cq-XuY" kind="show" identifier="FuelEventSegue" destinationCreationSelector="showFuelEvents:sender:" id="fup-JW-VQO">
                                         <segue key="commit" inheritsFrom="parent" id="Gtb-zh-KM2"/>
                                         <segue key="preview" inheritsFrom="commit" id="F4S-M7-X24"/>
                                     </segue>
@@ -85,7 +85,7 @@
                             </barButtonItem>
                             <barButtonItem title="Chart" image="chart.bar" catalog="system" id="6lO-V7-YIT">
                                 <connections>
-                                    <segue destination="ryK-w1-KVA" kind="presentation" id="IuH-l4-xPN"/>
+                                    <segue destination="ryK-w1-KVA" kind="presentation" destinationCreationSelector="showStatistics:" id="IuH-l4-xPN"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>

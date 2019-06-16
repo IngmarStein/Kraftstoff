@@ -243,7 +243,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			if enteredName.lowercased() == "apple" && enteredPlate.lowercased() == "demo" {
 				addDemoEvents = true
 				newCar.name = "Toyota IQ+"
-				newCar.numberPlate = "SLS IOIOI"
+				newCar.numberPlate = "SLS IO 101"
 			} else {
 				addDemoEvents = false
 				newCar.name = enteredName
@@ -661,7 +661,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		changeIsUserDriven = false
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+	@IBSegueAction func showFuelEvents(_ coder: NSCoder, sender: Any?) -> FuelEventController? {
 		let selection: IndexPath?
 		if let cell = sender as? UITableViewCell {
 			selection = tableView.indexPath(for: cell)
@@ -669,10 +669,13 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			selection = tableView.indexPathForSelectedRow
 		}
 
-		if let fuelEventController = segue.destination as? FuelEventController, let selection = selection {
+		let fuelEventController = FuelEventController(coder: coder)
+		if let selection = selection {
 			let selectedCar = self.fetchedResultsController.object(at: selection)
-			fuelEventController.selectedCar = selectedCar
+			fuelEventController?.selectedCar = selectedCar
 		}
+
+		return fuelEventController
 	}
 
 	// MARK: - Memory Management
