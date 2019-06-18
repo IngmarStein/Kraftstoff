@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct CarRowView : View {
 	/*@ObjectBinding */var car: Car
@@ -27,7 +28,7 @@ struct CarRowView : View {
 
 #if DEBUG
 let previewCar: Car = {
-	let car = Car()
+	let car = Car(context: DataManager.managedObjectContext)
 	car.name = "SLS IO 101"
 	car.numberPlate = "Toyota IQ+"
 	car.ksFuelConsumptionUnit = .litersPer100Kilometers
@@ -38,7 +39,16 @@ let previewCar: Car = {
 
 struct CarRowView_Previews : PreviewProvider {
     static var previews: some View {
-		CarRowView(car: previewCar)
+		Group {
+			CarRowView(car: previewCar)
+				.environment(\.sizeCategory, .medium)
+				.previewLayout(.sizeThatFits)
+				.previewDisplayName("medium")
+			CarRowView(car: previewCar)
+				.environment(\.sizeCategory, .extraLarge)
+				.previewLayout(.sizeThatFits)
+				.previewDisplayName("extraLarge")
+		}
     }
 }
 #endif

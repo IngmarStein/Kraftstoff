@@ -20,17 +20,16 @@ struct FuelCalculatorView : View {
 	@State var comment = ""
 
 	let userActivity: NSUserActivity = {
-		let userActivity = NSUserActivity(activityType: "com.github.ingmarstein.kraftstoff.fillup")
-		userActivity.title = NSLocalizedString("Fill-Up", comment: "")
-		userActivity.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
-		userActivity.isEligibleForSearch = true
-		userActivity.isEligibleForPrediction = true
-		return userActivity
+		let activity = NSUserActivity(activityType: "com.github.ingmarstein.kraftstoff.fillup")
+		activity.title = NSLocalizedString("Fill-Up", comment: "")
+		activity.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
+		activity.isEligibleForSearch = true
+		activity.isEligibleForPrediction = true
+		return activity
 	}()
 
     var body: some View {
-		// TODO: should be Form, not List
-		List {
+		Form {
 			Section {
 				//if cars.count > 1 {
 					Picker(selection: .constant(1), label: Text("Car")) {
