@@ -7,11 +7,12 @@
 //
 
 import SwiftUI
+import Combine
 
 struct FuelCalculatorView : View {
-	/*@ObjectBinding */var cars: [Car]
+	/*@ObjectBinding */var cars: [CarViewModel]
 	@State var date: Date
-	@State var car: Car?
+	@State var car: CarViewModel?
 	@State var lastChangeDate: Date
 	@State var distance = Decimal.zero
 	@State var price = Decimal.zero
@@ -28,22 +29,30 @@ struct FuelCalculatorView : View {
 		return activity
 	}()
 
+	// TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
+	/*
+	var showConsumption: AnyPublisher<Bool, Never> {
+		return Publishers.CombineLatest3($filledUp, $distance, $fuelVolume) { filledUp, distance, fuelVolume in
+			return filledUp && distance > 0 && fuelVolume > 0
+		}.eraseToAnyPublisher()
+	}
+	*/
+
     var body: some View {
 		Form {
 			Section {
-				//if cars.count > 1 {
+				if cars.count > 1 {
 					Picker(selection: .constant(1), label: Text("Car")) {
-						ForEach(cars.identified(by: \.objectID)) { car in
-							Text("car").tag(1)
+						ForEach(cars.identified(by: \.identifier)) { car in
+							Text("test").tag(1)
 						}
 					}
-				//}
+				}
 				DatePicker($date) {
 					Text("Date")
 				}
-				HStack {
+				HStack() {
 					Text("Distance")
-					Spacer()
 					TextField(.constant("Placeholder"))
 				}
 				HStack {
@@ -62,7 +71,7 @@ struct FuelCalculatorView : View {
 			}
 			// TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
 			Section {
-				Text("Consumption")
+				Text("cost") + Text("/") + Text("currency") + Text("consumption") + Text("unit")
 			}
 		}
 		.onAppear { self.userActivity.becomeCurrent() }
@@ -70,7 +79,8 @@ struct FuelCalculatorView : View {
     }
 
 	func save() {
-		DataManager.addToArchive(car: car!,
+		let managedCar: Car? = DataManager.managedObjectForModelIdentifier(car!.identifier)
+		DataManager.addToArchive(car: managedCar!,
 								 date: date,
 								 distance: distance,
 								 price: price,

@@ -10,32 +10,34 @@ import SwiftUI
 import CoreData
 
 struct CarRowView : View {
-	/*@ObjectBinding */var car: Car
+	/*@ObjectBinding */var car: CarViewModel
 
 	var body: some View {
 		VStack {
 			HStack {
-				Text(car.ksName)
+				Text(car.name)
 				Text("TODO")
 			}
 			HStack {
-				Text(car.ksNumberPlate)
-				Text(Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit))
+				Text(car.numberPlate)
+				Text(Formatters.shortMeasurementFormatter.string(from: car.fuelConsumptionUnit))
 			}
 		}
     }
 }
 
 #if DEBUG
-let previewCar: Car = {
-	let car = Car(context: DataManager.managedObjectContext)
-	car.name = "SLS IO 101"
-	car.numberPlate = "Toyota IQ+"
-	car.ksFuelConsumptionUnit = .litersPer100Kilometers
-	car.ksDistanceTotalSum = 100
-	car.ksFuelVolumeTotalSum = 4.7
-	return car
-}()
+let previewCar = CarViewModel(distanceTotalSum: 100,
+							  fuelConsumptionUnit: .litersPer100Kilometers,
+							  fuelUnit: .liters,
+						      fuelVolumeTotalSum: 100,
+						      identifier: "previewCar",
+							  name: "Toyota IQ+",
+							  numberPlate: "SLS IO 101",
+							  odometer: 42,
+							  odometerUnit: .kilometers,
+							  order: 0,
+							  timestamp: Date())
 
 struct CarRowView_Previews : PreviewProvider {
     static var previews: some View {

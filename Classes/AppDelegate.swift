@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import SwiftUI
+import Combine
 import CoreSpotlight
 import MobileCoreServices
 import StoreKit
@@ -32,21 +34,16 @@ private func contentsOfURL(_ url: URL) -> String? {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
+	private var carSubscriber: Subscribers.Sink<PassthroughSubject<CarRepository, Never>>?
 
 	private var importAlert: UIAlertController?
 	private var importAlertParentViewController: UIViewController?
-
-	private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
-		let fetchedResultsController = DataManager.fetchedResultsControllerForCars()
-		fetchedResultsController.delegate = self
-		return fetchedResultsController
-	}()
 
 	// MARK: - Application Lifecycle
 
@@ -103,7 +100,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 
-			updateShortcutItems()
+			carSubscriber = CarRepository.shared.didChange.sink { repo in self.updateShortcutItems(carRepository: repo) }
+			//updateShortcutItems(carRepository: .shared)
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplication.LaunchOptionsKey.url] == nil {
@@ -122,25 +120,22 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		}
 	}
 
-	private func updateShortcutItems() {
-		if let cars = self.carsFetchedResultsController.fetchedObjects {
-			UIApplication.shared.shortcutItems = cars.compactMap { car in
-				guard let userInfo = DataManager.modelIdentifierForManagedObject(car).flatMap({ ["objectId": $0] }) else { return nil }
-				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.ksName, localizedSubtitle: car.ksNumberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
-			}
-
-			if CSSearchableIndex.isIndexingAvailable() {
-				let searchableItems = cars.map { car -> CSSearchableItem in
-					let carIdentifier = DataManager.modelIdentifierForManagedObject(car)
-					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
-					attributeset.title = car.name
-					attributeset.contentDescription = car.numberPlate
-					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
-				}
-				CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
-			}
+	private func updateShortcutItems(carRepository: CarRepository) {
+		let cars = carRepository.results
+		UIApplication.shared.shortcutItems = cars.map { car in
+			let userInfo = ["objectId": car.identifier]
+			return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
 		}
 
+		if CSSearchableIndex.isIndexingAvailable() {
+			let searchableItems = cars.map { car -> CSSearchableItem in
+				let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+				attributeset.title = car.name
+				attributeset.contentDescription = car.numberPlate
+				return CSSearchableItem(uniqueIdentifier: car.identifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
+			}
+			CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
+		}
 	}
 
 	func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -261,12 +256,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				}
 			}
 		}
-	}
-
-	// MARK: - NSFetchedResultsControllerDelegate
-
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		updateShortcutItems()
 	}
 
 	// MARK: - SKRequestDelegate

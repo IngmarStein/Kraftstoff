@@ -163,17 +163,11 @@ class FuelStatisticsViewController: UIViewController {
 			if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
 
 				// Fetch some young events to get the most recent fillup date
-				let recentEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: sampleCar,
-																									  beforeDate: Date(),
-																									 dateMatches: true),
-												 inManagedObjectContext: sampleContext)
-
+				let recentEvents = sampleCar.fuelEvents(beforeDate: Date(), dateMatches: true)
 				var recentFillupDate = Date()
 
-				if recentEvents.count > 0 {
-					if let recentEvent = DataManager.existingObject(recentEvents[0], inManagedObjectContext: sampleContext) as? FuelEvent {
-						recentFillupDate = recentEvent.ksTimestamp
-					}
+				if let recentEvent = recentEvents.first {
+					recentFillupDate = recentEvent.ksTimestamp
 				}
 
 				// Fetch events for the selected time period
@@ -187,10 +181,7 @@ class FuelStatisticsViewController: UIViewController {
 
 				// Schedule update of cache and display in main thread
 				DispatchQueue.main.async {
-					let samplingObjects = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: sampleCar,
-																											 afterDate: samplingStart,
-																										   dateMatches: true),
-																				 inManagedObjectContext: sampleContext)
+					let samplingObjects = sampleCar.fuelEvents(afterDate: samplingStart, dateMatches: true)
 					// Compute statistics
 					let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
 																		   forCar: self.selectedCar,

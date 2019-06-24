@@ -27,12 +27,8 @@ class KraftstoffTests: XCTestCase {
 
 		car.addDemoEvents(inContext: managedObjectContext)
 
-		let fuelEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: car,
-			beforeDate: nil,
-			dateMatches: true),
-			inManagedObjectContext: managedObjectContext)
-
-		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car, language: language)
+		let fuelEvents = car.allFuelEvents
+		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car, language: language)
 
 		var numCars   = 0
 		var numEvents = 0
@@ -71,12 +67,8 @@ class KraftstoffTests: XCTestCase {
 
 		car.addDemoEvents(inContext: managedObjectContext)
 
-		let fuelEvents = DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: car,
-			beforeDate: nil,
-			dateMatches: true),
-			inManagedObjectContext: managedObjectContext)
-
-		let csvString = CSVExporter.exportFuelEvents(Array(fuelEvents), forCar: car)
+		let fuelEvents = car.allFuelEvents
+		let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: car)
 
 		XCTAssert(csvString.hasPrefix("yyyy-MM-dd;HH:mm;Kilometers;Liters;Full Fill-Up;Price per Liter;Liters Per 100 Kilometers;Comment\n2017-07-16;16:10;\"626.00\";\"28.43\";Yes;\"1.389\";\"4.54\";\"\"\n"), "CSV data should have the expected prefix")
 		XCTAssert(csvString.count == 5473, "CSV data should have the expected size")

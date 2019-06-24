@@ -18,9 +18,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	var editedObject: Car!
 
 	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
-		let fetchedResultsController = DataManager.fetchedResultsControllerForCars()
-		fetchedResultsController.delegate = self
-		return fetchedResultsController
+		return DataManager.fetchedResultsControllerForCars(delegate: self)
 	}()
 
 	private var documentPickerViewController: UIDocumentPickerViewController!

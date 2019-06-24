@@ -14,8 +14,11 @@ struct TabView : View {
 			TabbedView {
 				FuelCalculatorView(cars: [], date: Date(), car: nil, lastChangeDate: Date())
 					.tabItemLabel(
-						Image("Zapfhahn")
-						//Text("Fill-Up")
+						// TODO: remove VStack
+						VStack {
+							Image("Zapfhahn")
+							Text("Fill-Up")
+						}
 					).tag(1)
 				//CarsView([]).tabItemLabel(Image("Cars")).tag(2)
 			}

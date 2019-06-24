@@ -180,7 +180,7 @@ final class DataManager {
 									 fetchSize: 8)
 	}
 
-	static func fetchedResultsControllerForCars(inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
+	static func fetchedResultsControllerForCars(delegate: NSFetchedResultsControllerDelegate, inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
 		let fetchRequest = fetchRequestForCars()
 
 		// No section names; perform fetch without cache
@@ -188,6 +188,8 @@ final class DataManager {
 		                                                          managedObjectContext: moc,
 		                                                          sectionNameKeyPath: nil,
 		                                                          cacheName: nil)
+
+		fetchedResultsController.delegate = delegate
 
 		// Perform the Core Data fetch
 		do {
@@ -248,14 +250,8 @@ final class DataManager {
 		// Compute inherited data from older element
 
 		// Fetch older events
-		let olderEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-		                                                               beforeDate: date,
-		                                                               dateMatches: false),
-		                                         inManagedObjectContext: moc)
-
-        if olderEvents.count > 0 {
-			let olderEvent = olderEvents.first!
-
+		let olderEvents = car.fuelEvents(beforeDate: date, dateMatches: false)
+		if let olderEvent = olderEvents.first {
 			if !olderEvent.filledUp {
 				let cost = olderEvent.cost
 
@@ -267,13 +263,8 @@ final class DataManager {
 
 		// Update inherited distance/volume for younger events, probably mark the car odometer for an update
 		// Fetch younger events
-		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-		                                                                 afterDate: date,
-		                                                                 dateMatches: false),
-		                                           inManagedObjectContext: moc)
-
+		let youngerEvents = car.fuelEvents(afterDate: date, dateMatches: false)
         if youngerEvents.count > 0 {
-
 			let deltaCost = filledUp
 				? -inheritedCost
 				: liters * pricePerLiter
@@ -359,11 +350,7 @@ final class DataManager {
 		let fuelVolume = event.ksFuelVolume
 
 		// Event will be deleted: update inherited distance/fuelVolume for younger events
-		let youngerEvents = objectsForFetchRequest(fetchRequestForEvents(car: car,
-		                                                                 afterDate: event.ksTimestamp,
-		                                                                 dateMatches: false),
-		                                           inManagedObjectContext: moc)
-
+		let youngerEvents = car.fuelEvents(afterDate: event.ksTimestamp, dateMatches: false)
 		var row = youngerEvents.count
 		if row > 0 {
 			// Fill-up event deleted => propagate its inherited distance/volume

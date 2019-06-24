@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct CarsView : View {
-	/*@ObjectBinding */var cars: [Car]
+	/*@ObjectBinding */var cars: [CarViewModel]
 
     var body: some View {
-		List(cars.identified(by: \.objectID)) { car in
+		List(cars.identified(by: \.identifier)) { car in
 			CarRowView(car: car)
 		}
     }
