@@ -40,7 +40,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
-	private var carSubscriber: Subscribers.Sink<PassthroughSubject<CarRepository, Never>>?
+	private var carSubscriber: Subscribers.Sink<CarRepository, Never>?
 
 	private var importAlert: UIAlertController?
 	private var importAlertParentViewController: UIViewController?
@@ -66,8 +66,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	private func commonLaunchInitialization(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) {
 		if !initialized {
 			initialized = true
-
-			self.window?.makeKeyAndVisible()
 
 			self.validateReceipt(Bundle.main.appStoreReceiptURL) { success in
 				self.appReceiptValid = success
@@ -109,6 +107,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 				if defaults.bool(forKey: "firstStartup") {
 					if defaults.string(forKey: "preferredCarID") == "" {
+						// FIXME: window
 						if let tabBarController = self.window?.rootViewController as? UITabBarController {
 							tabBarController.selectedIndex = 1
 						}
@@ -240,6 +239,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 						let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in () }
 						alertController.addAction(defaultAction)
+						// FIXME: window
 						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 					}
 				}
@@ -251,6 +251,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 																preferredStyle: .alert)
 						let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil)
 						alertController.addAction(defaultAction)
+						// FIXME: window
 						self.window?.rootViewController?.present(alertController, animated: true, completion: nil)
 					}
 				}
@@ -372,15 +373,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 
 	var alertWindow: UIWindow {
 		get {
-			if let window = UIApplication.shared.keyWindow {
-				return window
-			} else {
+			// TODO
+			//if let window = UIApplication.shared.keyWindow {
+			//	return window
+			//} else {
 				let alertWindow = UIWindow(frame: UIScreen.main.bounds)
 				alertWindow.rootViewController = UIViewController()
 				alertWindow.windowLevel = .alert + 1
 				alertWindow.makeKeyAndVisible()
 				return alertWindow
-			}
+			//}
 		}
 	}
 

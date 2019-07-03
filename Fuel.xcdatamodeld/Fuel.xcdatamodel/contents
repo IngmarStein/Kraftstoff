@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14838.19" systemVersion="19A487l" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="1.0">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14865.6" systemVersion="19A501i" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="1.0">
     <entity name="Car" representedClassName=".Car" syncable="YES" codeGenerationType="category">
         <attribute name="distanceTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
         <attribute name="fuelConsumptionUnit" attributeType="Integer 32" minValueString="0" maxValueString="5" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="fuelUnit" attributeType="Integer 32" minValueString="0" maxValueString="2" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="fuelVolumeTotalSum" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
-        <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="numberPlate" attributeType="String" defaultValueString=""/>
+        <attribute name="name" optional="YES" attributeType="String" defaultValueString=""/>
+        <attribute name="numberPlate" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="odometer" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
         <attribute name="odometerUnit" attributeType="Integer 32" minValueString="0" maxValueString="1" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="order" attributeType="Integer 32" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
@@ -20,7 +20,7 @@
         </fetchIndex>
     </entity>
     <entity name="FuelEvent" representedClassName=".FuelEvent" syncable="YES" codeGenerationType="category">
-        <attribute name="comment" attributeType="String" defaultValueString=""/>
+        <attribute name="comment" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="distance" attributeType="Decimal" minValueString="0" defaultValueString="0"/>
         <attribute name="filledUp" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="fuelVolume" attributeType="Decimal" minValueString="0" defaultValueString="0"/>

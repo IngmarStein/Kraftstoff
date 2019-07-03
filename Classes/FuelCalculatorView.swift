@@ -51,20 +51,9 @@ struct FuelCalculatorView : View {
 				DatePicker($date) {
 					Text("Date")
 				}
-				HStack() {
-					Text("Distance")
-					TextField(.constant("Placeholder"))
-				}
-				HStack {
-					Text("Price")
-					Spacer()
-					TextField(.constant("Placeholder"))
-				}
-				HStack {
-					Text("Amount")
-					Spacer()
-					TextField(.constant("Placeholder"))
-				}
+				TextField("Distance", text: .constant(""))
+				TextField("Price", text: .constant(""))
+				TextField("Amount", text: .constant(""))
 				Toggle(isOn: $filledUp) {
 					Text("Fill-up")
 				}

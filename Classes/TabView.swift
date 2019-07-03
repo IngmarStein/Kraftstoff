@@ -13,13 +13,10 @@ struct TabView : View {
 		NavigationView {
 			TabbedView {
 				FuelCalculatorView(cars: [], date: Date(), car: nil, lastChangeDate: Date())
-					.tabItemLabel(
-						// TODO: remove VStack
-						VStack {
-							Image("Zapfhahn")
-							Text("Fill-Up")
-						}
-					).tag(1)
+					.tabItem {
+						Image("Zapfhahn")
+						Text("Fill-Up")
+					}.tag(1)
 				//CarsView([]).tabItemLabel(Image("Cars")).tag(2)
 			}
 		}

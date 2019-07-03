@@ -25,7 +25,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 	var isShowingConvertSheet = false
 	var selectedCarId: String?
 
-	private var carSubscriber: Subscribers.Sink<PassthroughSubject<CarRepository, Never>>?
+	private var carSubscriber: Subscribers.Sink<CarRepository, Never>?
 
 	var restoredSelectionIndex: IndexPath?
 	var car: Car?
