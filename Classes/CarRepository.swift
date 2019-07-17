@@ -11,8 +11,7 @@ import Combine
 import CoreData
 
 final class CarRepository: NSObject, BindableObject, NSFetchedResultsControllerDelegate {
-
-	var didChange = PassthroughSubject<CarRepository, Never>()
+	var willChange = PassthroughSubject<CarRepository, Never>()
 	var results = [CarViewModel]()
 	var controller = NSFetchedResultsController<Car>()
 
@@ -31,6 +30,6 @@ final class CarRepository: NSObject, BindableObject, NSFetchedResultsControllerD
 			results = []
 		}
 
-		didChange.send(self)
+		willChange.send(self)
 	}
 }

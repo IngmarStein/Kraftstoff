@@ -12,7 +12,7 @@ struct CarsView : View {
 	/*@ObjectBinding */var cars: [CarViewModel]
 
     var body: some View {
-		List(cars.identified(by: \.identifier)) { car in
+		List(cars, id: \.identifier) { car in
 			CarRowView(car: car)
 		}
     }

@@ -9,7 +9,7 @@
 import UIKit
 import CoreSpotlight
 
-class WindowSceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
 
 	func sceneDidEnterBackground(_ scene: UIScene) {

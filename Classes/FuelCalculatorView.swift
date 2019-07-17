@@ -48,15 +48,11 @@ struct FuelCalculatorView : View {
 						}
 					}
 				}
-				DatePicker($date) {
-					Text("Date")
-				}
+				DatePicker("Date", date: $date)
 				TextField("Distance", text: .constant(""))
 				TextField("Price", text: .constant(""))
 				TextField("Amount", text: .constant(""))
-				Toggle(isOn: $filledUp) {
-					Text("Fill-up")
-				}
+				Toggle("Fill-up", isOn: $filledUp)
 			}
 			// TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
 			Section {
