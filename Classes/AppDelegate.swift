@@ -98,7 +98,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			carSubscriber = CarRepository.shared.didChange.sink { repo in self.updateShortcutItems(carRepository: repo) }
+			carSubscriber = CarRepository.shared.willChange.sink { repo in self.updateShortcutItems(carRepository: repo) }
 			//updateShortcutItems(carRepository: .shared)
 
 			// Switch once to the car view for new users

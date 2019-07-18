@@ -26,7 +26,7 @@ class KraftstoffUITests: XCTestCase {
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS", "-UNITTEST"]
 		app.launch()
 
-		#if !targetEnvironment(UIKitForMac)
+		#if !targetEnvironment(macCatalyst)
 		XCUIDevice.shared.orientation = .portrait
 		#endif
     }
@@ -62,7 +62,7 @@ class KraftstoffUITests: XCTestCase {
 
 		app.buttons["Chart"].tap()
 
-		#if !targetEnvironment(UIKitForMac)
+		#if !targetEnvironment(macCatalyst)
 		XCUIDevice.shared.orientation = .landscapeLeft
 		#endif
 
@@ -80,7 +80,7 @@ class KraftstoffUITests: XCTestCase {
 
 		app.buttons["close"].tap()
 
-		#if !targetEnvironment(UIKitForMac)
+		#if !targetEnvironment(macCatalyst)
 		XCUIDevice.shared.orientation = .portrait
 		#endif
 

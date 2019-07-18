@@ -49,7 +49,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		userActivity?.isEligibleForSearch = true
 		userActivity?.isEligibleForPrediction = true
 
-		carSubscriber = CarRepository.shared.didChange.sink { _ in
+		carSubscriber = CarRepository.shared.willChange.sink { _ in
 			self.recreateTableContentsWithAnimation(self.changeIsUserDriven ? .right : .none)
 			self.updateSaveButtonState()
 

@@ -43,12 +43,12 @@ struct FuelCalculatorView : View {
 			Section {
 				if cars.count > 1 {
 					Picker(selection: .constant(1), label: Text("Car")) {
-						ForEach(cars.identified(by: \.identifier)) { car in
+						ForEach(cars, id: \.identifier) { car in
 							Text("test").tag(1)
 						}
 					}
 				}
-				DatePicker("Date", date: $date)
+				DatePicker("Date", selection: $date)
 				TextField("Distance", text: .constant(""))
 				TextField("Price", text: .constant(""))
 				TextField("Amount", text: .constant(""))

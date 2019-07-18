@@ -24,12 +24,12 @@ final class CarRepository: NSObject, BindableObject, NSFetchedResultsControllerD
 	}
 
 	func controllerDidChangeContent(_: NSFetchedResultsController<NSFetchRequestResult>) {
+		willChange.send(self)
+
 		if let cars = controller.fetchedObjects {
 			results = cars.map(CarViewModel.init(managedObject:))
 		} else {
 			results = []
 		}
-
-		willChange.send(self)
 	}
 }
