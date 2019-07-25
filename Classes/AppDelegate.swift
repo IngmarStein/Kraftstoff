@@ -372,18 +372,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 	// MARK: - Modal Alerts
 
 	var alertWindow: UIWindow {
-		get {
-			// TODO
-			//if let window = UIApplication.shared.keyWindow {
-			//	return window
-			//} else {
-				let alertWindow = UIWindow(frame: UIScreen.main.bounds)
-				alertWindow.rootViewController = UIViewController()
-				alertWindow.windowLevel = .alert + 1
-				alertWindow.makeKeyAndVisible()
-				return alertWindow
-			//}
-		}
+		// TODO
+		//if let window = UIApplication.shared.keyWindow {
+		//	return window
+		//} else {
+			let alertWindow = UIWindow(frame: UIScreen.main.bounds)
+			alertWindow.rootViewController = UIViewController()
+			alertWindow.windowLevel = .alert + 1
+			alertWindow.makeKeyAndVisible()
+			return alertWindow
+		//}
 	}
 
 	// MARK: - Shared Color Gradients

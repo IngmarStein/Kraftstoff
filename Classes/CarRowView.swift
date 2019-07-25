@@ -9,7 +9,7 @@
 import SwiftUI
 import CoreData
 
-struct CarRowView : View {
+struct CarRowView: View {
 	/*@ObjectBinding */var car: CarViewModel
 
 	var body: some View {
@@ -39,7 +39,8 @@ let previewCar = CarViewModel(distanceTotalSum: 100,
 							  order: 0,
 							  timestamp: Date())
 
-struct CarRowView_Previews : PreviewProvider {
+// swiftlint:disable:next type_name
+struct CarRowView_Previews: PreviewProvider {
     static var previews: some View {
 		Group {
 			CarRowView(car: previewCar)

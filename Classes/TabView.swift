@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct TabView : View {
+struct TabView: View {
     var body: some View {
 		NavigationView {
 			TabbedView {
@@ -24,7 +24,8 @@ struct TabView : View {
 }
 
 #if DEBUG
-struct TabView_Previews : PreviewProvider {
+// swiftlint:disable:next type_name
+struct TabView_Previews: PreviewProvider {
     static var previews: some View {
         TabView()
     }

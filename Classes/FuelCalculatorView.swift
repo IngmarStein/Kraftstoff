@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-struct FuelCalculatorView : View {
+struct FuelCalculatorView: View {
 	/*@ObjectBinding */var cars: [CarViewModel]
 	@State var date: Date
 	@State var car: CarViewModel?
@@ -86,7 +86,8 @@ struct FuelCalculatorView : View {
 }
 
 #if DEBUG
-struct FuelCalculatorView_Previews : PreviewProvider {
+// swiftlint:disable:next type_name
+struct FuelCalculatorView_Previews: PreviewProvider {
     static var previews: some View {
 		FuelCalculatorView(cars: [previewCar, previewCar],
 						   date: Date(),

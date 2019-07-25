@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct CarsView : View {
+struct CarsView: View {
 	/*@ObjectBinding */var cars: [CarViewModel]
 
     var body: some View {
@@ -19,7 +19,8 @@ struct CarsView : View {
 }
 
 #if DEBUG
-struct CarsView_Previews : PreviewProvider {
+// swiftlint:disable:next type_name
+struct CarsView_Previews: PreviewProvider {
     static var previews: some View {
 		CarsView(cars: [previewCar])
     }

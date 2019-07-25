@@ -139,9 +139,9 @@ final class DataManager {
 	}
 
 	static func fetchRequestForEvents(car: Car,
-	                             andDate date: Date?,
-	                             dateComparator dateCompare: String,
-								 fetchSize: Int) -> NSFetchRequest<FuelEvent> {
+	                                  andDate date: Date?,
+	                                  dateComparator dateCompare: String,
+								      fetchSize: Int) -> NSFetchRequest<FuelEvent> {
 		let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
 		fetchRequest.fetchBatchSize = fetchSize
 
