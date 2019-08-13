@@ -1,6 +1,7 @@
 {
   "configurations" : [
     {
+      "id" : "A75B40AF-AFF4-42A1-9895-37F4DB514711",
       "name" : "de-de",
       "options" : {
         "language" : "de",
@@ -8,6 +9,7 @@
       }
     },
     {
+      "id" : "EBA4BB56-BD39-4DD4-8D63-62A587444FB7",
       "name" : "en-US",
       "options" : {
         "language" : "en",
@@ -15,6 +17,7 @@
       }
     },
     {
+      "id" : "906BAF58-ED87-4D8A-AD7A-45E54894A1AF",
       "name" : "ja-JP",
       "options" : {
         "language" : "ja",
@@ -22,6 +25,7 @@
       }
     },
     {
+      "id" : "7B451B0B-DEC1-47AA-A490-9DD1104D1C87",
       "name" : "fr-FR",
       "options" : {
         "language" : "fr",

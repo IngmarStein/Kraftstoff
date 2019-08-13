@@ -10,37 +10,51 @@ import SwiftUI
 import CoreData
 
 struct CarRowView: View {
-	/*@ObjectBinding */var car: CarViewModel
+	/*@ObjectBinding */var car: Car
 
 	var body: some View {
 		VStack {
 			HStack {
-				Text(car.name)
+				Text(car.ksName)
 				Text("TODO")
 			}
 			HStack {
-				Text(car.numberPlate)
-				Text(Formatters.shortMeasurementFormatter.string(from: car.fuelConsumptionUnit))
+				Text(car.ksNumberPlate)
+				Text(Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit))
 			}
 		}
     }
 }
 
 #if DEBUG
-let previewCar = CarViewModel(distanceTotalSum: 100,
-							  fuelConsumptionUnit: .litersPer100Kilometers,
-							  fuelUnit: .liters,
-						      fuelVolumeTotalSum: 100,
-						      identifier: "previewCar",
-							  name: "Toyota IQ+",
-							  numberPlate: "SLS IO 101",
-							  odometer: 42,
-							  odometerUnit: .kilometers,
-							  order: 0,
-							  timestamp: Date())
-
 // swiftlint:disable:next type_name
 struct CarRowView_Previews: PreviewProvider {
+	static var container: NSPersistentContainer {
+		let objectModel = NSManagedObjectModel(contentsOf: Bundle.main.url(forResource: "Fuel", withExtension: "momd")!)!
+		let container = NSPersistentContainer(name: "Fuel", managedObjectModel: objectModel)
+		guard let description = container.persistentStoreDescriptions.first else {
+			fatalError("Could not retrieve a persistent store description.")
+		}
+		description.type = NSInMemoryStoreType
+		return container
+	}
+
+	static var previewCar: Car = {
+		let car = Car(context: container.viewContext)
+		car.distanceTotalSum = 100
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
+		car.ksFuelUnit = .liters
+		car.ksFuelVolumeTotalSum = 100
+		car.name = "Toyota IQ+"
+		car.numberPlate = "SLS IO 101"
+		car.odometer = 42
+		car.ksOdometerUnit = .kilometers
+		car.order = 0
+		car.timestamp = Date()
+		try! container.viewContext.save()
+		return car
+	}()
+
     static var previews: some View {
 		Group {
 			CarRowView(car: previewCar)
@@ -51,7 +65,7 @@ struct CarRowView_Previews: PreviewProvider {
 				.environment(\.sizeCategory, .extraLarge)
 				.previewLayout(.sizeThatFits)
 				.previewDisplayName("extraLarge")
-		}
+		}.environment(\.managedObjectContext, container.viewContext)
     }
 }
 #endif

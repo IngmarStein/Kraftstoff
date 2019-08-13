@@ -8,11 +8,12 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 struct FuelCalculatorView: View {
-	/*@ObjectBinding */var cars: [CarViewModel]
+	@FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil) var cars: FetchedResults<Car>
 	@State var date: Date
-	@State var car: CarViewModel?
+	@State var car: Car?
 	@State var lastChangeDate: Date
 	@State var distance = Decimal.zero
 	@State var price = Decimal.zero
@@ -40,6 +41,8 @@ struct FuelCalculatorView: View {
 
     var body: some View {
 		Form {
+			// FIXME: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+			/*
 			Section {
 				if cars.count > 1 {
 					Picker(selection: .constant(1), label: Text("Car")) {
@@ -54,6 +57,7 @@ struct FuelCalculatorView: View {
 				TextField("Amount", text: .constant(""))
 				Toggle("Fill-up", isOn: $filledUp)
 			}
+			*/
 			// TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
 			Section {
 				Text("cost") + Text("/") + Text("currency") + Text("consumption") + Text("unit")
@@ -64,8 +68,7 @@ struct FuelCalculatorView: View {
     }
 
 	func save() {
-		let managedCar: Car? = DataManager.managedObjectForModelIdentifier(car!.identifier)
-		DataManager.addToArchive(car: managedCar!,
+		DataManager.addToArchive(car: car!,
 								 date: date,
 								 distance: distance,
 								 price: price,
@@ -88,8 +91,33 @@ struct FuelCalculatorView: View {
 #if DEBUG
 // swiftlint:disable:next type_name
 struct FuelCalculatorView_Previews: PreviewProvider {
-    static var previews: some View {
-		FuelCalculatorView(cars: [previewCar, previewCar],
+	static var container: NSPersistentContainer {
+		let container = NSPersistentContainer(name: "Fuel")
+		guard let description = container.persistentStoreDescriptions.first else {
+			fatalError("Could not retrieve a persistent store description.")
+		}
+		description.type = NSInMemoryStoreType
+		return container
+	}
+
+	static var previewCar: Car = {
+		let car = Car(context: container.viewContext)
+		car.distanceTotalSum = 100
+		car.ksFuelConsumptionUnit = .litersPer100Kilometers
+		car.ksFuelUnit = .liters
+		car.ksFuelVolumeTotalSum = 100
+		car.name = "Toyota IQ+"
+		car.numberPlate = "SLS IO 101"
+		car.odometer = 42
+		car.ksOdometerUnit = .kilometers
+		car.order = 0
+		car.timestamp = Date()
+		try! container.viewContext.save()
+		return car
+	}()
+
+	static var previews: some View {
+		FuelCalculatorView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()),
 						   date: Date(),
 						   lastChangeDate: Date())
     }

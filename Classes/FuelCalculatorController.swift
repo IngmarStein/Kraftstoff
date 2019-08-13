@@ -19,13 +19,15 @@ private struct FuelCalculatorDataRow: OptionSet {
 	static let all = FuelCalculatorDataRow(rawValue: 0b0111)
 }
 
-final class FuelCalculatorController: PageViewController, EditablePageCellDelegate, EditablePageCellValidator {
+final class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
 
 	var changeIsUserDriven = false
 	var isShowingConvertSheet = false
 	var selectedCarId: String?
 
-	private var carSubscriber: Subscribers.Sink<CarRepository, Never>?
+	private lazy var fetchedResultsController: NSFetchedResultsController<Car> = {
+		DataManager.fetchedResultsControllerForCars(delegate: self)
+	}()
 
 	var restoredSelectionIndex: IndexPath?
 	var car: Car?
@@ -48,13 +50,6 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		userActivity?.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
 		userActivity?.isEligibleForSearch = true
 		userActivity?.isEligibleForPrediction = true
-
-		carSubscriber = CarRepository.shared.willChange.sink { _ in
-			self.recreateTableContentsWithAnimation(self.changeIsUserDriven ? .right : .none)
-			self.updateSaveButtonState()
-
-			self.changeIsUserDriven = false
-		}
 
 		// Title bar
 		self.doneButton.target = self
@@ -269,7 +264,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 			fuelUnit     = Units.volumeUnitFromLocale
 		}
 
-		let rowOffset = (CarRepository.shared.results.count < 2) ? 1 : 2
+		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
 		if rowMask.contains(.distance) {
 			if self.distance == nil {
@@ -331,7 +326,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		// Car selector (optional)
 		self.car = nil
 
-		if CarRepository.shared.results.count > 0 {
+		if self.fetchedResultsController.fetchedObjects!.count > 0 {
 			if let selectedCar = selectedCarId {
 				self.car = DataManager.managedObjectForModelIdentifier(selectedCar)
 			} else if let preferredCar = UserDefaults.standard.string(forKey: "preferredCarID"), preferredCar != "" {
@@ -339,16 +334,16 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 			}
 
 			if self.car == nil {
-				self.car = DataManager.managedObjectForModelIdentifier(CarRepository.shared.results.first!.identifier)
+				self.car = self.fetchedResultsController.fetchedObjects!.first!
 			}
 
-			if CarRepository.shared.results.count > 1 {
+			if self.fetchedResultsController.fetchedObjects!.count > 1 {
 				addRowAtIndex(rowIndex: 0,
                       inSection: 0,
                       cellClass: CarTableCell.self,
 					   cellData: ["label": NSLocalizedString("Car", comment: ""),
                                   "valueIdentifier": "car",
-                                  "fetchedObjects": CarRepository.shared.results],
+                                  "fetchedObjects": self.fetchedResultsController.fetchedObjects!],
                   withAnimation: animation)
 			}
 		}
@@ -460,7 +455,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 	}
 
 	private func recreateDistanceRowWithAnimation(_ animation: UITableView.RowAnimation) {
-		let rowOffset = (CarRepository.shared.results.count < 2) ? 1 : 2
+		let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 1 : 2
 
 		// Replace distance row in the internal data model
 		removeRow(at: rowOffset, inSection: 0, withAnimation: .none)
@@ -509,7 +504,7 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 			self.lastChangeDate = now
 
 			// Update table
-			let rowOffset = (CarRepository.shared.results.count < 2) ? 0 : 1
+			let rowOffset = (self.fetchedResultsController.fetchedObjects!.count < 2) ? 0 : 1
 
 			self.tableView.reloadRows(at: [IndexPath(row: rowOffset, section: 0)], with: .none)
 		}
@@ -803,6 +798,15 @@ final class FuelCalculatorController: PageViewController, EditablePageCellDelega
 		}
 
 		return true
+	}
+
+	// MARK: - NSFetchedResultsControllerDelegate
+
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		recreateTableContentsWithAnimation(changeIsUserDriven ? .right : .none)
+		updateSaveButtonState()
+
+ 		changeIsUserDriven = false
 	}
 
 	// MARK: - UITableViewDataSource

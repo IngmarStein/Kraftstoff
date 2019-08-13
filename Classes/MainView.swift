@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct TabView: View {
+struct MainView: View {
     var body: some View {
 		NavigationView {
-			TabbedView {
-				FuelCalculatorView(cars: [], date: Date(), car: nil, lastChangeDate: Date())
+			TabView {
+				FuelCalculatorView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()), date: Date(), car: nil, lastChangeDate: Date())
 					.tabItem {
 						Image("Zapfhahn")
 						Text("Fill-Up")
@@ -25,9 +25,9 @@ struct TabView: View {
 
 #if DEBUG
 // swiftlint:disable:next type_name
-struct TabView_Previews: PreviewProvider {
+struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        TabView()
+        MainView()
     }
 }
 #endif

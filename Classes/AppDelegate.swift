@@ -34,16 +34,19 @@ private func contentsOfURL(_ url: URL) -> String? {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceiptValid = false
 	private var appReceipt: [String: Any]?
 	private var receiptRefreshRequest: SKReceiptRefreshRequest?
-	private var carSubscriber: Subscribers.Sink<CarRepository, Never>?
 
 	private var importAlert: UIAlertController?
 	private var importAlertParentViewController: UIViewController?
+
+	private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
+		DataManager.fetchedResultsControllerForCars(delegate: self)
+	}()
 
 	// MARK: - Application Lifecycle
 
@@ -98,8 +101,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 
-			carSubscriber = CarRepository.shared.willChange.sink { repo in self.updateShortcutItems(carRepository: repo) }
-			//updateShortcutItems(carRepository: .shared)
+			updateShortcutItems()
 
 			// Switch once to the car view for new users
 			if launchOptions?[UIApplication.LaunchOptionsKey.url] == nil {
@@ -119,21 +121,23 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 		}
 	}
 
-	private func updateShortcutItems(carRepository: CarRepository) {
-		let cars = carRepository.results
-		UIApplication.shared.shortcutItems = cars.map { car in
-			let userInfo = ["objectId": car.identifier]
-			return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.name, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
-		}
-
-		if CSSearchableIndex.isIndexingAvailable() {
-			let searchableItems = cars.map { car -> CSSearchableItem in
-				let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
-				attributeset.title = car.name
-				attributeset.contentDescription = car.numberPlate
-				return CSSearchableItem(uniqueIdentifier: car.identifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
+	private func updateShortcutItems() {
+		if let cars = self.carsFetchedResultsController.fetchedObjects {
+			UIApplication.shared.shortcutItems = cars.compactMap { car in
+				guard let userInfo = DataManager.modelIdentifierForManagedObject(car).flatMap({ ["objectId": $0] }) else { return nil }
+				return UIApplicationShortcutItem(type: "fillup", localizedTitle: car.ksName, localizedSubtitle: car.numberPlate, icon: nil, userInfo: userInfo as [String: NSSecureCoding])
 			}
-			CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
+
+			if CSSearchableIndex.isIndexingAvailable() {
+				let searchableItems = cars.map { car -> CSSearchableItem in
+					let carIdentifier = DataManager.modelIdentifierForManagedObject(car)
+					let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+					attributeset.title = car.ksName
+					attributeset.contentDescription = car.ksNumberPlate
+					return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)
+				}
+				CSSearchableIndex.default().indexSearchableItems(Array(searchableItems), completionHandler: nil)
+			}
 		}
 	}
 
@@ -257,6 +261,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, SKRequestDelegate {
 				}
 			}
 		}
+	}
+
+	// MARK: - NSFetchedResultsControllerDelegate
+ 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		updateShortcutItems()
 	}
 
 	// MARK: - SKRequestDelegate
