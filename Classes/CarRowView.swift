@@ -27,7 +27,6 @@ struct CarRowView: View {
 }
 
 #if DEBUG
-// swiftlint:disable:next type_name
 struct CarRowView_Previews: PreviewProvider {
 	static var container: NSPersistentContainer {
 		let objectModel = NSManagedObjectModel(contentsOf: Bundle.main.url(forResource: "Fuel", withExtension: "momd")!)!

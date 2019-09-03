@@ -21,7 +21,6 @@ struct CarsView: View {
 }
 
 #if DEBUG
-// swiftlint:disable:next type_name
 struct CarsView_Previews: PreviewProvider {
 	static var container: NSPersistentContainer {
 		let container = NSPersistentContainer(name: "Fuel")

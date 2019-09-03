@@ -307,7 +307,7 @@ final class CSVImporter {
 				let delta = date.timeIntervalSince(lastDate)
 
 				if delta <= 0.0 || lastDelta > 0.0 {
-					lastDelta = (delta > 0.0) ? 0.0 : ceil(fabs (delta) + 60.0)
+					lastDelta = (delta > 0.0) ? 0.0 : ceil(fabs(delta) + 60.0)
 					date      = date.addingTimeInterval(lastDelta)
 				}
 

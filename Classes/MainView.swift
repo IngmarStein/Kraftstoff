@@ -24,7 +24,6 @@ struct MainView: View {
 }
 
 #if DEBUG
-// swiftlint:disable:next type_name
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()

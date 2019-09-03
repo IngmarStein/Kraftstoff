@@ -200,8 +200,8 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(withAttributes: valueAttributes)
 
-            x = floor ((self.view.bounds.size.width -  size.width)/2.0)
-            y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0)
+            x = floor((self.view.bounds.size.width -  size.width)/2.0)
+            y = floor((self.view.bounds.size.height - (size.height - font.descender))/2.0)
 
 			text.draw(at: CGPoint(x: x, y: y), withAttributes: valueAttributes)
 
@@ -224,7 +224,7 @@ final class FuelStatisticsTextViewController: FuelStatisticsViewController {
 			var y = CGFloat(0.0)
 			for i in stride(from: 1, to: gridLines, by: 2) {
                 let lastY = y
-                y = rint (gridTextHeight*0.5 + gridTextHeight*CGFloat(i))
+                y = rint(gridTextHeight*0.5 + gridTextHeight*CGFloat(i))
 
 				context.translateBy(x: 0.0, y: y - lastY)
                 path.stroke()

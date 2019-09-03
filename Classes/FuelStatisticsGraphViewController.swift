@@ -181,22 +181,22 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 		valAverage /= CGFloat(valCount)
 
-		valMin = floor (valMin * 2.0) / 2.0
-		valMax = ceil  (valMax / 2.0) * 2.0
+		valMin = floor(valMin * 2.0) / 2.0
+		valMax = ceil(valMax / 2.0) * 2.0
 		valRange = valMax - valMin
 
 		if valRange > 40 {
-			valMin = floor (valMin / 10.0) * 10.0
-			valMax = ceil  (valMax / 10.0) * 10.0
+			valMin = floor(valMin / 10.0) * 10.0
+			valMax = ceil(valMax / 10.0) * 10.0
 		} else if valRange > 8 {
-			valMin = floor (valMin / 2.0) * 2.0
-			valMax = ceil  (valMax / 2.0) * 2.0
+			valMin = floor(valMin / 2.0) * 2.0
+			valMax = ceil(valMax / 2.0) * 2.0
 		} else if valRange > 4 {
-			valMin = floor (valMin)
-			valMax = ceil  (valMax)
+			valMin = floor(valMin)
+			valMax = ceil(valMax)
 		} else if valRange < 0.25 {
-			valMin = floor (valMin * 4.0 - 0.001) / 4.0
-			valMax = ceil  (valMax * 4.0 + 0.001) / 4.0
+			valMin = floor(valMin * 4.0 - 0.001) / 4.0
+			valMax = ceil(valMax * 4.0 + 0.001) / 4.0
 		}
 
 		valRange = valMax - valMin
@@ -227,7 +227,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			if !value.isNaN {
 				// Collect sample data
 				let sampleInterval = firstDate!.timeIntervalSince(fuelEvent.ksTimestamp)
-				let sampleIndex = Int(rint (CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
+				let sampleIndex = Int(rint(CGFloat((maxSamples-1)) * CGFloat(1.0 - sampleInterval/rangeInterval)))
 
 				if valRange < 0.0001 {
 					samples[sampleIndex] += 0.5
@@ -353,8 +353,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			let text = NSLocalizedString("Not enough data to display statistics", comment: "")
 			let size = text.size(withAttributes: attributes)
 
-			let x = floor ((self.view.bounds.size.width - size.width)/2.0)
-			let y = floor ((self.view.bounds.size.height - (size.height - font.descender))/2.0)
+			let x = floor((self.view.bounds.size.width - size.width)/2.0)
+			let y = floor((self.view.bounds.size.height - (size.height - font.descender))/2.0)
 
 			text.draw(at: CGPoint(x: x, y: y), withAttributes: attributes)
 
@@ -380,7 +380,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 			var y = CGFloat(0.0)
 			for i in 0..<state.hMarkCount {
 				let lastY = y
-				y = rint (self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
+				y = rint(self.graphTopBorder + self.graphHeight * state.hMarkPositions [i])
 
 				context.translateBy(x: 0.0, y: y - lastY)
 				path.stroke()
@@ -402,7 +402,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 				let size = mark.size(withAttributes: attributes)
 
 				let x = self.graphRightBorder + 6
-				let y = floor (self.graphTopBorder + 0.5 + self.graphHeight * state.hMarkPositions [i] - size.height) + 0.5
+				let y = floor(self.graphTopBorder + 0.5 + self.graphHeight * state.hMarkPositions [i] - size.height) + 0.5
 
 				mark.draw(at: CGPoint(x: x, y: y), withAttributes: attributes)
 			}
@@ -423,7 +423,7 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var x = CGFloat(0.0)
 		for i in 0..<state.vMarkCount {
 			let lastX = x
-			x = rint (self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
+			x = rint(self.graphLeftBorder + self.graphWidth * state.vMarkPositions [i])
 
 			context.translateBy(x: x - lastX, y: 0.0)
 			path.stroke()
@@ -468,8 +468,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		var minY = self.graphBottomBorder - 6
 
 		for i in 0..<state.dataCount {
-			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
-			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
+			let x = rint(self.graphLeftBorder + self.graphWidth * state.data [i].x)
+			let y = rint(self.graphTopBorder + self.graphHeight * state.data [i].y)
 
 			path.addLine(to: CGPoint(x: x, y: y))
 
@@ -514,12 +514,12 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		UIColor.white.setStroke()
 
 		path.removeAllPoints()
-		path.move(to: CGPoint(x: rint (self.graphLeftBorder + self.graphWidth * state.data [0].x),
-								 y: rint (self.graphTopBorder + self.graphHeight * state.data [0].y)))
+		path.move(to: CGPoint(x: rint(self.graphLeftBorder + self.graphWidth * state.data [0].x),
+								 y: rint(self.graphTopBorder + self.graphHeight * state.data [0].y)))
 
 		for i in 0..<state.dataCount {
-			let x = rint (self.graphLeftBorder + self.graphWidth * state.data [i].x)
-			let y = rint (self.graphTopBorder + self.graphHeight * state.data [i].y)
+			let x = rint(self.graphLeftBorder + self.graphWidth * state.data [i].x)
+			let y = rint(self.graphTopBorder + self.graphHeight * state.data [i].y)
 
 			path.addLine(to: CGPoint(x: x, y: y))
 		}
@@ -657,8 +657,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 					}
 
 					// Knob position
-					lensLocation.x = rint (self.graphLeftBorder + self.graphWidth * cell.data[minIndex].x)
-					lensLocation.y = rint (self.graphTopBorder + self.graphHeight * cell.data[minIndex].y)
+					lensLocation.x = rint(self.graphLeftBorder + self.graphWidth * cell.data[minIndex].x)
+					lensLocation.y = rint(self.graphTopBorder + self.graphHeight * cell.data[minIndex].y)
 
 					// Image with value information
 					if let imageView = self.view as? UIImageView {
@@ -719,8 +719,8 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 		infoRect.size = info.size(withAttributes: attributes)
 		infoRect.size.width += statisticTrackInfoXMarginFlat * 2.0
 		infoRect.size.height += statisticTrackInfoYMarginFlat * 2.0
-		infoRect.origin.x = rint (location.x - infoRect.size.width/2)
-		infoRect.origin.y = statisticTrackYPosition + rint ((statisticTrackThickness - infoRect.size.height) / 2)
+		infoRect.origin.x = rint(location.x - infoRect.size.width/2)
+		infoRect.origin.y = statisticTrackYPosition + rint((statisticTrackThickness - infoRect.size.height) / 2)
 
 		if infoRect.origin.x < self.graphLeftBorder {
 			infoRect.origin.x = self.graphLeftBorder

@@ -89,7 +89,6 @@ struct FuelCalculatorView: View {
 }
 
 #if DEBUG
-// swiftlint:disable:next type_name
 struct FuelCalculatorView_Previews: PreviewProvider {
 	static var container: NSPersistentContainer {
 		let container = NSPersistentContainer(name: "Fuel")
