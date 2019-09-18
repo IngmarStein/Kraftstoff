@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -26,6 +26,7 @@
 		957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957F24B21E2E673C007AC96A /* StyleKit.swift */; };
 		9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
+		959D3EC02332B60C000D8687 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 959D3EBF2332B60C000D8687 /* TPInAppReceipt */; };
 		95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D8E1AF7BDCC006A56D6 /* Car.swift */; };
 		95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */; };
 		95AE6D931AF88D13006A56D6 /* FuelStatisticsPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D921AF88D13006A56D6 /* FuelStatisticsPageController.swift */; };
@@ -168,6 +169,7 @@
 			files = (
 				95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */,
 				95CBD4291D171C90009637A4 /* StoreKit.framework in Frameworks */,
+				959D3EC02332B60C000D8687 /* TPInAppReceipt in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +510,9 @@
 			dependencies = (
 			);
 			name = Kraftstoff;
+			packageProductDependencies = (
+				959D3EBF2332B60C000D8687 /* TPInAppReceipt */,
+			);
 			productName = Kraftstoff;
 			productReference = 1D6058910D05DD3D006BFB54 /* kraftstoff.app */;
 			productType = "com.apple.product-type.application";
@@ -602,6 +607,9 @@
 				ja,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			packageReferences = (
+				959D3EBE2332B60C000D8687 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
+			);
 			productRefGroup = 19C28FACFE9D520D11CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1149,6 +1157,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		959D3EBE2332B60C000D8687 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tikhop/TPInAppReceipt";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		959D3EBF2332B60C000D8687 /* TPInAppReceipt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 959D3EBE2332B60C000D8687 /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
+			productName = TPInAppReceipt;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		95FFA72F22A7100800D42BC8 /* Fuel.xcdatamodeld */ = {

@@ -11,8 +11,8 @@ import SwiftUI
 import Combine
 import CoreSpotlight
 import MobileCoreServices
-import StoreKit
 import CoreData
+import TPInAppReceipt
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -34,12 +34,10 @@ private func contentsOfURL(_ url: URL) -> String? {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate, SKRequestDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
 	private var initialized = false
 	var window: UIWindow?
-	private var appReceiptValid = false
-	private var appReceipt: [String: Any]?
-	private var receiptRefreshRequest: SKReceiptRefreshRequest?
+	private var appReceipt: InAppReceipt?
 
 	private var importAlert: UIAlertController?
 	private var importAlertParentViewController: UIViewController?
@@ -70,14 +68,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if !initialized {
 			initialized = true
 
-			self.validateReceipt(Bundle.main.appStoreReceiptURL) { success in
-				self.appReceiptValid = success
-				if !success {
-					self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
-					self.receiptRefreshRequest?.delegate = self
-					self.receiptRefreshRequest?.start()
-				}
+			#if !DEBUG
+			do {
+				appReceipt = try InAppReceipt.localReceipt()
+				try appReceipt?.verify()
+			} catch {
+				fatalError("failed to validate receipt: \(error)")
 			}
+			#endif
 
 			DataManager.load()
 
@@ -268,114 +266,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		updateShortcutItems()
 	}
 
-	// MARK: - SKRequestDelegate
-
-	func requestDidFinish(_ request: SKRequest) {
-		validateReceipt(Bundle.main.appStoreReceiptURL) { success in
-			self.appReceiptValid = success
-		}
-	}
-
-	func request(_ request: SKRequest, didFailWithError error: Error) {
-		print("receipt request failed: \(error)")
-	}
-
 	// MARK: - Receipt validation
 
-	private func receiptData(_ appStoreReceiptURL: URL?) -> Data? {
-		guard let receiptURL = appStoreReceiptURL, let receipt = try? Data(contentsOf: receiptURL) else { return nil }
-
-		do {
-			let receiptData = receipt.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
-			let requestContents = ["receipt-data": receiptData]
-			let requestData = try JSONSerialization.data(withJSONObject: requestContents as AnyObject, options: [])
-			return requestData
-		} catch let error {
-			print(error)
-		}
-
-		return nil
-	}
-
-	private func validateReceiptInternal(_ appStoreReceiptURL: URL?, isProd: Bool, onCompletion: @escaping (Int?, Any?) -> Void) {
-		let serverURL = isProd ? "https://buy.itunes.apple.com/verifyReceipt" : "https://sandbox.itunes.apple.com/verifyReceipt"
-
-		guard let receiptData = receiptData(appStoreReceiptURL), let url = URL(string: serverURL) else {
-			onCompletion(nil, nil)
-			return
-		}
-
-		var request = URLRequest(url: url)
-		request.httpMethod = "POST"
-		request.httpBody = receiptData
-
-		let task = URLSession.shared.dataTask(with: request, completionHandler: { data, _, error -> Void in
-
-			guard let data = data, error == nil else {
-				onCompletion(nil, nil)
-				return
-			}
-
-			do {
-				let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-				// print(json)
-				guard let statusCode = json?["status"] as? Int else {
-					onCompletion(nil, json)
-					return
-				}
-				onCompletion(statusCode, json)
-			} catch let error {
-				print(error)
-				onCompletion(nil, nil)
-			}
-		})
-		task.resume()
-	}
-
-	private func validateReceipt(_ appStoreReceiptURL: URL?, onCompletion: @escaping (Bool) -> Void) {
-		validateReceiptInternal(appStoreReceiptURL, isProd: true) { (statusCode: Int?, json: Any?) -> Void in
-			guard let status = statusCode else {
-				onCompletion(false)
-				return
-			}
-
-			// This receipt is from the test environment, but it was sent to the production environment for verification.
-			if status == 21007 {
-				self.validateReceiptInternal(appStoreReceiptURL, isProd: false) { (statusCode: Int?, json: Any?) -> Void in
-					guard let statusValue = statusCode else {
-						onCompletion(false)
-						return
-					}
-
-					// 0 if the receipt is valid
-					if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, statusValue == 0 && bundleId == "com.github.ingmarstein.kraftstoff" {
-						self.appReceipt = receipt
-						onCompletion(true)
-					} else {
-						onCompletion(false)
-					}
-				}
-
-				// 0 if the receipt is valid
-			} else if let dictionary = json as? [String: Any], let receipt = dictionary["receipt"] as? [String: Any], let bundleId = receipt["bundle_id"] as? String, status == 0 && bundleId == "com.github.ingmarstein.kraftstoff" {
-				self.appReceipt = receipt
-				onCompletion(true)
-			} else {
-				onCompletion(false)
-			}
-		}
-	}
-
 	func validReceiptForInAppPurchase(_ productId: String) -> Bool {
-		guard let receipt = appReceipt, let inApps = receipt["in_app"] as? [[String: AnyObject]], appReceiptValid else { return false }
-		for inApp in inApps {
-			if let id = inApp["product_id"] as? String {
-				if id == productId {
-					return true
-				}
-			}
-		}
-		return false
+		guard let receipt = appReceipt else { return false }
+		return !receipt.purchases(ofProductIdentifier: productId).isEmpty
 	}
 
 	// MARK: - Modal Alerts
