@@ -1,8 +1,9 @@
+version: ~> 1.0
 language: objective-c
 xcode_project: Kraftstoff.xcodeproj
 xcode_scheme: Kraftstoff
 xcode_sdk: iphonesimulator
-osx_image: xcode11
+osx_image: xcode11.2
 cache:
 - bundler
 #before_script:
