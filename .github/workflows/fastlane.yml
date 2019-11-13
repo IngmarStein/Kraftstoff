@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Build and Test
+    - name: Install homebrew dependencies
+      run: brew bundle
+    - name: Build and test
       run: fastlane test
