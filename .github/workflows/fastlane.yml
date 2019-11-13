@@ -13,5 +13,7 @@ jobs:
       run: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
     - name: Install homebrew dependencies
       run: brew bundle
+    - name: Resolve Swift Package Manager dependencies (https://github.com/fastlane/fastlane/pull/15505)
+      run: xcodebuild -resolvePackageDependencies
     - name: Build and test
       run: bundle exec fastlane test
