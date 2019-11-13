@@ -9,7 +9,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Install gems
+      run: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
     - name: Install homebrew dependencies
       run: brew bundle
     - name: Build and test
-      run: fastlane test
+      run: bundle exec fastlane test

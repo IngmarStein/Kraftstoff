@@ -8,6 +8,8 @@ cache:
 - bundler
 #before_script:
 #- "./scripts/install-swift.sh"
-install: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
+install:
+- bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
+- brew bundle
 script:
-- fastlane test
+- bundle exec fastlane test
