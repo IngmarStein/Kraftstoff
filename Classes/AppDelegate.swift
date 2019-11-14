@@ -178,16 +178,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			self.importAlert = UIAlertController(title: NSLocalizedString("Importing", comment: "") + "\n\n", message: "", preferredStyle: .alert)
 			self.importAlertParentViewController = parentViewController
 
-			let progress = UIActivityIndicatorView(frame: self.importAlert!.view.bounds)
-			progress.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
+			let view = self.importAlert!.view!
+			let progress = UIActivityIndicatorView(style: .large)
+			view.addSubview(progress)
+			progress.translatesAutoresizingMaskIntoConstraints = false
 			progress.isUserInteractionEnabled = false
-			progress.style = .large
-			progress.color = .black
-			let center = self.importAlert!.view.center
-			progress.center = CGPoint(x: center.x, y: center.y + 30.0)
+			NSLayoutConstraint.activate([
+				progress.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+				progress.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30.0),
+			])
 			progress.startAnimating()
-
-			self.importAlert!.view.addSubview(progress)
 
 			parentViewController.present(self.importAlert!, animated: true, completion: nil)
 		}

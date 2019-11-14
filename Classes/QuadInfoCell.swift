@@ -45,7 +45,7 @@ final class QuadInfoCell: UITableViewCell {
 		contentView.addSubview(botLeftLabel)
 
 		topRightLabel.backgroundColor           = .clear
-		topRightLabel.textColor                 = .black
+		topRightLabel.textColor                 = .label
 		topRightLabel.adjustsFontSizeToFitWidth = true
 		topRightLabel.textAlignment             = .right
 		topRightLabel.translatesAutoresizingMaskIntoConstraints = false

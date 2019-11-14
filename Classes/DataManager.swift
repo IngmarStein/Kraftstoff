@@ -35,9 +35,6 @@ final class DataManager {
 			fatalError("Could not retrieve a persistent store description.")
 		}
 
-		// initialize the CloudKit schema, toggle to false when done
-		//description.cloudKitContainerOptions?.shouldInitializeSchema = true
-
 		return container
 	}()
 
@@ -123,6 +120,20 @@ final class DataManager {
 				UIApplication.kraftstoffAppDelegate.alertWindow.rootViewController?.present(alertController, animated: true, completion: nil)
 			}
 		}
+
+		/*
+		if let container = persistentContainer as? NSPersistentCloudKitContainer {
+			do {
+				// Uncomment to do a dry run and print the CKRecords it'll make
+				//try container.initializeCloudKitSchema(options: [.dryRun, .printSchema])
+				// Uncomment to initialize the schema
+				#warning("Initializing CloudKit schema")
+				try container.initializeCloudKitSchema()
+			} catch {
+				print("Unable to initialize CloudKit schema: \(error.localizedDescription)")
+			}
+		}
+		*/
 	}
 
 	// MARK: - Preconfigured Data Fetches

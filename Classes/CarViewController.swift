@@ -67,8 +67,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.addSubview(backgroundImage)
 		NSLayoutConstraint.activate([
-			NSLayoutConstraint(item: backgroundView, attribute: .bottom, relatedBy: .equal, toItem: backgroundImage, attribute: .bottom, multiplier: 1.0, constant: 90.0),
-			NSLayoutConstraint(item: backgroundView, attribute: .centerX, relatedBy: .equal, toItem: backgroundImage, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+			backgroundView.bottomAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 110.0),
+			backgroundView.centerXAnchor.constraint(equalTo: backgroundImage.centerXAnchor),
 		])
 		self.tableView.backgroundView = backgroundView
 
