@@ -303,8 +303,9 @@ final class DataManager {
 		}
 
 		// Create new managed object for this event
-		let newEvent = FuelEvent()
+		let newEvent = FuelEvent(context: moc)
 
+		newEvent.car = car
 		newEvent.timestamp = date
 		newEvent.ksDistance = kilometers
 		newEvent.ksPrice = pricePerLiter
