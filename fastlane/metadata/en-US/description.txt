@@ -9,11 +9,11 @@ Fill-up:
 ○ Partial fill-ups are supported (the data is settled on next full fill-up)
 
 Graphical display:
-○ Select a car and turn your iPhone into landscape mode to get interactive history charts for milage and fuel costs as well as a table with interesting statistical values.
+○ Select a car and enter analysis mode to get interactive history charts for milage and fuel costs as well as a table with interesting statistical values.
 
 Further features:
 ○ Export your data to iCloud Drive or send as email (CSV attachment)
 ○ Import CSV data via 'Open in', e.g. from Mail or iCloud Drive
 ○ No Ads
-○ Optimized for iPhone X und iOS 11
-○ Data is synchronized on all your devices with iCloud (CloudKit)
+○ Optimized for iPhone 11 and iOS 13
+○ Your data is synchronized across all your devices with iCloud (CloudKit)

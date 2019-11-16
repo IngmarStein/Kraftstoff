@@ -9,7 +9,7 @@ Ravitaillement:
 ○ pleins partiels sont pris en charge (les données sont installés sur le prochain ravitaillement complet)
 
 Affichage graphique:
-○ Sélectionnez une voiture et transformer votre iPhone en mode paysage pour obtenir les cartes d'histoire interactives pour kilométriques et les coûts de carburant ainsi que d'une table avec des valeurs statistiques intéressantes.
+○ Obtenez les cartes d'histoire interactives pour kilométriques et les coûts de carburant ainsi que d'une table avec des valeurs statistiques intéressantes.
 
 Autres caractéristiques:
 ○ Exportation de vos données courriel (pièce jointe CSV)
