@@ -11,4 +11,4 @@ To fill the app with some demonstration data do the following:
 To see the graphical statistics:
 
 - select this newly created car
-- rotate the device into landscape mode
+- hit the chart navigation bar button
