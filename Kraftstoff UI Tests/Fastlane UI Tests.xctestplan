@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "97C57C98-0904-44D3-8304-26F5D4D867DE",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Kraftstoff.xcodeproj",
+        "identifier" : "95E685411C4C1BC800C6D5F8",
+        "name" : "Kraftstoff UI Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

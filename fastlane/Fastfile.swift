@@ -17,6 +17,7 @@ class Fastfile: LaneFile {
     var fastlaneVersion = "2.69.3"
 
     func beforeAll() {
+        optOutUsage()
         swiftlint(mode: "lint", configFile: ".swiftlint.yml", strict: false, ignoreExitStatus: false, quiet: false)
     }
 
@@ -31,7 +32,7 @@ class Fastfile: LaneFile {
 		runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
 		incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
-		captureScreenshots()
+		captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
 		buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
         uploadToTestflight(username: appleID)
     }
@@ -42,7 +43,7 @@ class Fastfile: LaneFile {
 		runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
 		incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", type: "appstore", appIdentifier: [appIdentifier], username: appleID)
-        captureScreenshots()
+        captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
 		buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
         uploadToAppStore(username: appleID, force: true, app: appIdentifier)
         frameScreenshots()

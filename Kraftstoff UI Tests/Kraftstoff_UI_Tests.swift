@@ -15,6 +15,9 @@ class KraftstoffUITests: XCTestCase {
 		attachment.lifetime = .keepAlways
 		attachment.name = name
 		add(attachment)
+
+		// for fastlane
+		Snapshot.snapshot(name, timeWaitingForIdle: 20)
 	}
 
     override func setUp() {
@@ -23,6 +26,7 @@ class KraftstoffUITests: XCTestCase {
 		continueAfterFailure = false
 
 		let app = XCUIApplication()
+		setupSnapshot(app)
 		app.launchArguments += ["-STARTFRESH", "-KEEPLENS", "-UNITTEST"]
 		app.launch()
 
