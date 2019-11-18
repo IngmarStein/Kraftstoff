@@ -68,14 +68,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if !initialized {
 			initialized = true
 
-			#if !DEBUG
-			do {
-				appReceipt = try InAppReceipt.localReceipt()
-				try appReceipt?.verify()
-			} catch {
-				fatalError("failed to validate receipt: \(error)")
+			if let receiptPath = Bundle.main.appStoreReceiptURL?.path, !receiptPath.contains("CoreSimulator") && !receiptPath.contains("sandboxReceipt") {
+				do {
+					appReceipt = try InAppReceipt.localReceipt()
+					try appReceipt?.verify()
+				} catch {
+					fatalError("failed to validate receipt: \(error)")
+				}
 			}
-			#endif
 
 			DataManager.load()
 
