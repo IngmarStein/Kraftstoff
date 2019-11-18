@@ -68,7 +68,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		backgroundView.addSubview(backgroundImage)
 		NSLayoutConstraint.activate([
 			backgroundView.bottomAnchor.constraint(equalTo: backgroundImage.bottomAnchor, constant: 110.0),
-			backgroundView.centerXAnchor.constraint(equalTo: backgroundImage.centerXAnchor),
+			backgroundView.centerXAnchor.constraint(equalTo: backgroundImage.centerXAnchor)
 		])
 		self.tableView.backgroundView = backgroundView
 

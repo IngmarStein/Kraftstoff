@@ -222,13 +222,13 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let fuelConsumptionUnitPickerLabels = [
 			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers).capitalized,
 			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon).capitalized,
-			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized,
+			Formatters.longMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon).capitalized
 		]
 
 		let fuelConsumptionUnitPickerShortLabels = [
 			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.litersPer100Kilometers),
 			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerGallon),
-			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon),
+			Formatters.shortMeasurementFormatter.string(from: UnitFuelEfficiency.milesPerImperialGallon)
 		]
 
 		addRowAtIndex(rowIndex: 5,

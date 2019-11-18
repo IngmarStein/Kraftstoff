@@ -68,7 +68,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if !initialized {
 			initialized = true
 
-			if let receiptPath = Bundle.main.appStoreReceiptURL?.path, !receiptPath.contains("CoreSimulator") && !receiptPath.contains("sandboxReceipt") {
+			if let receiptPath = Bundle.main.appStoreReceiptURL?.path,
+					!receiptPath.contains("CoreSimulator")
+					&& !receiptPath.contains("XCTestDevices")
+					&& !receiptPath.contains("sandboxReceipt") {
 				do {
 					appReceipt = try InAppReceipt.localReceipt()
 					try appReceipt?.verify()
@@ -185,7 +188,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 			progress.isUserInteractionEnabled = false
 			NSLayoutConstraint.activate([
 				progress.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-				progress.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30.0),
+				progress.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30.0)
 			])
 			progress.startAnimating()
 
