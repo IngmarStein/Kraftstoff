@@ -108,6 +108,10 @@
             argument = "-UNLIMITED"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.CloudKitDebug 3"
+            isEnabled = "YES">
+         </CommandLineArgument>
       </CommandLineArguments>
    </LaunchAction>
    <ProfileAction

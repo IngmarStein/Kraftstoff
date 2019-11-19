@@ -15,6 +15,7 @@ final class DataManager {
 	static let managedObjectContext: NSManagedObjectContext = {
 		let context = persistentContainer.viewContext
 		context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+		context.automaticallyMergesChangesFromParent = true
 		return context
 	}()
 

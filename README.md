@@ -2,7 +2,7 @@
 
 *Kraftstoff* is an app for iOS 13.x or higher to track your fuel economy.
 
-Kraftstoff is available on the [App Store](https://itunes.apple.com/app/id471634654)
+Kraftstoff is available on the [App Store](https://itunes.apple.com/app/id1198604982)
 
 <img src="Artwork/Screenshot%20Graph.png" width="736" alt="Kraftstoff shows your fuel efficiency as a fancy graph">
 
