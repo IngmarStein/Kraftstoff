@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bla-8M-9aI">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14819.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,7 +26,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="91"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aHw-nG-RRP" id="4Xb-tm-IrS">
-                                    <rect key="frame" x="0.0" y="0.0" width="347.66666666666669" height="91"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="348" height="91"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
@@ -133,9 +133,9 @@
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NRn-ON-A3B" userLabel="Dismiss">
-                                <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <rect key="frame" x="345.33333333333331" y="28.666666666666671" width="19.666666666666686" height="22"/>
                                 <accessibility key="accessibilityConfiguration" label="close"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <state key="normal" image="xmark.circle" catalog="system"/>
                                 <connections>
                                     <segue destination="96w-9C-axi" kind="unwind" unwindAction="unwindToFuelEvents:" id="B3y-Nm-ayC"/>
@@ -622,9 +622,9 @@
                                 <rect key="frame" x="169" y="420" width="37" height="37"/>
                             </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cfh-Xy-CBf" userLabel="Dismiss">
-                                <rect key="frame" x="345" y="28.666666666666671" width="20" height="22"/>
+                                <rect key="frame" x="345.33333333333331" y="28.666666666666671" width="19.666666666666686" height="22"/>
                                 <accessibility key="accessibilityConfiguration" label="close"/>
-                                <color key="tintColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <state key="normal" image="xmark.circle" catalog="system"/>
                                 <connections>
                                     <segue destination="uvo-an-IAO" kind="unwind" unwindAction="unwindToFuelEvents:" id="WFP-Yq-cuY"/>
@@ -766,7 +766,7 @@
         <image name="Cars" width="27" height="26"/>
         <image name="Zapfhahn" width="27" height="26"/>
         <image name="chart.bar" catalog="system" width="64" height="44"/>
-        <image name="xmark.circle" catalog="system" width="64" height="62"/>
+        <image name="xmark.circle" catalog="system" width="64" height="60"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="fup-JW-VQO"/>

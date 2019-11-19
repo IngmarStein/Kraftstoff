@@ -23,32 +23,32 @@ class Fastfile: LaneFile {
 
     func testLane() {
         desc("Runs all the tests")
-		runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
+        runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
     }
 
     func betaLane() {
         desc("Submit a new Beta Build to Apple TestFlight. This will also make sure the profile is up to date")
 
-		runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
-		incrementBuildNumber()
+        runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
+        incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
-		captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
-		buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
+        captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
+        buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
         uploadToTestflight(username: appleID)
     }
 
     func releaseLane() {
         desc("Deploy a new version to the App Store")
 
-		runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
-		incrementBuildNumber()
+        runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
+        incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", type: "appstore", appIdentifier: [appIdentifier], username: appleID)
         captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
-		buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
+        buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
         uploadToAppStore(username: appleID, force: true, app: appIdentifier)
         frameScreenshots()
 
-		//addGitTag(buildNumber: getVersionNumber())
+        //addGitTag(buildNumber: getVersionNumber())
     }
 
     // You can define as many lanes as you want
