@@ -584,10 +584,6 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return self.isEditing ? nil : indexPath
 	}
 
-	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-		print("test")
-	}
-
 	override func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
 		editButtonItem.isEnabled = false
 		hideHelp(true)

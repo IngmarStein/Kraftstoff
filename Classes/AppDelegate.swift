@@ -68,16 +68,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		if !initialized {
 			initialized = true
 
-			if let receiptPath = Bundle.main.appStoreReceiptURL?.path,
-					!receiptPath.contains("CoreSimulator")
-					&& !receiptPath.contains("XCTestDevices")
-					&& !receiptPath.contains("sandboxReceipt") {
-				do {
-					appReceipt = try InAppReceipt.localReceipt()
-					try appReceipt?.verify()
-				} catch {
-					fatalError("failed to validate receipt: \(error)")
-				}
+			do {
+				appReceipt = try InAppReceipt.localReceipt()
+				try appReceipt?.verify()
+			} catch IARError.initializationFailed(reason: .appStoreReceiptNotFound) {
+				// known cases when this happens: on the simulator,
+				// when running XCTests, in TestFlight builds and
+				// during App Store review.
+				print("No receipt at URL: \(String(describing: Bundle.main.appStoreReceiptURL?.path))")
+			} catch {
+				fatalError("failed to validate receipt: \(error)")
 			}
 
 			DataManager.load()
