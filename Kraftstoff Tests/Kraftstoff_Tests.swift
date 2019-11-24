@@ -47,7 +47,7 @@ class KraftstoffTests: XCTestCase {
 	}
 
 	func testLanguages() {
-		for language in ["en", "de", "fr"] {
+		for language in ["en", "de", "fr", "ja"] {
 			roundtrip(language)
 		}
 	}

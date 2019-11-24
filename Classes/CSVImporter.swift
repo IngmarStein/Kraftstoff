@@ -683,7 +683,7 @@ final class CSVImporter {
 	}
 
 	private func keyForDistance(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
-		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES" ] where record[key] != nil {
+		for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES", "キロメートル" ] where record[key] != nil {
 			unit = .kilometers
 			return key
 		}
@@ -711,7 +711,7 @@ final class CSVImporter {
 	}
 
 	private func keyForVolume(_ record: CSVRecord, unit: inout UnitVolume?) -> String? {
-		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES" ] where record[key] != nil {
+		for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES", "リットル" ] where record[key] != nil {
 			unit = .liters
 			return key
 		}
@@ -747,7 +747,7 @@ final class CSVImporter {
 	}
 
 	private func keyForPrice(_ record: CSVRecord) -> String? {
-		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON" ] where record[key] != nil {
+		for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON", "リットル当たりの価格" ] where record[key] != nil {
 			return key
 		}
 
@@ -755,7 +755,7 @@ final class CSVImporter {
 	}
 
 	private func keyForFillup(_ record: CSVRecord) -> String? {
-		for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN" ] where record[key] != nil {
+		for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN", "フルフィルアップ" ] where record[key] != nil {
 			return key
 		}
 
@@ -779,7 +779,7 @@ final class CSVImporter {
 	}
 
 	private func keyForComment(_ record: CSVRecord) -> String? {
-		for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE" ] where record[key] != nil {
+		for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE", "コメント" ] where record[key] != nil {
 			return key
 		}
 
