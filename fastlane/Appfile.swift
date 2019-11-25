@@ -4,5 +4,5 @@ var appleID: String { return "ingmarstein@icloud.com" } // Your Apple email addr
 var teamID: String { return "ADVP2P7SJK" } // Developer Portal Team ID
 var itcTeam: String? { return nil } // iTunes Connect Team ID (may be nil if no team)
 
-// you can even provide different app identifiers, Apple IDs and team names per lane:
-// More information: https://docs.fastlane.tools/advanced/#appfile
+// For more information about the Appfile, see:
+//     https://docs.fastlane.tools/advanced/#appfile

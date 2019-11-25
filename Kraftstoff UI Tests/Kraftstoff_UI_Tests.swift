@@ -77,8 +77,11 @@ class KraftstoffUITests: XCTestCase {
 		imagesQuery["graphImage"].coordinate(withNormalizedOffset: CGVector(dx: 0.536, dy: 0.5)).press(forDuration: 0.6)
 		snapshot("04_chart_cost")
 
+		// FIXME: find solution for Catalyst
+		#if !targetEnvironment(macCatalyst)
 		// app.pageIndicators.element(boundBy: 0).tap()
 		app.scrollViews.element(boundBy: 0).swipeLeft()
+		#endif
 
 		snapshot("05_chart_fuel")
 
