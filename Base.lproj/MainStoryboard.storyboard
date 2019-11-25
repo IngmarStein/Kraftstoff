@@ -42,7 +42,7 @@
                             <outlet property="delegate" destination="6xE-Uc-v14" id="ggT-ja-kNH"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="sMv-0l-PzQ"/>
+                    <navigationItem key="navigationItem" title="Cars" largeTitleDisplayMode="never" id="sMv-0l-PzQ"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nE8-Sk-w7G" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -700,7 +700,7 @@
                             <outlet property="delegate" destination="9ok-pF-7av" id="764-nn-4JR"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="2wd-L4-5FK"/>
+                    <navigationItem key="navigationItem" title="Fill-Up" id="2wd-L4-5FK"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tw0-IV-CcS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
