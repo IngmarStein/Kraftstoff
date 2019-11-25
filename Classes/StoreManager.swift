@@ -13,9 +13,15 @@ import Security
 final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
 
+	#if targetEnvironment(macCatalyst)
+	private let twoCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.2cars"
+	private let fiveCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.5cars"
+	private let unlimitedCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
+	#else
 	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.iap.2cars"
 	private let fiveCarsProductId = "com.github.ingmarstein.kraftstoff.iap.5cars"
 	private let unlimitedCarsProductId = "com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
+	#endif
 
 	override init() {
 		super.init()

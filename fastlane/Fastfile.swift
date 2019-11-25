@@ -37,6 +37,17 @@ class Fastfile: LaneFile {
         uploadToTestflight(username: appleID)
     }
 
+    func betaMacOSLane() {
+        desc("Submit a new Beta macOS Build to Apple TestFlight. This will also make sure the profile is up to date")
+
+        //runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
+        //incrementBuildNumber()
+        // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
+        //captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests", sdk: "macosx")
+        buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release", sdk: "macosx", destination: "platform=macOS,arch=x86_64,variant=Mac Catalyst")
+        uploadToTestflight(username: appleID, appPlatform: "macOS")
+    }
+
     func releaseLane() {
         desc("Deploy a new version to the App Store")
 
@@ -46,6 +57,20 @@ class Fastfile: LaneFile {
         captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
         buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release")
         uploadToAppStore(username: appleID, force: true, app: appIdentifier)
+        frameScreenshots()
+
+        //addGitTag(buildNumber: getVersionNumber())
+    }
+
+    func releaseMacOSLane() {
+        desc("Deploy a new macOS version to the App Store")
+
+        runTests(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff")
+        incrementBuildNumber()
+        // syncCodeSigning(gitUrl: "gitUrl", type: "appstore", appIdentifier: [appIdentifier], username: appleID)
+        captureScreenshots(project: "Kraftstoff.xcodeproj", languages: ["en-US", "de-DE", "fr-FR", "ja"], scheme: "Fastlane UI Tests")
+        buildApp(project: "Kraftstoff.xcodeproj", scheme: "Kraftstoff", configuration: "Release", sdk: "macosx", destination: "platform=macOS,arch=x86_64,variant=Mac Catalyst")
+        uploadToAppStore(username: appleID, platform: "macosx", force: true, app: appIdentifier)
         frameScreenshots()
 
         //addGitTag(buildNumber: getVersionNumber())
