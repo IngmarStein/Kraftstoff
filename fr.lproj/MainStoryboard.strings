@@ -76,3 +76,9 @@
 
 /* Class = "UITabBarItem"; title = "Fill-Up"; ObjectID = "tX0-HD-RL4"; */
 "tX0-HD-RL4.title" = "Ravitaillement";
+
+/* Class = "UINavigationItem"; title = "Cars"; ObjectID = "sMv-0l-PzQ"; */
+"sMv-0l-PzQ.title" = "Véhicules";
+
+/* Class = "UINavigationItem"; title = "Fill-Up"; ObjectID = "2wd-L4-5FK"; */
+"2wd-L4-5FK.title" = "Ravitaillement";
