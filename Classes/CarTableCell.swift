@@ -145,7 +145,7 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 		showPicker(true)
 	}
 
-	override func textFieldDidEndEditing(_ textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
 		showPicker(false)
 	}
 

@@ -18,6 +18,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	func sceneDidBecomeActive(_ scene: UIScene) {
 		self.window?.makeKeyAndVisible()
+
+		if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
+			if let windowScene = scene as? UIWindowScene {
+				let size = CGSize(width: 1440.0 / 1.54, height: 900 / 1.54)
+				windowScene.sizeRestrictions?.minimumSize = size
+				windowScene.sizeRestrictions?.maximumSize = size
+			}
+		}
 	}
 
 	func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

@@ -87,8 +87,8 @@ final class TextEditTableCell: EditablePageCell {
 		return false
 	}
 
-	override func textFieldDidEndEditing(_ textField: UITextField) {
-		super.textFieldDidEndEditing(textField)
+	override func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+		super.textFieldDidEndEditing(textField, reason: reason)
 
 		textField.text = textField.text?.replacingOccurrences(of: "\u{00a0}", with: " ")
 	}

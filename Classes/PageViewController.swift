@@ -197,6 +197,10 @@ class PageViewController: UITableViewController {
 		return .none
 	}
 
+	override func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
+		return false
+	}
+
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let description = cellDescriptionForRow(indexPath.row, inSection: indexPath.section)!
 
@@ -210,31 +214,22 @@ class PageViewController: UITableViewController {
 
 	// MARK: - Programmatically Selecting Table Rows
 
-	func textFieldAtIndexPath(_ indexPath: IndexPath) -> UITextField? {
+	func activateCellAtIndexPath(_ indexPath: IndexPath) {
 		let cell = self.tableView.cellForRow(at: indexPath)!
-		let field: UITextField?
-
-		if let carCell = cell as? CarTableCell {
-			field = carCell.textField
-		} else if let dateCell = cell as? DateEditTableCell {
-			field = dateCell.textField
-		} else if let numberCell = cell as? NumberEditTableCell {
-			field = numberCell.textField
-		} else if let textCell = cell as? TextEditTableCell {
-			field = textCell.textField
-		} else if let pickerCell = cell as? PickerTableCell {
-			field = pickerCell.textField
-		} else {
-			field = nil
+		if cell.canBecomeFirstResponder {
+			DispatchQueue.main.async {
+				cell.becomeFirstResponder()
+				self.tableView.beginUpdates()
+				self.tableView.endUpdates()
+			}
 		}
-		return field
 	}
 
-	func activateTextFieldAtIndexPath(_ indexPath: IndexPath) {
-		if let field = textFieldAtIndexPath(indexPath) {
-			field.isUserInteractionEnabled = true
-			field.becomeFirstResponder()
+	func deactivateCellAtIndexPath(_ indexPath: IndexPath) {
+		let cell = self.tableView.cellForRow(at: indexPath)!
+		if cell.canResignFirstResponder {
 			DispatchQueue.main.async {
+				cell.resignFirstResponder()
 				self.tableView.beginUpdates()
 				self.tableView.endUpdates()
 			}

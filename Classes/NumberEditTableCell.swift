@@ -158,8 +158,8 @@ final class NumberEditTableCell: EditablePageCell {
 	}
 
 	// Editing ends, switch back to alternate formatter and append specified suffix
-	override func textFieldDidEndEditing(_ textField: UITextField) {
-		super.textFieldDidEndEditing(textField)
+	override func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+		super.textFieldDidEndEditing(textField, reason: reason)
 
 		let value = self.numberFormatter.number(from: textField.text!) as? NSDecimalNumber ?? .zero
 

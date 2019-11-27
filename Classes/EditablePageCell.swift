@@ -104,7 +104,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
 	// MARK: - UITextFieldDelegate
 
-	func textFieldDidEndEditing(_ textField: UITextField) {
+	func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
 		textField.isUserInteractionEnabled = false
 	}
 
@@ -112,6 +112,25 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		textField.resignFirstResponder()
 
 		return false
+	}
+
+	// MARK: - Responder Chain
+
+	override var canBecomeFirstResponder: Bool {
+		return true
+	}
+
+	override var canResignFirstResponder: Bool {
+		return true
+	}
+
+	override func becomeFirstResponder() -> Bool {
+		textField.isUserInteractionEnabled = true
+		return textField.becomeFirstResponder()
+	}
+
+	override func resignFirstResponder() -> Bool {
+		return textField.resignFirstResponder()
 	}
 
 }

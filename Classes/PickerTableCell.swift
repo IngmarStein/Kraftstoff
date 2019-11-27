@@ -122,7 +122,7 @@ final class PickerTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPi
 		showPicker(true)
 	}
 
-	override func textFieldDidEndEditing(_ textField: UITextField) {
+	override func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
 		showPicker(false)
 	}
 

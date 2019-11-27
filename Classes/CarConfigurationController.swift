@@ -389,18 +389,12 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 	// MARK: - UITableViewDelegate
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		activateTextFieldAtIndexPath(indexPath)
+		activateCellAtIndexPath(indexPath)
 		tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
 	}
 
 	override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-		if let field = textFieldAtIndexPath(indexPath) {
-			field.resignFirstResponder()
-			DispatchQueue.main.async {
-				tableView.beginUpdates()
-				tableView.endUpdates()
-			}
-		}
+		deactivateCellAtIndexPath(indexPath)
 	}
 
 	// MARK: - Memory Management
