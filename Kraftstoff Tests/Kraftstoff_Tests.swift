@@ -8,7 +8,7 @@
 
 import XCTest
 import CoreData
-@testable import kraftstoff
+@testable import Kraftstoff
 
 class KraftstoffTests: XCTestCase {
 
