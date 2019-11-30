@@ -77,7 +77,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 				// during App Store review.
 				print("No receipt at URL: \(String(describing: Bundle.main.appStoreReceiptURL?.path))")
 			} catch {
-				fatalError("failed to validate receipt: \(error)")
+				print("Failed to validate receipt: \(error)")
+				appReceipt = nil
 			}
 
 			DataManager.load()
