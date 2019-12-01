@@ -34,7 +34,7 @@ private func contentsOfURL(_ url: URL) -> String? {
 }
 
 @UIApplicationMain
-final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
+final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
 	private var initialized = false
 	var window: UIWindow?
 	private var appReceipt: InAppReceipt?
@@ -163,11 +163,23 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 
 	// MARK: - State Restoration
 
+	// deprecated as of iOS 13.2
 	func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
 		return true
 	}
 
-	func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+	// iOS 13.2+
+	func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+		return true
+	}
+
+	// deprecated as of iOS 13.2
+	func application(_ app: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+		return application(app, shouldRestoreSecureApplicationState: coder)
+	}
+
+	// iOS 13.2+
+	func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
 		let bundleVersion = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? Int ?? 0
 		let stateVersion = Int(coder.decodeObject(of: NSString.self, forKey: UIApplication.stateRestorationBundleVersionKey) as String? ?? "") ?? 0
 
@@ -292,32 +304,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate, NSFetchedResultsContro
 		//}
 	}
 
-	// MARK: - Shared Color Gradients
+	// MARK: - Catalyst
 
-	static let blueGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0, 0.466, 0.721, 0.870, 0.9 ]
+	override func buildMenu(with builder: UIMenuBuilder) {
+		super.buildMenu(with: builder)
 
-		let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let blueGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
+		builder.remove(menu: .format)
+	}
 
-		return blueGradient
-	}()
+	@IBAction func showHelp(_ sender: Any) {
+		UIApplication.shared.open(URL(string: "https://ingmarstein.github.io/Kraftstoff/")!)
+	}
 
-	static let greenGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0, 0.662, 0.815, 0.502, 0.9 ]
-
-		let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let greenGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
-
-		return greenGradient
-	}()
-
-	static let orangeGradient: CGGradient = {
-		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0, 0.988, 0.662, 0.333, 0.9 ]
-
-		let colorSpace = CGColorSpaceCreateDeviceRGB()
-		let orangeGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
-
-		return orangeGradient
-	}()
 }

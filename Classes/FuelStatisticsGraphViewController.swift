@@ -748,9 +748,14 @@ class FuelStatisticsGraphViewController: FuelStatisticsViewController {
 
 class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewControllerDataSource {
 
-	var curveGradient: CGGradient {
-		return AppDelegate.greenGradient
-	}
+	var curveGradient: CGGradient = {
+		let colorComponentsFlat: [CGFloat] = [ 0.662, 0.815, 0.502, 0.0, 0.662, 0.815, 0.502, 0.9 ]
+
+		let colorSpace = CGColorSpaceCreateDeviceRGB()
+		let greenGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
+
+		return greenGradient
+	}()
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		return Formatters.fuelVolumeFormatter
@@ -787,9 +792,14 @@ class FuelStatisticsViewControllerDataSourceAvgConsumption: FuelStatisticsViewCo
 
 class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewControllerDataSource {
 
-	var curveGradient: CGGradient {
-		return AppDelegate.orangeGradient
-	}
+	var curveGradient: CGGradient = {
+		let colorComponentsFlat: [CGFloat] = [ 0.988, 0.662, 0.333, 0.0, 0.988, 0.662, 0.333, 0.9 ]
+
+		let colorSpace = CGColorSpaceCreateDeviceRGB()
+		let orangeGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
+
+		return orangeGradient
+	}()
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		return precise ? Formatters.preciseCurrencyFormatter : Formatters.currencyFormatter
@@ -823,9 +833,14 @@ class FuelStatisticsViewControllerDataSourcePriceAmount: FuelStatisticsViewContr
 }
 
 class FuelStatisticsViewControllerDataSourcePriceDistance: FuelStatisticsViewControllerDataSource {
-	var curveGradient: CGGradient {
-		return AppDelegate.blueGradient
-	}
+	var curveGradient: CGGradient = {
+		let colorComponentsFlat: [CGFloat] = [ 0.360, 0.682, 0.870, 0.0, 0.466, 0.721, 0.870, 0.9 ]
+
+		let colorSpace = CGColorSpaceCreateDeviceRGB()
+		let blueGradient = CGGradient(colorSpace: colorSpace, colorComponents: colorComponentsFlat, locations: nil, count: 2)!
+
+		return blueGradient
+	}()
 
 	func averageFormatter(_ precise: Bool, forCar car: Car) -> NumberFormatter {
 		let distanceUnit = car.ksOdometerUnit
