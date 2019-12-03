@@ -281,7 +281,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
  	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		// FIXME: this seems to be necessary to update fetchedObjects
 		do {
-			try fetchedResultsController.performFetch()
+			try controller.performFetch()
 		} catch {
 			// ignore
 		}

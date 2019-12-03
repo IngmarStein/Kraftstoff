@@ -70,7 +70,7 @@ class Fastfile: LaneFile {
 
     private func buildMacOS() {
         runTests(project: project, scheme: scheme, destination: catalystDestination)
-        incrementBuildNumber()
+        //incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
         //captureScreenshots(project: project,
         //                   devices: devices,
