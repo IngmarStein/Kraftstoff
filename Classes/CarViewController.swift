@@ -258,6 +258,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 				newCar.addDemoEvents(inContext: DataManager.managedObjectContext)
 			}
 
+			// Saving here is important here to get a stable objectID for the fuelEvent fetches
+			DataManager.saveContext()
 		} else if result == .editSucceeded {
 
 			editedObject.name = controller.name!
@@ -270,6 +272,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 			editedObject.ksOdometer = odometer
 			editedObject.ksFuelUnit = .fromPersistentId(controller.fuelUnit!.int32Value)
 			editedObject.ksFuelConsumptionUnit = .fromPersistentId(controller.fuelConsumptionUnit!.int32Value)
+
+			DataManager.saveContext()
 
 			// Invalidate fuelEvent-controller and any precomputed statistics
 			fuelEventController = nil
@@ -640,7 +644,7 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 	}
 
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		// FIXME: this seems to be necessary in iOS 10 (up to Beta 4)
+		// FIXME: this seems to be necessary to update fetchedObjects
 		do {
 			try fetchedResultsController.performFetch()
 		} catch {

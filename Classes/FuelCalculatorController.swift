@@ -803,6 +803,13 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
 	// MARK: - NSFetchedResultsControllerDelegate
 
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		// FIXME: this seems to be necessary to update fetchedObjects
+		do {
+			try fetchedResultsController.performFetch()
+		} catch {
+			// ignore
+		}
+
 		recreateTableContentsWithAnimation(changeIsUserDriven ? .right : .none)
 		updateSaveButtonState()
 
