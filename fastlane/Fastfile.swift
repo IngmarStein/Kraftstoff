@@ -29,7 +29,6 @@ class Fastfile: LaneFile {
         "iPhone 11 Pro",
         "iPhone 11 Pro Max",
         "iPad Pro (9.7-inch)",
-        "iPad (7th generation)",
         "iPad Pro (11-inch)",
         "iPad Pro (12.9-inch) (3rd generation)"
     ]
