@@ -14,7 +14,7 @@ import Foundation
 class Fastfile: LaneFile {
     // This is the minimum version number required.
     // Update this, if you use features of a newer version
-    var fastlaneVersion = "2.69.3"
+    var fastlaneVersion = "2.141.0"
 
     let macAppIdentifier = "maccatalyst." + appIdentifier
     let catalystDestination = "platform=macOS,arch=x86_64,variant=Mac Catalyst"
@@ -63,7 +63,8 @@ class Fastfile: LaneFile {
                            devices: devices,
                            languages: languages,
                            outputDirectory: "./fastlane/screenshots",
-                           scheme: screenshotScheme)
+                           scheme: screenshotScheme,
+						   disableSlideToType: true)
         buildIosApp(project: project, scheme: scheme, configuration: "Release")
     }
 
@@ -76,21 +77,21 @@ class Fastfile: LaneFile {
         //                   languages: languages,
         //                   outputDirectory: "./fastlane/screenshots-catalyst",
         //                   scheme: screenshotScheme)
-        buildIosApp(project: project, scheme: scheme, configuration: "Release", destination: catalystDestination)
+        buildMacApp(project: project, scheme: scheme, configuration: "Release")
     }
 
     func betaLane() {
-        desc("Submit a new Beta Build to Apple TestFlight. This will also make sure the profile is up to date")
+        desc("Submit a new beta iOS build to Apple TestFlight. This will also make sure the profile is up to date")
 
         buildIOS()
         uploadToTestflight(username: appleID)
     }
 
     func betaMacOSLane() {
-        desc("Submit a new Beta macOS Build to Apple TestFlight. This will also make sure the profile is up to date")
+        desc("Submit a new beta macOS build to Apple TestFlight. This will also make sure the profile is up to date")
 
         buildMacOS()
-        uploadToTestflight(username: appleID, appPlatform: "macOS")
+        uploadToTestflight(username: appleID)
     }
 
     func releaseLane() {
