@@ -791,7 +791,7 @@
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2236;
+				CURRENT_PROJECT_VERSION = 2238;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
@@ -815,7 +815,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2236;
+				CURRENT_PROJECT_VERSION = 2238;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

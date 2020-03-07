@@ -20,10 +20,10 @@ class KraftstoffUITests: XCTestCase {
 		Snapshot.snapshot(name, timeWaitingForIdle: 20)
 	}
 
-    override func setUp() {
-        super.setUp()
+  override func setUp() {
+    super.setUp()
 
-		continueAfterFailure = false
+    continueAfterFailure = false
 
 		let app = XCUIApplication()
 		setupSnapshot(app)
@@ -31,11 +31,11 @@ class KraftstoffUITests: XCTestCase {
 		app.launch()
 
 		#if !targetEnvironment(macCatalyst)
-		XCUIDevice.shared.orientation = .portrait
+    XCUIDevice.shared.orientation = .portrait
 		#endif
-    }
+  }
 
-    func testSnapshots() {
+  func testSnapshots() {
 		let deviceLanguage = Locale.current.languageCode!
 		let app = XCUIApplication()
 		let tabBarsQuery = app.tabBars
@@ -120,6 +120,6 @@ class KraftstoffUITests: XCTestCase {
 		app.navigationBars.buttons["done"].tap()
 
 		snapshot("01_entry")
-    }
+  }
 
 }

@@ -19,6 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func sceneDidBecomeActive(_ scene: UIScene) {
 		self.window?.makeKeyAndVisible()
 
+    if ProcessInfo.processInfo.arguments.firstIndex(of: "-UNITTEST") != nil {
+      self.window?.layer.speed = 100
+    }
+
 		#if targetEnvironment(macCatalyst)
 		if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
 			if let windowScene = scene as? UIWindowScene {

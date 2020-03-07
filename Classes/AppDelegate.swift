@@ -66,7 +66,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
 		if !initialized {
 			initialized = true
 
-			DataManager.load()
+      DataManager.load()
 
 			//UIApplication.shared.registerForRemoteNotifications()
 

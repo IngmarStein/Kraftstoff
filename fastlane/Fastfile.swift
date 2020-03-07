@@ -90,6 +90,7 @@ class Fastfile: LaneFile {
         desc("Submit a new beta macOS build to Apple TestFlight. This will also make sure the profile is up to date")
 
         buildMacOS()
+        //notarize(package: <#T##String#>, username: appleID)
         uploadToTestflight(username: appleID)
     }
 
