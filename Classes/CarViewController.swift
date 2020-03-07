@@ -565,6 +565,13 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
 		return true
 	}
 
+	override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		guard let tableCell = cell as? QuadInfoCell else { return }
+
+		// https://www.fadel.io/blog/posts/ios-performance-tips-you-probably-didnt-know/
+		tableCell.reset()
+	}
+
 	// MARK: - UIDataSourceModelAssociation
 
 	func indexPathForElement(withModelIdentifier identifier: String, in view: UIView) -> IndexPath? {

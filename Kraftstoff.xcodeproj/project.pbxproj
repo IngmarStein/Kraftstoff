@@ -24,6 +24,7 @@
 		95655B8D1AF7ABF10045F9F7 /* FuelEventEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95655B8C1AF7ABF10045F9F7 /* FuelEventEditorController.swift */; };
 		957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957F24B21E2E673C007AC96A /* StyleKit.swift */; };
 		9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */; };
+		9594F9FB24144FB30088DFF5 /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 9594F9FA24144FB30088DFF5 /* AppleIncRootCertificate.cer */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		959D3EC02332B60C000D8687 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 959D3EBF2332B60C000D8687 /* TPInAppReceipt */; };
 		95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D8E1AF7BDCC006A56D6 /* Car.swift */; };
@@ -106,6 +107,7 @@
 		957F24B21E2E673C007AC96A /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleKit.swift; path = Classes/StyleKit.swift; sourceTree = "<group>"; };
 		9583E6651EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Kraftstoff.swift"; sourceTree = "<group>"; };
 		95844D0822B055330076F80B /* UITestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITestPlan.xctestplan; sourceTree = "<group>"; };
+		9594F9FA24144FB30088DFF5 /* AppleIncRootCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleIncRootCertificate.cer; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
 		95AE6D8E1AF7BDCC006A56D6 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEvent.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9594F9FA24144FB30088DFF5 /* AppleIncRootCertificate.cer */,
 				95FFA72F22A7100800D42BC8 /* Fuel.xcdatamodeld */,
 				4D3B48A8157803CE009E76FD /* kraftstoff-Info.plist */,
 				95DF625F1E37998A00294E0B /* kraftstoff.entitlements */,
@@ -628,6 +631,7 @@
 				9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */,
 				4DCFE36A138EE2930051FEC9 /* Localizable.strings in Resources */,
 				950C99561AF3696D00AC8749 /* MainStoryboard.storyboard in Resources */,
+				9594F9FB24144FB30088DFF5 /* AppleIncRootCertificate.cer in Resources */,
 				95D350311AFB8B5400E04685 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -788,7 +792,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2236;
-				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
@@ -813,7 +816,6 @@
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 2236;
-				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

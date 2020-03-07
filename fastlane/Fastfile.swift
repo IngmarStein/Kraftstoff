@@ -16,7 +16,6 @@ class Fastfile: LaneFile {
     // Update this, if you use features of a newer version
     var fastlaneVersion = "2.141.0"
 
-    let macAppIdentifier = "maccatalyst." + appIdentifier
     let catalystDestination = "platform=macOS,arch=x86_64,variant=Mac Catalyst"
     let project = "Kraftstoff.xcodeproj"
     let scheme = "Kraftstoff"
@@ -109,10 +108,10 @@ class Fastfile: LaneFile {
 
         buildMacOS()
         uploadToAppStore(username: appleID,
-                         appIdentifier: macAppIdentifier,
+                         appIdentifier: appIdentifier,
                          platform: "osx",
                          screenshotsPath: "./fastlane/screenshots-catalyst",
-                         app: macAppIdentifier)
+                         app: appIdentifier)
 
         //addGitTag(buildNumber: getVersionNumber())
     }

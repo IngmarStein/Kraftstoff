@@ -56,4 +56,11 @@ class EditableProxyPageCell: EditablePageCell {
 		set {
 		}
 	}
+
+	override func reset() {
+		super.reset()
+
+		textFieldProxy.text = ""
+	}
+
 }

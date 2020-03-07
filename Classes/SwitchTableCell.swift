@@ -99,4 +99,11 @@ final class SwitchTableCell: PageCell {
 		self.valueLabel.text = NSLocalizedString(isOn ? "Yes" : "No", comment: "")
 	}
 
+	override func reset() {
+		super.reset()
+
+		keyLabel.text = ""
+		valueLabel.text = ""
+	}
+
 }

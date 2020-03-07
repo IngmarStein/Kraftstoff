@@ -147,4 +147,11 @@ final class QuadInfoCell: UITableViewCell {
 		})
 	}
 
+	func reset() {
+		topLeftLabel.text = ""
+		topRightLabel.text = ""
+		botLeftLabel.text = ""
+		botRightLabel.text = ""
+	}
+
 }

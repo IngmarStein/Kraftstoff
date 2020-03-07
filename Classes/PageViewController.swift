@@ -212,6 +212,13 @@ class PageViewController: UITableViewController {
 		return cell
 	}
 
+	override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		guard let pageCell = cell as? PageCell else { return }
+
+		// https://www.fadel.io/blog/posts/ios-performance-tips-you-probably-didnt-know/
+		pageCell.reset()
+	}
+
 	// MARK: - Programmatically Selecting Table Rows
 
 	func activateCellAtIndexPath(_ indexPath: IndexPath) {

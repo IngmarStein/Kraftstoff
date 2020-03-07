@@ -53,4 +53,11 @@ final class ConsumptionTableCell: PageCell {
 		set {
 		}
 	}
+
+	override func reset() {
+		super.reset()
+
+		coloredLabel.text = ""
+	}
+
 }

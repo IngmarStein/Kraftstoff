@@ -133,4 +133,10 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 		return textField.resignFirstResponder()
 	}
 
+	override func reset() {
+		super.reset()
+
+		keyLabel.text = ""
+	}
+
 }

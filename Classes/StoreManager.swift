@@ -9,19 +9,17 @@
 import Foundation
 import StoreKit
 import Security
+import TPInAppReceipt
 
 final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
 	static let sharedInstance = StoreManager()
 
-	#if targetEnvironment(macCatalyst)
-	private let twoCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.2cars"
-	private let fiveCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.5cars"
-	private let unlimitedCarsProductId = "maccatalyst.com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
-	#else
-	private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.iap.2cars"
+  private var appReceipt: InAppReceipt?
+  private var receiptRefreshRequest: SKReceiptRefreshRequest?
+
+  private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.iap.2cars"
 	private let fiveCarsProductId = "com.github.ingmarstein.kraftstoff.iap.5cars"
 	private let unlimitedCarsProductId = "com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
-	#endif
 
 	override init() {
 		super.init()
@@ -34,7 +32,9 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 	}
 
 	func checkCarCount() -> Bool {
-		if unlimitedCars || ProcessInfo.processInfo.arguments.firstIndex(of: "-UNLIMITED") != nil {
+    refreshReceipt()
+
+    if unlimitedCars || ProcessInfo.processInfo.arguments.firstIndex(of: "-UNLIMITED") != nil {
 			return true
 		}
 		let carsFetchRequest = DataManager.fetchRequestForCars()
@@ -92,8 +92,39 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 		]
 	}
 
+  private func refreshReceipt(force: Bool = false) {
+    if appReceipt == nil || force {
+      self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
+                                             self.receiptRefreshRequest?.delegate = self
+                                             self.receiptRefreshRequest?.start()
+      return
+    }
+
+    verifyAppReceipt()
+  }
+
+  private func verifyAppReceipt() {
+    do {
+      appReceipt = try InAppReceipt.localReceipt()
+      try appReceipt?.verify()
+    } catch IARError.initializationFailed(reason: .appStoreReceiptNotFound) {
+      // known cases when this happens: on the simulator,
+      // when running XCTests, in TestFlight builds and
+      // during App Store review.
+      print("No receipt at URL: \(String(describing: Bundle.main.appStoreReceiptURL?.path))")
+    } catch {
+      print("Failed to validate receipt: \(error)")
+      appReceipt = nil
+    }
+  }
+
+  func validReceiptForInAppPurchase(_ productId: String) -> Bool {
+    guard let receipt = appReceipt else { return false }
+    return !receipt.purchases(ofProductIdentifier: productId).isEmpty
+  }
+
 	private func isProductPurchased(_ product: String) -> Bool {
-		return UIApplication.kraftstoffAppDelegate.validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product) as CFDictionary, nil) == 0
+		return validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product) as CFDictionary, nil) == 0
 	}
 
 	private func setProductPurchased(_ product: String, purchased: Bool) {
@@ -103,6 +134,7 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 		} else {
 			SecItemDelete(keychainItem as CFDictionary)
 		}
+    refreshReceipt(force: true)
 	}
 
 	var twoCars: Bool {
@@ -145,5 +177,15 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
 			}
 		}
 	}
+
+  // MARK: - SKRequestDelegate
+
+  func requestDidFinish(_ request: SKRequest) {
+    verifyAppReceipt()
+  }
+
+  func request(_ request: SKRequest, didFailWithError error: Error) {
+    print("receipt request failed: \(error)")
+  }
 
 }

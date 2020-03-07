@@ -12,7 +12,6 @@ import Combine
 import CoreSpotlight
 import MobileCoreServices
 import CoreData
-import TPInAppReceipt
 
 extension UIApplication {
 	static var kraftstoffAppDelegate: AppDelegate {
@@ -37,7 +36,6 @@ private func contentsOfURL(_ url: URL) -> String? {
 final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
 	private var initialized = false
 	var window: UIWindow?
-	private var appReceipt: InAppReceipt?
 
 	private var importAlert: UIAlertController?
 	private var importAlertParentViewController: UIViewController?
@@ -67,19 +65,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
 	private func commonLaunchInitialization(_ launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) {
 		if !initialized {
 			initialized = true
-
-			do {
-				appReceipt = try InAppReceipt.localReceipt()
-				try appReceipt?.verify()
-			} catch IARError.initializationFailed(reason: .appStoreReceiptNotFound) {
-				// known cases when this happens: on the simulator,
-				// when running XCTests, in TestFlight builds and
-				// during App Store review.
-				print("No receipt at URL: \(String(describing: Bundle.main.appStoreReceiptURL?.path))")
-			} catch {
-				print("Failed to validate receipt: \(error)")
-				appReceipt = nil
-			}
 
 			DataManager.load()
 
@@ -287,13 +272,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
 		}
 
 		updateShortcutItems()
-	}
-
-	// MARK: - Receipt validation
-
-	func validReceiptForInAppPurchase(_ productId: String) -> Bool {
-		guard let receipt = appReceipt else { return false }
-		return !receipt.purchases(ofProductIdentifier: productId).isEmpty
 	}
 
 	// MARK: - Modal Alerts

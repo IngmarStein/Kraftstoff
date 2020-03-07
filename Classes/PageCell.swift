@@ -27,4 +27,7 @@ class PageCell: UITableViewCell {
 		// Overridepoint for subclasses
 	}
 
+	func reset() {
+	}
+
 }
