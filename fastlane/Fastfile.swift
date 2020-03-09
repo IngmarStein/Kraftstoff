@@ -68,7 +68,7 @@ class Fastfile: LaneFile {
     }
 
     private func buildMacOS() {
-        runTests(project: project, scheme: scheme, destination: catalystDestination)
+        runTests(project: project, scheme: scheme, xcargs: "-allowProvisioningUpdates", destination: catalystDestination)
         incrementBuildNumber()
         // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
         //captureScreenshots(project: project,
@@ -76,7 +76,7 @@ class Fastfile: LaneFile {
         //                   languages: languages,
         //                   outputDirectory: "./fastlane/screenshots-catalyst",
         //                   scheme: screenshotScheme)
-        buildMacApp(project: project, scheme: scheme, configuration: "Release")
+        buildMacApp(project: project, scheme: scheme, configuration: "Release", xcargs: "-allowProvisioningUpdates")
     }
 
     func betaLane() {
