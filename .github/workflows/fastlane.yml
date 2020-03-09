@@ -16,7 +16,7 @@ jobs:
       run: bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
     - name: Install homebrew dependencies
       run: brew bundle
-    - name: Build and test
+    - name: Build and test (iOS)
       run: bundle exec fastlane test
-    - name: Build and test
+    - name: Build and test (macOS)
       run: bundle exec fastlane testMacOS
