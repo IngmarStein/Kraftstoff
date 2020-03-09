@@ -51,7 +51,7 @@ class Fastfile: LaneFile {
 
     func testMacOSLane() {
         desc("Runs all the tests")
-        runTests(project: project, scheme: scheme, destination: catalystDestination)
+        runTests(project: project, scheme: scheme, xcargs: "-allowProvisioningUpdates", destination: catalystDestination)
     }
 
     private func buildIOS() {
