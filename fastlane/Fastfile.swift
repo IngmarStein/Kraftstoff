@@ -52,13 +52,11 @@ class Fastfile: LaneFile {
 
   func testMacOSLane() {
     desc("Runs all the tests")
-    installProvisioningProfile(path: "./profiles/macos_dev.provisionprofile")
     runTests(project: project, scheme: scheme, destination: catalystDestination)
   }
 
   private func buildIOS() {
     incrementBuildNumber()
-    // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
     captureScreenshots(project: project,
                        devices: devices,
                        languages: languages,
@@ -71,7 +69,6 @@ class Fastfile: LaneFile {
   private func buildMacOS() {
     runTests(project: project, scheme: scheme, destination: catalystDestination)
     incrementBuildNumber()
-    // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
     //captureScreenshots(project: project,
     //           devices: devices,
     //           languages: languages,
