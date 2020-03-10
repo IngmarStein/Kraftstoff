@@ -10,7 +10,12 @@ cache:
 #- "./scripts/install-swift.sh"
 install:
 - bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
-- brew bundle
 script:
 - bundle exec fastlane test
 - bundle exec fastlane testMacOS
+addons:
+  homebrew:
+    brewfile: true
+    # TODO: Remove the `update` line once this PR has been released:
+    # https://github.com/travis-ci/packer-templates-mac/pull/13
+    update: true
