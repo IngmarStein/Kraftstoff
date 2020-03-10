@@ -12,127 +12,127 @@
 import Foundation
 
 class Fastfile: LaneFile {
-    // This is the minimum version number required.
-    // Update this, if you use features of a newer version
-    var fastlaneVersion = "2.141.0"
+  // This is the minimum version number required.
+  // Update this, if you use features of a newer version
+  var fastlaneVersion = "2.141.0"
 
-    let catalystDestination = "platform=macOS,arch=x86_64,variant=Mac Catalyst"
-    let project = "Kraftstoff.xcodeproj"
-    let scheme = "Kraftstoff"
-    let screenshotScheme = "Fastlane UI Tests"
+  let catalystDestination = "platform=macOS,arch=x86_64,variant=Mac Catalyst"
+  let project = "Kraftstoff.xcodeproj"
+  let scheme = "Kraftstoff"
+  let screenshotScheme = "Fastlane UI Tests"
 
-    let devices = [
-        "iPhone 8",
-        "iPhone 8 Plus",
-        "iPhone 11",
-        "iPhone 11 Pro",
-        "iPhone 11 Pro Max",
-        "iPad Pro (9.7-inch)",
-        "iPad Pro (11-inch)",
-        "iPad Pro (12.9-inch) (3rd generation)"
-    ]
+  let devices = [
+    "iPhone 8",
+    "iPhone 8 Plus",
+    "iPhone 11",
+    "iPhone 11 Pro",
+    "iPhone 11 Pro Max",
+    "iPad Pro (9.7-inch)",
+    "iPad Pro (11-inch)",
+    "iPad Pro (12.9-inch) (3rd generation)"
+  ]
 
-    let languages = [
-        "en-US",
-        "de-DE",
-        "fr-FR",
-        "ja"
-    ]
+  let languages = [
+    "en-US",
+    "de-DE",
+    "fr-FR",
+    "ja"
+  ]
 
-    func beforeAll() {
-        optOutUsage()
-        swiftlint(mode: "lint", configFile: ".swiftlint.yml", strict: false, ignoreExitStatus: false, quiet: false)
-    }
+  func beforeAll() {
+    optOutUsage()
+    setupCi()
+    swiftlint(mode: "lint", configFile: ".swiftlint.yml", strict: false, ignoreExitStatus: false, quiet: false)
+  }
 
-    func testLane() {
-        desc("Runs all the tests")
-        runTests(project: project, scheme: scheme)
-    }
+  func testLane() {
+    desc("Runs all the tests")
+    runTests(project: project, scheme: scheme)
+  }
 
-    func testMacOSLane() {
-        desc("Runs all the tests")
-        runTests(project: project, scheme: scheme, xcargs: "-allowProvisioningUpdates", destination: catalystDestination)
-    }
+  func testMacOSLane() {
+    desc("Runs all the tests")
+    installProvisioningProfile(path: "./profiles/macos_dev.provisionprofile")
+    runTests(project: project, scheme: scheme, destination: catalystDestination)
+  }
 
-    private func buildIOS() {
-        runTests(project: project, scheme: scheme)
-        incrementBuildNumber()
-        // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
-        captureScreenshots(project: project,
-                           devices: devices,
-                           languages: languages,
-                           outputDirectory: "./fastlane/screenshots",
-                           scheme: screenshotScheme,
-						   disableSlideToType: true)
-        buildIosApp(project: project, scheme: scheme, configuration: "Release")
-    }
+  private func buildIOS() {
+    incrementBuildNumber()
+    // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
+    captureScreenshots(project: project,
+                       devices: devices,
+                       languages: languages,
+                       outputDirectory: "./fastlane/screenshots",
+                       scheme: screenshotScheme,
+                       disableSlideToType: true)
+    buildIosApp(project: project, scheme: scheme, configuration: "Release")
+  }
 
-    private func buildMacOS() {
-        runTests(project: project, scheme: scheme, xcargs: "-allowProvisioningUpdates", destination: catalystDestination)
-        incrementBuildNumber()
-        // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
-        //captureScreenshots(project: project,
-        //                   devices: devices,
-        //                   languages: languages,
-        //                   outputDirectory: "./fastlane/screenshots-catalyst",
-        //                   scheme: screenshotScheme)
-        buildMacApp(project: project, scheme: scheme, configuration: "Release", xcargs: "-allowProvisioningUpdates")
-    }
+  private func buildMacOS() {
+    runTests(project: project, scheme: scheme, destination: catalystDestination)
+    incrementBuildNumber()
+    // syncCodeSigning(gitUrl: "gitUrl", appIdentifier: [appIdentifier], username: appleID)
+    //captureScreenshots(project: project,
+    //           devices: devices,
+    //           languages: languages,
+    //           outputDirectory: "./fastlane/screenshots-catalyst",
+    //           scheme: screenshotScheme)
+    buildMacApp(project: project, scheme: scheme, configuration: "Release")
+  }
 
-    func betaLane() {
-        desc("Submit a new beta iOS build to Apple TestFlight. This will also make sure the profile is up to date")
+  func betaLane() {
+    desc("Submit a new beta iOS build to Apple TestFlight. This will also make sure the profile is up to date")
 
-        buildIOS()
-        uploadToTestflight(username: appleID)
-    }
+    testLane()
+    buildIOS()
+    uploadToTestflight(username: appleID)
+  }
 
-    func betaMacOSLane() {
-        desc("Submit a new beta macOS build to Apple TestFlight. This will also make sure the profile is up to date")
+  func betaMacOSLane() {
+    desc("Submit a new beta macOS build to Apple TestFlight. This will also make sure the profile is up to date")
 
-        buildMacOS()
-        //notarize(package: <#T##String#>, username: appleID)
-        uploadToTestflight(username: appleID)
-    }
+    testMacOSLane()
+    buildMacOS()
+    //notarize(package: <#T##String#>, username: appleID)
+    uploadToTestflight(username: appleID)
+  }
 
-    func releaseLane() {
-        desc("Deploy a new version to the App Store")
+  func releaseLane() {
+    desc("Deploy a new version to the App Store")
 
-        buildIOS()
-        uploadToAppStore(username: appleID, app: appIdentifier)
-        frameScreenshots(path: "./fastlane/screenshots")
+    buildIOS()
+    uploadToAppStore(username: appleID, app: appIdentifier)
+    frameScreenshots(path: "./fastlane/screenshots")
 
-       //addGitTag(buildNumber: getVersionNumber())
-    }
+     //addGitTag(buildNumber: getVersionNumber())
+  }
 
-    func releaseMacOSLane() {
-        desc("Deploy a new macOS version to the App Store")
+  func releaseMacOSLane() {
+    desc("Deploy a new macOS version to the App Store")
 
-        buildMacOS()
-        uploadToAppStore(username: appleID,
-                         appIdentifier: appIdentifier,
-                         platform: "osx",
-                         screenshotsPath: "./fastlane/screenshots-catalyst",
-                         app: appIdentifier)
+    buildMacOS()
+    uploadToAppStore(username: appleID,
+                     appIdentifier: appIdentifier,
+                     platform: "osx",
+                     screenshotsPath: "./fastlane/screenshots-catalyst",
+                     app: appIdentifier)
 
-        //addGitTag(buildNumber: getVersionNumber())
-    }
+    //addGitTag(buildNumber: getVersionNumber())
+  }
 
-    func afterAll(currentLane: String) {
-        // This block is called, only if the executed lane was successful
-        // slack(
-        //     message: "Successfully deployed new App Update.",
-        //     slackUrl: "slackURL"
-        // )
-    }
+  func afterAll(currentLane: String) {
+    // This block is called, only if the executed lane was successful
+    // slack(
+    //   message: "Successfully deployed new App Update.",
+    //   slackUrl: "slackURL"
+    // )
+  }
 
-    func onError(currentLane: String, errorInfo: String) {
-        // slack(
-        //     message: errorInfo,
-        //     slackUrl: "slackUrl",
-        //     success: false
-        // )
-    }
-
-    // fastlane reports which actions are used. No personal data is recorded.
-    // Learn more at https://github.com/fastlane/fastlane/#metrics
+  func onError(currentLane: String, errorInfo: String) {
+    // slack(
+    //   message: errorInfo,
+    //   slackUrl: "slackUrl",
+    //   success: false
+    // )
+  }
 }

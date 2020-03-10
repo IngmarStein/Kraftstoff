@@ -6325,7 +6325,7 @@ func setPodKey(useBundleExec: Bool = true,
  This action helps with CI integration. Add this to the top of your Fastfile if you use CI.
 */
 func setupCi(force: Bool = false,
-             provider: Bool = false) {
+             provider: String? = nil) {
   let command = RubyCommand(commandID: "", methodName: "setup_ci", className: nil, args: [RubyCommand.Argument(name: "force", value: force),
                                                                                           RubyCommand.Argument(name: "provider", value: provider)])
   _ = runner.executeCommand(command)

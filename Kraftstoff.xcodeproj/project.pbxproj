@@ -791,7 +791,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 2238;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
@@ -804,8 +804,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.ingmarstein.kraftstoff;
 				PRODUCT_NAME = Kraftstoff;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff 2 Development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst Development";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_EXPORT_DECL = "\n#pragma clang diagnostic ignored \"-Wmissing-variable-declarations\"\n";
 			};
@@ -820,7 +820,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2238;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
@@ -831,8 +831,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.ingmarstein.kraftstoff;
 				PRODUCT_NAME = Kraftstoff;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff 2 Development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst Development";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_EXPORT_DECL = "\n#pragma clang diagnostic ignored \"-Wmissing-variable-declarations\"\n";
@@ -1031,7 +1031,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -1087,7 +1087,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
