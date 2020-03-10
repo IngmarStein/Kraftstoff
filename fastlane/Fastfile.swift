@@ -63,7 +63,7 @@ class Fastfile: LaneFile {
                        outputDirectory: "./fastlane/screenshots",
                        scheme: screenshotScheme,
                        disableSlideToType: true)
-    buildIosApp(project: project, scheme: scheme, configuration: "Release")
+    buildIosApp(project: project, scheme: scheme, configuration: "Release", exportXcargs: "-allowProvisioningUpdates")
   }
 
   private func buildMacOS() {
@@ -74,7 +74,7 @@ class Fastfile: LaneFile {
     //           languages: languages,
     //           outputDirectory: "./fastlane/screenshots-catalyst",
     //           scheme: screenshotScheme)
-    buildMacApp(project: project, scheme: scheme, configuration: "Release")
+    buildMacApp(project: project, scheme: scheme, configuration: "Release", exportXcargs: "-allowProvisioningUpdates")
   }
 
   func betaLane() {
