@@ -1,1 +1,2 @@
+Problem bei der Validierung von In-App-Käufen behoben.
 

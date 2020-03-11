@@ -1,1 +1,1 @@
-
+Fixed a problem related to the validation of in-app purchases.
