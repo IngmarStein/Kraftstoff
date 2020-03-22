@@ -1,9 +1,0 @@
-include:
-    - Classes
-    - 'Kraftstoff Tests'
-    - 'Kraftstoff UI Tests'
-exclude:
-    - fastlane
-except:
-    - upper-camel-case # enum case names shoould be lowerCamelCase in Swift 3
-    - forced-type-cast

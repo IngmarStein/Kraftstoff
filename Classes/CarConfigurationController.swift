@@ -99,7 +99,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		let indexPath = isShowingCancelSheet ? previousSelectionIndex : self.tableView.indexPathForSelectedRow
 
 		// swiftlint:disable comma
-		// tailor:off
 		coder.encode(self.delegate,              forKey: SRConfiguratorDelegate)
 		coder.encode(self.editingExistingObject, forKey: SRConfiguratorEditMode)
 		coder.encode(isShowingCancelSheet,       forKey: SRConfiguratorCancelSheet)
@@ -109,7 +108,6 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
 		coder.encode(self.plate as NSString?,    forKey: SRConfiguratorPlate)
 		coder.encode(self.fuelUnit,              forKey: SRConfiguratorFuelUnit)
 		coder.encode(self.fuelConsumptionUnit,   forKey: SRConfiguratorFuelConsumptionUnit)
-		// tailor:on
 		// swiftlint:enable comma
 
 		super.encodeRestorableState(with: coder)
