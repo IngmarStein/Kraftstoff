@@ -793,7 +793,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2240;
+				CURRENT_PROJECT_VERSION = 2242;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -821,7 +821,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2240;
+				CURRENT_PROJECT_VERSION = 2242;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
