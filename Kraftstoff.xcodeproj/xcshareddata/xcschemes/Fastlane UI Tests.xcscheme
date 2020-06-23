@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1000"
+   LastUpgradeVersion = "1200"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -48,15 +48,6 @@
             </ActionContent>
          </ExecutionAction>
       </PostActions>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Kraftstoff.app"
-            BlueprintName = "Kraftstoff"
-            ReferencedContainer = "container:Kraftstoff.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <TestPlans>
          <TestPlanReference
             reference = "container:Kraftstoff UI Tests/Fastlane UI Tests.xctestplan"
