@@ -7,18 +7,32 @@
 //
 
 import UIKit
+import SwiftUI
 import CoreSpotlight
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	var window: UIWindow?
+
+	func scene(
+		_ scene: UIScene,
+		willConnectTo session: UISceneSession,
+		options connectionOptions: UIScene.ConnectionOptions
+	) {
+		let contentView = MainView().environment(\.managedObjectContext, DataManager.managedObjectContext)
+
+		if let windowScene = scene as? UIWindowScene {
+			let window = UIWindow(windowScene: windowScene)
+			window.rootViewController = UIHostingController(rootView: contentView)
+			self.window = window
+			window.makeKeyAndVisible()
+		}
+	}
 
 	func sceneDidEnterBackground(_ scene: UIScene) {
 		DataManager.saveContext()
 	}
 
 	func sceneDidBecomeActive(_ scene: UIScene) {
-		self.window?.makeKeyAndVisible()
-
     if ProcessInfo.processInfo.arguments.firstIndex(of: "-UNITTEST") != nil {
       self.window?.layer.speed = 100
     }
@@ -26,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		#if targetEnvironment(macCatalyst)
 		if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
 			if let windowScene = scene as? UIWindowScene {
-				let size = CGSize(width: 1440.0 / 1.54, height: 900 / 1.54)
+				let size = CGSize(width: 1440.0, height: 900.0)
 				windowScene.sizeRestrictions?.minimumSize = size
 				windowScene.sizeRestrictions?.maximumSize = size
 			}

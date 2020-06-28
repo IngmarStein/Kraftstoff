@@ -11,6 +11,7 @@ import Combine
 import CoreData
 
 struct FuelCalculatorView: View {
+	@Environment(\.managedObjectContext) var managedObjectContext
 	@FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil) var cars: FetchedResults<Car>
 	@State var date: Date
 	@State var car: Car?

@@ -16,14 +16,26 @@ struct CarRowView: View {
 		VStack {
 			HStack {
 				Text(car.ksName)
+					.foregroundColor(Color(.label))
+					.frame(maxWidth: .infinity, alignment: .leading)
+					.font(.title)
 				Text("TODO")
+					.foregroundColor(Color(.label))
+					.frame(maxWidth: .infinity, alignment: .trailing)
+					.font(.title)
 			}
 			HStack {
 				Text(car.ksNumberPlate)
+					.foregroundColor(Color(.highlightedText))
+					.frame(maxWidth: .infinity, alignment: .leading)
+					.font(.body)
 				Text(Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit))
+					.foregroundColor(Color(.highlightedText))
+					.frame(maxWidth: .infinity, alignment: .trailing)
+					.font(.body)
 			}
 		}
-    }
+  }
 }
 
 #if DEBUG

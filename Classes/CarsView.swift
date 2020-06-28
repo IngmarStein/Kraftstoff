@@ -6,18 +6,73 @@
 //  Copyright © 2019 Ingmar Stein. All rights reserved.
 //
 
-import SwiftUI
 import CoreData
+import CoreSpotlight
+import SwiftUI
 
 struct CarsView: View {
-	//@Environment(\.managedObjectContext) var managedObjectContext
-	@FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil) var cars: FetchedResults<Car>
+	@Environment(\.managedObjectContext) var managedObjectContext
 
-    var body: some View {
-		List(cars, id: \.objectID) { car in
-			CarRowView(car: car)
+	@FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil)
+	var cars: FetchedResults<Car>
+
+  var body: some View {
+		NavigationView {
+			List {
+				ForEach(cars, id: \.objectID) {
+					CarRowView(car: $0)
+				}
+				.onDelete(perform: deleteCars)
+			}
+			.navigationBarTitle(Text("Cars"), displayMode: .inline)
+			.navigationBarItems(leading:
+				Button(action: { editCar() }) {
+					Text("Edit")
+				}
+			, trailing:
+				Button(action: { addCar() }) {
+					Image(systemName: "plus")
+				}
+			)
 		}
-    }
+	}
+
+	func addCar() {
+	}
+
+	func deleteCars(at offsets: IndexSet) {
+		offsets.forEach { index in
+			let deletedCar = self.cars[index]
+			let deletedCarOrder = deletedCar.order
+
+			// Invalidate preference for deleted car
+			let preferredCarID = UserDefaults.standard.string(forKey: "preferredCarID")
+			let deletedCarID = DataManager.modelIdentifierForManagedObject(deletedCar)
+
+			if deletedCarID == preferredCarID {
+				UserDefaults.standard.set("", forKey: "preferredCarID")
+			}
+
+			if let itemID = deletedCarID {
+				CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
+			}
+
+			// Delete the managed object for the given index path
+			self.managedObjectContext.delete(deletedCar)
+			DataManager.saveContext(self.managedObjectContext)
+
+			// Update order of existing objects
+			for car in cars where car.order > deletedCarOrder {
+				car.order -= 1
+			}
+
+			DataManager.saveContext(self.managedObjectContext)
+		}
+	}
+
+	func editCar() {
+	}
+
 }
 
 #if DEBUG
@@ -49,6 +104,6 @@ struct CarsView_Previews: PreviewProvider {
 
 	static var previews: some View {
 		CarsView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()))
-    }
+	}
 }
 #endif
