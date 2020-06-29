@@ -10,9 +10,10 @@ import SwiftUI
 import CoreData
 
 struct CarRowView: View {
-	/*@ObjectBinding */var car: Car
+	var car: Car
 
 	var body: some View {
+    NavigationLink(destination: FuelEventsView(car: car)) {
 		VStack {
 			HStack {
 				Text(car.ksName)
@@ -35,19 +36,13 @@ struct CarRowView: View {
 					.font(.body)
 			}
 		}
+    }
   }
 }
 
-#if DEBUG
 struct CarRowView_Previews: PreviewProvider {
 	static var container: NSPersistentContainer {
-		let objectModel = NSManagedObjectModel(contentsOf: Bundle.main.url(forResource: "Fuel", withExtension: "momd")!)!
-		let container = NSPersistentContainer(name: "Fuel", managedObjectModel: objectModel)
-		guard let description = container.persistentStoreDescriptions.first else {
-			fatalError("Could not retrieve a persistent store description.")
-		}
-		description.type = NSInMemoryStoreType
-		return container
+    return DataManager.previewContainer
 	}
 
 	static var previewCar: Car = {
@@ -66,7 +61,7 @@ struct CarRowView_Previews: PreviewProvider {
 		return car
 	}()
 
-    static var previews: some View {
+  static var previews: some View {
 		Group {
 			CarRowView(car: previewCar)
 				.environment(\.sizeCategory, .medium)
@@ -77,6 +72,5 @@ struct CarRowView_Previews: PreviewProvider {
 				.previewLayout(.sizeThatFits)
 				.previewDisplayName("extraLarge")
 		}.environment(\.managedObjectContext, container.viewContext)
-    }
+	}
 }
-#endif

@@ -28,6 +28,8 @@
 		9594F9FB24144FB30088DFF5 /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 9594F9FA24144FB30088DFF5 /* AppleIncRootCertificate.cer */; };
 		959A61B81AF4159600BDF116 /* Units.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959A61B71AF4159600BDF116 /* Units.swift */; };
 		959D3EC02332B60C000D8687 /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 959D3EBF2332B60C000D8687 /* TPInAppReceipt */; };
+		95A3423624A9A464000AD7A3 /* FuelEventsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A3423524A9A464000AD7A3 /* FuelEventsView.swift */; };
+		95A3423824A9A74F000AD7A3 /* FuelEventRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A3423724A9A74F000AD7A3 /* FuelEventRowView.swift */; };
 		95AE6D8F1AF7BDCC006A56D6 /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D8E1AF7BDCC006A56D6 /* Car.swift */; };
 		95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */; };
 		95AE6D931AF88D13006A56D6 /* FuelStatisticsPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95AE6D921AF88D13006A56D6 /* FuelStatisticsPageController.swift */; };
@@ -111,6 +113,8 @@
 		95844D0822B055330076F80B /* UITestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITestPlan.xctestplan; sourceTree = "<group>"; };
 		9594F9FA24144FB30088DFF5 /* AppleIncRootCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleIncRootCertificate.cer; sourceTree = "<group>"; };
 		959A61B71AF4159600BDF116 /* Units.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Units.swift; path = Classes/Units.swift; sourceTree = "<group>"; };
+		95A3423524A9A464000AD7A3 /* FuelEventsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelEventsView.swift; sourceTree = "<group>"; };
+		95A3423724A9A74F000AD7A3 /* FuelEventRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelEventRowView.swift; sourceTree = "<group>"; };
 		95AE6D8E1AF7BDCC006A56D6 /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Car.swift; sourceTree = "<group>"; };
 		95AE6D901AF7C17C006A56D6 /* FuelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelEvent.swift; sourceTree = "<group>"; };
 		95AE6D921AF88D13006A56D6 /* FuelStatisticsPageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FuelStatisticsPageController.swift; sourceTree = "<group>"; };
@@ -375,6 +379,8 @@
 			isa = PBXGroup;
 			children = (
 				95AE6D9E1AF9ED21006A56D6 /* FuelEventController.swift */,
+				95A3423524A9A464000AD7A3 /* FuelEventsView.swift */,
+				95A3423724A9A74F000AD7A3 /* FuelEventRowView.swift */,
 			);
 			name = "FuelEvent View";
 			sourceTree = "<group>";
@@ -657,7 +663,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95A3423824A9A74F000AD7A3 /* FuelEventRowView.swift in Sources */,
 				957F24B31E2E673C007AC96A /* StyleKit.swift in Sources */,
+				95A3423624A9A464000AD7A3 /* FuelEventsView.swift in Sources */,
 				95C0717B1AF6482200DF261C /* CarTableCell.swift in Sources */,
 				95C0716D1AF6066100DF261C /* QuadInfoCell.swift in Sources */,
 				953F0E301AFA08970069DFF6 /* CSVImporter.swift in Sources */,

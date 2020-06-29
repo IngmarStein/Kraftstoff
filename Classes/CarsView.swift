@@ -75,15 +75,9 @@ struct CarsView: View {
 
 }
 
-#if DEBUG
 struct CarsView_Previews: PreviewProvider {
 	static var container: NSPersistentContainer {
-		let container = NSPersistentContainer(name: "Fuel")
-		guard let description = container.persistentStoreDescriptions.first else {
-			fatalError("Could not retrieve a persistent store description.")
-		}
-		description.type = NSInMemoryStoreType
-		return container
+    return DataManager.previewContainer
 	}
 
 	static var previewCar: Car = {
@@ -106,4 +100,3 @@ struct CarsView_Previews: PreviewProvider {
 		CarsView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()))
 	}
 }
-#endif

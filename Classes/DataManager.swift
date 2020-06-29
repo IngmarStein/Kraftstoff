@@ -39,6 +39,15 @@ final class DataManager {
 		return container
 	}()
 
+  static let previewContainer: NSPersistentContainer = {
+    let container = NSPersistentContainer(name: "Fuel")
+    guard let description = container.persistentStoreDescriptions.first else {
+      fatalError("Could not retrieve a persistent store description.")
+    }
+    description.type = NSInMemoryStoreType
+    return container
+  }()
+
 	private static let applicationDocumentsDirectory: String = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
 
 	static let sharedInstance = DataManager()
