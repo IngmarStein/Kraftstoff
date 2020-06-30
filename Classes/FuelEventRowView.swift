@@ -13,7 +13,76 @@ struct FuelEventRowView: View {
 	var fuelEvent: FuelEvent
 
 	var body: some View {
-    Text(fuelEvent.description)
+    //NavigationLink(destination: FuelEventView(car: car)) {
+      VStack {
+        HStack {
+          Formatters.dateFormatter.string(for: fuelEvent.timestamp).map(Text.init)
+            .foregroundColor(Color(.label))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.title)
+          Formatters.currencyFormatter.string(from: fuelEvent.cost as NSNumber).map(Text.init)
+            .foregroundColor(Color(.label))
+            .font(.title2)
+        }
+        HStack {
+          Text(distanceDescription())
+            .foregroundColor(Color(.highlightedText))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.body)
+          Text(consumptionDescription())
+            .foregroundColor(Color(.highlightedText))
+            .font(.body)
+            .accessibility(label: Text(consumptionAccessibilityLabel()))
+        }
+      }
+      .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
+    //}
+  }
+
+  func distanceDescription() -> String {
+    let odometerUnit = fuelEvent.car!.ksOdometerUnit
+    let convertedDistance: Decimal
+    if odometerUnit == UnitLength.kilometers {
+      convertedDistance = fuelEvent.ksDistance
+    } else {
+      convertedDistance = fuelEvent.ksDistance / Units.kilometersPerStatuteMile
+    }
+
+    return "\(Formatters.distanceFormatter.string(from: convertedDistance as NSNumber)!) \(Formatters.shortMeasurementFormatter.string(from: odometerUnit))"
+  }
+
+  func consumptionDescription() -> String {
+    // Consumption combined with inherited data from earlier events
+    let consumptionDescription: String
+    let consumptionUnit = fuelEvent.car!.ksFuelConsumptionUnit
+    if fuelEvent.filledUp {
+      let totalDistance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
+      let totalFuelVolume = fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume
+
+      let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
+
+      consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg as NSNumber)!
+    } else {
+      consumptionDescription = NSLocalizedString("-", comment: "")
+    }
+
+    return "\(consumptionDescription) \(Formatters.shortMeasurementFormatter.string(from: consumptionUnit))"
+  }
+
+  func consumptionAccessibilityLabel() -> String {
+    if !fuelEvent.filledUp {
+      return NSLocalizedString("fuel mileage not available", comment: "")
+    }
+
+    let consumptionUnit = fuelEvent.car!.ksFuelConsumptionUnit
+    let totalDistance = fuelEvent.ksDistance + fuelEvent.ksInheritedDistance
+    let totalFuelVolume = fuelEvent.ksFuelVolume + fuelEvent.ksInheritedFuelVolume
+
+    let avg = Units.consumptionForKilometers(totalDistance, liters: totalFuelVolume, inUnit: consumptionUnit)
+
+    let consumptionDescription = Formatters.fuelVolumeFormatter.string(from: avg as NSNumber)!
+
+    return ", \(consumptionDescription) \(Formatters.mediumMeasurementFormatter.string(from: consumptionUnit))"
   }
 }
 

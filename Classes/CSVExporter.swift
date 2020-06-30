@@ -10,7 +10,7 @@ import Foundation
 
 final class CSVExporter {
 
-	static func exportFuelEvents(_ fuelEvents: [FuelEvent], forCar car: Car, language: String? = nil) -> String {
+  static func exportFuelEvents<S: Sequence>(_ fuelEvents: S, forCar car: Car, language: String? = nil) -> String where S.Element == FuelEvent {
 		let odometerUnit = car.ksOdometerUnit
 		let fuelUnit = car.ksFuelUnit
 		let consumptionUnit = car.ksFuelConsumptionUnit

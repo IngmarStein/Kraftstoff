@@ -24,6 +24,9 @@ struct CarsView: View {
 				}
 				.onDelete(perform: deleteCars)
 			}
+      .listStyle(PlainListStyle())
+      //.background(Image("Pumps"))
+      .background(Color.red)
 			.navigationBarTitle(Text("Cars"), displayMode: .inline)
 			.navigationBarItems(leading:
 				Button(action: { editCar() }) {

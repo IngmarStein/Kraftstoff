@@ -19,7 +19,7 @@ struct MainView: View {
 				Image("Cars")
 				Text("Cars")
 			}.tag(2)
-    }.accentColor(.blue)
+    }
 	}
 }
 

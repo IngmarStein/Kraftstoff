@@ -14,29 +14,48 @@ struct CarRowView: View {
 
 	var body: some View {
     NavigationLink(destination: FuelEventsView(car: car)) {
-		VStack {
-			HStack {
-				Text(car.ksName)
-					.foregroundColor(Color(.label))
-					.frame(maxWidth: .infinity, alignment: .leading)
-					.font(.title)
-				Text("TODO")
-					.foregroundColor(Color(.label))
-					.frame(maxWidth: .infinity, alignment: .trailing)
-					.font(.title)
-			}
-			HStack {
-				Text(car.ksNumberPlate)
-					.foregroundColor(Color(.highlightedText))
-					.frame(maxWidth: .infinity, alignment: .leading)
-					.font(.body)
-				Text(Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit))
-					.foregroundColor(Color(.highlightedText))
-					.frame(maxWidth: .infinity, alignment: .trailing)
-					.font(.body)
-			}
-		}
+      VStack {
+        HStack {
+          Text(car.ksName)
+            .foregroundColor(Color.label)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.title)
+          Text(averageConsumption)
+            .foregroundColor(Color.label)
+            .font(.title)
+            .accessibility(label: Text(averageConsumptionAccessibilityLabel))
+        }
+        HStack {
+          Text(car.ksNumberPlate)
+            .foregroundColor(Color.highlightedText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .font(.body)
+          Text(Formatters.shortMeasurementFormatter.string(from: car.ksFuelConsumptionUnit))
+            .foregroundColor(Color.highlightedText)
+            .font(.body)
+        }
+      }
+      .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
     }
+  }
+
+  var averageConsumption: String {
+    let distance   = car.ksDistanceTotalSum
+    let fuelVolume = car.ksFuelVolumeTotalSum
+
+    if distance > 0 && fuelVolume > 0 {
+      return Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: car.ksFuelConsumptionUnit) as NSNumber)!
+    } else {
+      return "-"
+    }
+  }
+
+  var averageConsumptionAccessibilityLabel: String {
+    let avgConsumption = averageConsumption
+    if avgConsumption == "-" {
+      return "fuel mileage not available"
+    }
+    return avgConsumption
   }
 }
 

@@ -28,8 +28,71 @@ struct FuelEventsView: View {
 		List {
 			ForEach(fuelEvents, id: \.objectID) {
 				FuelEventRowView(fuelEvent: $0)
-			}
+      }.onDelete(perform: deleteFuelEvents)
 		}
+    .navigationBarTitle(Text(selectedCar.ksName), displayMode: .inline)
+    .navigationBarItems(trailing:
+      HStack {
+        Button(action: { showStatistics() }) {
+          Image(systemName: "chart.bar")
+        }
+        Button(action: { showStatistics() }) {
+          Image(systemName: "square.and.arrow.up")
+        }
+      }
+    )
+  }
+
+  func deleteFuelEvents(at offsets: IndexSet) {
+    offsets.forEach { index in
+      DataManager.removeEvent(self.fuelEvents[index], forceOdometerUpdate: false)
+    }
+    DataManager.saveContext()
+  }
+
+  private var exportFilename: String {
+    let rawFilename = "\(selectedCar.ksName)__\(selectedCar.ksNumberPlate).csv"
+    let illegalCharacters = CharacterSet(charactersIn: "/\\?%*|\"<>")
+
+    return rawFilename.components(separatedBy: illegalCharacters).joined(separator: "")
+  }
+
+  private var exportURL: URL {
+    return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(exportFilename)
+  }
+
+  func exportTextData() -> Data {
+    let csvString = CSVExporter.exportFuelEvents(fuelEvents, forCar: selectedCar)
+    return csvString.data(using: String.Encoding.utf8, allowLossyConversion: true)!
+  }
+
+  private func exportTextDescription() -> String {
+    let outputFormatter = DateFormatter()
+
+    outputFormatter.dateStyle = .medium
+    outputFormatter.timeStyle = .none
+
+    let eventCount = fuelEvents.count
+    let last = fuelEvents.last
+    let first = fuelEvents.first
+
+    let period: String
+    switch eventCount {
+    case 0: period = NSLocalizedString("", comment: "")
+    case 1: period = String(format: NSLocalizedString("on %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp))
+    default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp), outputFormatter.string(from: first!.ksTimestamp))
+    }
+
+    let count = String(format: NSLocalizedString(((eventCount == 1) ? "%d item" : "%d items"), comment: ""), eventCount)
+
+    return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
+            selectedCar.ksName,
+            selectedCar.ksNumberPlate,
+            period,
+            count)
+  }
+
+  func showStatistics() {
   }
 }
 
