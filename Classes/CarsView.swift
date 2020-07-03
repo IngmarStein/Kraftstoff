@@ -18,25 +18,28 @@ struct CarsView: View {
 
   var body: some View {
 		NavigationView {
-			List {
-				ForEach(cars, id: \.objectID) {
-					CarRowView(car: $0)
-				}
-				.onDelete(perform: deleteCars)
-			}
-      .listStyle(PlainListStyle())
-      //.background(Image("Pumps"))
-      .background(Color.red)
-			.navigationBarTitle(Text("Cars"), displayMode: .inline)
-			.navigationBarItems(leading:
-				Button(action: { editCar() }) {
-					Text("Edit")
-				}
-			, trailing:
-				Button(action: { addCar() }) {
-					Image(systemName: "plus")
-				}
-			)
+      ZStack {
+        List {
+          ForEach(cars, id: \.objectID) {
+            CarRowView(car: $0)
+          }
+          .onDelete(perform: deleteCars)
+        }
+        .listStyle(PlainListStyle())
+        .navigationBarTitle(Text("Cars"), displayMode: .inline)
+        .navigationBarItems(leading:
+          Button(action: { editCar() }) {
+            Text("Edit")
+          }, trailing:
+          Button(action: { addCar() }) {
+            Image(systemName: "plus")
+          }
+        )
+        Image("Pumps")
+          .frame(maxHeight: .infinity, alignment: .bottom)
+          .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
+        )
+      }
 		}
 	}
 
