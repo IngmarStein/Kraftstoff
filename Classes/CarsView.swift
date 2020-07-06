@@ -19,6 +19,10 @@ struct CarsView: View {
   var body: some View {
 		NavigationView {
       ZStack {
+        Image("Pumps")
+          .frame(maxHeight: .infinity, alignment: .bottom)
+          .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
+        )
         List {
           ForEach(cars, id: \.objectID) {
             CarRowView(car: $0)
@@ -34,10 +38,6 @@ struct CarsView: View {
           Button(action: { addCar() }) {
             Image(systemName: "plus")
           }
-        )
-        Image("Pumps")
-          .frame(maxHeight: .infinity, alignment: .bottom)
-          .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
         )
       }
 		}

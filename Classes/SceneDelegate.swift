@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	) {
 		let contentView = MainView().environment(\.managedObjectContext, DataManager.managedObjectContext)
 
+    UITableView.appearance().backgroundColor = UIColor.clear
 		if let windowScene = scene as? UIWindowScene {
 			let window = UIWindow(windowScene: windowScene)
 			window.rootViewController = UIHostingController(rootView: contentView)
