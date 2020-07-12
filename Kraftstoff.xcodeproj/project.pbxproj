@@ -52,6 +52,7 @@
 		95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071821AF66B2500DF261C /* EditablePageCell.swift */; };
 		95C071851AF6737D00DF261C /* ConsumptionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071841AF6737D00DF261C /* ConsumptionTableCell.swift */; };
 		95C071871AF6751200DF261C /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C071861AF6751200DF261C /* PageCell.swift */; };
+		95C0CFCF24BB971F00C25111 /* CarConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C0CFCE24BB971F00C25111 /* CarConfigurationView.swift */; };
 		95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CB7BA61AF272A00068E435 /* DemoData.swift */; };
 		95CBD4251D1702A8009637A4 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CBD4241D1702A8009637A4 /* CloudKit.framework */; };
 		95CE70CE1B0DF23000370781 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95CE70CD1B0DF23000370781 /* DataManager.swift */; };
@@ -137,6 +138,7 @@
 		95C071821AF66B2500DF261C /* EditablePageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditablePageCell.swift; sourceTree = "<group>"; };
 		95C071841AF6737D00DF261C /* ConsumptionTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsumptionTableCell.swift; sourceTree = "<group>"; };
 		95C071861AF6751200DF261C /* PageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
+		95C0CFCE24BB971F00C25111 /* CarConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarConfigurationView.swift; sourceTree = "<group>"; };
 		95CB7BA61AF272A00068E435 /* DemoData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		95CBD4241D1702A8009637A4 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		95CE70CD1B0DF23000370781 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = Classes/DataManager.swift; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 		95A3423924A9B3BE000AD7A3 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				95C0CFCE24BB971F00C25111 /* CarConfigurationView.swift */,
 				952DBF9622B2D3C400C914D0 /* CarRowView.swift */,
 				952DBF9422B2D31100C914D0 /* CarsView.swift */,
 				953EF35122B19512003C3F5C /* FuelCalculatorView.swift */,
@@ -717,6 +720,7 @@
 				9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */,
 				95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */,
 				95CE70CE1B0DF23000370781 /* DataManager.swift in Sources */,
+				95C0CFCF24BB971F00C25111 /* CarConfigurationView.swift in Sources */,
 				95FFA73122A7100800D42BC8 /* Fuel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

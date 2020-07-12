@@ -31,11 +31,8 @@ struct CarsView: View {
         }
         .listStyle(PlainListStyle())
         .navigationBarTitle(Text("Cars"), displayMode: .inline)
-        .navigationBarItems(leading:
-          Button(action: { editCar() }) {
-            Text("Edit")
-          }, trailing:
-          Button(action: { addCar() }) {
+        .navigationBarItems(leading: NavigationLink("Edit", destination: CarConfigurationView()),
+          trailing: Button(action: { addCar() }) {
             Image(systemName: "plus")
           }
         )
