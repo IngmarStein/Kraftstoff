@@ -28,10 +28,11 @@ struct CarsView: View {
             CarRowView(car: $0)
           }
           .onDelete(perform: deleteCars)
+          .onMove(perform: moveCars)
         }
         .listStyle(PlainListStyle())
         .navigationBarTitle(Text("Cars"), displayMode: .inline)
-        .navigationBarItems(leading: NavigationLink("Edit", destination: CarConfigurationView()),
+        .navigationBarItems(leading: EditButton(),
           trailing: Button(action: { addCar() }) {
             Image(systemName: "plus")
           }
@@ -43,7 +44,46 @@ struct CarsView: View {
 	func addCar() {
 	}
 
-	func deleteCars(at offsets: IndexSet) {
+  func moveCars(from source: IndexSet, to destination: Int) {
+    let firstIndex = source.min()!
+    let lastIndex = source.max()!
+
+    let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
+    let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
+
+    if firstRowToReorder == lastRowToReorder {
+      return
+    }
+
+    var newOrder = Int32(firstRowToReorder)
+    if newOrder < firstIndex {
+      for index in source {
+        cars[index].order = newOrder
+        newOrder += 1
+      }
+
+      for rowToMove in firstRowToReorder..<lastRowToReorder {
+        if !source.contains(rowToMove) {
+          cars[rowToMove].order = newOrder
+          newOrder = newOrder + 1
+        }
+      }
+    } else {
+      for rowToMove in firstRowToReorder...lastRowToReorder {
+        if !source.contains(rowToMove) {
+          cars[rowToMove].order = newOrder
+          newOrder = newOrder + 1
+        }
+      }
+
+      for index in source {
+        cars[index].order = newOrder
+        newOrder += 1
+      }
+    }
+  }
+
+  func deleteCars(at offsets: IndexSet) {
 		offsets.forEach { index in
 			let deletedCar = self.cars[index]
 			let deletedCarOrder = deletedCar.order
