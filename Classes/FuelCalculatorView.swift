@@ -40,46 +40,27 @@ struct FuelCalculatorView: View {
   }
   */
 
-  private var entrySection: some View {
-    Section {
-      if cars.count > 1 {
-        Picker(selection: .constant(1), label: Text("Car")) {
-          ForEach(cars, id: \.objectID) { car in
-            Text("test").tag(1)
+  var body: some View {
+    Form {
+      Section {
+        if cars.count > 1 {
+          Picker(selection: .constant(1), label: Text("Car")) {
+            ForEach(cars, id: \.objectID) { car in
+              Text("test").tag(1)
+            }
           }
         }
+        DatePicker("Date", selection: $date)
+        TextField("Distance", text: .constant(""))
+        TextField("Price", text: .constant(""))
+        TextField("Amount", text: .constant(""))
+        TextField("Comment", text: .constant(""))
+        Toggle("Fill-up", isOn: $filledUp)
       }
-      DatePicker("Date", selection: $date)
-      TextField("Distance", text: .constant(""))
-      TextField("Price", text: .constant(""))
-      TextField("Amount", text: .constant(""))
-      TextField("Comment", text: .constant(""))
-      Toggle("Fill-up", isOn: $filledUp)
-    }
-  }
-
-  private var costText: Text {
-    Text("cost").foregroundColor(.text) + Text("currency").foregroundColor(.highlightedText)
-  }
-
-  private var consumptionText: Text {
-    Text("consumption").foregroundColor(.highlightedText) + Text("unit").foregroundColor(.text)
-  }
-
-  private var consumptionSection: some View {
-    Section {
-      costText + Text("/").foregroundColor(.text) + consumptionText
-    }.font(.title3)
-  }
-
-  var body: some View {
-    // This is broken into smaller expressions to avoid
-    // "The compiler is unable to type-check this expression in reasonable time;
-    // try breaking up the expression into distinct sub-expressions"
-    Form {
-      entrySection
       // TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
-      consumptionSection
+      Section {
+        ConsumptionView()
+      }.font(.title3)
     }
     .onAppear { self.userActivity.becomeCurrent() }
     .onDisappear { self.userActivity.resignCurrent() }

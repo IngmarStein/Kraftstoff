@@ -13,7 +13,7 @@ struct FuelEventRowView: View {
   var fuelEvent: FuelEvent
 
   var body: some View {
-    //NavigationLink(destination: FuelEventView(car: car)) {
+    NavigationLink(destination: FuelEventView(fuelEvent: fuelEvent)) {
       VStack {
         HStack {
           Formatters.dateFormatter.string(for: fuelEvent.timestamp).map(Text.init)
@@ -36,7 +36,7 @@ struct FuelEventRowView: View {
         }
       }
       .padding(EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0))
-    //}
+    }
   }
 
   func distanceDescription() -> String {
