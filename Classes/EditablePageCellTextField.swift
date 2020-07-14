@@ -10,20 +10,20 @@ import UIKit
 
 class EditablePageCellTextField: UITextField {
 
-	var allowCut = false
-	var allowPaste = false
+  var allowCut = false
+  var allowPaste = false
 
-	// Disable cut & paste functionality to properly handle special text inputs methods for our textfields
-	override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-		if action == #selector(UIResponderStandardEditActions.cut(_:)) && !self.allowCut {
-			return false
-		}
+  // Disable cut & paste functionality to properly handle special text inputs methods for our textfields
+  override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+    if action == #selector(UIResponderStandardEditActions.cut(_:)) && !self.allowCut {
+      return false
+    }
 
-		if action == #selector(UIResponderStandardEditActions.paste(_:)) && !self.allowPaste {
-			return false
-		}
+    if action == #selector(UIResponderStandardEditActions.paste(_:)) && !self.allowPaste {
+      return false
+    }
 
-		return super.canPerformAction(action, withSender: sender)
-	}
+    return super.canPerformAction(action, withSender: sender)
+  }
 
 }

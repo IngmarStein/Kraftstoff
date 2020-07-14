@@ -11,13 +11,14 @@ import CoreSpotlight
 import SwiftUI
 
 struct CarsView: View {
-	@Environment(\.managedObjectContext) var managedObjectContext
+  @Environment(\.managedObjectContext) var managedObjectContext
+  @State private var editMode = EditMode.inactive
 
-	@FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil)
-	var cars: FetchedResults<Car>
+  @FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil)
+  var cars: FetchedResults<Car>
 
   var body: some View {
-		NavigationView {
+    NavigationView {
       ZStack {
         Image("Pumps")
           .frame(maxHeight: .infinity, alignment: .bottom)
@@ -37,12 +38,13 @@ struct CarsView: View {
             Image(systemName: "plus")
           }
         )
+        .environment(\.editMode, $editMode)
       }
-		}
-	}
+    }
+  }
 
-	func addCar() {
-	}
+  func addCar() {
+  }
 
   func moveCars(from source: IndexSet, to destination: Int) {
     let firstIndex = source.min()!
@@ -84,62 +86,62 @@ struct CarsView: View {
   }
 
   func deleteCars(at offsets: IndexSet) {
-		offsets.forEach { index in
-			let deletedCar = self.cars[index]
-			let deletedCarOrder = deletedCar.order
+    offsets.forEach { index in
+      let deletedCar = self.cars[index]
+      let deletedCarOrder = deletedCar.order
 
-			// Invalidate preference for deleted car
-			let preferredCarID = UserDefaults.standard.string(forKey: "preferredCarID")
-			let deletedCarID = DataManager.modelIdentifierForManagedObject(deletedCar)
+      // Invalidate preference for deleted car
+      let preferredCarID = UserDefaults.standard.string(forKey: "preferredCarID")
+      let deletedCarID = DataManager.modelIdentifierForManagedObject(deletedCar)
 
-			if deletedCarID == preferredCarID {
-				UserDefaults.standard.set("", forKey: "preferredCarID")
-			}
+      if deletedCarID == preferredCarID {
+        UserDefaults.standard.set("", forKey: "preferredCarID")
+      }
 
-			if let itemID = deletedCarID {
-				CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
-			}
+      if let itemID = deletedCarID {
+        CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: [itemID], completionHandler: nil)
+      }
 
-			// Delete the managed object for the given index path
-			self.managedObjectContext.delete(deletedCar)
-			DataManager.saveContext(self.managedObjectContext)
+      // Delete the managed object for the given index path
+      self.managedObjectContext.delete(deletedCar)
+      DataManager.saveContext(self.managedObjectContext)
 
-			// Update order of existing objects
-			for car in cars where car.order > deletedCarOrder {
-				car.order -= 1
-			}
+      // Update order of existing objects
+      for car in cars where car.order > deletedCarOrder {
+        car.order -= 1
+      }
 
-			DataManager.saveContext(self.managedObjectContext)
-		}
-	}
+      DataManager.saveContext(self.managedObjectContext)
+    }
+  }
 
-	func editCar() {
-	}
+  func editCar() {
+  }
 
 }
 
 struct CarsView_Previews: PreviewProvider {
-	static var container: NSPersistentContainer {
+  static var container: NSPersistentContainer {
     return DataManager.previewContainer
-	}
+  }
 
-	static var previewCar: Car = {
-		let car = Car(context: container.viewContext)
-		car.distanceTotalSum = 100
-		car.ksFuelConsumptionUnit = .litersPer100Kilometers
-		car.ksFuelUnit = .liters
-		car.ksFuelVolumeTotalSum = 100
-		car.name = "Toyota IQ+"
-		car.numberPlate = "SLS IO 101"
-		car.odometer = 42
-		car.ksOdometerUnit = .kilometers
-		car.order = 0
-		car.timestamp = Date()
-		try! container.viewContext.save()
-		return car
-	}()
+  static var previewCar: Car = {
+    let car = Car(context: container.viewContext)
+    car.distanceTotalSum = 100
+    car.ksFuelConsumptionUnit = .litersPer100Kilometers
+    car.ksFuelUnit = .liters
+    car.ksFuelVolumeTotalSum = 100
+    car.name = "Toyota IQ+"
+    car.numberPlate = "SLS IO 101"
+    car.odometer = 42
+    car.ksOdometerUnit = .kilometers
+    car.order = 0
+    car.timestamp = Date()
+    try! container.viewContext.save()
+    return car
+  }()
 
-	static var previews: some View {
-		CarsView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()))
-	}
+  static var previews: some View {
+    CarsView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()))
+  }
 }

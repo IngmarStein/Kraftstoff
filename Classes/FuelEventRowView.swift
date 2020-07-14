@@ -10,9 +10,9 @@ import CoreData
 import SwiftUI
 
 struct FuelEventRowView: View {
-	var fuelEvent: FuelEvent
+  var fuelEvent: FuelEvent
 
-	var body: some View {
+  var body: some View {
     //NavigationLink(destination: FuelEventView(car: car)) {
       VStack {
         HStack {

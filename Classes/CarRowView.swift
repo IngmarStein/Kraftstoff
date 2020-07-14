@@ -10,9 +10,12 @@ import SwiftUI
 import CoreData
 
 struct CarRowView: View {
-	var car: Car
+  var car: Car
 
-	var body: some View {
+  @Environment(\.editMode) var editMode
+
+  var body: some View {
+    //let destination: View = (self.editMode == .inactive ? FuelEventsView(car: car) : CarConfigurationView())
     NavigationLink(destination: FuelEventsView(car: car)) {
       VStack {
         HStack {
@@ -60,36 +63,36 @@ struct CarRowView: View {
 }
 
 struct CarRowView_Previews: PreviewProvider {
-	static var container: NSPersistentContainer {
+  static var container: NSPersistentContainer {
     return DataManager.previewContainer
-	}
+  }
 
-	static var previewCar: Car = {
-		let car = Car(context: container.viewContext)
-		car.distanceTotalSum = 100
-		car.ksFuelConsumptionUnit = .litersPer100Kilometers
-		car.ksFuelUnit = .liters
-		car.ksFuelVolumeTotalSum = 100
-		car.name = "Toyota IQ+"
-		car.numberPlate = "SLS IO 101"
-		car.odometer = 42
-		car.ksOdometerUnit = .kilometers
-		car.order = 0
-		car.timestamp = Date()
-		try! container.viewContext.save()
-		return car
-	}()
+  static var previewCar: Car = {
+    let car = Car(context: container.viewContext)
+    car.distanceTotalSum = 100
+    car.ksFuelConsumptionUnit = .litersPer100Kilometers
+    car.ksFuelUnit = .liters
+    car.ksFuelVolumeTotalSum = 100
+    car.name = "Toyota IQ+"
+    car.numberPlate = "SLS IO 101"
+    car.odometer = 42
+    car.ksOdometerUnit = .kilometers
+    car.order = 0
+    car.timestamp = Date()
+    try! container.viewContext.save()
+    return car
+  }()
 
   static var previews: some View {
-		Group {
-			CarRowView(car: previewCar)
-				.environment(\.sizeCategory, .medium)
-				.previewLayout(.sizeThatFits)
-				.previewDisplayName("medium")
-			CarRowView(car: previewCar)
-				.environment(\.sizeCategory, .extraLarge)
-				.previewLayout(.sizeThatFits)
-				.previewDisplayName("extraLarge")
-		}.environment(\.managedObjectContext, container.viewContext)
-	}
+    Group {
+      CarRowView(car: previewCar)
+        .environment(\.sizeCategory, .medium)
+        .previewLayout(.sizeThatFits)
+        .previewDisplayName("medium")
+      CarRowView(car: previewCar)
+        .environment(\.sizeCategory, .extraLarge)
+        .previewLayout(.sizeThatFits)
+        .previewDisplayName("extraLarge")
+    }.environment(\.managedObjectContext, container.viewContext)
+  }
 }

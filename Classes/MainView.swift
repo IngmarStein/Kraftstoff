@@ -10,17 +10,17 @@ import SwiftUI
 
 struct MainView: View {
   var body: some View {
-		TabView {
-			FuelCalculatorView(date: Date(), car: nil, lastChangeDate: Date()).tabItem {
-				Image("Zapfhahn")
-				Text("Fill-Up")
-			}
-			CarsView().tabItem {
-				Image("Cars")
-				Text("Cars")
-			}.tag(2)
+    TabView {
+      FuelCalculatorView(date: Date(), car: nil, lastChangeDate: Date()).tabItem {
+        Image("Zapfhahn")
+        Text("Fill-Up")
+      }
+      CarsView().tabItem {
+        Image("Cars")
+        Text("Cars")
+      }.tag(2)
     }
-	}
+  }
 }
 
 struct MainView_Previews: PreviewProvider {

@@ -10,97 +10,97 @@ import UIKit
 
 final class Formatters {
 
-	static let shortMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = MeasurementFormatter()
-		measurementFormatter.unitStyle = .short
-		return measurementFormatter
-	}()
+  static let shortMeasurementFormatter: MeasurementFormatter = {
+    let measurementFormatter = MeasurementFormatter()
+    measurementFormatter.unitStyle = .short
+    return measurementFormatter
+  }()
 
-	static let mediumMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = MeasurementFormatter()
-		measurementFormatter.unitStyle = .medium
-		return measurementFormatter
-	}()
+  static let mediumMeasurementFormatter: MeasurementFormatter = {
+    let measurementFormatter = MeasurementFormatter()
+    measurementFormatter.unitStyle = .medium
+    return measurementFormatter
+  }()
 
-	static let longMeasurementFormatter: MeasurementFormatter = {
-		let measurementFormatter = MeasurementFormatter()
-		measurementFormatter.unitStyle = .long
-		return measurementFormatter
-	}()
+  static let longMeasurementFormatter: MeasurementFormatter = {
+    let measurementFormatter = MeasurementFormatter()
+    measurementFormatter.unitStyle = .long
+    return measurementFormatter
+  }()
 
-	static let longDateFormatter: DateFormatter = {
-		let dateFormatter = DateFormatter()
-		dateFormatter.timeStyle = .short
-		dateFormatter.dateStyle = .long
-		return dateFormatter
-	}()
+  static let longDateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeStyle = .short
+    dateFormatter.dateStyle = .long
+    return dateFormatter
+  }()
 
-	static let dateFormatter: DateFormatter = {
-		let dateFormatter = DateFormatter()
-		dateFormatter.timeStyle = .none
-		dateFormatter.dateStyle = .medium
-		return dateFormatter
-	}()
+  static let dateFormatter: DateFormatter = {
+    let dateFormatter = DateFormatter()
+    dateFormatter.timeStyle = .none
+    dateFormatter.dateStyle = .medium
+    return dateFormatter
+  }()
 
-	static let dateTimeFormatter: DateFormatter = {
-		let dateTimeFormatter = DateFormatter()
-		dateTimeFormatter.timeStyle = .short
-		dateTimeFormatter.dateStyle = .medium
-		return dateTimeFormatter
+  static let dateTimeFormatter: DateFormatter = {
+    let dateTimeFormatter = DateFormatter()
+    dateTimeFormatter.timeStyle = .short
+    dateTimeFormatter.dateStyle = .medium
+    return dateTimeFormatter
     }()
 
-	static let distanceFormatter: NumberFormatter = {
-		let distanceFormatter = NumberFormatter()
-		distanceFormatter.generatesDecimalNumbers = true
-		distanceFormatter.numberStyle = .decimal
-		distanceFormatter.minimumFractionDigits = 1
-		distanceFormatter.maximumFractionDigits = 1
-		return distanceFormatter
+  static let distanceFormatter: NumberFormatter = {
+    let distanceFormatter = NumberFormatter()
+    distanceFormatter.generatesDecimalNumbers = true
+    distanceFormatter.numberStyle = .decimal
+    distanceFormatter.minimumFractionDigits = 1
+    distanceFormatter.maximumFractionDigits = 1
+    return distanceFormatter
     }()
 
-	static let fuelVolumeFormatter: NumberFormatter = {
+  static let fuelVolumeFormatter: NumberFormatter = {
         let fuelVolumeFormatter = NumberFormatter()
         fuelVolumeFormatter.generatesDecimalNumbers = true
         fuelVolumeFormatter.numberStyle = .decimal
         fuelVolumeFormatter.minimumFractionDigits = 2
         fuelVolumeFormatter.maximumFractionDigits = 2
-		return fuelVolumeFormatter
+    return fuelVolumeFormatter
     }()
 
-	static let preciseFuelVolumeFormatter: NumberFormatter = {
+  static let preciseFuelVolumeFormatter: NumberFormatter = {
         let preciseFuelVolumeFormatter = NumberFormatter()
         preciseFuelVolumeFormatter.generatesDecimalNumbers = true
         preciseFuelVolumeFormatter.numberStyle = .decimal
         preciseFuelVolumeFormatter.minimumFractionDigits = 3
         preciseFuelVolumeFormatter.maximumFractionDigits = 3
-		return preciseFuelVolumeFormatter
+    return preciseFuelVolumeFormatter
     }()
 
-	// Standard currency formatter
-	static let currencyFormatter: NumberFormatter = {
+  // Standard currency formatter
+  static let currencyFormatter: NumberFormatter = {
         let currencyFormatter = NumberFormatter()
         currencyFormatter.generatesDecimalNumbers = true
         currencyFormatter.numberStyle = .currency
-		return currencyFormatter
+    return currencyFormatter
     }()
 
-	// Currency formatter with empty currency symbol for axis of statistic graphs
-	static let axisCurrencyFormatter: NumberFormatter = {
+  // Currency formatter with empty currency symbol for axis of statistic graphs
+  static let axisCurrencyFormatter: NumberFormatter = {
         let axisCurrencyFormatter = NumberFormatter()
         axisCurrencyFormatter.generatesDecimalNumbers = true
         axisCurrencyFormatter.numberStyle = .currency
         axisCurrencyFormatter.currencySymbol = ""
-		return axisCurrencyFormatter
+    return axisCurrencyFormatter
     }()
 
-	// Currency formatter with empty currency symbol and one additional fractional digit - used for active textfields
-	static let editPreciseCurrencyFormatter: NumberFormatter = {
+  // Currency formatter with empty currency symbol and one additional fractional digit - used for active textfields
+  static let editPreciseCurrencyFormatter: NumberFormatter = {
         var fractionDigits = currencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
-		if fractionDigits > 0 {
+    if fractionDigits > 0 {
             fractionDigits += 1
-		}
+    }
 
         let editPreciseCurrencyFormatter = NumberFormatter()
         editPreciseCurrencyFormatter.generatesDecimalNumbers = true
@@ -115,17 +115,17 @@ final class Formatters {
         // Needed since NSNumberFormatters can't parse their own € output
         editPreciseCurrencyFormatter.isLenient = true
 
-		return editPreciseCurrencyFormatter
+    return editPreciseCurrencyFormatter
     }()
 
-	// Currency formatter with one additional fractional digit - used for inactive textfields
-	static let preciseCurrencyFormatter: NumberFormatter = {
+  // Currency formatter with one additional fractional digit - used for inactive textfields
+  static let preciseCurrencyFormatter: NumberFormatter = {
         var fractionDigits = currencyFormatter.maximumFractionDigits
 
         // Don't introduce fractional digits if the currency has none
-		if fractionDigits > 0 {
+    if fractionDigits > 0 {
             fractionDigits += 1
-		}
+    }
 
         let preciseCurrencyFormatter = NumberFormatter()
         preciseCurrencyFormatter.generatesDecimalNumbers = true
@@ -139,25 +139,25 @@ final class Formatters {
         // Needed since NSNumberFormatters can't parse their own € output
         preciseCurrencyFormatter.isLenient = true
 
-		return preciseCurrencyFormatter
+    return preciseCurrencyFormatter
     }()
 
-	// Rounding handler for computation of average consumption
-	static let consumptionRoundingHandler = NSDecimalNumberHandler(
-		roundingMode: .plain,
-		scale: Int16(fuelVolumeFormatter.maximumFractionDigits),
-		raiseOnExactness: false,
-		raiseOnOverflow: false,
-		raiseOnUnderflow: false,
-		raiseOnDivideByZero: false)
+  // Rounding handler for computation of average consumption
+  static let consumptionRoundingHandler = NSDecimalNumberHandler(
+    roundingMode: .plain,
+    scale: Int16(fuelVolumeFormatter.maximumFractionDigits),
+    raiseOnExactness: false,
+    raiseOnOverflow: false,
+    raiseOnUnderflow: false,
+    raiseOnDivideByZero: false)
 
-	// Rounding handler for precise price computations
-	static let priceRoundingHandler = NSDecimalNumberHandler(
-		roundingMode: .up,
-		scale: Int16(editPreciseCurrencyFormatter.maximumFractionDigits),
-		raiseOnExactness: false,
-		raiseOnOverflow: false,
-		raiseOnUnderflow: false,
-		raiseOnDivideByZero: false)
+  // Rounding handler for precise price computations
+  static let priceRoundingHandler = NSDecimalNumberHandler(
+    roundingMode: .up,
+    scale: Int16(editPreciseCurrencyFormatter.maximumFractionDigits),
+    raiseOnExactness: false,
+    raiseOnOverflow: false,
+    raiseOnUnderflow: false,
+    raiseOnDivideByZero: false)
 
 }

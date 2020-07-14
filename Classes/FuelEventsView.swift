@@ -10,26 +10,26 @@ import CoreData
 import SwiftUI
 
 struct FuelEventsView: View {
-	@Environment(\.managedObjectContext) var managedObjectContext
+  @Environment(\.managedObjectContext) var managedObjectContext
 
-	var selectedCarId: String?
-	let selectedCar: Car
+  var selectedCarId: String?
+  let selectedCar: Car
 
-	@FetchRequest
-	var fuelEvents: FetchedResults<FuelEvent>
+  @FetchRequest
+  var fuelEvents: FetchedResults<FuelEvent>
 
   init(car: Car) {
     selectedCar = car
-		let fetchRequest = DataManager.fetchRequestForEvents(car: car, afterDate: nil, dateMatches: true)
-		_fuelEvents = FetchRequest(fetchRequest: fetchRequest, animation: nil)
-	}
+    let fetchRequest = DataManager.fetchRequestForEvents(car: car, afterDate: nil, dateMatches: true)
+    _fuelEvents = FetchRequest(fetchRequest: fetchRequest, animation: nil)
+  }
 
-	var body: some View {
-		List {
-			ForEach(fuelEvents, id: \.objectID) {
-				FuelEventRowView(fuelEvent: $0)
+  var body: some View {
+    List {
+      ForEach(fuelEvents, id: \.objectID) {
+        FuelEventRowView(fuelEvent: $0)
       }.onDelete(perform: deleteFuelEvents)
-		}
+    }
     .navigationBarTitle(Text(selectedCar.ksName), displayMode: .inline)
     .navigationBarItems(trailing:
       HStack {

@@ -10,54 +10,54 @@ import UIKit
 
 final class ConsumptionTableCell: PageCell {
 
-	private(set) var coloredLabel: ConsumptionLabel
+  private(set) var coloredLabel: ConsumptionLabel
 
-	required init() {
-		self.coloredLabel = ConsumptionLabel(frame: .zero)
+  required init() {
+    self.coloredLabel = ConsumptionLabel(frame: .zero)
 
-		super.init()
+    super.init()
 
-		self.selectionStyle = .none
+    self.selectionStyle = .none
 
-		self.coloredLabel.textAlignment             = .center
-		self.coloredLabel.adjustsFontSizeToFitWidth = true
-		self.coloredLabel.backgroundColor           = .clear
-		self.coloredLabel.highlightedTextColor      = .highlightedText
-		self.coloredLabel.baseColor                 = .text
-		self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
-		self.coloredLabel.adjustsFontForContentSizeCategory = true
-		self.coloredLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title3)
+    self.coloredLabel.textAlignment             = .center
+    self.coloredLabel.adjustsFontSizeToFitWidth = true
+    self.coloredLabel.backgroundColor           = .clear
+    self.coloredLabel.highlightedTextColor      = .highlightedText
+    self.coloredLabel.baseColor                 = .text
+    self.coloredLabel.translatesAutoresizingMaskIntoConstraints = false
+    self.coloredLabel.adjustsFontForContentSizeCategory = true
+    self.coloredLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.title3)
 
-		self.contentView.addSubview(self.coloredLabel)
+    self.contentView.addSubview(self.coloredLabel)
 
-		let constraints = NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
-			+ NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
-		NSLayoutConstraint.activate(constraints)
-	}
+    let constraints = NSLayoutConstraint.constraints(withVisualFormat: "|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
+      + NSLayoutConstraint.constraints(withVisualFormat: "V:|-[coloredLabel]-|", options: [], metrics: nil, views: ["coloredLabel": coloredLabel])
+    NSLayoutConstraint.activate(constraints)
+  }
 
-	required init(coder aDecoder: NSCoder) {
-	    fatalError("init(coder:) has not been implemented")
-	}
+  required init(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
 
-	override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
-		super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
+  override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+    super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
-		self.coloredLabel.highlightStrings = dictionary["highlightStrings"] as? [String]
-		self.coloredLabel.text             = dictionary["label"] as? String
-	}
+    self.coloredLabel.highlightStrings = dictionary["highlightStrings"] as? [String]
+    self.coloredLabel.text             = dictionary["label"] as? String
+  }
 
-	override var accessibilityLabel: String? {
-		get {
-			return self.coloredLabel.text
-		}
-		set {
-		}
-	}
+  override var accessibilityLabel: String? {
+    get {
+      return self.coloredLabel.text
+    }
+    set {
+    }
+  }
 
-	override func reset() {
-		super.reset()
+  override func reset() {
+    super.reset()
 
-		coloredLabel.text = ""
-	}
+    coloredLabel.text = ""
+  }
 
 }

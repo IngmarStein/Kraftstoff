@@ -9,25 +9,25 @@
 import UIKit
 
 class PageCell: UITableViewCell {
-	class var reuseIdentifier: String {
-		return String(describing: self)
-	}
+  class var reuseIdentifier: String {
+    return String(describing: self)
+  }
 
-	required init() {
-		super.init(style: .default, reuseIdentifier: type(of: self).reuseIdentifier)
+  required init() {
+    super.init(style: .default, reuseIdentifier: type(of: self).reuseIdentifier)
 
-		self.detailTextLabel?.isHidden = true
-	}
+    self.detailTextLabel?.isHidden = true
+  }
 
-	required init(coder aDecoder: NSCoder) {
-	    fatalError("init(coder:) has not been implemented")
-	}
+  required init(coder aDecoder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
 
-	func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
-		// Overridepoint for subclasses
-	}
+  func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+    // Overridepoint for subclasses
+  }
 
-	func reset() {
-	}
+  func reset() {
+  }
 
 }
