@@ -32,7 +32,7 @@ struct CarsView: View {
           .onMove(perform: moveCars)
         }
         .listStyle(PlainListStyle())
-        .navigationBarTitle(Text("Cars"), displayMode: .inline)
+        .navigationBarTitle("Cars", displayMode: .inline)
         .navigationBarItems(leading: EditButton(),
           trailing: Button(action: { addCar() }) {
             Image(systemName: "plus")

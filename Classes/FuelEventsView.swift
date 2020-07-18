@@ -30,7 +30,7 @@ struct FuelEventsView: View {
         FuelEventRowView(fuelEvent: $0)
       }.onDelete(perform: deleteFuelEvents)
     }
-    .navigationBarTitle(Text(selectedCar.ksName), displayMode: .inline)
+    .navigationBarTitle(selectedCar.ksName, displayMode: .inline)
     .navigationBarItems(trailing:
       HStack {
         Button(action: { showStatistics() }) {

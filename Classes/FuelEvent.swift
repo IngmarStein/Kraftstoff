@@ -79,4 +79,13 @@ final class FuelEvent: NSManagedObject {
     return ksFuelVolume * ksPrice
   }
 
+  var ksComment: String {
+    get {
+      return comment!
+    }
+    set {
+      comment = newValue
+    }
+  }
+
 }

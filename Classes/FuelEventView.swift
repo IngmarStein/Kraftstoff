@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct FuelEventView: View {
-  var fuelEvent: FuelEvent
+  @State var fuelEvent: FuelEvent
 
   @Environment(\.editMode) var editMode
 
@@ -17,48 +17,54 @@ struct FuelEventView: View {
     let car = fuelEvent.car!
     Form {
       Section {
-        //if self.editMode == .inactive {
-          //DatePicker("Date", selection: fuelEvent.timestamp)
-        HStack {
-          Text("Distance")
-          Spacer()
-          Text(Formatters.distanceFormatter.string(from: fuelEvent.ksDistance as NSNumber)! + " " + Formatters.shortMeasurementFormatter.string(from: car.ksOdometerUnit))
+        if editMode?.wrappedValue == EditMode.inactive {
+          HStack {
+            Text("Date")
+            Spacer()
+            Text(Formatters.dateTimeFormatter.string(from: fuelEvent.ksTimestamp))
+          }
+          HStack {
+            Text("Distance")
+            Spacer()
+            Text(Formatters.distanceFormatter.string(from: fuelEvent.ksDistance as NSNumber)! + " " + Formatters.shortMeasurementFormatter.string(from: car.ksOdometerUnit))
+          }
+          HStack {
+            Text(Units.fuelPriceUnitDescription(car.ksFuelUnit))
+            Spacer()
+            Text(Formatters.preciseCurrencyFormatter.string(from: fuelEvent.ksPrice as NSNumber)!)
+          }
+          HStack {
+            let formatter = car.ksFuelUnit == UnitVolume.liters ? Formatters.fuelVolumeFormatter : Formatters.preciseFuelVolumeFormatter
+            Text(Units.fuelUnitDescription(car.ksFuelUnit, discernGallons: false, pluralization: true))
+            Spacer()
+            Text(formatter.string(from: fuelEvent.ksFuelVolume as NSNumber)!)
+          }
+          HStack {
+            Text("Full Fill-up")
+            Spacer()
+            Text(fuelEvent.filledUp ? "Yes" : "No")
+          }
+          HStack {
+            Text("Comment")
+            Spacer()
+            Text(fuelEvent.comment!)
+          }
+        } else {
+          DatePicker("Date", selection: $fuelEvent.ksTimestamp)
+          //TextField("Distance", text: $fuelEvent.ksDistance)
+          //TextField("Price", text: $fuelEvent.ksPrice)
+          //TextField("Amount", text: $fuelEvent.ksFuelVolume)
+          Toggle("Fill-up", isOn: $fuelEvent.filledUp)
+          TextField("Comment", text: $fuelEvent.ksComment)
         }
-        HStack {
-          Text(Units.fuelPriceUnitDescription(car.ksFuelUnit))
-          Spacer()
-          Text(Formatters.preciseCurrencyFormatter.string(from: fuelEvent.ksPrice as NSNumber)!)
-        }
-        HStack {
-          let formatter = car.ksFuelUnit == UnitVolume.liters ? Formatters.fuelVolumeFormatter : Formatters.preciseFuelVolumeFormatter
-          Text(Units.fuelUnitDescription(car.ksFuelUnit, discernGallons: false, pluralization: true))
-          Spacer()
-          Text(formatter.string(from: fuelEvent.ksFuelVolume as NSNumber)!)
-        }
-        HStack {
-          Text("Full Fill-up")
-          Spacer()
-          Text(fuelEvent.filledUp ? "Yes" : "No")
-        }
-        HStack {
-          Text("Comment")
-          Spacer()
-          Text(fuelEvent.comment!)
-        }
-        //} else {
-        //  //DatePicker("Date", selection: fuelEvent.timestamp)
-        //  TextField("Distance", text: .constant(""))
-        //  TextField("Price", text: .constant(""))
-        //  TextField("Amount", text: .constant(""))
-        //  Toggle("Fill-up", isOn: .constant(true))
-        //  TextField("Comment", text: .constant(""))
-        //}
       }
       // TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
       Section {
         ConsumptionView()
       }.font(.title3)
     }
+    .navigationBarTitle(Formatters.dateFormatter.string(from: fuelEvent.ksTimestamp))
+    .navigationBarItems(trailing: EditButton())
   }
 }
 /*
