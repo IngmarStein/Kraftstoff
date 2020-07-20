@@ -63,6 +63,7 @@
 		95DA86321AFB45E2001E1375 /* CSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DA86311AFB45E2001E1375 /* CSVExporter.swift */; };
 		95DB496424BE393700358E5B /* ConsumptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DB496324BE393700358E5B /* ConsumptionView.swift */; };
 		95DB496624BE3E2400358E5B /* FuelEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DB496524BE3E2400358E5B /* FuelEventView.swift */; };
+		95DB499F24C62EC800358E5B /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DB499E24C62EC800358E5B /* App.swift */; };
 		95E685451C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */; };
 		95EB9AD42381DCC20048B9E4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EB9AD32381DCC20048B9E4 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
@@ -153,6 +154,7 @@
 		95DA86311AFB45E2001E1375 /* CSVExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSVExporter.swift; sourceTree = "<group>"; };
 		95DB496324BE393700358E5B /* ConsumptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionView.swift; sourceTree = "<group>"; };
 		95DB496524BE3E2400358E5B /* FuelEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuelEventView.swift; sourceTree = "<group>"; };
+		95DB499E24C62EC800358E5B /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		95DF625F1E37998A00294E0B /* kraftstoff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = kraftstoff.entitlements; path = Kraftstoff/kraftstoff.entitlements; sourceTree = "<group>"; };
 		95E685421C4C1BC800C6D5F8 /* Kraftstoff UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Kraftstoff UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95E685441C4C1BC800C6D5F8 /* Kraftstoff_UI_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kraftstoff_UI_Tests.swift; sourceTree = "<group>"; };
@@ -452,6 +454,7 @@
 		95A3423924A9B3BE000AD7A3 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				95DB499E24C62EC800358E5B /* App.swift */,
 				95C0CFCE24BB971F00C25111 /* CarConfigurationView.swift */,
 				952DBF9622B2D3C400C914D0 /* CarRowView.swift */,
 				952DBF9422B2D31100C914D0 /* CarsView.swift */,
@@ -704,6 +707,7 @@
 				955B46181AF20F2300A62D3B /* NSDate+Kraftstoff.swift in Sources */,
 				952049BD1AF3EBB400EC9444 /* Formatters.swift in Sources */,
 				95AE6D9F1AF9ED21006A56D6 /* FuelEventController.swift in Sources */,
+				95DB499F24C62EC800358E5B /* App.swift in Sources */,
 				95655B8B1AF770E00045F9F7 /* CarConfigurationController.swift in Sources */,
 				955B461A1AF214E500A62D3B /* NSDecimalNumber+Kraftstoff.swift in Sources */,
 				95CB7BA71AF272A00068E435 /* DemoData.swift in Sources */,
@@ -815,6 +819,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/KraftstoffDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -822,6 +827,7 @@
 				CURRENT_PROJECT_VERSION = 2242;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
+				ENABLE_PREVIEWS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				INFOPLIST_FILE = "kraftstoff-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -844,6 +850,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
 				CODE_SIGN_STYLE = Automatic;

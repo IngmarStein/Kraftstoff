@@ -371,7 +371,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
     createDataRows(.all, withAnimation: animation)
 
     // Full-fillup selector
-    self.filledUp = UserDefaults.standard.bool(forKey: "recentFilledUp")
+    self.filledUp = UIApplication.kraftstoffAppDelegate.recentFilledUp
 
     if self.car != nil {
       addRowAtIndex(rowIndex: 5,
@@ -735,12 +735,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
       }
 
     } else if valueIdentifier == "filledUp" {
-      self.filledUp = newValue as? Bool
+      guard let recentFilledUp = newValue as? Bool else { return }
+      self.filledUp = recentFilledUp
 
-      let defaults = UserDefaults.standard
-
-      defaults.set(newValue, forKey: "recentFilledUp")
-      defaults.synchronize()
+      UIApplication.kraftstoffAppDelegate.recentFilledUp = recentFilledUp
 
       if !self.isEditing {
         if consumptionRowNeeded() {

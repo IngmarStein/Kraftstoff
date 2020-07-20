@@ -32,13 +32,15 @@ private func contentsOfURL(_ url: URL) -> String? {
   return nil
 }
 
-@UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsControllerDelegate {
   private var initialized = false
   var window: UIWindow?
 
   private var importAlert: UIAlertController?
   private var importAlertParentViewController: UIViewController?
+
+  @AppStorage(wrappedValue: true, "firstStartup") private var firstStartup: Bool
+  @AppStorage(wrappedValue: true, "recentFilledUp") var recentFilledUp: Bool
 
   private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
     DataManager.fetchedResultsControllerForCars(delegate: self)
@@ -54,10 +56,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
       "recentDistance": NSDecimalNumber.zero,
       "recentPrice": NSDecimalNumber.zero,
       "recentFuelVolume": NSDecimalNumber.zero,
-      "recentFilledUp": true,
       "recentComment": "",
-      "editHelpCounter": 0,
-      "firstStartup": true])
+      "editHelpCounter": 0])
 
     super.init()
   }
@@ -80,12 +80,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
                     "recentDistance",
                     "recentPrice",
                     "recentFuelVolume",
-                    "recentFilledUp",
                     "recentComment",
                     "editHelpCounter",
                     "firstStartup"] {
           userDefaults.removeObject(forKey: key)
         }
+        firstStartup = true
+        recentFilledUp = true
       }
 
       updateShortcutItems()
@@ -94,7 +95,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
       if launchOptions?[UIApplication.LaunchOptionsKey.url] == nil {
         let defaults = UserDefaults.standard
 
-        if defaults.bool(forKey: "firstStartup") {
+        if firstStartup {
           if defaults.string(forKey: "preferredCarID") == "" {
             // FIXME: window
             if let tabBarController = self.window?.rootViewController as? UITabBarController {
@@ -102,7 +103,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
             }
           }
 
-          defaults.set(false, forKey: "firstStartup")
+          firstStartup = false
         }
       }
     }
