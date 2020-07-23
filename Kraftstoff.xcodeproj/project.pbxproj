@@ -68,7 +68,6 @@
 		95EB9AD42381DCC20048B9E4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EB9AD32381DCC20048B9E4 /* SnapshotHelper.swift */; };
 		95F196301B961D90000E4D0C /* StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F1962F1B961D90000E4D0C /* StoreManager.swift */; };
 		95FFA73122A7100800D42BC8 /* Fuel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 95FFA72F22A7100800D42BC8 /* Fuel.xcdatamodeld */; };
-		95FFA73322A8720F00D42BC8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FFA73222A8720F00D42BC8 /* SceneDelegate.swift */; };
 		9E228BA81C6CB193000EDD88 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 9E228BAA1C6CB193000EDD88 /* Localizable.stringsdict */; };
 /* End PBXBuildFile section */
 
@@ -163,7 +162,6 @@
 		95EB9AD52381E40E0048B9E4 /* Fastlane UI Tests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Fastlane UI Tests.xctestplan"; sourceTree = "<group>"; };
 		95F1962F1B961D90000E4D0C /* StoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreManager.swift; sourceTree = "<group>"; };
 		95FFA73022A7100800D42BC8 /* Fuel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Fuel.xcdatamodel; sourceTree = "<group>"; };
-		95FFA73222A8720F00D42BC8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = Classes/SceneDelegate.swift; sourceTree = "<group>"; };
 		9E228BA91C6CB193000EDD88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAB1C6CB196000EDD88 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		9E228BAC1C6CB197000EDD88 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = fr; path = fr.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -257,7 +255,6 @@
 				952049BC1AF3EBB400EC9444 /* Formatters.swift */,
 				957F24B21E2E673C007AC96A /* StyleKit.swift */,
 				959A61B71AF4159600BDF116 /* Units.swift */,
-				95FFA73222A8720F00D42BC8 /* SceneDelegate.swift */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -726,7 +723,6 @@
 				953F0E321AFA0E3B0069DFF6 /* CSVParser.swift in Sources */,
 				95D2AE7E1AF748D1003FF205 /* FuelCalculatorController.swift in Sources */,
 				95AE6D911AF7C17C006A56D6 /* FuelEvent.swift in Sources */,
-				95FFA73322A8720F00D42BC8 /* SceneDelegate.swift in Sources */,
 				952DBF9722B2D3C400C914D0 /* CarRowView.swift in Sources */,
 				95C071831AF66B2500DF261C /* EditablePageCell.swift in Sources */,
 				9583E6661EF5CAEC00932FB1 /* UIColor+Kraftstoff.swift in Sources */,

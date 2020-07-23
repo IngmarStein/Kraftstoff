@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreSpotlight
 
 @main
 struct KraftstoffApp: App {
@@ -18,6 +19,9 @@ struct KraftstoffApp: App {
     WindowGroup {
       MainView()
         .environment(\.managedObjectContext, DataManager.managedObjectContext)
+        .onContinueUserActivity("com.github.ingmarstein.kraftstoff.fillup", perform: handleFillup)
+        .onContinueUserActivity(CSSearchableItemActionType, perform: handleSpotlight)
+        .onOpenURL(perform: onOpenURL)
     }
     .onChange(of: scenePhase) { phase in
       switch phase {
@@ -41,5 +45,56 @@ struct KraftstoffApp: App {
       default: break
       }
     }
+  }
+
+  init() {
+    UITableView.appearance().backgroundColor = UIColor.clear
+  }
+
+  func handleFillup(_ userActivity: NSUserActivity) {
+    // switch to fill-up tab
+    //TOOD
+    /*
+    if let tabBarController = self.window?.rootViewController as? UITabBarController {
+      tabBarController.selectedIndex = 0
+    }
+    */
+  }
+
+  func handleSpotlight(_ userActivity: NSUserActivity) {        // switch to cars tab and show the fuel history
+    // TODO
+    /*
+    if let tabBarController = self.window?.rootViewController as? UITabBarController {
+      tabBarController.selectedIndex = 1
+      if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, DataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
+        if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
+          fuelEventController.selectedCarId = carIdentifier
+          if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+            navigationController.popToRootViewController(animated: false)
+            navigationController.pushViewController(fuelEventController, animated: false)
+          }
+        }
+      }
+    }
+    */
+  }
+
+  // MARK: - Data Import
+
+  func onOpenURL(url: URL) {
+    // TODO
+    /*
+    let viewController = self.window!.rootViewController!
+
+    if !StoreManager.sharedInstance.checkCarCount() {
+      StoreManager.sharedInstance.showBuyOptions(viewController)
+      return
+    }
+
+    UIApplication.kraftstoffAppDelegate.importCSV(at: url, parentViewController: viewController)
+    */
+
+    // Treat imports as successful first startups
+    UserDefaults.standard.set(false, forKey: "firstStartup")
   }
 }

@@ -137,6 +137,22 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
     return true
   }
 
+  func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+    if shortcutItem.type == "fillup" {
+      // switch to fill-up tab and select the car
+      if let tabBarController = self.window?.rootViewController as? UITabBarController {
+        tabBarController.selectedIndex = 0
+        if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+          navigationController.popToRootViewController(animated: false)
+          if let fuelCalculatorController = navigationController.viewControllers.first as? FuelCalculatorController {
+            fuelCalculatorController.selectedCarId = shortcutItem.userInfo?["objectId"] as? String
+            fuelCalculatorController.recreateTableContentsWithAnimation(.none)
+          }
+        }
+      }
+    }
+  }
+
   func applicationDidEnterBackground(_ application: UIApplication) {
     DataManager.saveContext()
   }
