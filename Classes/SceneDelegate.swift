@@ -1,5 +1,5 @@
 //
-//  WindowSceneDelegate.swift
+//  SceneDelegate.swift
 //  Kraftstoff
 //
 //  Created by Ingmar Stein on 05.06.19.
@@ -18,35 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     willConnectTo session: UISceneSession,
     options connectionOptions: UIScene.ConnectionOptions
   ) {
-    let contentView = MainView().environment(\.managedObjectContext, DataManager.managedObjectContext)
-
     UITableView.appearance().backgroundColor = UIColor.clear
-    if let windowScene = scene as? UIWindowScene {
-      let window = UIWindow(windowScene: windowScene)
-      window.rootViewController = UIHostingController(rootView: contentView)
-      self.window = window
-      window.makeKeyAndVisible()
-    }
-  }
-
-  func sceneDidEnterBackground(_ scene: UIScene) {
-    DataManager.saveContext()
-  }
-
-  func sceneDidBecomeActive(_ scene: UIScene) {
-    if ProcessInfo.processInfo.arguments.firstIndex(of: "-UNITTEST") != nil {
-      self.window?.layer.speed = 100
-    }
-
-    #if targetEnvironment(macCatalyst)
-    if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
-      if let windowScene = scene as? UIWindowScene {
-        let size = CGSize(width: 1440.0, height: 900.0)
-        windowScene.sizeRestrictions?.minimumSize = size
-        windowScene.sizeRestrictions?.maximumSize = size
-      }
-    }
-    #endif
   }
 
   func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

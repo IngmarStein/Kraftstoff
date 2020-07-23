@@ -301,9 +301,3 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
   }
 
 }
-
-struct AppDelegate_Previews: PreviewProvider {
-  static var previews: some View {
-    /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
-  }
-}
