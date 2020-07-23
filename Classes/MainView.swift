@@ -9,22 +9,24 @@
 import SwiftUI
 
 struct MainView: View {
+  @Binding var selectedTab: Int
+
   var body: some View {
-    TabView {
+    TabView(selection: $selectedTab) {
       FuelCalculatorView(date: Date(), car: nil, lastChangeDate: Date()).tabItem {
         Image("Zapfhahn")
         Text("Fill-Up")
-      }
+      }.tag(0)
       CarsView().tabItem {
         Image("Cars")
         Text("Cars")
-      }.tag(2)
+      }.tag(1)
     }
   }
 }
 
 struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-    }
+  static var previews: some View {
+    MainView(selectedTab: .constant(0))
+  }
 }

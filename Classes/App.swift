@@ -15,9 +15,11 @@ struct KraftstoffApp: App {
 
   @Environment(\.scenePhase) private var scenePhase
 
+  @State private var selectedTab = 0
+
   var body: some Scene {
     WindowGroup {
-      MainView()
+      MainView(selectedTab: $selectedTab)
         .environment(\.managedObjectContext, DataManager.managedObjectContext)
         .onContinueUserActivity("com.github.ingmarstein.kraftstoff.fillup", perform: handleFillup)
         .onContinueUserActivity(CSSearchableItemActionType, perform: handleSpotlight)
@@ -53,26 +55,19 @@ struct KraftstoffApp: App {
 
   func handleFillup(_ userActivity: NSUserActivity) {
     // switch to fill-up tab
-    //TOOD
-    /*
-    if let tabBarController = self.window?.rootViewController as? UITabBarController {
-      tabBarController.selectedIndex = 0
-    }
-    */
+    selectedTab = 0
   }
 
   func handleSpotlight(_ userActivity: NSUserActivity) {        // switch to cars tab and show the fuel history
+    selectedTab = 1
     // TODO
     /*
-    if let tabBarController = self.window?.rootViewController as? UITabBarController {
-      tabBarController.selectedIndex = 1
-      if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, DataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
-        if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
-          fuelEventController.selectedCarId = carIdentifier
-          if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-            navigationController.popToRootViewController(animated: false)
-            navigationController.pushViewController(fuelEventController, animated: false)
-          }
+    if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, DataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
+      if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
+        fuelEventController.selectedCarId = carIdentifier
+        if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+          navigationController.popToRootViewController(animated: false)
+          navigationController.pushViewController(fuelEventController, animated: false)
         }
       }
     }
