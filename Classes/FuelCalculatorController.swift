@@ -6,6 +6,7 @@
 //
 //
 
+import SwiftUI
 import UIKit
 import CoreData
 import Combine
@@ -20,6 +21,7 @@ private struct FuelCalculatorDataRow: OptionSet {
 }
 
 final class FuelCalculatorController: PageViewController, NSFetchedResultsControllerDelegate, EditablePageCellDelegate, EditablePageCellValidator {
+  @AppStorage(wrappedValue: true, "recentFilledUp") var recentFilledUp: Bool
 
   var changeIsUserDriven = false
   var isShowingConvertSheet = false
@@ -371,7 +373,7 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
     createDataRows(.all, withAnimation: animation)
 
     // Full-fillup selector
-    self.filledUp = UIApplication.kraftstoffAppDelegate.recentFilledUp
+    self.filledUp = recentFilledUp
 
     if self.car != nil {
       addRowAtIndex(rowIndex: 5,
@@ -735,10 +737,10 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
       }
 
     } else if valueIdentifier == "filledUp" {
-      guard let recentFilledUp = newValue as? Bool else { return }
-      self.filledUp = recentFilledUp
+      guard let value = newValue as? Bool else { return }
+      self.filledUp = value
 
-      UIApplication.kraftstoffAppDelegate.recentFilledUp = recentFilledUp
+      recentFilledUp = value
 
       if !self.isEditing {
         if consumptionRowNeeded() {

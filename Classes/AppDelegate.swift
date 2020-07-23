@@ -40,7 +40,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
   private var importAlertParentViewController: UIViewController?
 
   @AppStorage(wrappedValue: true, "firstStartup") private var firstStartup: Bool
-  @AppStorage(wrappedValue: true, "recentFilledUp") var recentFilledUp: Bool
 
   private lazy var carsFetchedResultsController: NSFetchedResultsController<Car> = {
     DataManager.fetchedResultsControllerForCars(delegate: self)
@@ -80,13 +79,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
                     "recentDistance",
                     "recentPrice",
                     "recentFuelVolume",
+                    "recentFilledUp",
                     "recentComment",
                     "editHelpCounter",
                     "firstStartup"] {
           userDefaults.removeObject(forKey: key)
         }
-        firstStartup = true
-        recentFilledUp = true
       }
 
       updateShortcutItems()
@@ -302,4 +300,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
     UIApplication.shared.open(URL(string: "https://ingmarstein.github.io/Kraftstoff/")!)
   }
 
+}
+
+struct AppDelegate_Previews: PreviewProvider {
+  static var previews: some View {
+    /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
+  }
 }

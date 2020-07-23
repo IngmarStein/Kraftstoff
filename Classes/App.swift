@@ -10,9 +10,11 @@ import SwiftUI
 
 @main
 struct KraftstoffApp: App {
-    var body: some Scene {
-        WindowGroup {
-            MainView()
-        }
+  @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+  var body: some Scene {
+    WindowGroup {
+      MainView()
     }
+  }
 }

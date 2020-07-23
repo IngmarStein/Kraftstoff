@@ -10,7 +10,6 @@ import UIKit
 import CoreData
 
 final class DataManager {
-
   // CoreData support
   static let managedObjectContext: NSManagedObjectContext = {
     let context = persistentContainer.viewContext
