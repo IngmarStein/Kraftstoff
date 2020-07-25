@@ -137,6 +137,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
     return true
   }
 
+  // TODO: this is not called anymore
   func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
     if shortcutItem.type == "fillup" {
       // switch to fill-up tab and select the car

@@ -22,15 +22,6 @@ struct FuelCalculatorView: View {
   @State var filledUp = false
   @State var comment = ""
 
-  let userActivity: NSUserActivity = {
-    let activity = NSUserActivity(activityType: "com.github.ingmarstein.kraftstoff.fillup")
-    activity.title = NSLocalizedString("Fill-Up", comment: "")
-    activity.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
-    activity.isEligibleForSearch = true
-    activity.isEligibleForPrediction = true
-    return activity
-  }()
-
   // TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
   /*
   var showConsumption: AnyPublisher<Bool, Never> {
@@ -62,9 +53,13 @@ struct FuelCalculatorView: View {
         ConsumptionView()
       }.font(.title3)
     }
-    .onAppear { self.userActivity.becomeCurrent() }
-    .onDisappear { self.userActivity.resignCurrent() }
+    .userActivity("com.github.ingmarstein.kraftstoff.fillup") { activity in
+      activity.title = NSLocalizedString("Fill-Up", comment: "")
+      activity.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
+      activity.isEligibleForSearch = true
+      activity.isEligibleForPrediction = true
     }
+  }
 
   func save() {
     DataManager.addToArchive(car: car!,
