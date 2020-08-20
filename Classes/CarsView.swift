@@ -14,7 +14,7 @@ struct CarsView: View {
   @Environment(\.managedObjectContext) var managedObjectContext
   @State private var editMode = EditMode.inactive
 
-  @FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil)
+  @FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: .default)
   var cars: FetchedResults<Car>
 
   var body: some View {
@@ -33,11 +33,16 @@ struct CarsView: View {
         }
         .listStyle(PlainListStyle())
         .navigationBarTitle("Cars", displayMode: .inline)
-        .navigationBarItems(leading: EditButton(),
-          trailing: Button(action: { addCar() }) {
-            Image(systemName: "plus")
+        .toolbar {
+          ToolbarItem(placement: .automatic) {
+            Button(action: { addCar() }) {
+              Label("Add Car", systemImage: "plus")
+            }
           }
-        )
+          ToolbarItem(placement: .automatic) {
+            EditButton()
+          }
+        }
         .environment(\.editMode, $editMode)
       }
     }
@@ -104,15 +109,14 @@ struct CarsView: View {
 
       // Delete the managed object for the given index path
       self.managedObjectContext.delete(deletedCar)
-      DataManager.saveContext(self.managedObjectContext)
 
       // Update order of existing objects
       for car in cars where car.order > deletedCarOrder {
         car.order -= 1
       }
-
-      DataManager.saveContext(self.managedObjectContext)
     }
+
+    DataManager.saveContext(managedObjectContext)
   }
 
   func editCar() {

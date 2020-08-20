@@ -21,7 +21,7 @@ struct FuelEventsView: View {
   init(car: Car) {
     selectedCar = car
     let fetchRequest = DataManager.fetchRequestForEvents(car: car, afterDate: nil, dateMatches: true)
-    _fuelEvents = FetchRequest(fetchRequest: fetchRequest, animation: nil)
+    _fuelEvents = FetchRequest(fetchRequest: fetchRequest, animation: .default)
   }
 
   var body: some View {
@@ -31,16 +31,20 @@ struct FuelEventsView: View {
       }.onDelete(perform: deleteFuelEvents)
     }
     .navigationBarTitle(selectedCar.ksName, displayMode: .inline)
-    .navigationBarItems(trailing:
-      HStack {
-        Button(action: { showStatistics() }) {
-          Image(systemName: "chart.bar")
-        }
-        Button(action: { showStatistics() }) {
-          Image(systemName: "square.and.arrow.up")
+    .toolbar {
+      // Use HStack as a ToolbarItemGroup only shows the first button
+      //ToolbarItemGroup(placement: .navigationBarTrailing) {
+      ToolbarItem(placement: .navigationBarTrailing) {
+        HStack {
+          Button(action: { showStatistics() }) {
+            Image(systemName: "chart.bar")
+          }
+          Button(action: { showStatistics() }) {
+            Image(systemName: "square.and.arrow.up")
+          }
         }
       }
-    )
+    }
   }
 
   func deleteFuelEvents(at offsets: IndexSet) {

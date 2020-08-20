@@ -12,7 +12,7 @@ import CoreData
 
 struct FuelCalculatorView: View {
   @Environment(\.managedObjectContext) var managedObjectContext
-  @FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: nil) var cars: FetchedResults<Car>
+  @FetchRequest(fetchRequest: DataManager.fetchRequestForCars(), animation: .default) var cars: FetchedResults<Car>
   @State var date: Date
   @State var car: Car?
   @State var lastChangeDate: Date

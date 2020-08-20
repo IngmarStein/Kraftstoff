@@ -64,7 +64,11 @@ struct FuelEventView: View {
       }.font(.title3)
     }
     .navigationBarTitle(Formatters.dateFormatter.string(from: fuelEvent.ksTimestamp))
-    .navigationBarItems(trailing: EditButton())
+    .toolbar {
+      ToolbarItem(placement: .automatic) {
+        EditButton()
+      }
+    }
   }
 }
 /*
