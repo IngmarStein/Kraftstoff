@@ -844,10 +844,4 @@ final class FuelCalculatorController: PageViewController, NSFetchedResultsContro
     deactivateCellAtIndexPath(indexPath)
   }
 
-  // MARK: -
-
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
-
 }

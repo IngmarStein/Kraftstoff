@@ -514,9 +514,4 @@ final class FuelEventEditorController: PageViewController, UIViewControllerResto
     deactivateCellAtIndexPath(indexPath)
   }
 
-  // MARK: - Memory Management
-
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
 }

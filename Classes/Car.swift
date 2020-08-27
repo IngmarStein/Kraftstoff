@@ -100,7 +100,7 @@ final class Car: NSManagedObject {
   }
 
   func fuelEvents(forDate date: Date,
-          dateComparator dateCompare: (Date, Date) -> Bool) -> [FuelEvent] {
+                  dateComparator dateCompare: (Date, Date) -> Bool) -> [FuelEvent] {
     guard let events = fuelEvents as? Set<FuelEvent> else { return [] }
     return events.filter { ev in dateCompare(date, ev.ksTimestamp) }.sorted { ev1, ev2 in ev1.ksTimestamp > ev2.ksTimestamp  }
   }

@@ -395,9 +395,4 @@ final class CarConfigurationController: PageViewController, UIViewControllerRest
     deactivateCellAtIndexPath(indexPath)
   }
 
-  // MARK: - Memory Management
-
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
 }

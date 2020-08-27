@@ -552,9 +552,4 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
     validateExport()
   }
 
-  // MARK: - Memory Management
-
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
 }

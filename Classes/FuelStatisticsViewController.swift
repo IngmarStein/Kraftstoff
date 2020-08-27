@@ -73,10 +73,6 @@ class FuelStatisticsViewController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategory.didChangeNotification, object: nil)
   }
 
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
-
   @objc func contentSizeCategoryDidChange(_ notification: NSNotification!) {
     invalidateCaches()
   }

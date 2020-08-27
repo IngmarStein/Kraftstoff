@@ -36,12 +36,16 @@ struct FuelEventsView: View {
       //ToolbarItemGroup(placement: .navigationBarTrailing) {
       ToolbarItem(placement: .navigationBarTrailing) {
         HStack {
-          Button(action: { showStatistics() }) {
+          Button(action: {
+            showStatistics()
+          }, label: {
             Image(systemName: "chart.bar")
-          }
-          Button(action: { showStatistics() }) {
+          })
+          Button(action: {
+            showStatistics()
+          }, label: {
             Image(systemName: "square.and.arrow.up")
-          }
+          })
         }
       }
     }

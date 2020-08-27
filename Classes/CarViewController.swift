@@ -693,7 +693,4 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
     }
   }
 
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
 }

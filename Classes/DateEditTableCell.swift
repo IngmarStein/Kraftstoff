@@ -74,10 +74,6 @@ final class DateEditTableCell: EditableProxyPageCell {
     updateTextFieldColorForValue(value)
   }
 
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
-
   @objc func significantTimeChange(_ object: AnyObject) {
     if let timestamp = self.valueTimestamp {
       self.delegate.valueChanged(Date.distantPast, identifier: timestamp)

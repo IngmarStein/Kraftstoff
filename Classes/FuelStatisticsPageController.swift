@@ -160,11 +160,6 @@ final class FuelStatisticsPageController: UIPageViewController {
     }
   }
 
-  // MARK: - Memory Management
-
-  deinit {
-    NotificationCenter.default.removeObserver(self)
-  }
 }
 
 extension FuelStatisticsPageController: UIPageViewControllerDelegate {

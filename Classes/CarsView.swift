@@ -35,9 +35,11 @@ struct CarsView: View {
         .navigationBarTitle("Cars", displayMode: .inline)
         .toolbar {
           ToolbarItem(placement: .automatic) {
-            Button(action: { addCar() }) {
+            Button(action: {
+              addCar()
+            }, label: {
               Label("Add Car", systemImage: "plus")
-            }
+            })
           }
           ToolbarItem(placement: .automatic) {
             EditButton()
@@ -72,14 +74,14 @@ struct CarsView: View {
       for rowToMove in firstRowToReorder..<lastRowToReorder {
         if !source.contains(rowToMove) {
           cars[rowToMove].order = newOrder
-          newOrder = newOrder + 1
+          newOrder += 1
         }
       }
     } else {
       for rowToMove in firstRowToReorder...lastRowToReorder {
         if !source.contains(rowToMove) {
           cars[rowToMove].order = newOrder
-          newOrder = newOrder + 1
+          newOrder += 1
         }
       }
 
