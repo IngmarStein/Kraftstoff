@@ -331,7 +331,8 @@ final class CarViewController: UITableViewController, UIDataSourceModelAssociati
       }
     }
     let importAction = UIAlertAction(title: NSLocalizedString("Import", comment: ""), style: .default) { [unowned self] _ in
-      self.documentPickerViewController = UIDocumentPickerViewController(documentTypes: ["public.comma-separated-values-text"], in: .`import`)
+      guard let csvType = UTType("public.comma-separated-values-text") else { return }
+      self.documentPickerViewController = UIDocumentPickerViewController(forOpeningContentTypes: [csvType])
       self.documentPickerViewController.delegate = self
 
       self.present(self.documentPickerViewController, animated: true, completion: nil)

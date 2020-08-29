@@ -297,7 +297,7 @@ final class FuelEventController: UITableViewController, UIDataSourceModelAssocia
       return
     }
 
-    documentPickerViewController = UIDocumentPickerViewController(url: exportURL, in: .exportToService)
+    documentPickerViewController = UIDocumentPickerViewController(forExporting: [exportURL])
     documentPickerViewController.delegate = self
 
     present(documentPickerViewController, animated: true, completion: nil)
