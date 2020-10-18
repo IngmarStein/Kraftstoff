@@ -21,8 +21,8 @@ security import ./scripts/certs/dist.p12 -k ~/Library/Keychains/mac-build.keycha
 # Required since macOS Sierra (see https://openradar.appspot.com/28524119)
 security set-key-partition-list -S "apple-tool:,apple:" -k ci ~/Library/Keychains/mac-build.keychain
 
-for PROVISION in `ls ./scripts/profiles/*.mobileprovision`
+for PROVISION in ./scripts/profiles/*.*provision*
 do
-  UUID=`/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< $(security cms -D -i ./$PROVISION)`
-  cp "./$PROVISION" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+  UUID=`/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< $(security cms -D -i $PROVISION)`
+  cp "$PROVISION" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.${PROVISION##*.}"
 done
