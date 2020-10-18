@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 # Create a custom keychain
 security create-keychain -p ci mac-build.keychain
