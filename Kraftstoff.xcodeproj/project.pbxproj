@@ -940,7 +940,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = Kraftstoff/kraftstoff.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2242;
 				DEVELOPMENT_TEAM = ADVP2P7SJK;
@@ -955,7 +955,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.ingmarstein.kraftstoff;
 				PRODUCT_NAME = Kraftstoff;
 				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff 2 Development";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst Development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst Developer ID";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
