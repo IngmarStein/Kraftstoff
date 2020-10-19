@@ -51,12 +51,12 @@ class Fastfile: LaneFile {
 
   func testLane() {
     desc("Runs all the tests")
-    runTests(project: project, scheme: scheme)
+    runTests(project: project, scheme: scheme, configuration: "Automation")
   }
 
   func testMacOSLane() {
     desc("Runs all the tests")
-    runTests(project: project, scheme: scheme, destination: catalystDestination)
+    runTests(project: project, scheme: scheme, configuration: "Automation", destination: catalystDestination)
   }
 
   private func buildIOS() {
