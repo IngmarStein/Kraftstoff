@@ -31,20 +31,24 @@ struct KraftstoffApp: App {
         DataManager.saveContext()
       case .active:
         if ProcessInfo.processInfo.arguments.firstIndex(of: "-UNITTEST") != nil {
-          //TODO
-          //self.window?.layer.speed = 100
+          UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
+            windowScene.windows.forEach { window in window.layer.speed = 100.0 }
+          }
         }
 
         #if targetEnvironment(macCatalyst)
         if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
-          if let windowScene = scene as? UIWindowScene {
+          UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
             let size = CGSize(width: 1440.0, height: 900.0)
             windowScene.sizeRestrictions?.minimumSize = size
             windowScene.sizeRestrictions?.maximumSize = size
           }
         }
         #endif
-      default: break
+      case .inactive:
+        break
+      @unknown default:
+        break
       }
     }
   }
