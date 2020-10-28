@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tikhop/ASN1Swift",
         "state": {
           "branch": null,
-          "revision": "0f3150de37d38190768caaff19c498d85efad715",
-          "version": "1.2.3"
+          "revision": "b53bee03a942623db25afc5bfb80227b2cb3b425",
+          "version": "1.2.4"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "7ce38837eff4b464960af65a05bf99ad5059f9d7",
-          "version": "3.0.1"
+          "revision": "1ea772be1b5b3f75afe542a8af6f43da5aef3da8",
+          "version": "3.0.2"
         }
       }
     ]
