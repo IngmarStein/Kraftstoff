@@ -17,7 +17,7 @@ public protocol MatchfileProtocol: class {
     /// Skip syncing provisioning profiles
     var skipProvisioningProfiles: Bool { get }
 
-    /// The bundle identifier(s) of your app (comma-separated)
+    /// The bundle identifier(s) of your app (comma-separated string or array of strings)
     var appIdentifier: [String] { get }
 
     /// Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
@@ -122,6 +122,9 @@ public protocol MatchfileProtocol: class {
     /// Should the command fail if it was about to create a duplicate of an existing provisioning profile. It can happen due to issues on Apple Developer Portal, when profile to be recreated was not properly deleted first
     var failOnNameTaken: Bool { get }
 
+    /// Set to true if there is no access to Apple developer portal but there are certificates, keys and profiles provided. Only works with match import action
+    var skipCertificateMatching: Bool { get }
+
     /// Path in which to export certificates, key and profile
     var outputPath: String? { get }
 
@@ -173,6 +176,7 @@ public extension MatchfileProtocol {
     var templateName: String? { return nil }
     var profileName: String? { return nil }
     var failOnNameTaken: Bool { return false }
+    var skipCertificateMatching: Bool { return false }
     var outputPath: String? { return nil }
     var skipSetPartitionList: Bool { return false }
     var verbose: Bool { return false }
@@ -180,4 +184,4 @@ public extension MatchfileProtocol {
 
 // Please don't remove the lines below
 // They are used to detect outdated files
-// FastlaneRunnerAPIVersion [0.9.43]
+// FastlaneRunnerAPIVersion [0.9.46]

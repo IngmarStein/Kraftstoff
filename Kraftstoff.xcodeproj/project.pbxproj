@@ -1040,7 +1040,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.ingmarstein.Kraftstoff-UI-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Kraftstoff 2 iOS UI Tests";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst UI Tests";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "Kraftstoff 2 Catalyst UI Test Runner";
 				TEST_TARGET_NAME = Kraftstoff;
 				USES_XCTRUNNER = YES;
 				VALIDATE_PRODUCT = YES;

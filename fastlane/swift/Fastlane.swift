@@ -4748,7 +4748,7 @@ public func makeChangelogFromJenkins(fallbackChangelog: String = "",
    - readonly: Only fetch existing certificates and profiles, don't generate new ones
    - generateAppleCerts: Create a certificate type for Xcode 11 and later (Apple Development or Apple Distribution)
    - skipProvisioningProfiles: Skip syncing provisioning profiles
-   - appIdentifier: The bundle identifier(s) of your app (comma-separated)
+   - appIdentifier: The bundle identifier(s) of your app (comma-separated string or array of strings)
    - apiKeyPath: Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
    - apiKey: Your App Store Connect API Key information (https://docs.fastlane.tools/app-store-connect-api/#use-return-value-and-pass-in-as-an-option)
    - username: Your Apple ID Username
@@ -4783,6 +4783,7 @@ public func makeChangelogFromJenkins(fallbackChangelog: String = "",
    - templateName: The name of provisioning profile template. If the developer account has provisioning profile templates (aka: custom entitlements), the template name can be found by inspecting the Entitlements drop-down while creating/editing a provisioning profile (e.g. "Apple Pay Pass Suppression Development")
    - profileName: A custom name for the provisioning profile. This will replace the default provisioning profile name if specified
    - failOnNameTaken: Should the command fail if it was about to create a duplicate of an existing provisioning profile. It can happen due to issues on Apple Developer Portal, when profile to be recreated was not properly deleted first
+   - skipCertificateMatching: Set to true if there is no access to Apple developer portal but there are certificates, keys and profiles provided. Only works with match import action
    - outputPath: Path in which to export certificates, key and profile
    - skipSetPartitionList: Skips setting the partition list (which can sometimes take a long time). Setting the partition list is usually needed to prevent Xcode from prompting to allow a cert to be used for signing
    - verbose: Print out extra information and all commands
@@ -4829,6 +4830,7 @@ public func match(type: Any = matchfile.type,
                   templateName: Any? = matchfile.templateName,
                   profileName: Any? = matchfile.profileName,
                   failOnNameTaken: Bool = matchfile.failOnNameTaken,
+                  skipCertificateMatching: Bool = matchfile.skipCertificateMatching,
                   outputPath: Any? = matchfile.outputPath,
                   skipSetPartitionList: Bool = matchfile.skipSetPartitionList,
                   verbose: Bool = matchfile.verbose)
@@ -4873,6 +4875,7 @@ public func match(type: Any = matchfile.type,
                                                                                          RubyCommand.Argument(name: "template_name", value: templateName),
                                                                                          RubyCommand.Argument(name: "profile_name", value: profileName),
                                                                                          RubyCommand.Argument(name: "fail_on_name_taken", value: failOnNameTaken),
+                                                                                         RubyCommand.Argument(name: "skip_certificate_matching", value: skipCertificateMatching),
                                                                                          RubyCommand.Argument(name: "output_path", value: outputPath),
                                                                                          RubyCommand.Argument(name: "skip_set_partition_list", value: skipSetPartitionList),
                                                                                          RubyCommand.Argument(name: "verbose", value: verbose)])
@@ -6074,6 +6077,7 @@ public func rubyVersion() {
    - skipSlack: Don't publish to slack, even when an URL is given
    - slackOnlyOnFailure: Only post on Slack if the tests fail
    - destination: Use only if you're a pro, use the other options instead
+   - catalystPlatform: Platform to build when using a Catalyst enabled app. Valid values are: ios, macos
    - customReportFileName: **DEPRECATED!** Use `--output_files` instead - Sets custom full report file name when generating a single report
    - xcodebuildCommand: Allows for override of the default `xcodebuild` command
    - clonedSourcePackagesPath: Sets a custom path for Swift Package Manager dependencies
@@ -6140,6 +6144,7 @@ public func runTests(workspace: String? = nil,
                      skipSlack: Bool = false,
                      slackOnlyOnFailure: Bool = false,
                      destination: Any? = nil,
+                     catalystPlatform: String? = nil,
                      customReportFileName: String? = nil,
                      xcodebuildCommand: String = "env NSUnbufferedIO=YES xcodebuild",
                      clonedSourcePackagesPath: String? = nil,
@@ -6204,6 +6209,7 @@ public func runTests(workspace: String? = nil,
                                                                                              RubyCommand.Argument(name: "skip_slack", value: skipSlack),
                                                                                              RubyCommand.Argument(name: "slack_only_on_failure", value: slackOnlyOnFailure),
                                                                                              RubyCommand.Argument(name: "destination", value: destination),
+                                                                                             RubyCommand.Argument(name: "catalyst_platform", value: catalystPlatform),
                                                                                              RubyCommand.Argument(name: "custom_report_file_name", value: customReportFileName),
                                                                                              RubyCommand.Argument(name: "xcodebuild_command", value: xcodebuildCommand),
                                                                                              RubyCommand.Argument(name: "cloned_source_packages_path", value: clonedSourcePackagesPath),
@@ -6350,6 +6356,7 @@ public func say(text: Any,
    - skipSlack: Don't publish to slack, even when an URL is given
    - slackOnlyOnFailure: Only post on Slack if the tests fail
    - destination: Use only if you're a pro, use the other options instead
+   - catalystPlatform: Platform to build when using a Catalyst enabled app. Valid values are: ios, macos
    - customReportFileName: **DEPRECATED!** Use `--output_files` instead - Sets custom full report file name when generating a single report
    - xcodebuildCommand: Allows for override of the default `xcodebuild` command
    - clonedSourcePackagesPath: Sets a custom path for Swift Package Manager dependencies
@@ -6416,6 +6423,7 @@ public func scan(workspace: Any? = scanfile.workspace,
                  skipSlack: Bool = scanfile.skipSlack,
                  slackOnlyOnFailure: Bool = scanfile.slackOnlyOnFailure,
                  destination: Any? = scanfile.destination,
+                 catalystPlatform: Any? = scanfile.catalystPlatform,
                  customReportFileName: Any? = scanfile.customReportFileName,
                  xcodebuildCommand: Any = scanfile.xcodebuildCommand,
                  clonedSourcePackagesPath: Any? = scanfile.clonedSourcePackagesPath,
@@ -6480,6 +6488,7 @@ public func scan(workspace: Any? = scanfile.workspace,
                                                                                         RubyCommand.Argument(name: "skip_slack", value: skipSlack),
                                                                                         RubyCommand.Argument(name: "slack_only_on_failure", value: slackOnlyOnFailure),
                                                                                         RubyCommand.Argument(name: "destination", value: destination),
+                                                                                        RubyCommand.Argument(name: "catalyst_platform", value: catalystPlatform),
                                                                                         RubyCommand.Argument(name: "custom_report_file_name", value: customReportFileName),
                                                                                         RubyCommand.Argument(name: "xcodebuild_command", value: xcodebuildCommand),
                                                                                         RubyCommand.Argument(name: "cloned_source_packages_path", value: clonedSourcePackagesPath),
@@ -6612,6 +6621,8 @@ public func setBuildNumberRepository(useHgRevisionNumber: Bool = false,
  Set the changelog for all languages on App Store Connect
 
  - parameters:
+   - apiKeyPath: Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
+   - apiKey: Your App Store Connect API Key information (https://docs.fastlane.tools/app-store-connect-api/#use-return-value-and-pass-in-as-an-option)
    - appIdentifier: The bundle identifier of your app
    - username: Your Apple ID Username
    - version: The version number to create/update
@@ -6624,15 +6635,19 @@ public func setBuildNumberRepository(useHgRevisionNumber: Bool = false,
  You can store the changelog in `./changelog.txt` and it will automatically get loaded from there. This integration is useful if you support e.g. 10 languages and want to use the same "What's new"-text for all languages.
  Defining the version is optional. _fastlane_ will try to automatically detect it if you don't provide one.
  */
-public func setChangelog(appIdentifier: String,
-                         username: String,
+public func setChangelog(apiKeyPath: String? = nil,
+                         apiKey: [String: Any]? = nil,
+                         appIdentifier: String,
+                         username: String? = nil,
                          version: String? = nil,
                          changelog: String? = nil,
                          teamId: Any? = nil,
                          teamName: String? = nil,
                          platform: String = "ios")
 {
-    let command = RubyCommand(commandID: "", methodName: "set_changelog", className: nil, args: [RubyCommand.Argument(name: "app_identifier", value: appIdentifier),
+    let command = RubyCommand(commandID: "", methodName: "set_changelog", className: nil, args: [RubyCommand.Argument(name: "api_key_path", value: apiKeyPath),
+                                                                                                 RubyCommand.Argument(name: "api_key", value: apiKey),
+                                                                                                 RubyCommand.Argument(name: "app_identifier", value: appIdentifier),
                                                                                                  RubyCommand.Argument(name: "username", value: username),
                                                                                                  RubyCommand.Argument(name: "version", value: version),
                                                                                                  RubyCommand.Argument(name: "changelog", value: changelog),
@@ -7669,7 +7684,7 @@ public func swiftlint(mode: Any = "lint",
    - readonly: Only fetch existing certificates and profiles, don't generate new ones
    - generateAppleCerts: Create a certificate type for Xcode 11 and later (Apple Development or Apple Distribution)
    - skipProvisioningProfiles: Skip syncing provisioning profiles
-   - appIdentifier: The bundle identifier(s) of your app (comma-separated)
+   - appIdentifier: The bundle identifier(s) of your app (comma-separated string or array of strings)
    - apiKeyPath: Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
    - apiKey: Your App Store Connect API Key information (https://docs.fastlane.tools/app-store-connect-api/#use-return-value-and-pass-in-as-an-option)
    - username: Your Apple ID Username
@@ -7704,6 +7719,7 @@ public func swiftlint(mode: Any = "lint",
    - templateName: The name of provisioning profile template. If the developer account has provisioning profile templates (aka: custom entitlements), the template name can be found by inspecting the Entitlements drop-down while creating/editing a provisioning profile (e.g. "Apple Pay Pass Suppression Development")
    - profileName: A custom name for the provisioning profile. This will replace the default provisioning profile name if specified
    - failOnNameTaken: Should the command fail if it was about to create a duplicate of an existing provisioning profile. It can happen due to issues on Apple Developer Portal, when profile to be recreated was not properly deleted first
+   - skipCertificateMatching: Set to true if there is no access to Apple developer portal but there are certificates, keys and profiles provided. Only works with match import action
    - outputPath: Path in which to export certificates, key and profile
    - skipSetPartitionList: Skips setting the partition list (which can sometimes take a long time). Setting the partition list is usually needed to prevent Xcode from prompting to allow a cert to be used for signing
    - verbose: Print out extra information and all commands
@@ -7750,6 +7766,7 @@ public func syncCodeSigning(type: String = "development",
                             templateName: String? = nil,
                             profileName: String? = nil,
                             failOnNameTaken: Bool = false,
+                            skipCertificateMatching: Bool = false,
                             outputPath: String? = nil,
                             skipSetPartitionList: Bool = false,
                             verbose: Bool = false)
@@ -7794,6 +7811,7 @@ public func syncCodeSigning(type: String = "development",
                                                                                                      RubyCommand.Argument(name: "template_name", value: templateName),
                                                                                                      RubyCommand.Argument(name: "profile_name", value: profileName),
                                                                                                      RubyCommand.Argument(name: "fail_on_name_taken", value: failOnNameTaken),
+                                                                                                     RubyCommand.Argument(name: "skip_certificate_matching", value: skipCertificateMatching),
                                                                                                      RubyCommand.Argument(name: "output_path", value: outputPath),
                                                                                                      RubyCommand.Argument(name: "skip_set_partition_list", value: skipSetPartitionList),
                                                                                                      RubyCommand.Argument(name: "verbose", value: verbose)])
@@ -9241,7 +9259,7 @@ public func xcov(workspace: String? = nil,
                  coverallsServiceJobId: String? = nil,
                  coverallsRepoToken: String? = nil,
                  xcconfig: String? = nil,
-                 ideFoundationPath: String = "/Applications/Xcode-11.7.app/Contents/Developer/../Frameworks/IDEFoundation.framework/Versions/A/IDEFoundation",
+                 ideFoundationPath: String = "/Applications/Xcode-beta.app/Contents/Developer/../Frameworks/IDEFoundation.framework/Versions/A/IDEFoundation",
                  legacySupport: Bool = false)
 {
     let command = RubyCommand(commandID: "", methodName: "xcov", className: nil, args: [RubyCommand.Argument(name: "workspace", value: workspace),
@@ -9387,4 +9405,4 @@ public let snapshotfile = Snapshotfile()
 
 // Please don't remove the lines below
 // They are used to detect outdated files
-// FastlaneRunnerAPIVersion [0.9.99]
+// FastlaneRunnerAPIVersion [0.9.102]

@@ -16,7 +16,7 @@ class Fastfile: LaneFile {
   // Update this, if you use features of a newer version
   var fastlaneVersion = "2.141.0"
 
-  let catalystDestination = "platform=macOS,arch=x86_64,variant=Mac Catalyst"
+  let catalystDestination = "platform=macOS,variant=Mac Catalyst"
   let project = "Kraftstoff.xcodeproj"
   let scheme = "Kraftstoff"
   let screenshotScheme = "Fastlane UI Tests"
@@ -56,7 +56,7 @@ class Fastfile: LaneFile {
 
   func testMacOSLane() {
     desc("Runs all the tests")
-    runTests(project: project, scheme: scheme, configuration: "Automation", destination: catalystDestination)
+    runTests(project: project, scheme: scheme, configuration: "Automation", catalystPlatform: "macos")
   }
 
   private func buildIOS() {
@@ -71,7 +71,6 @@ class Fastfile: LaneFile {
   }
 
   private func buildMacOS() {
-    runTests(project: project, scheme: scheme, destination: catalystDestination)
     incrementBuildNumber()
     //captureScreenshots(project: project,
     //           devices: devices,
