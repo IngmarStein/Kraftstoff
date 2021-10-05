@@ -117,7 +117,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, NSFetchedResultsCon
       if CSSearchableIndex.isIndexingAvailable() {
         let searchableItems = cars.map { car -> CSSearchableItem in
           let carIdentifier = DataManager.modelIdentifierForManagedObject(car)
-          let attributeset = CSSearchableItemAttributeSet(itemContentType: kUTTypeText as String)
+          let attributeset = CSSearchableItemAttributeSet(contentType: .text)
           attributeset.title = car.ksName
           attributeset.contentDescription = car.ksNumberPlate
           return CSSearchableItem(uniqueIdentifier: carIdentifier, domainIdentifier: "com.github.ingmarstein.kraftstoff.cars", attributeSet: attributeset)

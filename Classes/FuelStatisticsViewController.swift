@@ -62,13 +62,6 @@ class FuelStatisticsViewController: UIViewController {
     self.centerLabel.shadowColor = nil
     self.rightLabel.shadowColor = nil
 
-    // Update selection status of all buttons
-    for view in stackView.subviews {
-      if let button = view as? UIButton {
-        button.showsTouchWhenHighlighted = false
-      }
-    }
-
     setupFonts()
     NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategory.didChangeNotification, object: nil)
   }

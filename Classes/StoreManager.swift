@@ -11,20 +11,55 @@ import StoreKit
 import Security
 import TPInAppReceipt
 
-final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
-  static let sharedInstance = StoreManager()
+public enum StoreError: Error {
+  case failedVerification
+}
 
-  private var appReceipt: InAppReceipt?
-  private var receiptRefreshRequest: SKReceiptRefreshRequest?
+final class StoreManager {
+  static let sharedInstance = StoreManager()
 
   private let twoCarsProductId = "com.github.ingmarstein.kraftstoff.iap.2cars"
   private let fiveCarsProductId = "com.github.ingmarstein.kraftstoff.iap.5cars"
   private let unlimitedCarsProductId = "com.github.ingmarstein.kraftstoff.iap.unlimitedCars"
 
-  override init() {
-    super.init()
+  private var twoCarsProduct: Product!
+  private var fiveCarsProduct: Product!
+  private var unlimitedCarsProduct: Product!
+  private var updateListenerTask: Task<Void, Error>? = nil
+  private(set) var purchasedIdentifiers = Set<String>()
 
-    SKPaymentQueue.default().add(self)
+  init() {
+    updateListenerTask = listenForTransactions()
+
+    Task {
+      let storeProducts = try await StoreKit.Product.products(for: [twoCarsProductId, fiveCarsProductId, unlimitedCarsProductId])
+      for product in storeProducts {
+        switch product.id {
+        case twoCarsProductId: twoCarsProduct = product
+        case fiveCarsProductId: fiveCarsProduct = product
+        case unlimitedCarsProductId: unlimitedCarsProduct = product
+        default: break
+        }
+      }
+    }
+  }
+
+  deinit {
+    updateListenerTask?.cancel()
+  }
+
+  func listenForTransactions() -> Task<Void, Error> {
+    return Task.detached {
+      for await result in Transaction.updates {
+        do {
+          let transaction = try self.checkVerified(result)
+          await self.updatePurchasedIdentifiers(transaction)
+          await transaction.finish()
+        } catch {
+          print("Transaction failed verification")
+        }
+      }
+    }
   }
 
   private var maxCarCount: Int {
@@ -32,8 +67,6 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
   }
 
   func checkCarCount() -> Bool {
-    refreshReceipt()
-
     if unlimitedCars || ProcessInfo.processInfo.arguments.firstIndex(of: "-UNLIMITED") != nil {
       return true
     }
@@ -50,22 +83,28 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
     let alert = UIAlertController(title: NSLocalizedString("Car limit reached", comment: ""),
       message: NSLocalizedString("Would you like to buy more cars?", comment: ""), preferredStyle: .actionSheet)
 
-    if maxCarCount < 2 {
+    if self.maxCarCount < 2 {
       let twoCarsAction = UIAlertAction(title: NSLocalizedString("2 Cars", comment: ""), style: .default) { _ in
-        self.buyProduct(self.twoCarsProductId)
+        Task {
+          try? await self.purchase(self.twoCarsProduct)
+        }
       }
       alert.addAction(twoCarsAction)
     }
 
-    if maxCarCount < 5 {
+    if self.maxCarCount < 5 {
       let fiveCarsAction = UIAlertAction(title: NSLocalizedString("5 Cars", comment: ""), style: .default) { _ in
-        self.buyProduct(self.fiveCarsProductId)
+        Task {
+          try? await self.purchase(self.fiveCarsProduct)
+        }
       }
       alert.addAction(fiveCarsAction)
     }
 
     let unlimitedCarsAction = UIAlertAction(title: NSLocalizedString("Unlimited Cars", comment: ""), style: .default) { _ in
-      self.buyProduct(self.unlimitedCarsProductId)
+      Task {
+        try? await self.purchase(self.unlimitedCarsProduct)
+      }
     }
     alert.addAction(unlimitedCarsAction)
 
@@ -83,109 +122,77 @@ final class StoreManager: NSObject, SKProductsRequestDelegate, SKPaymentTransact
     parent.present(alert, animated: true, completion: nil)
   }
 
-  private func keychainItemForProduct(_ product: String) -> [String: Any] {
-    return [
-      String(kSecClass): kSecClassGenericPassword,
-      String(kSecAttrService): "com.github.ingmarstein.kraftstoff",
-      String(kSecAttrAccount): product,
-      String(kSecAttrAccessible): kSecAttrAccessibleWhenUnlocked
-    ]
-  }
-
-  private func refreshReceipt(force: Bool = false) {
-    if appReceipt == nil || force {
-      self.receiptRefreshRequest = SKReceiptRefreshRequest(receiptProperties: nil)
-                                             self.receiptRefreshRequest?.delegate = self
-                                             self.receiptRefreshRequest?.start()
-      return
+  func isPurchased(_ productIdentifier: String) async throws -> Bool {
+    //Get the most recent transaction receipt for this `productIdentifier`.
+    guard let result = await StoreKit.Transaction.latest(for: productIdentifier) else {
+      //If there is no latest transaction, the product has not been purchased.
+      return false
     }
 
-    verifyAppReceipt()
+    let transaction = try checkVerified(result)
+
+    //Ignore revoked transactions, they're no longer purchased.
+
+    //For subscriptions, a user can upgrade in the middle of their subscription period. The lower service
+    //tier will then have the `isUpgraded` flag set and there will be a new transaction for the higher service
+    //tier. Ignore the lower service tier transactions which have been upgraded.
+    return transaction.revocationDate == nil && !transaction.isUpgraded
   }
 
-  private func verifyAppReceipt() {
-    do {
-      appReceipt = try InAppReceipt.localReceipt()
-      try appReceipt?.verify()
-    } catch IARError.initializationFailed(reason: .appStoreReceiptNotFound) {
-      // known cases when this happens: on the simulator,
-      // when running XCTests, in TestFlight builds and
-      // during App Store review.
-      print("No receipt at URL: \(String(describing: Bundle.main.appStoreReceiptURL?.path))")
-    } catch {
-      print("Failed to validate receipt: \(error)")
-      appReceipt = nil
-    }
+  func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+      //Check if the transaction passes StoreKit verification.
+      switch result {
+      case .unverified:
+          //StoreKit has parsed the JWS but failed verification. Don't deliver content to the user.
+        throw StoreError.failedVerification
+      case .verified(let safe):
+          //If the transaction is verified, unwrap and return it.
+          return safe
+      }
   }
 
-  func validReceiptForInAppPurchase(_ productId: String) -> Bool {
-    guard let receipt = appReceipt else { return false }
-    return !receipt.purchases(ofProductIdentifier: productId).isEmpty
-  }
-
-  private func isProductPurchased(_ product: String) -> Bool {
-    return validReceiptForInAppPurchase(product) && SecItemCopyMatching(keychainItemForProduct(product) as CFDictionary, nil) == 0
-  }
-
-  private func setProductPurchased(_ product: String, purchased: Bool) {
-    let keychainItem = keychainItemForProduct(product)
-    if purchased {
-      SecItemAdd(keychainItem as CFDictionary, nil)
+  @MainActor
+  func updatePurchasedIdentifiers(_ transaction: Transaction) async {
+    if transaction.revocationDate == nil {
+      //If the App Store has not revoked the transaction, add it to the list of `purchasedIdentifiers`.
+      purchasedIdentifiers.insert(transaction.productID)
     } else {
-      SecItemDelete(keychainItem as CFDictionary)
+      //If the App Store has revoked this transaction, remove it from the list of `purchasedIdentifiers`.
+      purchasedIdentifiers.remove(transaction.productID)
     }
-    refreshReceipt(force: true)
   }
 
   var twoCars: Bool {
-    return isProductPurchased(twoCarsProductId)
+    return purchasedIdentifiers.contains(twoCarsProductId)
   }
 
   var fiveCars: Bool {
-    return isProductPurchased(fiveCarsProductId)
+    return purchasedIdentifiers.contains(fiveCarsProductId)
   }
 
   var unlimitedCars: Bool {
-    return isProductPurchased(unlimitedCarsProductId)
+    return purchasedIdentifiers.contains(unlimitedCarsProductId)
   }
 
-  private func buyProduct(_ productIdentifier: String) {
-    if SKPaymentQueue.canMakePayments() {
-      let productsRequest = SKProductsRequest(productIdentifiers: [productIdentifier])
-      productsRequest.delegate = self
-      productsRequest.start()
-    }
-  }
+  func purchase(_ product: Product) async throws -> Transaction? {
+      //Begin a purchase.
+      let result = try await product.purchase()
 
-  func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-    if let product = response.products.first, response.products.count == 1 {
-      let payment = SKPayment(product: product)
-      SKPaymentQueue.default().add(payment)
-    }
-  }
+      switch result {
+      case .success(let verification):
+          let transaction = try checkVerified(verification)
 
-  func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-    for transaction in transactions {
-      switch transaction.transactionState {
-      case .purchased, .restored:
-        setProductPurchased(transaction.payment.productIdentifier, purchased: true)
-        SKPaymentQueue.default().finishTransaction(transaction)
-      case .failed:
-        SKPaymentQueue.default().finishTransaction(transaction)
-        print("Transaction failed: \(transaction.error!)")
-      default: ()
+          //Deliver content to the user.
+          //await updatePurchasedIdentifiers(transaction)
+
+          //Always finish a transaction.
+          await transaction.finish()
+
+          return transaction
+      case .userCancelled, .pending:
+          return nil
+      default:
+          return nil
       }
-    }
   }
-
-  // MARK: - SKRequestDelegate
-
-  func requestDidFinish(_ request: SKRequest) {
-    verifyAppReceipt()
-  }
-
-  func request(_ request: SKRequest, didFailWithError error: Error) {
-    print("receipt request failed: \(error)")
-  }
-
 }
