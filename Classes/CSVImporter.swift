@@ -6,13 +6,12 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 typealias CSVRecord = [String: String]
 
 final class CSVImporter {
-
   private var carIDs = Set<Int>()
   private var carForID = [Int: Car]()
   private var modelForID = [Int: String]()
@@ -172,12 +171,12 @@ final class CSVImporter {
       let plate = truncateLongString(plateForID[carID] ?? "")
 
       let newCar = addCar(model,
-                 order: carForID.count,
-                 plate: plate,
-            odometerUnit: Units.distanceUnitFromLocale,
-              volumeUnit: Units.volumeUnitFromLocale,
-         fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale,
-               inContext: managedObjectContext)
+                          order: carForID.count,
+                          plate: plate,
+                          odometerUnit: Units.distanceUnitFromLocale,
+                          volumeUnit: Units.volumeUnitFromLocale,
+                          fuelConsumptionUnit: Units.fuelConsumptionUnitFromLocale,
+                          inContext: managedObjectContext)
 
       carForID[carID] = newCar
     }
@@ -237,23 +236,24 @@ final class CSVImporter {
     var odometerUnit: UnitLength?
     var volumeUnit: UnitVolume?
 
-    let IDKey           = keyForCarID(first)
-    let dateKey         = keyForDate(first)
-    let timeKey         = keyForTime(first)
-    let distanceKey     = keyForDistance(first, unit: &distanceUnit)
-    let odometerKey     = keyForOdometer(first, unit: &odometerUnit)
-    let volumeKey       = keyForVolume(first, unit: &volumeUnit)
+    let IDKey = keyForCarID(first)
+    let dateKey = keyForDate(first)
+    let timeKey = keyForTime(first)
+    let distanceKey = keyForDistance(first, unit: &distanceUnit)
+    let odometerKey = keyForOdometer(first, unit: &odometerUnit)
+    let volumeKey = keyForVolume(first, unit: &volumeUnit)
     let volumeAmountKey = keyForVolume(first)
-    let volumeUnitKey   = keyForVolumeUnit(first)
-    let priceKey        = keyForPrice(first)
-    let fillupKey       = keyForFillup(first)
-    let commentKey      = keyForComment(first)
+    let volumeUnitKey = keyForVolumeUnit(first)
+    let priceKey = keyForPrice(first)
+    let fillupKey = keyForFillup(first)
+    let commentKey = keyForComment(first)
 
     // Common consistency check for CSV headers
     if dateKey == nil
-        || (odometerKey == nil && distanceKey == nil)
-        || (volumeKey == nil && (volumeAmountKey == nil || volumeUnitKey == nil))
-        || priceKey == nil {
+      || (odometerKey == nil && distanceKey == nil)
+      || (volumeKey == nil && (volumeAmountKey == nil || volumeUnitKey == nil))
+      || priceKey == nil
+    {
       return false
     }
 
@@ -265,7 +265,7 @@ final class CSVImporter {
     }
 
     // Sort records according time and odometer
-    let sortedRecords = records.sorted { (record1, record2) -> Bool in
+    let sortedRecords = records.sorted { record1, record2 -> Bool in
       if let date1 = self.scanDate(record1[dateKey!]!, withOptionalTime: record1[timeKey!]), let date2 = self.scanDate(record2[dateKey!]!, withOptionalTime: record2[timeKey!]) {
         if date1 < date2 {
           return true
@@ -285,9 +285,9 @@ final class CSVImporter {
     for carID in carIDs {
       let car = carForID[carID]!
 
-      var lastDate          = Date.distantPast
-      var lastDelta         = TimeInterval(0.0)
-      var detectedEvents    = false
+      var lastDate = Date.distantPast
+      var lastDelta = TimeInterval(0.0)
+      var detectedEvents = false
       var initialFillUpSeen = false
 
       var odometer = Decimal(0)
@@ -304,12 +304,12 @@ final class CSVImporter {
           }
         }
 
-        var date  = scanDate(record[dateKey!]!, withOptionalTime: record[timeKey!])!
+        var date = scanDate(record[dateKey!]!, withOptionalTime: record[timeKey!])!
         let delta = date.timeIntervalSince(lastDate)
 
         if delta <= 0.0 || lastDelta > 0.0 {
           lastDelta = (delta > 0.0) ? 0.0 : ceil(fabs(delta) + 60.0)
-          date      = date.addingTimeInterval(lastDelta)
+          date = date.addingTimeInterval(lastDelta)
         }
 
         if date.timeIntervalSince(lastDate) <= 0.0 {
@@ -369,41 +369,41 @@ final class CSVImporter {
         }
 
         // For TankPro ignore events until after the first full fill-up
-        if isTankProImport && !initialFillUpSeen {
+        if isTankProImport, !initialFillUpSeen {
           initialFillUpSeen = filledUp
           continue
         }
 
         // Consistency check and import
-        if let distance = distance, let volume = volume, distance > 0 && volume > 0 {
+        if let distance = distance, let volume = volume, distance > 0, volume > 0 {
           let convertedDistance = guessDistanceForParsedDistance(distance, andFuelVolume: volume)
 
           // Add event for car
           addEvent(car,
-                  date: date,
-                distance: convertedDistance,
+                   date: date,
+                   distance: convertedDistance,
                    price: price!,
-                fuelVolume: volume,
-               inheritedCost: inheritedCost,
-             inheritedDistance: inheritedDistance,
-           inheritedFuelVolume: inheritedFuelVolume,
-                filledUp: filledUp,
-                 comment: comment,
-                 inContext: managedObjectContext)
+                   fuelVolume: volume,
+                   inheritedCost: inheritedCost,
+                   inheritedDistance: inheritedDistance,
+                   inheritedFuelVolume: inheritedFuelVolume,
+                   filledUp: filledUp,
+                   comment: comment,
+                   inContext: managedObjectContext)
 
           if filledUp {
-            inheritedCost       = 0
-            inheritedDistance   = 0
+            inheritedCost = 0
+            inheritedDistance = 0
             inheritedFuelVolume = 0
           } else {
-            inheritedCost       += volume * price!
-            inheritedDistance   += convertedDistance
+            inheritedCost += volume * price!
+            inheritedDistance += convertedDistance
             inheritedFuelVolume += volume
           }
 
-          numEvents     += 1
+          numEvents += 1
           detectedEvents = true
-          lastDate       = date
+          lastDate = date
         }
       }
 
@@ -667,7 +667,7 @@ final class CSVImporter {
   // MARK: - Interpretation of CSV Header Names
 
   private func keyForDate(_ record: CSVRecord) -> String? {
-    for key in [ "JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ" ] where record[key] != nil {
+    for key in ["JJJJMMTT", "YYYYMMDD", "DATE", "DATUM", "AAAAMMJJ"] where record[key] != nil {
       return key
     }
 
@@ -675,7 +675,7 @@ final class CSVImporter {
   }
 
   private func keyForTime(_ record: CSVRecord) -> String? {
-    for key in [ "HHMM", "TIME", "ZEIT" ] where record[key] != nil {
+    for key in ["HHMM", "TIME", "ZEIT"] where record[key] != nil {
       return key
     }
 
@@ -683,12 +683,12 @@ final class CSVImporter {
   }
 
   private func keyForDistance(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
-    for key in [ "KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES", "キロメートル" ] where record[key] != nil {
+    for key in ["KILOMETERS", "KILOMETER", "STRECKE", "KILOMÈTRES", "キロメートル"] where record[key] != nil {
       unit = .kilometers
       return key
     }
 
-    for key in [ "MILES", "MEILEN" ] where record[key] != nil {
+    for key in ["MILES", "MEILEN"] where record[key] != nil {
       unit = .miles
       return key
     }
@@ -697,12 +697,12 @@ final class CSVImporter {
   }
 
   private func keyForOdometer(_ record: CSVRecord, unit: inout UnitLength?) -> String? {
-    for key in [ "ODOMETER(KM)", "KILOMETERSTAND(KM)" ] where record[key] != nil {
+    for key in ["ODOMETER(KM)", "KILOMETERSTAND(KM)"] where record[key] != nil {
       unit = .kilometers
       return key
     }
 
-    for key in [ "ODOMETER(MI)", "KILOMETERSTAND(MI)" ] where record[key] != nil {
+    for key in ["ODOMETER(MI)", "KILOMETERSTAND(MI)"] where record[key] != nil {
       unit = .miles
       return key
     }
@@ -711,17 +711,17 @@ final class CSVImporter {
   }
 
   private func keyForVolume(_ record: CSVRecord, unit: inout UnitVolume?) -> String? {
-    for key in [ "LITERS", "LITER", "TANKMENGE", "LITRES", "リットル" ] where record[key] != nil {
+    for key in ["LITERS", "LITER", "TANKMENGE", "LITRES", "リットル"] where record[key] != nil {
       unit = .liters
       return key
     }
 
-    for key in [ "GALLONS(US)", "GALLONEN(US)" ] where record[key] != nil {
+    for key in ["GALLONS(US)", "GALLONEN(US)"] where record[key] != nil {
       unit = .gallons
       return key
     }
 
-    for key in [ "GALLONS(UK)", "GALLONEN(UK)" ] where record[key] != nil {
+    for key in ["GALLONS(UK)", "GALLONEN(UK)"] where record[key] != nil {
       unit = .imperialGallons
       return key
     }
@@ -730,7 +730,7 @@ final class CSVImporter {
   }
 
   private func keyForVolume(_ record: CSVRecord) -> String? {
-    for key in [ "GETANKT", "AMOUNTFILLED" ] where record[key] != nil {
+    for key in ["GETANKT", "AMOUNTFILLED"] where record[key] != nil {
       return key
     }
 
@@ -739,7 +739,7 @@ final class CSVImporter {
 
   private func keyForVolumeUnit(_ record: CSVRecord) -> String? {
     // 'MAFLEINHEIT' happens when Windows encoding is misinterpreted as MacRoman...
-    for key in [ "MASSEINHEIT", "UNIT", "MAFLEINHEIT" ] where record[key] != nil {
+    for key in ["MASSEINHEIT", "UNIT", "MAFLEINHEIT"] where record[key] != nil {
       return key
     }
 
@@ -747,7 +747,7 @@ final class CSVImporter {
   }
 
   private func keyForPrice(_ record: CSVRecord) -> String? {
-    for key in [ "PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON", "リットル当たりの価格" ] where record[key] != nil {
+    for key in ["PRICEPERLITER", "PRICEPERGALLON", "PRICE", "PREISPROLITER", "PREISPROGALLONE", "PREIS", "KOSTEN/LITER", "PRIXPARLITRE", "PRIXPARGALLON", "リットル当たりの価格"] where record[key] != nil {
       return key
     }
 
@@ -755,7 +755,7 @@ final class CSVImporter {
   }
 
   private func keyForFillup(_ record: CSVRecord) -> String? {
-    for key in [ "FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN", "フルフィルアップ" ] where record[key] != nil {
+    for key in ["FULLFILLUP", "VOLLGETANKT", "RÉSERVOIRPLEIN", "フルフィルアップ"] where record[key] != nil {
       return key
     }
 
@@ -763,7 +763,7 @@ final class CSVImporter {
   }
 
   private func keyForModel(_ record: CSVRecord) -> String? {
-    for key in [ "MODEL", "MODELL" ] where record[key] != nil {
+    for key in ["MODEL", "MODELL"] where record[key] != nil {
       return key
     }
 
@@ -771,7 +771,7 @@ final class CSVImporter {
   }
 
   private func keyForCarID(_ record: CSVRecord) -> String? {
-    for key in [ "CARID", "FAHRZEUGID" ] where record[key] != nil {
+    for key in ["CARID", "FAHRZEUGID"] where record[key] != nil {
       return key
     }
 
@@ -779,11 +779,10 @@ final class CSVImporter {
   }
 
   private func keyForComment(_ record: CSVRecord) -> String? {
-    for key in [ "COMMENT", "KOMMENTAR", "COMMENTAIRE", "コメント" ] where record[key] != nil {
+    for key in ["COMMENT", "KOMMENTAR", "COMMENTAIRE", "コメント"] where record[key] != nil {
       return key
     }
 
     return nil
   }
-
 }

@@ -6,8 +6,8 @@
 //  Copyright © 2019 Ingmar Stein. All rights reserved.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct CarRowView: View {
   var car: Car
@@ -15,7 +15,7 @@ struct CarRowView: View {
   @Environment(\.editMode) var editMode
 
   var body: some View {
-    //let destination: View = (self.editMode == .inactive ? FuelEventsView(car: car) : CarConfigurationView())
+    // let destination: View = (self.editMode == .inactive ? FuelEventsView(car: car) : CarConfigurationView())
     NavigationLink(destination: FuelEventsView(car: car)) {
       VStack {
         HStack {
@@ -43,10 +43,10 @@ struct CarRowView: View {
   }
 
   var averageConsumption: String {
-    let distance   = car.ksDistanceTotalSum
+    let distance = car.ksDistanceTotalSum
     let fuelVolume = car.ksFuelVolumeTotalSum
 
-    if distance > 0 && fuelVolume > 0 {
+    if distance > 0, fuelVolume > 0 {
       return Formatters.fuelVolumeFormatter.string(from: Units.consumptionForKilometers(distance, liters: fuelVolume, inUnit: car.ksFuelConsumptionUnit) as NSNumber)!
     } else {
       return "-"
@@ -64,7 +64,7 @@ struct CarRowView: View {
 
 struct CarRowView_Previews: PreviewProvider {
   static var container: NSPersistentContainer {
-    return DataManager.previewContainer
+    DataManager.previewContainer
   }
 
   static var previewCar: Car = {

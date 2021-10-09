@@ -6,8 +6,8 @@
 //  Copyright © 2020 Ingmar Stein. All rights reserved.
 //
 
-import SwiftUI
 import CoreSpotlight
+import SwiftUI
 
 @main
 struct KraftstoffApp: App {
@@ -37,13 +37,13 @@ struct KraftstoffApp: App {
         }
 
         #if targetEnvironment(macCatalyst)
-        if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
-          UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
-            let size = CGSize(width: 1440.0, height: 900.0)
-            windowScene.sizeRestrictions?.minimumSize = size
-            windowScene.sizeRestrictions?.maximumSize = size
+          if ProcessInfo.processInfo.arguments.firstIndex(of: "-SCREENSHOT") != nil {
+            UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
+              let size = CGSize(width: 1440.0, height: 900.0)
+              windowScene.sizeRestrictions?.minimumSize = size
+              windowScene.sizeRestrictions?.maximumSize = size
+            }
           }
-        }
         #endif
       case .inactive:
         break
@@ -57,41 +57,41 @@ struct KraftstoffApp: App {
     UITableView.appearance().backgroundColor = UIColor.clear
   }
 
-  func handleFillup(_ userActivity: NSUserActivity) {
+  func handleFillup(_: NSUserActivity) {
     // switch to fill-up tab
     selectedTab = 0
   }
 
-  func handleSpotlight(_ userActivity: NSUserActivity) {        // switch to cars tab and show the fuel history
+  func handleSpotlight(_: NSUserActivity) { // switch to cars tab and show the fuel history
     selectedTab = 1
-    // TODO
+    // TODO:
     /*
-    if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, DataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
-      if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
-        fuelEventController.selectedCarId = carIdentifier
-        if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-          navigationController.popToRootViewController(animated: false)
-          navigationController.pushViewController(fuelEventController, animated: false)
-        }
-      }
-    }
-    */
+     if let carIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, DataManager.managedObjectForModelIdentifier(carIdentifier) != nil {
+       if let fuelEventController = tabBarController.storyboard!.instantiateViewController(withIdentifier: "FuelEventController") as? FuelEventController {
+         fuelEventController.selectedCarId = carIdentifier
+         if let navigationController = tabBarController.selectedViewController as? UINavigationController {
+           navigationController.popToRootViewController(animated: false)
+           navigationController.pushViewController(fuelEventController, animated: false)
+         }
+       }
+     }
+     */
   }
 
   // MARK: - Data Import
 
-  func onOpenURL(url: URL) {
-    // TODO
+  func onOpenURL(url _: URL) {
+    // TODO:
     /*
-    let viewController = self.window!.rootViewController!
+     let viewController = self.window!.rootViewController!
 
-    if !StoreManager.sharedInstance.checkCarCount() {
-      StoreManager.sharedInstance.showBuyOptions(viewController)
-      return
-    }
+     if !StoreManager.sharedInstance.checkCarCount() {
+       StoreManager.sharedInstance.showBuyOptions(viewController)
+       return
+     }
 
-    UIApplication.kraftstoffAppDelegate.importCSV(at: url, parentViewController: viewController)
-    */
+     UIApplication.kraftstoffAppDelegate.importCSV(at: url, parentViewController: viewController)
+     */
 
     // Treat imports as successful first startups
     UserDefaults.standard.set(false, forKey: "firstStartup")

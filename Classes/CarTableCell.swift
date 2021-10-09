@@ -9,19 +9,18 @@
 import UIKit
 
 final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPickerViewDelegate {
-
   private var carPicker: UIPickerView
   var cars: [Car]
 
   // Standard cell geometry
-  private let pickerViewCellWidth: CGFloat  = 290.0
-  private let pickerViewCellHeight: CGFloat =  44.0
+  private let pickerViewCellWidth: CGFloat = 290.0
+  private let pickerViewCellHeight: CGFloat = 44.0
 
   // Attributes for custom PickerViews
   private var prefixAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline),
-                                                                .foregroundColor: UIColor.black]
+                                                                 .foregroundColor: UIColor.black]
   private var suffixAttributes: [NSAttributedString.Key: Any] = [.font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline),
-                                                                .foregroundColor: UIColor.suffix ]
+                                                                 .foregroundColor: UIColor.suffix]
 
   required init() {
     carPicker = UIPickerView()
@@ -31,8 +30,8 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
     let carPickerHeightConstraint = NSLayoutConstraint(item: carPicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 162.0)
     carPickerHeightConstraint.priority = UILayoutPriority(rawValue: 750)
-    carPicker.dataSource              = self
-    carPicker.delegate                = self
+    carPicker.dataSource = self
+    carPicker.delegate = self
     carPicker.translatesAutoresizingMaskIntoConstraints = false
     carPicker.isHidden = true
 
@@ -43,47 +42,48 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
     contentView.addSubview(stackView)
 
-    let constraints1 = [ carPickerHeightConstraint ]
+    let constraints1 = [carPickerHeightConstraint]
     let constraints = constraints1
       + NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView]-|", options: [], metrics: nil, views: ["stackView": stackView])
       + NSLayoutConstraint.constraints(withVisualFormat: "V:[keyLabel]-[stackView]|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "stackView": stackView])
     NSLayoutConstraint.activate(constraints)
   }
 
-  required init(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+  @available(*, unavailable)
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
   override func prepareForReuse() {
     super.prepareForReuse()
 
-    self.cars = []
-    self.carPicker.reloadAllComponents()
+    cars = []
+    carPicker.reloadAllComponents()
   }
 
   override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
     super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
     // Array of possible cars
-    self.cars = dictionary["fetchedObjects"] as? [Car] ?? []
+    cars = dictionary["fetchedObjects"] as? [Car] ?? []
 
     // Look for index of selected car
-    guard let car = self.delegate.valueForIdentifier(self.valueIdentifier) as? Car else { return }
-    let initialIndex = self.cars.firstIndex(of: car) ?? 0
+    guard let car = delegate.valueForIdentifier(valueIdentifier) as? Car else { return }
+    let initialIndex = cars.firstIndex(of: car) ?? 0
 
     // (Re-)configure car picker and select the initial item
-    self.carPicker.reloadAllComponents()
-    self.carPicker.selectRow(initialIndex, inComponent: 0, animated: false)
+    carPicker.reloadAllComponents()
+    carPicker.selectRow(initialIndex, inComponent: 0, animated: false)
 
-    selectCar(self.cars[initialIndex])
+    selectCar(cars[initialIndex])
   }
 
   private func selectCar(_ car: Car) {
     // Update textfield in cell
-    self.textFieldProxy.text = "\(car.ksName) \(car.ksNumberPlate)"
+    textFieldProxy.text = "\(car.ksName) \(car.ksNumberPlate)"
 
     // Store selected car in delegate
-    self.delegate.valueChanged(car, identifier: self.valueIdentifier)
+    delegate.valueChanged(car, identifier: valueIdentifier)
   }
 
   private func showPicker(_ show: Bool) {
@@ -92,31 +92,31 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
   // MARK: - UIPickerViewDataSource
 
-  func numberOfComponents(in pickerView: UIPickerView) -> Int {
-    return 1
+  func numberOfComponents(in _: UIPickerView) -> Int {
+    1
   }
 
-  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-    return self.cars.count
+  func pickerView(_: UIPickerView, numberOfRowsInComponent _: Int) -> Int {
+    cars.count
   }
 
-  func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    selectCar(self.cars[row])
+  func pickerView(_: UIPickerView, didSelectRow row: Int, inComponent _: Int) {
+    selectCar(cars[row])
   }
 
   // MARK: - UIPickerViewDelegate
 
-  func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-    return pickerViewCellHeight
+  func pickerView(_: UIPickerView, rowHeightForComponent _: Int) -> CGFloat {
+    pickerViewCellHeight
   }
 
-  func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-    return pickerViewCellWidth
+  func pickerView(_: UIPickerView, widthForComponent _: Int) -> CGFloat {
+    pickerViewCellWidth
   }
 
-  func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+  func pickerView(_: UIPickerView, viewForRow row: Int, forComponent _: Int, reusing view: UIView?) -> UIView {
     // Strings to be displayed
-    let car = self.cars[row]
+    let car = cars[row]
     let name = car.ksName
     let info = car.ksNumberPlate
 
@@ -141,12 +141,11 @@ final class CarTableCell: EditableProxyPageCell, UIPickerViewDataSource, UIPicke
 
   // MARK: - UITextFieldDelegate
 
-  func textFieldDidBeginEditing(_ textField: UITextField) {
+  func textFieldDidBeginEditing(_: UITextField) {
     showPicker(true)
   }
 
-  override func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+  override func textFieldDidEndEditing(_: UITextField, reason _: UITextField.DidEndEditingReason) {
     showPicker(false)
   }
-
 }

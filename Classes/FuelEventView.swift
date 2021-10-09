@@ -51,9 +51,9 @@ struct FuelEventView: View {
           }
         } else {
           DatePicker("Date", selection: $fuelEvent.ksTimestamp)
-          //TextField("Distance", text: $fuelEvent.ksDistance)
-          //TextField("Price", text: $fuelEvent.ksPrice)
-          //TextField("Amount", text: $fuelEvent.ksFuelVolume)
+          // TextField("Distance", text: $fuelEvent.ksDistance)
+          // TextField("Price", text: $fuelEvent.ksPrice)
+          // TextField("Amount", text: $fuelEvent.ksFuelVolume)
           Toggle("Fill-up", isOn: $fuelEvent.filledUp)
           TextField("Comment", text: $fuelEvent.ksComment)
         }
@@ -71,10 +71,11 @@ struct FuelEventView: View {
     }
   }
 }
+
 /*
-struct FuelEventView_Previews: PreviewProvider {
-    static var previews: some View {
-        FuelEventView()
-    }
-}
-*/
+ struct FuelEventView_Previews: PreviewProvider {
+     static var previews: some View {
+         FuelEventView()
+     }
+ }
+ */

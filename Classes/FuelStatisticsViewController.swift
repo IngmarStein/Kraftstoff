@@ -6,8 +6,8 @@
 //
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 // Protocol for objects containing computed statistics data
 protocol DiscardableDataObject {
@@ -27,12 +27,12 @@ class FuelStatisticsViewController: UIViewController {
   let statisticsHeight = CGFloat(214.0)
   let statisticTransitionDuration = TimeInterval(0.3)
 
-  @IBOutlet weak var activityView: UIActivityIndicatorView!
-  @IBOutlet weak var leftLabel: UILabel!
-  @IBOutlet weak var rightLabel: UILabel!
-  @IBOutlet weak var centerLabel: UILabel!
-  @IBOutlet weak var scrollView: UIScrollView!
-  @IBOutlet weak var stackView: UIStackView!
+  @IBOutlet var activityView: UIActivityIndicatorView!
+  @IBOutlet var leftLabel: UILabel!
+  @IBOutlet var rightLabel: UILabel!
+  @IBOutlet var centerLabel: UILabel!
+  @IBOutlet var scrollView: UIScrollView!
+  @IBOutlet var stackView: UIStackView!
 
   var contentCache = [Int: DiscardableDataObject]()
   var displayedNumberOfMonths = 0 {
@@ -58,15 +58,15 @@ class FuelStatisticsViewController: UIViewController {
     super.viewDidLoad()
 
     // Labels on top of view
-    self.leftLabel.shadowColor = nil
-    self.centerLabel.shadowColor = nil
-    self.rightLabel.shadowColor = nil
+    leftLabel.shadowColor = nil
+    centerLabel.shadowColor = nil
+    rightLabel.shadowColor = nil
 
     setupFonts()
     NotificationCenter.default.addObserver(self, selector: #selector(FuelStatisticsViewController.contentSizeCategoryDidChange(_:)), name: UIContentSizeCategory.didChangeNotification, object: nil)
   }
 
-  @objc func contentSizeCategoryDidChange(_ notification: NSNotification!) {
+  @objc func contentSizeCategoryDidChange(_: NSNotification!) {
     invalidateCaches()
   }
 
@@ -93,7 +93,7 @@ class FuelStatisticsViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
-    leftLabel.text  = selectedCar.name
+    leftLabel.text = selectedCar.name
     rightLabel.text = ""
 
     displayedNumberOfMonths = UserDefaults.standard.integer(forKey: "statisticTimeSpan")
@@ -111,7 +111,7 @@ class FuelStatisticsViewController: UIViewController {
   // MARK: - View Rotation
 
   override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-    return .landscape
+    .landscape
   }
 
   // MARK: - Cache Handling
@@ -124,7 +124,7 @@ class FuelStatisticsViewController: UIViewController {
   func purgeDiscardableCacheContent() {
     for (key, value) in contentCache where key != displayedNumberOfMonths {
       value.discardContent()
-        }
+    }
   }
 
   // MARK: - Statistics Computation and Display
@@ -142,15 +142,14 @@ class FuelStatisticsViewController: UIViewController {
     }
 
     // Compute and draw new contents
-    let selectedCarID = self.selectedCar.objectID
+    let selectedCarID = selectedCar.objectID
 
-    let parentContext = self.selectedCar.managedObjectContext
+    let parentContext = selectedCar.managedObjectContext
     let sampleContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
     sampleContext.parent = parentContext
     sampleContext.perform {
       // Get the selected car
       if let sampleCar = (try? sampleContext.existingObject(with: selectedCarID)) as? Car {
-
         // Fetch some young events to get the most recent fillup date
         let recentEvents = sampleCar.fuelEvents(beforeDate: Date(), dateMatches: true)
         var recentFillupDate = Date()
@@ -173,9 +172,9 @@ class FuelStatisticsViewController: UIViewController {
           let samplingObjects = sampleCar.fuelEvents(afterDate: samplingStart, dateMatches: true)
           // Compute statistics
           let sampleData = self.computeStatisticsForRecentMonths(numberOfMonths,
-                                       forCar: self.selectedCar,
-                                       withObjects: samplingObjects,
-                                       inManagedObjectContext: sampleContext)
+                                                                 forCar: self.selectedCar,
+                                                                 withObjects: samplingObjects,
+                                                                 inManagedObjectContext: sampleContext)
 
           if self.invalidationCounter == self.expectedCounter {
             self.contentCache[numberOfMonths] = sampleData
@@ -189,17 +188,16 @@ class FuelStatisticsViewController: UIViewController {
     }
   }
 
-  @discardableResult func displayCachedStatisticsForRecentMonths(_ numberOfMonths: Int) -> Bool {
+  @discardableResult func displayCachedStatisticsForRecentMonths(_: Int) -> Bool {
     // for subclasses
-    return false
+    false
   }
 
-  func computeStatisticsForRecentMonths(_ numberOfMonths: Int, forCar car: Car, withObjects fetchedObjects: [FuelEvent], inManagedObjectContext moc: NSManagedObjectContext) -> DiscardableDataObject {
+  func computeStatisticsForRecentMonths(_: Int, forCar _: Car, withObjects _: [FuelEvent], inManagedObjectContext _: NSManagedObjectContext) -> DiscardableDataObject {
     fatalError("computeStatisticsForRecentMonths not implemented")
   }
 
-  func noteStatisticsPageBecomesVisible() {
-  }
+  func noteStatisticsPageBecomesVisible() {}
 
   // MARK: - Button Handling
 
@@ -213,5 +211,4 @@ class FuelStatisticsViewController: UIViewController {
     super.didReceiveMemoryWarning()
     purgeDiscardableCacheContent()
   }
-
 }

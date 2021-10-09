@@ -6,15 +6,15 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 private struct DemoDataItem {
   var date: String
 
-  var distance: UInt64       // *10^-1
-  var fuelVolume: UInt64     // *10^-2
-  var price: UInt64          // *10^-3
+  var distance: UInt64 // *10^-1
+  var fuelVolume: UInt64 // *10^-2
+  var price: UInt64 // *10^-3
 }
 
 private let demoData = [
@@ -122,11 +122,10 @@ private let demoData = [
   DemoDataItem(date: "2017-05-24 08:29:GMT+02:00", distance: 5740, fuelVolume: 2521, price: 1399),
   DemoDataItem(date: "2017-06-09 18:35:GMT+02:00", distance: 5840, fuelVolume: 2675, price: 1329),
   DemoDataItem(date: "2017-06-29 19:31:GMT+02:00", distance: 6260, fuelVolume: 2337, price: 1329),
-  DemoDataItem(date: "2017-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389)
+  DemoDataItem(date: "2017-07-16 18:10:GMT+02:00", distance: 6260, fuelVolume: 2843, price: 1389),
 ]
 
 extension Car {
-
   func addDemoEvents(inContext context: NSManagedObjectContext) {
     let df = DateFormatter()
 
@@ -154,5 +153,4 @@ extension Car {
       self.odometer = self.distanceTotalSum
     }
   }
-
 }

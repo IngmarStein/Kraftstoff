@@ -9,7 +9,6 @@
 import UIKit
 
 class EditableProxyPageCell: EditablePageCell {
-
   var textFieldProxy: UILabel
 
   required init() {
@@ -19,21 +18,21 @@ class EditableProxyPageCell: EditablePageCell {
 
     super.init()
 
-    textFieldProxy.textAlignment            = .right
-    textFieldProxy.backgroundColor          = .clear
+    textFieldProxy.textAlignment = .right
+    textFieldProxy.backgroundColor = .clear
     textFieldProxy.isUserInteractionEnabled = false
-    textFieldProxy.isAccessibilityElement   = false
+    textFieldProxy.isAccessibilityElement = false
     textFieldProxy.translatesAutoresizingMaskIntoConstraints = false
     textFieldProxy.adjustsFontForContentSizeCategory = true
-    textFieldProxy.font = self.textField.font
+    textFieldProxy.font = textField.font
 
-    self.contentView.addSubview(self.textFieldProxy)
+    contentView.addSubview(textFieldProxy)
 
     let constraints = [
       NSLayoutConstraint(item: textFieldProxy, attribute: .left, relatedBy: .equal, toItem: textField, attribute: .left, multiplier: 1.0, constant: 0.0),
       NSLayoutConstraint(item: textFieldProxy, attribute: .right, relatedBy: .equal, toItem: textField, attribute: .right, multiplier: 1.0, constant: 0.0),
       NSLayoutConstraint(item: textFieldProxy, attribute: .top, relatedBy: .equal, toItem: textField, attribute: .top, multiplier: 1.0, constant: 0.0),
-      NSLayoutConstraint(item: textFieldProxy, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1.0, constant: 0.0)
+      NSLayoutConstraint(item: textFieldProxy, attribute: .bottom, relatedBy: .equal, toItem: textField, attribute: .bottom, multiplier: 1.0, constant: 0.0),
     ]
     NSLayoutConstraint.activate(constraints)
 
@@ -42,8 +41,9 @@ class EditableProxyPageCell: EditablePageCell {
     textField.inputView = UIView() // hide keyboard
   }
 
-  required init(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+  @available(*, unavailable)
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
   override var accessibilityLabel: String? {
@@ -53,8 +53,7 @@ class EditableProxyPageCell: EditablePageCell {
       }
       return nil
     }
-    set {
-    }
+    set {}
   }
 
   override func reset() {
@@ -62,5 +61,4 @@ class EditableProxyPageCell: EditablePageCell {
 
     textFieldProxy.text = ""
   }
-
 }

@@ -10,24 +10,23 @@ import UIKit
 
 class PageCell: UITableViewCell {
   class var reuseIdentifier: String {
-    return String(describing: self)
+    String(describing: self)
   }
 
   required init() {
     super.init(style: .default, reuseIdentifier: type(of: self).reuseIdentifier)
 
-    self.detailTextLabel?.isHidden = true
+    detailTextLabel?.isHidden = true
   }
 
-  required init(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+  @available(*, unavailable)
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
-  func configureForData(_ object: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
+  func configureForData(_: [String: Any], viewController _: UIViewController, tableView _: UITableView, indexPath _: IndexPath) {
     // Overridepoint for subclasses
   }
 
-  func reset() {
-  }
-
+  func reset() {}
 }

@@ -9,7 +9,6 @@
 import UIKit
 
 class PageViewController: UITableViewController {
-
   var tableSections: [[PageCellDescription]] = []
 
   override func viewDidLoad() {
@@ -24,13 +23,13 @@ class PageViewController: UITableViewController {
     super.viewWillTransition(to: size, with: coordinator)
 
     // this fixes a layout issue: the UITextFieldLabels contained in UITextFields are not correctly resized
-    self.tableView.reloadData()
+    tableView.reloadData()
   }
 
   // MARK: - Dismissing the Keyboard
 
   func dismissKeyboardWithCompletion(_ completion: @escaping () -> Void) {
-    let scrollToTop = self.tableView.contentOffset.y > 0.0
+    let scrollToTop = tableView.contentOffset.y > 0.0
 
     UIViewPropertyAnimator.runningPropertyAnimator(withDuration: scrollToTop ? 0.25 : 0.15, delay: 0, options: [], animations: {
       if let indexPath = self.tableView.indexPathForSelectedRow {
@@ -40,8 +39,8 @@ class PageViewController: UITableViewController {
 
       if scrollToTop {
         self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0),
-                       at: .top,
-                       animated: false)
+                                   at: .top,
+                                   animated: false)
       }
     }, completion: { _ in
       self.view.endEditing(true)
@@ -66,19 +65,19 @@ class PageViewController: UITableViewController {
   }
 
   func classForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> PageCell.Type? {
-    return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellClass
+    cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellClass
   }
 
   func dataForRow(_ rowIndex: Int, inSection sectionIndex: Int) -> [String: Any]? {
-    return cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData
+    cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData
   }
 
   func setData(_ object: [String: Any], forRow rowIndex: Int, inSection sectionIndex: Int) {
     cellDescriptionForRow(rowIndex, inSection: sectionIndex)?.cellData = object
 
     let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
-    if let cell = self.tableView.cellForRow(at: indexPath) as? PageCell {
-      cell.configureForData(object, viewController: self, tableView: self.tableView, indexPath: indexPath)
+    if let cell = tableView.cellForRow(at: indexPath) as? PageCell {
+      cell.configureForData(object, viewController: self, tableView: tableView, indexPath: indexPath)
     }
   }
 
@@ -95,7 +94,7 @@ class PageViewController: UITableViewController {
     tableSections.insert([PageCellDescription](), at: sectionIndex)
 
     if animation != .none {
-      self.tableView.insertSections(IndexSet(integer: sectionIndex), with: animation)
+      tableView.insertSections(IndexSet(integer: sectionIndex), with: animation)
     }
   }
 
@@ -104,7 +103,7 @@ class PageViewController: UITableViewController {
       tableSections.remove(at: sectionIndex)
 
       if animation != .none {
-        self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: animation)
+        tableView.deleteSections(IndexSet(integer: sectionIndex), with: animation)
       }
     }
   }
@@ -113,8 +112,8 @@ class PageViewController: UITableViewController {
     tableSections.removeAll(keepingCapacity: false)
 
     if animation != .none {
-      let allSections = IndexSet(integersIn: 0..<tableSections.count)
-      self.tableView.deleteSections(allSections, with: animation)
+      let allSections = IndexSet(integersIn: 0 ..< tableSections.count)
+      tableView.deleteSections(allSections, with: animation)
     }
   }
 
@@ -147,18 +146,18 @@ class PageViewController: UITableViewController {
 
     if animation != .none {
       // If necessary update position for former bottom row of the section
-      if self.tableView.style == .grouped {
-        if rowIndex == tableSections[sectionIndex].count - 1 && rowIndex > 0 {
-          setData(dataForRow(rowIndex-1,
-            inSection: sectionIndex)!,
-            forRow: rowIndex-1,
-            inSection: sectionIndex)
+      if tableView.style == .grouped {
+        if rowIndex == tableSections[sectionIndex].count - 1, rowIndex > 0 {
+          setData(dataForRow(rowIndex - 1,
+                             inSection: sectionIndex)!,
+                  forRow: rowIndex - 1,
+                  inSection: sectionIndex)
         }
       }
 
       // Add row to table
       let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
-      self.tableView.insertRows(at: [indexPath], with: animation)
+      tableView.insertRows(at: [indexPath], with: animation)
     }
   }
 
@@ -169,7 +168,7 @@ class PageViewController: UITableViewController {
 
         if animation != .none {
           let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
-          self.tableView.deleteRows(at: [indexPath], with: animation)
+          tableView.deleteRows(at: [indexPath], with: animation)
         }
       }
     }
@@ -177,28 +176,28 @@ class PageViewController: UITableViewController {
 
   // MARK: - UITableViewDataSource
 
-  override func numberOfSections(in tableView: UITableView) -> Int {
-    return tableSections.count
+  override func numberOfSections(in _: UITableView) -> Int {
+    tableSections.count
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return tableSections[section].count
+  override func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
+    tableSections[section].count
   }
 
-  override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    return nil
+  override func tableView(_: UITableView, titleForHeaderInSection _: Int) -> String? {
+    nil
   }
 
-  override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
-    return false
+  override func tableView(_: UITableView, shouldIndentWhileEditingRowAt _: IndexPath) -> Bool {
+    false
   }
 
-  override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-    return .none
+  override func tableView(_: UITableView, editingStyleForRowAt _: IndexPath) -> UITableViewCell.EditingStyle {
+    .none
   }
 
-  override func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
-    return false
+  override func tableView(_: UITableView, canFocusRowAt _: IndexPath) -> Bool {
+    false
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -212,7 +211,7 @@ class PageViewController: UITableViewController {
     return cell
   }
 
-  override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+  override func tableView(_: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt _: IndexPath) {
     guard let pageCell = cell as? PageCell else { return }
 
     // https://www.fadel.io/blog/posts/ios-performance-tips-you-probably-didnt-know/
@@ -222,7 +221,7 @@ class PageViewController: UITableViewController {
   // MARK: - Programmatically Selecting Table Rows
 
   func activateCellAtIndexPath(_ indexPath: IndexPath) {
-    let cell = self.tableView.cellForRow(at: indexPath)!
+    let cell = tableView.cellForRow(at: indexPath)!
     if cell.canBecomeFirstResponder {
       DispatchQueue.main.async {
         cell.becomeFirstResponder()
@@ -233,7 +232,7 @@ class PageViewController: UITableViewController {
   }
 
   func deactivateCellAtIndexPath(_ indexPath: IndexPath) {
-    let cell = self.tableView.cellForRow(at: indexPath)!
+    let cell = tableView.cellForRow(at: indexPath)!
     if cell.canResignFirstResponder {
       DispatchQueue.main.async {
         cell.resignFirstResponder()
@@ -245,9 +244,8 @@ class PageViewController: UITableViewController {
 
   func selectRowAtIndexPath(_ indexPath: IndexPath?) {
     if let path = indexPath {
-      self.tableView.selectRow(at: path, animated: false, scrollPosition: .none)
-      self.tableView(self.tableView, didSelectRowAt: path)
+      tableView.selectRow(at: path, animated: false, scrollPosition: .none)
+      tableView(tableView, didSelectRowAt: path)
     }
   }
-
 }

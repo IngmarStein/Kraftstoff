@@ -6,15 +6,14 @@
 //
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(Car)
 final class Car: NSManagedObject {
-
   var ksTimestamp: Date {
     get {
-      return timestamp!
+      timestamp!
     }
     set {
       timestamp = newValue
@@ -23,7 +22,7 @@ final class Car: NSManagedObject {
 
   var ksDistanceTotalSum: Decimal {
     get {
-      return distanceTotalSum! as Decimal
+      distanceTotalSum! as Decimal
     }
     set {
       distanceTotalSum = newValue as NSDecimalNumber
@@ -32,7 +31,7 @@ final class Car: NSManagedObject {
 
   var ksFuelVolumeTotalSum: Decimal {
     get {
-      return fuelVolumeTotalSum! as Decimal
+      fuelVolumeTotalSum! as Decimal
     }
     set {
       fuelVolumeTotalSum = newValue as NSDecimalNumber
@@ -41,7 +40,7 @@ final class Car: NSManagedObject {
 
   var ksOdometer: Decimal {
     get {
-      return odometer! as Decimal
+      odometer! as Decimal
     }
     set {
       odometer = newValue as NSDecimalNumber
@@ -49,16 +48,16 @@ final class Car: NSManagedObject {
   }
 
   var ksName: String {
-    return name!
+    name!
   }
 
   var ksNumberPlate: String {
-    return numberPlate!
+    numberPlate!
   }
 
   var ksFuelEvents: Set<FuelEvent> {
     get {
-      return fuelEvents as! Set<FuelEvent>
+      fuelEvents as! Set<FuelEvent>
     }
     set {
       fuelEvents = newValue as NSSet
@@ -67,7 +66,7 @@ final class Car: NSManagedObject {
 
   var ksFuelUnit: UnitVolume {
     get {
-      return .fromPersistentId(fuelUnit)
+      .fromPersistentId(fuelUnit)
     }
     set {
       fuelUnit = newValue.persistentId
@@ -76,7 +75,7 @@ final class Car: NSManagedObject {
 
   var ksFuelConsumptionUnit: UnitFuelEfficiency {
     get {
-      return .fromPersistentId(fuelConsumptionUnit)
+      .fromPersistentId(fuelConsumptionUnit)
     }
     set {
       fuelConsumptionUnit = newValue.persistentId
@@ -85,7 +84,7 @@ final class Car: NSManagedObject {
 
   var ksOdometerUnit: UnitLength {
     get {
-      return .fromPersistentId(odometerUnit)
+      .fromPersistentId(odometerUnit)
     }
     set {
       odometerUnit = newValue.persistentId
@@ -93,34 +92,34 @@ final class Car: NSManagedObject {
   }
 
   var allFuelEvents: [FuelEvent] {
-    return DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
-                                          afterDate: nil,
-                                          dateMatches: false),
-                          inManagedObjectContext: self.managedObjectContext!)
+    DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
+                                                                         afterDate: nil,
+                                                                         dateMatches: false),
+                                       inManagedObjectContext: managedObjectContext!)
   }
 
   func fuelEvents(forDate date: Date,
-                  dateComparator dateCompare: (Date, Date) -> Bool) -> [FuelEvent] {
+                  dateComparator dateCompare: (Date, Date) -> Bool) -> [FuelEvent]
+  {
     guard let events = fuelEvents as? Set<FuelEvent> else { return [] }
-    return events.filter { ev in dateCompare(date, ev.ksTimestamp) }.sorted { ev1, ev2 in ev1.ksTimestamp > ev2.ksTimestamp  }
+    return events.filter { ev in dateCompare(date, ev.ksTimestamp) }.sorted { ev1, ev2 in ev1.ksTimestamp > ev2.ksTimestamp }
   }
 
   // Return all fuel events after a specific date.
   // Use a separate fetch request to avoid faulting in all objects.
   func fuelEvents(afterDate date: Date, dateMatches: Bool) -> [FuelEvent] {
-    return DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
-                                          afterDate: date,
-                                          dateMatches: dateMatches),
-      inManagedObjectContext: self.managedObjectContext!)
+    DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
+                                                                         afterDate: date,
+                                                                         dateMatches: dateMatches),
+                                       inManagedObjectContext: managedObjectContext!)
   }
 
   // Return all fuel events before a specific date.
   // Use a separate fetch request to avoid faulting in all objects.
   func fuelEvents(beforeDate date: Date, dateMatches: Bool) -> [FuelEvent] {
-    return DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
-                                          beforeDate: date,
-                                          dateMatches: dateMatches),
-                          inManagedObjectContext: self.managedObjectContext!)
+    DataManager.objectsForFetchRequest(DataManager.fetchRequestForEvents(car: self,
+                                                                         beforeDate: date,
+                                                                         dateMatches: dateMatches),
+                                       inManagedObjectContext: managedObjectContext!)
   }
-
 }

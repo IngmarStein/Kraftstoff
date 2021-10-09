@@ -9,15 +9,12 @@
 //  http://www.paintcodeapp.com
 //
 
-
-
 import UIKit
 
-public class StyleKit : NSObject {
-
+public class StyleKit: NSObject {
   //// Drawing Methods
 
-  @objc dynamic public class func drawStartHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, text: String = "Start here…") {
+  @objc public dynamic class func drawStartHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, text: String = "Start here…") {
     //// General Declarations
     let context = UIGraphicsGetCurrentContext()!
 
@@ -26,7 +23,6 @@ public class StyleKit : NSObject {
     let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 320, height: 92), target: targetFrame)
     context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
     context.scaleBy(x: resizedFrame.width / 320, y: resizedFrame.height / 92)
-
 
     //// Label Drawing
     let labelRect = CGRect(x: 0, y: 36, width: 276, height: 24)
@@ -44,7 +40,6 @@ public class StyleKit : NSObject {
     text.draw(in: CGRect(x: labelRect.minX, y: labelRect.minY + (labelRect.height - labelTextHeight) / 2, width: labelRect.width, height: labelTextHeight), withAttributes: labelFontAttributes)
     context.restoreGState()
 
-
     //// Arrow Drawing
     let arrowPath = UIBezierPath()
     arrowPath.move(to: CGPoint(x: 286.5, y: 49.5))
@@ -59,10 +54,9 @@ public class StyleKit : NSObject {
     arrowPath.stroke()
 
     context.restoreGState()
-
   }
 
-  @objc dynamic public class func drawEditHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, line1: String = "Tap and hold", line2: String = "to modify a car…") {
+  @objc public dynamic class func drawEditHelpCanvas(frame targetFrame: CGRect = CGRect(x: 0, y: 0, width: 320, height: 92), resizing: ResizingBehavior = .aspectFit, line1: String = "Tap and hold", line2: String = "to modify a car…") {
     //// General Declarations
     let context = UIGraphicsGetCurrentContext()!
 
@@ -71,7 +65,6 @@ public class StyleKit : NSObject {
     let resizedFrame: CGRect = resizing.apply(rect: CGRect(x: 0, y: 0, width: 320, height: 92), target: targetFrame)
     context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
     context.scaleBy(x: resizedFrame.width / 320, y: resizedFrame.height / 92)
-
 
     //// Color Declarations
     let textForeground = UIColor(red: 0.000, green: 0.000, blue: 0.000, alpha: 1.000)
@@ -93,7 +86,6 @@ public class StyleKit : NSObject {
     line1.draw(in: CGRect(x: labelRect.minX, y: labelRect.minY + (labelRect.height - labelTextHeight) / 2, width: labelRect.width, height: labelTextHeight), withAttributes: labelFontAttributes)
     context.restoreGState()
 
-
     //// Label 2 Drawing
     let label2Rect = CGRect(x: 76, y: 61.58, width: 244, height: 24)
     let label2Style = NSMutableParagraphStyle()
@@ -110,7 +102,6 @@ public class StyleKit : NSObject {
     line2.draw(in: CGRect(x: label2Rect.minX, y: label2Rect.minY + (label2Rect.height - label2TextHeight) / 2, width: label2Rect.width, height: label2TextHeight), withAttributes: label2FontAttributes)
     context.restoreGState()
 
-
     //// Arrow Drawing
     let arrowPath = UIBezierPath()
     arrowPath.move(to: CGPoint(x: 64, y: 50))
@@ -125,12 +116,11 @@ public class StyleKit : NSObject {
     arrowPath.stroke()
 
     context.restoreGState()
-
   }
 
   //// Generated Images
 
-  @objc dynamic public class func imageOfStartHelpCanvas(text: String = "Start here…") -> UIImage {
+  @objc public dynamic class func imageOfStartHelpCanvas(text: String = "Start here…") -> UIImage {
     UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 92), false, 0)
     StyleKit.drawStartHelpCanvas(text: text)
 
@@ -140,7 +130,7 @@ public class StyleKit : NSObject {
     return imageOfStartHelpCanvas
   }
 
-  @objc dynamic public class func imageOfEditHelpCanvas(line1: String = "Tap and hold", line2: String = "to modify a car…") -> UIImage {
+  @objc public dynamic class func imageOfEditHelpCanvas(line1: String = "Tap and hold", line2: String = "to modify a car…") -> UIImage {
     UIGraphicsBeginImageContextWithOptions(CGSize(width: 320, height: 92), false, 0)
     StyleKit.drawEditHelpCanvas(line1: line1, line2: line2)
 
@@ -149,9 +139,6 @@ public class StyleKit : NSObject {
 
     return imageOfEditHelpCanvas
   }
-
-
-
 
   @objc(StyleKitResizingBehavior)
   public enum ResizingBehavior: Int {

@@ -23,7 +23,7 @@ struct CarsView: View {
         Image("Pumps")
           .frame(maxHeight: .infinity, alignment: .bottom)
           .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
-        )
+          )
         List {
           ForEach(cars, id: \.objectID) {
             CarRowView(car: $0)
@@ -50,15 +50,14 @@ struct CarsView: View {
     }
   }
 
-  func addCar() {
-  }
+  func addCar() {}
 
   func moveCars(from source: IndexSet, to destination: Int) {
     let firstIndex = source.min()!
     let lastIndex = source.max()!
 
     let firstRowToReorder = (firstIndex < destination) ? firstIndex : destination
-    let lastRowToReorder = (lastIndex > (destination-1)) ? lastIndex : (destination-1)
+    let lastRowToReorder = (lastIndex > (destination - 1)) ? lastIndex : (destination - 1)
 
     if firstRowToReorder == lastRowToReorder {
       return
@@ -71,14 +70,14 @@ struct CarsView: View {
         newOrder += 1
       }
 
-      for rowToMove in firstRowToReorder..<lastRowToReorder {
+      for rowToMove in firstRowToReorder ..< lastRowToReorder {
         if !source.contains(rowToMove) {
           cars[rowToMove].order = newOrder
           newOrder += 1
         }
       }
     } else {
-      for rowToMove in firstRowToReorder...lastRowToReorder {
+      for rowToMove in firstRowToReorder ... lastRowToReorder {
         if !source.contains(rowToMove) {
           cars[rowToMove].order = newOrder
           newOrder += 1
@@ -121,14 +120,12 @@ struct CarsView: View {
     DataManager.saveContext(managedObjectContext)
   }
 
-  func editCar() {
-  }
-
+  func editCar() {}
 }
 
 struct CarsView_Previews: PreviewProvider {
   static var container: NSPersistentContainer {
-    return DataManager.previewContainer
+    DataManager.previewContainer
   }
 
   static var previewCar: Car = {

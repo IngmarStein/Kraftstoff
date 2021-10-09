@@ -16,40 +16,41 @@ final class TextEditTableCell: EditablePageCell {
   required init() {
     super.init()
 
-    self.textField.keyboardType  = .default
-    self.textField.returnKeyType = .next
-    self.textField.allowCut      = true
-    self.textField.allowPaste    = true
+    textField.keyboardType = .default
+    textField.returnKeyType = .next
+    textField.allowCut = true
+    textField.allowPaste = true
   }
 
-  required init(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+  @available(*, unavailable)
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
   override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
     super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
     if let autocapitalizeAll = dictionary["autocapitalizeAll"] as? Bool, autocapitalizeAll {
-      self.textField.autocapitalizationType = .allCharacters
+      textField.autocapitalizationType = .allCharacters
     } else {
-      self.textField.autocapitalizationType = .words
+      textField.autocapitalizationType = .words
     }
     if let maximumTextFieldLength = dictionary["maximumTextFieldLength"] as? Int {
       self.maximumTextFieldLength = maximumTextFieldLength
     } else {
-      self.maximumTextFieldLength = TextEditTableCell.DefaultMaximumTextFieldLength
+      maximumTextFieldLength = TextEditTableCell.DefaultMaximumTextFieldLength
     }
 
-    self.textField.text = self.delegate.valueForIdentifier(self.valueIdentifier) as? String
-    self.textField.accessibilityIdentifier = self.valueIdentifier
+    textField.text = delegate.valueForIdentifier(valueIdentifier) as? String
+    textField.accessibilityIdentifier = valueIdentifier
   }
 
   // MARK: - UITextFieldDelegate
 
   override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     // Let the focus handler handle switching to next textfield
-    if let focusHandler = self.delegate as? EditablePageCellFocusHandler {
-      focusHandler.focusNextFieldForValueIdentifier(self.valueIdentifier)
+    if let focusHandler = delegate as? EditablePageCellFocusHandler {
+      focusHandler.focusNextFieldForValueIdentifier(valueIdentifier)
     } else {
       return super.textFieldShouldReturn(textField)
     }
@@ -57,9 +58,9 @@ final class TextEditTableCell: EditablePageCell {
     return false
   }
 
-  func textFieldShouldClear(_ textField: UITextField) -> Bool {
+  func textFieldShouldClear(_: UITextField) -> Bool {
     // Propagate cleared value to the delegate
-    self.delegate.valueChanged("", identifier: self.valueIdentifier)
+    delegate.valueChanged("", identifier: valueIdentifier)
 
     return true
   }
@@ -70,7 +71,7 @@ final class TextEditTableCell: EditablePageCell {
     var newValue = textField.text!.replacingCharacters(in: editRange, with: string)
 
     // Don't allow too large strings
-    if maximumTextFieldLength > 0 && newValue.count > maximumTextFieldLength {
+    if maximumTextFieldLength > 0, newValue.count > maximumTextFieldLength {
       return false
     }
 
@@ -82,7 +83,7 @@ final class TextEditTableCell: EditablePageCell {
     // Do the update here and propagate the new value back to the delegate
     textField.text = newValue
 
-    self.delegate.valueChanged(newValue, identifier: self.valueIdentifier)
+    delegate.valueChanged(newValue, identifier: valueIdentifier)
 
     return false
   }
@@ -92,5 +93,4 @@ final class TextEditTableCell: EditablePageCell {
 
     textField.text = textField.text?.replacingOccurrences(of: "\u{00a0}", with: " ")
   }
-
 }

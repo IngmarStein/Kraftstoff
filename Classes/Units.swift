@@ -9,7 +9,6 @@
 import UIKit
 
 extension UnitLength {
-
   var persistentId: Int32 {
     switch self {
     case .kilometers:
@@ -31,11 +30,9 @@ extension UnitLength {
       fatalError("Unknown length unit: \(id)")
     }
   }
-
 }
 
 extension UnitVolume {
-
   var persistentId: Int32 {
     switch self {
     case .liters:
@@ -61,12 +58,10 @@ extension UnitVolume {
       fatalError("Unknown volume unit: \(id)")
     }
   }
-
 }
 
 // Base unit = l / 100 km
 extension UnitFuelEfficiency {
-
   var persistentId: Int32 {
     switch self {
     case .litersPer100Kilometers:
@@ -94,13 +89,11 @@ extension UnitFuelEfficiency {
   }
 
   var isEfficiency: Bool {
-    return self == .milesPerGallon || self == .milesPerImperialGallon
+    self == .milesPerGallon || self == .milesPerImperialGallon
   }
-
 }
 
-final class Units {
-
+enum Units {
   // MARK: - Unit guessing from current locale
 
   static var volumeUnitFromLocale: UnitVolume {
@@ -129,11 +122,11 @@ final class Units {
 
   // MARK: - Conversion Constants
 
-  static let litersPerUSGallon = NSDecimalNumber(mantissa: (3785411784 as UInt64), exponent: -9, isNegative: false) as Decimal
-  static let litersPerImperialGallon = NSDecimalNumber(mantissa: (454609 as UInt64), exponent: -5, isNegative: false) as Decimal
-  static let kilometersPerStatuteMile = NSDecimalNumber(mantissa: (1609344 as UInt64), exponent: -6, isNegative: false) as Decimal
-  static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa: (2352145833 as UInt64), exponent: -9, isNegative: false)
-  static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa: (2737067636 as UInt64), exponent: -9, isNegative: false)
+  static let litersPerUSGallon = NSDecimalNumber(mantissa: 3_785_411_784 as UInt64, exponent: -9, isNegative: false) as Decimal
+  static let litersPerImperialGallon = NSDecimalNumber(mantissa: 454_609 as UInt64, exponent: -5, isNegative: false) as Decimal
+  static let kilometersPerStatuteMile = NSDecimalNumber(mantissa: 1_609_344 as UInt64, exponent: -6, isNegative: false) as Decimal
+  static let kilometersPerLiterToMilesPerUSGallon = NSDecimalNumber(mantissa: 2_352_145_833 as UInt64, exponent: -9, isNegative: false)
+  static let kilometersPerLiterToMilesPerImperialGallon = NSDecimalNumber(mantissa: 2_737_067_636 as UInt64, exponent: -9, isNegative: false)
 
   // MARK: - Conversion to/from Internal Data Format
 
@@ -252,5 +245,4 @@ final class Units {
       return unit == .kilometers ? NSLocalizedString("Kilometer", bundle: bundle, comment: "") : NSLocalizedString("Mile", comment: "")
     }
   }
-
 }

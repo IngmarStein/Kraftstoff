@@ -9,7 +9,6 @@
 import XCTest
 
 class KraftstoffUITests: XCTestCase {
-
   private func snapshot(_ name: String) {
     let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
     attachment.lifetime = .keepAlways
@@ -31,7 +30,7 @@ class KraftstoffUITests: XCTestCase {
     app.launch()
 
     #if !targetEnvironment(macCatalyst)
-    XCUIDevice.shared.orientation = .portrait
+      XCUIDevice.shared.orientation = .portrait
     #endif
   }
 
@@ -67,7 +66,7 @@ class KraftstoffUITests: XCTestCase {
     app.buttons["Chart"].tap()
 
     #if !targetEnvironment(macCatalyst)
-    XCUIDevice.shared.orientation = .landscapeLeft
+      XCUIDevice.shared.orientation = .landscapeLeft
     #endif
 
     let imagesQuery = app.images
@@ -79,8 +78,8 @@ class KraftstoffUITests: XCTestCase {
 
     // FIXME: find solution for Catalyst
     #if !targetEnvironment(macCatalyst)
-    // app.pageIndicators.element(boundBy: 0).tap()
-    app.scrollViews.element(boundBy: 0).swipeLeft()
+      // app.pageIndicators.element(boundBy: 0).tap()
+      app.scrollViews.element(boundBy: 0).swipeLeft()
     #endif
 
     snapshot("05_chart_fuel")
@@ -88,7 +87,7 @@ class KraftstoffUITests: XCTestCase {
     app.buttons["close"].tap()
 
     #if !targetEnvironment(macCatalyst)
-    XCUIDevice.shared.orientation = .portrait
+      XCUIDevice.shared.orientation = .portrait
     #endif
 
     tabBarsQuery.buttons.element(boundBy: 0).tap() // Fill-Up
@@ -121,5 +120,4 @@ class KraftstoffUITests: XCTestCase {
 
     snapshot("01_entry")
   }
-
 }

@@ -17,15 +17,16 @@ final class CSVParser {
       endTextCharacterSet = CharacterSet.newlines.union(CharacterSet(charactersIn: "\"" + separator))
     }
   }
+
   private var scanner: Scanner
 
   private var fieldNames = [String]()
   private var endTextCharacterSet = CharacterSet()
 
   static func simplifyCSVHeaderName(_ header: String) -> String {
-    return header.replacingOccurrences(of: "[? :_\\-]+",
-                                       with: "",
-                                       options: .regularExpression).uppercased()
+    header.replacingOccurrences(of: "[? :_\\-]+",
+                                with: "",
+                                options: .regularExpression).uppercased()
   }
 
   init(inputCSVString: String) {
@@ -41,7 +42,7 @@ final class CSVParser {
   }
 
   private func numberOfNonEmtyFieldNames(_ array: [String]) -> Int {
-    return array.reduce(0) { (count, name) in name.isEmpty ? count : count + 1 }
+    array.reduce(0) { count, name in name.isEmpty ? count : count + 1 }
   }
 
   func parseTable() -> [CSVRecord]? {
@@ -50,13 +51,13 @@ final class CSVParser {
 
       let location = scanner.currentIndex
 
-      for separatorString in [ ";", ",", "\t" ] {
+      for separatorString in [";", ",", "\t"] {
         separator = separatorString
         scanner.currentIndex = location
 
         fieldNames = parseHeader() ?? []
 
-        if fieldNames.count > 1 && parseLineSeparator() != nil {
+        if fieldNames.count > 1, parseLineSeparator() != nil {
           break scannerLoop
         }
       }
@@ -225,19 +226,19 @@ final class CSVParser {
   }
 
   private func parseNonEscaped() -> String? {
-    return parseTextData()
+    parseTextData()
   }
 
   private func parseTwoDoubleQuotes() -> String? {
-    return scanner.scanString("\"\"")
+    scanner.scanString("\"\"")
   }
 
   private func parseDoubleQuote() -> String? {
-    return scanner.scanString("\"")
+    scanner.scanString("\"")
   }
 
   private func parseSeparator() -> String? {
-    return scanner.scanString(separator)
+    scanner.scanString(separator)
   }
 
   @discardableResult private func parseEmptyLines() -> String? {
@@ -262,7 +263,7 @@ final class CSVParser {
   }
 
   private func parseLineSeparator() -> String? {
-    return scanner.scanString("\n")
+    scanner.scanString("\n")
   }
 
   @discardableResult private func skipLine() -> String? {
@@ -271,7 +272,6 @@ final class CSVParser {
   }
 
   private func parseTextData() -> String? {
-    return scanner.scanUpToCharacters(from: endTextCharacterSet)
+    scanner.scanUpToCharacters(from: endTextCharacterSet)
   }
-
 }

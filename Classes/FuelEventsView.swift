@@ -33,7 +33,7 @@ struct FuelEventsView: View {
     .navigationBarTitle(selectedCar.ksName, displayMode: .inline)
     .toolbar {
       // Use HStack as a ToolbarItemGroup only shows the first button
-      //ToolbarItemGroup(placement: .navigationBarTrailing) {
+      // ToolbarItemGroup(placement: .navigationBarTrailing) {
       ToolbarItem(placement: .navigationBarTrailing) {
         HStack {
           Button(action: {
@@ -66,7 +66,7 @@ struct FuelEventsView: View {
   }
 
   private var exportURL: URL {
-    return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(exportFilename)
+    URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(exportFilename)
   }
 
   func exportTextData() -> Data {
@@ -91,22 +91,21 @@ struct FuelEventsView: View {
     default: period = String(format: NSLocalizedString("in the period from %@ to %@", comment: ""), outputFormatter.string(from: last!.ksTimestamp), outputFormatter.string(from: first!.ksTimestamp))
     }
 
-    let count = String(format: NSLocalizedString(((eventCount == 1) ? "%d item" : "%d items"), comment: ""), eventCount)
+    let count = String(format: NSLocalizedString((eventCount == 1) ? "%d item" : "%d items", comment: ""), eventCount)
 
     return String(format: NSLocalizedString("Here are your exported fuel data sets for %@ (%@) %@ (%@):\n", comment: ""),
-            selectedCar.ksName,
-            selectedCar.ksNumberPlate,
-            period,
-            count)
+                  selectedCar.ksName,
+                  selectedCar.ksNumberPlate,
+                  period,
+                  count)
   }
 
-  func showStatistics() {
-  }
+  func showStatistics() {}
 }
 
 struct FuelEventsView_Previews: PreviewProvider {
   static var container: NSPersistentContainer {
-    return DataManager.previewContainer
+    DataManager.previewContainer
   }
 
   static var previewCar: Car = {

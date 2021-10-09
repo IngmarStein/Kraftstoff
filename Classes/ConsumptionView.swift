@@ -26,7 +26,7 @@ struct ConsumptionView: View {
 }
 
 struct ConsumptionView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConsumptionView()
-    }
+  static var previews: some View {
+    ConsumptionView()
+  }
 }

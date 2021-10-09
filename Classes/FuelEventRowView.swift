@@ -88,7 +88,7 @@ struct FuelEventRowView: View {
 
 struct FuelEventRowView_Previews: PreviewProvider {
   static var container: NSPersistentContainer {
-    return DataManager.previewContainer
+    DataManager.previewContainer
   }
 
   static var previewFuelEvent: FuelEvent = {

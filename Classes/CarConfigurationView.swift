@@ -18,7 +18,7 @@ struct CarConfigurationView: View {
         TextField("License Plate", text: .constant(""))
         Picker(selection: .constant(1), label: Text("Odometer Type")) {
           let odometerUnitPickerLabels = [Formatters.longMeasurementFormatter.string(from: UnitLength.kilometers).capitalized,
-                          Formatters.longMeasurementFormatter.string(from: UnitLength.miles).capitalized]
+                                          Formatters.longMeasurementFormatter.string(from: UnitLength.miles).capitalized]
           ForEach(0 ..< odometerUnitPickerLabels.count) {
             Text(odometerUnitPickerLabels[$0])
           }

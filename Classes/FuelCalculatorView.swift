@@ -6,9 +6,9 @@
 //  Copyright © 2019 Ingmar Stein. All rights reserved.
 //
 
-import SwiftUI
 import Combine
 import CoreData
+import SwiftUI
 
 struct FuelCalculatorView: View {
   @Environment(\.managedObjectContext) var managedObjectContext
@@ -24,19 +24,19 @@ struct FuelCalculatorView: View {
 
   // TODO: make conditional on !isEditing && filledUp && distance > 0 && fuelVolume > 0
   /*
-  var showConsumption: AnyPublisher<Bool, Never> {
-    return Publishers.CombineLatest3($filledUp, $distance, $fuelVolume) { filledUp, distance, fuelVolume in
-      return filledUp && distance > 0 && fuelVolume > 0
-    }.eraseToAnyPublisher()
-  }
-  */
+   var showConsumption: AnyPublisher<Bool, Never> {
+     return Publishers.CombineLatest3($filledUp, $distance, $fuelVolume) { filledUp, distance, fuelVolume in
+       return filledUp && distance > 0 && fuelVolume > 0
+     }.eraseToAnyPublisher()
+   }
+   */
 
   var body: some View {
     Form {
       Section {
         if cars.count > 1 {
           Picker(selection: .constant(1), label: Text("Car")) {
-            ForEach(cars, id: \.objectID) { car in
+            ForEach(cars, id: \.objectID) { _ in
               Text("test").tag(1)
             }
           }
@@ -55,7 +55,7 @@ struct FuelCalculatorView: View {
     }
     .userActivity("com.github.ingmarstein.kraftstoff.fillup") { activity in
       activity.title = NSLocalizedString("Fill-Up", comment: "")
-      activity.keywords = [ NSLocalizedString("Fill-Up", comment: "") ]
+      activity.keywords = [NSLocalizedString("Fill-Up", comment: "")]
       activity.isEligibleForSearch = true
       activity.isEligibleForPrediction = true
     }
@@ -63,13 +63,13 @@ struct FuelCalculatorView: View {
 
   func save() {
     DataManager.addToArchive(car: car!,
-                 date: date,
-                 distance: distance,
-                 price: price,
-                 fuelVolume: fuelVolume,
-                 filledUp: filledUp,
-                 comment: comment,
-                 forceOdometerUpdate: false)
+                             date: date,
+                             distance: distance,
+                             price: price,
+                             fuelVolume: fuelVolume,
+                             filledUp: filledUp,
+                             comment: comment,
+                             forceOdometerUpdate: false)
 
     DataManager.saveContext()
 
@@ -84,7 +84,7 @@ struct FuelCalculatorView: View {
 
 struct FuelCalculatorView_Previews: PreviewProvider {
   static var container: NSPersistentContainer {
-    return DataManager.previewContainer
+    DataManager.previewContainer
   }
 
   static var previewCar: Car = {
@@ -105,7 +105,7 @@ struct FuelCalculatorView_Previews: PreviewProvider {
 
   static var previews: some View {
     FuelCalculatorView(cars: FetchRequest<Car>(fetchRequest: DataManager.fetchRequestForCars()),
-               date: Date(),
-               lastChangeDate: Date())
-    }
+                       date: Date(),
+                       lastChangeDate: Date())
+  }
 }

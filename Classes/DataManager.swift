@@ -6,8 +6,8 @@
 //
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 final class DataManager {
   // CoreData support
@@ -57,10 +57,10 @@ final class DataManager {
     if context.hasChanges {
       do {
         try context.save()
-      } catch let error {
+      } catch {
         let alertController = UIAlertController(title: NSLocalizedString("Can't Save Database", comment: ""),
-          message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
-          preferredStyle: .alert)
+                                                message: NSLocalizedString("Sorry, the application database cannot be saved. Please quit the application with the Home button.", comment: ""),
+                                                preferredStyle: .alert)
         let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { _ in
           fatalError(error.localizedDescription)
         }
@@ -78,7 +78,7 @@ final class DataManager {
     if backgroundContext.hasChanges {
       do {
         try backgroundContext.save()
-      } catch let error {
+      } catch {
         fatalError("DataManager - save backgroundManagedObjectContext ERROR: \(error.localizedDescription)")
       }
     }
@@ -116,7 +116,7 @@ final class DataManager {
   }
 
   static func load() {
-    persistentContainer.loadPersistentStores { (_, error) in
+    persistentContainer.loadPersistentStores { _, error in
       if let error = error {
         let alertController = UIAlertController(title: NSLocalizedString("Can't Open Database", comment: ""),
                                                 message: NSLocalizedString("Sorry, the application database cannot be opened. Please quit the application with the Home button.", comment: ""),
@@ -131,18 +131,18 @@ final class DataManager {
     }
 
     /*
-    if let container = persistentContainer as? NSPersistentCloudKitContainer {
-      do {
-        // Uncomment to do a dry run and print the CKRecords it'll make
-        //try container.initializeCloudKitSchema(options: [.dryRun, .printSchema])
-        // Uncomment to initialize the schema
-        #warning("Initializing CloudKit schema")
-        try container.initializeCloudKitSchema()
-      } catch {
-        print("Unable to initialize CloudKit schema: \(error.localizedDescription)")
-      }
-    }
-    */
+     if let container = persistentContainer as? NSPersistentCloudKitContainer {
+       do {
+         // Uncomment to do a dry run and print the CKRecords it'll make
+         //try container.initializeCloudKitSchema(options: [.dryRun, .printSchema])
+         // Uncomment to initialize the schema
+         #warning("Initializing CloudKit schema")
+         try container.initializeCloudKitSchema()
+       } catch {
+         print("Unable to initialize CloudKit schema: \(error.localizedDescription)")
+       }
+     }
+     */
   }
 
   // MARK: - Preconfigured Data Fetches
@@ -161,7 +161,8 @@ final class DataManager {
   static func fetchRequestForEvents(car: Car,
                                     andDate date: Date?,
                                     dateComparator dateCompare: String,
-                      fetchSize: Int) -> NSFetchRequest<FuelEvent> {
+                                    fetchSize: Int) -> NSFetchRequest<FuelEvent>
+  {
     let fetchRequest: NSFetchRequest<FuelEvent> = FuelEvent.fetchRequest()
     fetchRequest.fetchBatchSize = fetchSize
 
@@ -183,21 +184,23 @@ final class DataManager {
   }
 
   static func fetchRequestForEvents(car: Car,
-                                   afterDate date: Date?,
-                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
-    return fetchRequestForEvents(car: car,
-                               andDate: date,
-                               dateComparator: dateMatches ? ">=" : ">",
-                   fetchSize: 128)
+                                    afterDate date: Date?,
+                                    dateMatches: Bool) -> NSFetchRequest<FuelEvent>
+  {
+    fetchRequestForEvents(car: car,
+                          andDate: date,
+                          dateComparator: dateMatches ? ">=" : ">",
+                          fetchSize: 128)
   }
 
   static func fetchRequestForEvents(car: Car,
-                                   beforeDate date: Date?,
-                                   dateMatches: Bool) -> NSFetchRequest<FuelEvent> {
-    return fetchRequestForEvents(car: car,
-                               andDate: date,
-                               dateComparator: dateMatches ? "<=" : "<",
-                   fetchSize: 8)
+                                    beforeDate date: Date?,
+                                    dateMatches: Bool) -> NSFetchRequest<FuelEvent>
+  {
+    fetchRequestForEvents(car: car,
+                          andDate: date,
+                          dateComparator: dateMatches ? "<=" : "<",
+                          fetchSize: 8)
   }
 
   static func fetchedResultsControllerForCars(delegate: NSFetchedResultsControllerDelegate, inContext moc: NSManagedObjectContext = managedObjectContext) -> NSFetchedResultsController<Car> {
@@ -214,7 +217,7 @@ final class DataManager {
     // Perform the Core Data fetch
     do {
       try fetchedResultsController.performFetch()
-    } catch let error {
+    } catch {
       fatalError(error.localizedDescription)
     }
 
@@ -225,7 +228,7 @@ final class DataManager {
     let fetchedObjects: [ResultType]?
     do {
       fetchedObjects = try moc.fetch(fetchRequest)
-    } catch let error {
+    } catch {
       fatalError(error.localizedDescription)
     }
 
@@ -245,7 +248,7 @@ final class DataManager {
     // Check whether fetch would reveal any event objects
     do {
       return try moc.count(for: fetchRequest) > 0
-    } catch let error {
+    } catch {
       fatalError(error.localizedDescription)
     }
   }
@@ -254,11 +257,11 @@ final class DataManager {
 
   @discardableResult static func addToArchive(car: Car, date: Date, distance: Decimal, price: Decimal, fuelVolume: Decimal, filledUp: Bool, comment: String?, forceOdometerUpdate odometerUpdate: Bool, inManagedObjectContext moc: NSManagedObjectContext = managedObjectContext) -> FuelEvent {
     // Convert distance and fuelvolume to SI units
-    let fuelUnit     = car.ksFuelUnit
+    let fuelUnit = car.ksFuelUnit
     let odometerUnit = car.ksOdometerUnit
 
-    let liters        = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
-    let kilometers    = Units.kilometersForDistance(distance, withUnit: odometerUnit)
+    let liters = Units.litersForVolume(fuelVolume, withUnit: fuelUnit)
+    let kilometers = Units.kilometersForDistance(distance, withUnit: odometerUnit)
     let pricePerLiter = Units.pricePerLiter(price, withUnit: fuelUnit)
 
     var inheritedCost = Decimal(0)
@@ -275,8 +278,8 @@ final class DataManager {
       if !olderEvent.filledUp {
         let cost = olderEvent.cost
 
-        inheritedCost       = cost + olderEvent.ksInheritedCost
-        inheritedDistance   = olderEvent.ksDistance + olderEvent.ksInheritedDistance
+        inheritedCost = cost + olderEvent.ksInheritedCost
+        inheritedDistance = olderEvent.ksDistance + olderEvent.ksInheritedDistance
         inheritedFuelVolume = olderEvent.ksFuelVolume + olderEvent.ksInheritedFuelVolume
       }
     }
@@ -284,7 +287,7 @@ final class DataManager {
     // Update inherited distance/volume for younger events, probably mark the car odometer for an update
     // Fetch younger events
     let youngerEvents = car.fuelEvents(afterDate: date, dateMatches: false)
-        if youngerEvents.count > 0 {
+    if youngerEvents.count > 0 {
       let deltaCost = filledUp
         ? -inheritedCost
         : liters * pricePerLiter
@@ -308,7 +311,7 @@ final class DataManager {
       }
     } else {
       // New event will be the youngest one => update odometer too
-            forceOdometerUpdate = true
+      forceOdometerUpdate = true
     }
 
     // Create new managed object for this event
@@ -376,8 +379,8 @@ final class DataManager {
     if row > 0 {
       // Fill-up event deleted => propagate its inherited distance/volume
       if event.filledUp {
-        let inheritedCost       = event.ksInheritedCost
-        let inheritedDistance   = event.ksInheritedDistance
+        let inheritedCost = event.ksInheritedCost
+        let inheritedDistance = event.ksInheritedDistance
         let inheritedFuelVolume = event.ksInheritedFuelVolume
 
         if inheritedCost > 0 || inheritedDistance > 0 || inheritedFuelVolume > 0 {
@@ -452,10 +455,9 @@ final class DataManager {
 
       do {
         try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: managedObjectContext)
-      } catch let error {
+      } catch {
         print(error)
       }
     }
   }
-
 }

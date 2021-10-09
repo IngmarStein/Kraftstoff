@@ -14,7 +14,6 @@ final class PageCellDescription {
 
   init(cellClass: PageCell.Type, andData data: [String: Any]) {
     self.cellClass = cellClass
-    self.cellData = data
+    cellData = data
   }
-
 }

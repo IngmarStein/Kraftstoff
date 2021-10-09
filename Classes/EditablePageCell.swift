@@ -22,7 +22,6 @@ protocol EditablePageCellFocusHandler {
 }
 
 class EditablePageCell: PageCell, UITextFieldDelegate {
-
   private let margin = CGFloat(8.0)
 
   var keyLabel: UILabel
@@ -38,29 +37,29 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
     super.init()
 
-    textField.textAlignment            = .right
-    textField.autocapitalizationType   = .none
-    textField.autocorrectionType       = .no
-    textField.backgroundColor          = .clear
-    textField.clearButtonMode          = .whileEditing
+    textField.textAlignment = .right
+    textField.autocapitalizationType = .none
+    textField.autocorrectionType = .no
+    textField.backgroundColor = .clear
+    textField.clearButtonMode = .whileEditing
     textField.contentVerticalAlignment = .center
     textField.isUserInteractionEnabled = false
     textField.translatesAutoresizingMaskIntoConstraints = false
     textField.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
     textField.adjustsFontForContentSizeCategory = true
 
-    self.contentView.addSubview(textField)
+    contentView.addSubview(textField)
 
-    keyLabel.textAlignment        = .left
+    keyLabel.textAlignment = .left
     keyLabel.highlightedTextColor = .label
-    keyLabel.textColor            = .label
+    keyLabel.textColor = .label
     keyLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
     keyLabel.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
     keyLabel.translatesAutoresizingMaskIntoConstraints = false
     keyLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
     keyLabel.adjustsFontForContentSizeCategory = true
 
-    self.contentView.addSubview(keyLabel)
+    contentView.addSubview(keyLabel)
 
     let keyLabelBottomConstraint = NSLayoutConstraint(item: keyLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottomMargin, multiplier: 1.0, constant: 0.0)
     keyLabelBottomConstraint.priority = UILayoutPriority(rawValue: 500)
@@ -68,43 +67,42 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
     let constraints = [
       NSLayoutConstraint(item: keyLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .topMargin, multiplier: 1.0, constant: 0.0),
       keyLabelBottomConstraint,
-      NSLayoutConstraint(item: textField, attribute: .lastBaseline, relatedBy: .equal, toItem: keyLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0)
+      NSLayoutConstraint(item: textField, attribute: .lastBaseline, relatedBy: .equal, toItem: keyLabel, attribute: .lastBaseline, multiplier: 1.0, constant: 0.0),
     ] + NSLayoutConstraint.constraints(withVisualFormat: "|-[keyLabel]-[textField]-|", options: [], metrics: nil, views: ["keyLabel": keyLabel, "textField": textField])
 
     NSLayoutConstraint.activate(constraints)
   }
 
-  required init(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
+  @available(*, unavailable)
+  required init(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
   override var accessibilityLabel: String? {
     get {
-      return "\(self.keyLabel.text!) \(self.textField.text!)"
+      "\(self.keyLabel.text!) \(self.textField.text!)"
     }
-    set {
-
-    }
+    set {}
   }
 
   override func configureForData(_ dictionary: [String: Any], viewController: UIViewController, tableView: UITableView, indexPath: IndexPath) {
     super.configureForData(dictionary, viewController: viewController, tableView: tableView, indexPath: indexPath)
 
-    self.keyLabel.text   = dictionary["label"] as? String
-    self.delegate        = viewController as? EditablePageCellDelegate
-    self.valueIdentifier = dictionary["valueIdentifier"] as? String
+    keyLabel.text = dictionary["label"] as? String
+    delegate = viewController as? EditablePageCellDelegate
+    valueIdentifier = dictionary["valueIdentifier"] as? String
 
-    self.textField.placeholder = dictionary["placeholder"] as? String
-    self.textField.delegate    = self
+    textField.placeholder = dictionary["placeholder"] as? String
+    textField.delegate = self
   }
 
   var invalidTextColor: UIColor? {
-    return self.contentView.tintColor
+    contentView.tintColor
   }
 
   // MARK: - UITextFieldDelegate
 
-  func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+  func textFieldDidEndEditing(_ textField: UITextField, reason _: UITextField.DidEndEditingReason) {
     textField.isUserInteractionEnabled = false
   }
 
@@ -117,11 +115,11 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
   // MARK: - Responder Chain
 
   override var canBecomeFirstResponder: Bool {
-    return true
+    true
   }
 
   override var canResignFirstResponder: Bool {
-    return true
+    true
   }
 
   override func becomeFirstResponder() -> Bool {
@@ -130,7 +128,7 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
   }
 
   override func resignFirstResponder() -> Bool {
-    return textField.resignFirstResponder()
+    textField.resignFirstResponder()
   }
 
   override func reset() {
@@ -138,5 +136,4 @@ class EditablePageCell: PageCell, UITextFieldDelegate {
 
     keyLabel.text = ""
   }
-
 }

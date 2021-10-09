@@ -12,7 +12,6 @@ import Foundation
 private let noSecondsComponentMask: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute]
 
 extension Date {
-
   static func dateWithOffsetInMonths(_ numberOfMonths: Int, fromDate date: Date) -> Date {
     let gregorianCalendar = Calendar(identifier: Calendar.Identifier.gregorian)
 
@@ -44,5 +43,4 @@ extension Date {
 
     return gregorianCalendar.dateComponents([.day], from: startDate, to: endDate).day!
   }
-
 }

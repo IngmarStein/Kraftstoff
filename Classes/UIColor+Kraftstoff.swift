@@ -5,8 +5,8 @@
 //  Created by Ingmar Stein on 17.06.17.
 //
 
-import UIKit
 import SwiftUI
+import UIKit
 
 extension UIColor {
   static let statisticsBackground = UIColor(named: "StatisticsBackground")!
