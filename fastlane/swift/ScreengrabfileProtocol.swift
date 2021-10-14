@@ -5,7 +5,7 @@ public protocol ScreengrabfileProtocol: class {
     /// Path to the root of your Android SDK installation, e.g. ~/tools/android-sdk-macosx
     var androidHome: String? { get }
 
-    /// The Android build tools version to use, e.g. '23.0.2'
+    /// **DEPRECATED!** The Android build tools version to use, e.g. '23.0.2'
     var buildToolsVersion: String? { get }
 
     /// A list of locales which should be used
@@ -38,16 +38,16 @@ public protocol ScreengrabfileProtocol: class {
     /// The fully qualified class name of your test instrumentation runner
     var testInstrumentationRunner: String { get }
 
-    /// Return the device to this locale after running tests
+    /// **DEPRECATED!** Return the device to this locale after running tests
     var endingLocale: String { get }
 
-    /// Restarts the adb daemon using `adb root` to allow access to screenshots directories on device. Use if getting 'Permission denied' errors
+    /// **DEPRECATED!** Restarts the adb daemon using `adb root` to allow access to screenshots directories on device. Use if getting 'Permission denied' errors
     var useAdbRoot: Bool { get }
 
     /// The path to the APK for the app under test
     var appApkPath: String? { get }
 
-    /// The path to the APK for the the tests bundle
+    /// The path to the APK for the tests bundle
     var testsApkPath: String? { get }
 
     /// Use the device or emulator with the given serial number or qualifier
@@ -56,7 +56,7 @@ public protocol ScreengrabfileProtocol: class {
     /// Type of device used for screenshots. Matches Google Play Types (phone, sevenInch, tenInch, tv, wear)
     var deviceType: String { get }
 
-    /// Whether or not to exit Screengrab on test failure. Exiting on failure will not copy sceenshots to local machine nor open sceenshots summary
+    /// Whether or not to exit Screengrab on test failure. Exiting on failure will not copy screenshots to local machine nor open screenshots summary
     var exitOnTestFailure: Bool { get }
 
     /// Enabling this option will automatically uninstall the application before running it
@@ -96,4 +96,4 @@ public extension ScreengrabfileProtocol {
 
 // Please don't remove the lines below
 // They are used to detect outdated files
-// FastlaneRunnerAPIVersion [0.9.59]
+// FastlaneRunnerAPIVersion [0.9.83]

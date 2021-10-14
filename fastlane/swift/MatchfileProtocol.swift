@@ -23,7 +23,7 @@ public protocol MatchfileProtocol: class {
     /// Path to your App Store Connect API Key JSON file (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-json-file)
     var apiKeyPath: String? { get }
 
-    /// Your App Store Connect API Key information (https://docs.fastlane.tools/app-store-connect-api/#use-return-value-and-pass-in-as-an-option)
+    /// Your App Store Connect API Key information (https://docs.fastlane.tools/app-store-connect-api/#using-fastlane-api-key-hash-option)
     var apiKey: [String: Any]? { get }
 
     /// Your Apple ID Username
@@ -98,8 +98,14 @@ public protocol MatchfileProtocol: class {
     /// Renew the provisioning profiles every time you run match
     var force: Bool { get }
 
-    /// Renew the provisioning profiles if the device count on the developer portal has changed. Ignored for profile type 'appstore'
+    /// Renew the provisioning profiles if the device count on the developer portal has changed. Ignored for profile types 'appstore' and 'developer_id'
     var forceForNewDevices: Bool { get }
+
+    /// Include all matching certificates in the provisioning profile. Works only for the 'development' provisioning profile type
+    var includeAllCertificates: Bool { get }
+
+    /// Renew the provisioning profiles if the device count on the developer portal has changed. Works only for the 'development' provisioning profile type. Requires 'include_all_certificates' option to be 'true'
+    var forceForNewCertificates: Bool { get }
 
     /// Disables confirmation prompts during nuke, answering them with yes
     var skipConfirmation: Bool { get }
@@ -169,6 +175,8 @@ public extension MatchfileProtocol {
     var keychainPassword: String? { return nil }
     var force: Bool { return false }
     var forceForNewDevices: Bool { return false }
+    var includeAllCertificates: Bool { return false }
+    var forceForNewCertificates: Bool { return false }
     var skipConfirmation: Bool { return false }
     var skipDocs: Bool { return false }
     var platform: String { return "ios" }
@@ -184,4 +192,4 @@ public extension MatchfileProtocol {
 
 // Please don't remove the lines below
 // They are used to detect outdated files
-// FastlaneRunnerAPIVersion [0.9.58]
+// FastlaneRunnerAPIVersion [0.9.82]

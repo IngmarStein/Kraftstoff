@@ -37,6 +37,7 @@
 		D5A7C4901F7C4DAF00A91DE6 /* Fastfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A7C48E1F7C4DAF00A91DE6 /* Fastfile.swift */; };
 		D5BAFD121F7DAAFC0030B324 /* ArgumentProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BAFD111F7DAAFC0030B324 /* ArgumentProcessor.swift */; };
 		E46C830C75944B9DA011E8B4 /* Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550E2EA463D5A541338EBDC4 /* Actions.swift */; };
+		FDF726F626904B5067D6F830 /* OptionalConfigValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2F6F5B555FDFAFB93F4CFA /* OptionalConfigValue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		550E2EA463D5A541338EBDC4 /* Actions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Actions.swift; path = ../Actions.swift; sourceTree = "<group>"; };
 		62E6BEBEACC6EB7EB6DDA9F1 /* Plugins.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Plugins.swift; path = ../Plugins.swift; sourceTree = "<group>"; };
 		698D4A9A095D05D2DEDA2B0B /* RubyCommandable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RubyCommandable.swift; path = ../RubyCommandable.swift; sourceTree = "<group>"; };
+		8D2F6F5B555FDFAFB93F4CFA /* OptionalConfigValue.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OptionalConfigValue.swift; path = ../OptionalConfigValue.swift; sourceTree = "<group>"; };
 		B30206741F5E3E9000DE6EBD /* SnapshotfileProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotfileProtocol.swift; path = ../SnapshotfileProtocol.swift; sourceTree = "<group>"; };
 		B30206751F5E3E9000DE6EBD /* GymfileProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GymfileProtocol.swift; path = ../GymfileProtocol.swift; sourceTree = "<group>"; };
 		B30206761F5E3E9000DE6EBD /* MatchfileProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MatchfileProtocol.swift; path = ../MatchfileProtocol.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				B3BA659E1F5A269100B34850 /* LaneFileProtocol.swift */,
+				8D2F6F5B555FDFAFB93F4CFA /* OptionalConfigValue.swift */,
 			);
 			name = "Fastfile Components";
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				19E768432E4EE69C31BF5FFE /* RubyCommandable.swift in Sources */,
 				E46C830C75944B9DA011E8B4 /* Actions.swift in Sources */,
 				C7E48239895ACD4FDF61187C /* Plugins.swift in Sources */,
+				FDF726F626904B5067D6F830 /* OptionalConfigValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,24 +17,24 @@ class Fastfile: LaneFile {
   var fastlaneVersion = "2.141.0"
 
   let catalystDestination = "platform=macOS,variant=Mac Catalyst"
-  let project = "Kraftstoff.xcodeproj"
-  let scheme = "Kraftstoff"
-  let screenshotScheme = "Fastlane UI Tests"
+  let project: OptionalConfigValue<String?> = "Kraftstoff.xcodeproj"
+  let scheme: OptionalConfigValue<String?> = "Kraftstoff"
+  let screenshotScheme: OptionalConfigValue<String?> = "Fastlane UI Tests"
 
-  let devices = [
+  let devices: OptionalConfigValue<[String]?> = .userDefined([
     "iPhone 8",
     "iPhone 8 Plus",
     "iPhone 11",
     "iPhone 11 Pro",
     "iPhone 11 Pro Max",
-    "iPhone 12",
-    "iPhone 12 Pro",
-    "iPhone 12 Pro Max",
+    "iPhone 13",
+    "iPhone 13 Pro",
+    "iPhone 13 Pro Max",
     "iPhone SE (2nd generation)",
     "iPad Pro (9.7-inch)",
-    "iPad Pro (11-inch) (2nd generation)",
-    "iPad Pro (12.9-inch) (4th generation)"
-  ]
+    "iPad Pro (11-inch) (3rd generation)",
+    "iPad Pro (12.9-inch) (5th generation)"
+  ])
 
   let languages = [
     "en-US",
@@ -85,7 +85,7 @@ class Fastfile: LaneFile {
 
     testLane()
     buildIOS()
-    uploadToTestflight(username: appleID)
+    uploadToTestflight(username: "\(appleID)")
   }
 
   func betaMacOSLane() {
@@ -94,14 +94,14 @@ class Fastfile: LaneFile {
     testMacOSLane()
     buildMacOS()
     //notarize(package: <#T##String#>, username: appleID)
-    uploadToTestflight(username: appleID)
+    uploadToTestflight(username: "\(appleID)")
   }
 
   func releaseLane() {
     desc("Deploy a new version to the App Store")
 
     buildIOS()
-    uploadToAppStore(username: appleID, app: appIdentifier)
+    uploadToAppStore(username: "\(appleID)", appIdentifier: "\(appIdentifier)")
     frameScreenshots(path: "./fastlane/screenshots")
 
      //addGitTag(buildNumber: getVersionNumber())
@@ -111,11 +111,10 @@ class Fastfile: LaneFile {
     desc("Deploy a new macOS version to the App Store")
 
     buildMacOS()
-    uploadToAppStore(username: appleID,
-                     appIdentifier: appIdentifier,
+    uploadToAppStore(username: "\(appleID)",
+                     appIdentifier: "\(appIdentifier)",
                      platform: "osx",
-                     screenshotsPath: "./fastlane/screenshots-catalyst",
-                     app: appIdentifier)
+                     screenshotsPath: "./fastlane/screenshots-catalyst")
 
     //addGitTag(buildNumber: getVersionNumber())
   }
