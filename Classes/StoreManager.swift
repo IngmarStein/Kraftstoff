@@ -9,7 +9,6 @@
 import Foundation
 import Security
 import StoreKit
-import TPInAppReceipt
 
 public enum StoreError: Error {
   case failedVerification
