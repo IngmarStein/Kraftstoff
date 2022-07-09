@@ -53,10 +53,6 @@ struct KraftstoffApp: App {
     }
   }
 
-  init() {
-    UITableView.appearance().backgroundColor = UIColor.clear
-  }
-
   func handleFillup(_: NSUserActivity) {
     // switch to fill-up tab
     selectedTab = 0

@@ -31,6 +31,7 @@ struct CarsView: View {
           .onDelete(perform: deleteCars)
           .onMove(perform: moveCars)
         }
+        .scrollContentBackground(.hidden)
         .listStyle(PlainListStyle())
         .navigationBarTitle("Cars", displayMode: .inline)
         .toolbar {
